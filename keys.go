@@ -27,10 +27,10 @@ var (
 	ErrInvalidDecryptedLen = errors.New("gotez: invalid decrypted key length")
 )
 
-func (*Ed25519PublicKeyHash) PublicKeyHash()   {}
-func (*Secp256k1PublicKeyHash) PublicKeyHash() {}
-func (*P256PublicKeyHash) PublicKeyHash()      {}
-func (*BLSPublicKeyHash) PublicKeyHash()       {}
+func (pkh *Ed25519PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
+func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
+func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
+func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
 
 func (*Ed25519PublicKey) PublicKey()   {}
 func (*Secp256k1PublicKey) PublicKey() {}
@@ -60,7 +60,7 @@ func (pk *BLSPrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { r
 
 type PublicKeyHash interface {
 	Base58Encoder
-	PublicKeyHash()
+	PublicKeyHash() []byte
 }
 
 type PublicKey interface {
