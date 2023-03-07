@@ -69,16 +69,20 @@ type ContractID interface {
 
 type OriginatedContract struct {
 	*ContractHash
-	//lint:ignore U1000 Padding byte
-	padding uint8
+	Padding uint8
 }
 
 type ImplicitContract struct {
 	PublicKeyHash
 }
 
-func (*OriginatedContract) ContractID() {}
-func (*ImplicitContract) ContractID()   {}
+type OriginatedContractID interface {
+	OriginatedContractID()
+}
+
+func (*OriginatedContract) ContractID()           {}
+func (*OriginatedContract) OriginatedContractID() {}
+func (*ImplicitContract) ContractID()             {}
 
 func init() {
 	tz.RegisterEnum(&tz.Enum[PublicKeyHash]{
@@ -103,6 +107,11 @@ func init() {
 			1: (*OriginatedContract)(nil),
 		},
 	})
+	tz.RegisterEnum(&tz.Enum[OriginatedContractID]{
+		Variants: tz.Variants[OriginatedContractID]{
+			1: (*OriginatedContract)(nil),
+		},
+	})
 }
 
 type String string
@@ -116,7 +125,7 @@ func (str *String) DecodeTZ(data []byte, ctx *tz.Context) ([]byte, error) {
 		return nil, tz.ErrBuffer
 	}
 	*str = String(data[1 : length+1])
-	return data[:length+1], nil
+	return data[length+1:], nil
 }
 
 type ShellHeader struct {

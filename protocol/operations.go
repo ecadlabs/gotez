@@ -299,10 +299,8 @@ func (*SetDepositsLimit) OperationContents() {}
 
 type IncreasePaidStorage struct {
 	ManagerOperation
-	Amount tz.BigInt
-	//lint:ignore U1000 Constant tag
-	tag         uint8 `tz:"const=1"`
-	Destination OriginatedContract
+	Amount      tz.BigInt
+	Destination OriginatedContractID
 }
 
 func (*IncreasePaidStorage) OperationContents() {}
