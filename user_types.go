@@ -131,7 +131,7 @@ func (e *EnumRegistry) tryDecode(t reflect.Type, data []byte, ctx *Context) (ref
 		}
 	}
 	val := reflect.New(variant).Elem()
-	data, err := decodeValue(data, val, ctx)
+	data, err := decodeValue(data, val, ctx, nil)
 	return val, data, err
 }
 

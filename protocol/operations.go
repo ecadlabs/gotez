@@ -1,8 +1,6 @@
 package protocol
 
 import (
-	"encoding/binary"
-
 	tz "github.com/ecadlabs/gotez"
 )
 
@@ -35,33 +33,13 @@ type DoubleEndorsementEvidence struct {
 	Slot tz.Option[uint16]
 }
 
-func (op *DoubleEndorsementEvidence) DecodeTZ(data []byte, ctx *tz.Context) ([]byte, error) {
-	if len(data) < 4 {
-		return nil, tz.ErrBuffer
-	}
-	ln := binary.BigEndian.Uint32(data)
-	data = data[4:]
-	if len(data) < int(ln) {
-		return nil, tz.ErrBuffer
-	}
-	if _, err := tz.Decode(data[:ln], &op.Op1, tz.Ctx(ctx)); err != nil {
+func (op *DoubleEndorsementEvidence) DecodeTZ(data []byte, ctx *tz.Context) (rest []byte, err error) {
+	if data, err = tz.Decode(data, &op.Op1, tz.Ctx(ctx), tz.Dynamic()); err != nil {
 		return nil, err
 	}
-	data = data[ln:]
-
-	if len(data) < 4 {
-		return nil, tz.ErrBuffer
-	}
-	ln = binary.BigEndian.Uint32(data)
-	data = data[4:]
-	if len(data) < int(ln) {
-		return nil, tz.ErrBuffer
-	}
-	if _, err := tz.Decode(data[:ln], &op.Op2, tz.Ctx(ctx)); err != nil {
+	if data, err = tz.Decode(data, &op.Op2, tz.Ctx(ctx), tz.Dynamic()); err != nil {
 		return nil, err
 	}
-	data = data[ln:]
-
 	if _, ok := op.Op1.Contents.(*EmmyEndorsement); ok {
 		var (
 			slot uint16

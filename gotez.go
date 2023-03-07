@@ -20,30 +20,44 @@ type Context struct {
 	enumReg *EnumRegistry
 }
 
-func (ctx *Context) apply(opts []DecodeOption) *Context {
+func applyOptions(opts []DecodeOption) (*Context, []flag) {
+	var ctx Context
+	flags := make([]flag, 0, len(opts))
 	for _, fn := range opts {
-		fn(ctx)
+		fn(&flags, &ctx)
 	}
-	return ctx
+	return &ctx, flags
 }
 
-type DecodeOption func(opt *Context)
+type DecodeOption func(fl *[]flag, opt *Context)
 
-func Types(tr *TypeRegistry) func(*Context) {
-	return func(c *Context) {
+func Types(tr *TypeRegistry) func(*[]flag, *Context) {
+	return func(fl *[]flag, c *Context) {
 		c.typeReg = tr
 	}
 }
 
-func Enums(er *EnumRegistry) func(*Context) {
-	return func(c *Context) {
+func Enums(er *EnumRegistry) func(*[]flag, *Context) {
+	return func(fl *[]flag, c *Context) {
 		c.enumReg = er
 	}
 }
 
-func Ctx(ctx *Context) func(opt *Context) {
-	return func(c *Context) {
+func Ctx(ctx *Context) func(*[]flag, *Context) {
+	return func(fl *[]flag, c *Context) {
 		*c = *ctx
+	}
+}
+
+func Dynamic() func(*[]flag, *Context) {
+	return func(fl *[]flag, c *Context) {
+		*fl = append(*fl, flDynamic{})
+	}
+}
+
+func Optional() func(*[]flag, *Context) {
+	return func(fl *[]flag, c *Context) {
+		*fl = append(*fl, flOptional{})
 	}
 }
 
@@ -174,7 +188,7 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context) (rest []byte, e
 			return data[l:], nil
 		} else {
 			for i := 0; i < l; i++ {
-				if data, err = decodeValue(data, out.Index(i), ctx); err != nil {
+				if data, err = decodeValue(data, out.Index(i), ctx, nil); err != nil {
 					break
 				}
 			}
@@ -189,7 +203,7 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context) (rest []byte, e
 			s := reflect.MakeSlice(typ, 0, 0)
 			for len(data) != 0 {
 				el := reflect.New(typ.Elem()).Elem()
-				if data, err = decodeValue(data, el, ctx); err != nil {
+				if data, err = decodeValue(data, el, ctx, nil); err != nil {
 					break
 				}
 				s = reflect.Append(s, el)
@@ -204,82 +218,14 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context) (rest []byte, e
 			if !f.IsExported() {
 				continue
 			}
-			opt := parseTag(f.Tag.Get("tz"))
-			if len(opt) != 0 {
-				if _, ok := opt[0].(flOmit); ok {
+			fl := parseTag(f.Tag.Get("tz"))
+			if len(fl) != 0 {
+				if _, ok := fl[0].(flOmit); ok {
 					continue
 				}
 			}
-
 			field := out.Field(i)
-			var dec func(data []byte) ([]byte, error)
-			dec = func(data []byte) ([]byte, error) {
-				if len(opt) != 0 {
-					if _, ok := opt[0].(flDynamic); ok {
-						opt = opt[1:]
-						// get length
-						if len(data) < 4 {
-							return nil, ErrBuffer
-						}
-						ln := be.Uint32(data)
-						data = data[4:]
-						if len(data) < int(ln) {
-							return nil, ErrBuffer
-						}
-						tmp := data[:ln]
-						data = data[ln:]
-						if _, err := dec(tmp); err != nil {
-							return nil, err
-						}
-						return data, nil
-					} else if _, ok := opt[0].(flOptional); ok {
-						opt = opt[1:]
-						if field.Kind() != reflect.Pointer {
-							return nil, fmt.Errorf("gotez: optional attribute on a non pointer field %v", field.Type())
-						}
-						// get flag
-						if len(data) < 1 {
-							return nil, ErrBuffer
-						}
-						some := data[0] != 0
-						data = data[1:]
-						if some {
-							return dec(data)
-						} else {
-							return data, nil
-						}
-					}
-				}
-				rest, err := decodeValue(data, field, ctx)
-				if err != nil {
-					return nil, err
-				}
-				if len(opt) != 0 {
-					if cv, ok := opt[0].(flConst); ok {
-						switch f.Type.Kind() {
-						case reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-							val, err := strconv.ParseUint(string(cv), 0, 64)
-							if err != nil {
-								return nil, fmt.Errorf("gotez: %w", err)
-							}
-							if field.Uint() != val {
-								return nil, fmt.Errorf("gotez: const field is expected to be %d, got %d", val, field.Uint())
-							}
-
-						case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-							val, err := strconv.ParseInt(string(cv), 0, 64)
-							if err != nil {
-								return nil, fmt.Errorf("gotez: %w", err)
-							}
-							if field.Int() != val {
-								return nil, fmt.Errorf("gotez: const field is expected to be %d, got %d", val, field.Uint())
-							}
-						}
-					}
-				}
-				return rest, err
-			}
-			if data, err = dec(data); err != nil {
+			if data, err = decodeValue(data, field, ctx, fl); err != nil {
 				return nil, err
 			}
 		}
@@ -294,68 +240,134 @@ var (
 	decoderType = reflect.TypeOf((*Decoder)(nil)).Elem()
 )
 
-func decodeValue(data []byte, out reflect.Value, ctx *Context) (rest []byte, err error) {
-	// out must be a non pointer
-	for out.Kind() == reflect.Ptr {
-		el := out.Type().Elem()
-		if el.Kind() == reflect.Array && el.Elem().Kind() == reflect.Uint8 {
-			// special case for the pointer to a byte array
-			l := el.Len()
-			if len(data) < l {
-				return nil, ErrBuffer
+func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag) ([]byte, error) {
+	var dec func(data []byte) ([]byte, error)
+	dec = func(data []byte) ([]byte, error) {
+		if len(fl) != 0 {
+			if _, ok := fl[0].(flDynamic); ok {
+				fl = fl[1:]
+				// get length
+				if len(data) < 4 {
+					return nil, ErrBuffer
+				}
+				ln := be.Uint32(data)
+				data = data[4:]
+				if len(data) < int(ln) {
+					return nil, ErrBuffer
+				}
+				tmp := data[:ln]
+				data = data[ln:]
+				if _, err := dec(tmp); err != nil {
+					return nil, err
+				}
+				return data, nil
+			} else if _, ok := fl[0].(flOptional); ok {
+				fl = fl[1:]
+				if out.Kind() != reflect.Pointer {
+					return nil, fmt.Errorf("gotez: optional attribute on a non pointer field %v", out.Type())
+				}
+				// get flag
+				if len(data) < 1 {
+					return nil, ErrBuffer
+				}
+				some := data[0] != 0
+				data = data[1:]
+				if some {
+					return dec(data)
+				} else {
+					return data, nil
+				}
 			}
-			out.Set(reflect.ValueOf(data[:l]).Convert(out.Type()))
-			return data[l:], nil
 		}
-		if out.IsNil() {
-			out.Set(reflect.New(el))
-		}
-		out = out.Elem()
-	}
 
-	// concrete type
-	if out.Kind() != reflect.Interface {
-		// user type
-		if reflect.PtrTo(out.Type()).Implements(decoderType) && out.CanAddr() {
-			dec := out.Addr().Interface().(Decoder)
-			return dec.DecodeTZ(data, ctx)
+		// out must be a non pointer
+		for out.Kind() == reflect.Pointer {
+			el := out.Type().Elem()
+			if el.Kind() == reflect.Array && el.Elem().Kind() == reflect.Uint8 {
+				// special case for the pointer to a byte array
+				l := el.Len()
+				if len(data) < l {
+					return nil, ErrBuffer
+				}
+				out.Set(reflect.ValueOf(data[:l]).Convert(out.Type()))
+				return data[l:], nil
+			}
+			if out.IsNil() {
+				out.Set(reflect.New(el))
+			}
+			out = out.Elem()
 		}
-		return decodeBuiltin(data, out, ctx)
-	}
 
-	// user interface type
-	val, rest, err := ctx.types().tryDecode(out.Type(), data)
-	if err != nil {
-		return
-	}
-	if !val.IsValid() {
-		// decode enum
-		val, rest, err = ctx.enums().tryDecode(out.Type(), data, ctx)
+		// concrete type
+		if out.Kind() != reflect.Interface {
+			// user type
+			if reflect.PtrTo(out.Type()).Implements(decoderType) && out.CanAddr() {
+				dec := out.Addr().Interface().(Decoder)
+				return dec.DecodeTZ(data, ctx)
+			}
+			return decodeBuiltin(data, out, ctx)
+		}
+
+		// user interface type
+		val, rest, err := ctx.types().tryDecode(out.Type(), data)
 		if err != nil {
-			return
+			return nil, err
 		}
 		if !val.IsValid() {
-			return nil, fmt.Errorf("gotez: unsupported interface type %v", out.Type())
+			// decode enum
+			if val, rest, err = ctx.enums().tryDecode(out.Type(), data, ctx); err != nil {
+				return nil, err
+			}
+			if !val.IsValid() {
+				return nil, fmt.Errorf("gotez: unsupported interface type %v", out.Type())
+			}
+		}
+		out.Set(val)
+		return rest, nil
+	}
+
+	rest, err := dec(data)
+	if err != nil {
+		return nil, err
+	}
+	if len(fl) != 0 {
+		if cv, ok := fl[0].(flConst); ok {
+			switch out.Kind() {
+			case reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				val, err := strconv.ParseUint(string(cv), 0, 64)
+				if err != nil {
+					return nil, fmt.Errorf("gotez: %w", err)
+				}
+				if out.Uint() != val {
+					return nil, fmt.Errorf("gotez: const field is expected to be %d, got %d", val, out.Uint())
+				}
+
+			case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				val, err := strconv.ParseInt(string(cv), 0, 64)
+				if err != nil {
+					return nil, fmt.Errorf("gotez: %w", err)
+				}
+				if out.Int() != val {
+					return nil, fmt.Errorf("gotez: const field is expected to be %d, got %d", val, out.Uint())
+				}
+			}
 		}
 	}
-	out.Set(val)
-	return
+	return rest, nil
 }
 
 func Decode(data []byte, v any, opt ...DecodeOption) (rest []byte, err error) {
-	var ctx Context
-	ctx.apply(opt)
 	if v == nil {
 		return nil, errors.New("gotez: nil interface")
 	}
 	val := reflect.ValueOf(v)
-	if val.Kind() != reflect.Ptr {
+	if val.Kind() != reflect.Pointer {
 		return nil, fmt.Errorf("gotez: pointer expected: %v", val.Type())
 	}
 	if val.IsNil() {
 		return nil, errors.New("gotez: nil pointer")
 	}
 	out := val.Elem()
-
-	return decodeValue(data, out, &ctx)
+	ctx, flags := applyOptions(opt)
+	return decodeValue(data, out, ctx, flags)
 }
