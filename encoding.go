@@ -64,7 +64,7 @@ var (
 	PfxEd25519EncryptedSeed        = Base58Prefix{plLen: 56, prefix: []byte{7, 90, 60, 179, 41}}    // edesk(88)
 	PfxSecp256k1EncryptedSecretKey = Base58Prefix{plLen: 56, prefix: []byte{9, 237, 241, 174, 150}} // spesk(88)
 	PfxP256EncryptedSecretKey      = Base58Prefix{plLen: 56, prefix: []byte{9, 48, 57, 115, 171}}   // p2esk(88)
-	PfxBLS12_381EncryptedSecretKey = Base58Prefix{plLen: 88, prefix: []byte{2, 5, 30, 53, 25}}      // BLesk(88)
+	PfxBLS12_381EncryptedSecretKey = Base58Prefix{plLen: 56, prefix: []byte{2, 5, 30, 53, 25}}      // BLesk(88)
 
 	// 60
 	PfxSecp256k1EncryptedScalar = Base58Prefix{plLen: 60, prefix: []byte{1, 131, 36, 86, 248}} // seesk(93)

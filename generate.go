@@ -84,7 +84,7 @@ var data = []mapping{
 	},
 	{
 		Type:   "Secp256k1PublicKey",
-		Length: "Secp256K1PublicKeyBytesLen",
+		Length: "Secp256k1PublicKeyBytesLen",
 		Prefix: "PfxSecp256k1PublicKey",
 	},
 	{
@@ -96,6 +96,46 @@ var data = []mapping{
 		Type:   "BLSPublicKey",
 		Length: "BLSPublicKeyBytesLen",
 		Prefix: "PfxBLS12_381PublicKey",
+	},
+	{
+		Type:   "Ed25519PrivateKey",
+		Length: "Ed25519PrivateKeyBytesLen",
+		Prefix: "PfxEd25519SecretKey",
+	},
+	{
+		Type:   "Ed25519EncryptedPrivateKey",
+		Length: "Ed25519EncryptedSeedBytesLen",
+		Prefix: "PfxEd25519EncryptedSeed",
+	},
+	{
+		Type:   "Secp256k1PrivateKey",
+		Length: "Secp256k1PrivateKeyBytesLen",
+		Prefix: "PfxSecp256k1SecretKey",
+	},
+	{
+		Type:   "Secp256k1EncryptedPrivateKey",
+		Length: "Secp256k1EncryptedPrivateKeyBytesLen",
+		Prefix: "PfxSecp256k1EncryptedSecretKey",
+	},
+	{
+		Type:   "P256PrivateKey",
+		Length: "P256PrivateKeyBytesLen",
+		Prefix: "PfxP256SecretKey",
+	},
+	{
+		Type:   "P256EncryptedPrivateKey",
+		Length: "P256EncryptedPrivateKeyBytesLen",
+		Prefix: "PfxP256EncryptedSecretKey",
+	},
+	{
+		Type:   "BLSPrivateKey",
+		Length: "BLSPrivateKeyBytesLen",
+		Prefix: "PfxBLS12_381SecretKey",
+	},
+	{
+		Type:   "BLSEncryptedPrivateKey",
+		Length: "BLSEncryptedPrivateKeyBytesLen",
+		Prefix: "PfxBLS12_381EncryptedSecretKey",
 	},
 }
 
