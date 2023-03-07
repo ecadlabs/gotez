@@ -1,4 +1,4 @@
-package gotez
+package encoding
 
 import (
 	"fmt"
