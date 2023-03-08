@@ -25,9 +25,6 @@ func decryptPrivateKey(data []byte, passCb func() ([]byte, error)) ([]byte, erro
 	if err != nil {
 		return nil, err
 	}
-	if len(passphrase) == 0 {
-		return nil, ErrPrivateKeyDecrypt
-	}
 
 	salt, box := data[:8], data[8:]
 	secretboxKey := pbkdf2.Key(passphrase, salt, encIterations, encKeyLen, sha512.New)

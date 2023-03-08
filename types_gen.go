@@ -85,6 +85,33 @@ func NewContextHashFromBase58(src []byte) (*ContextHash, error) {
 	return &out, nil
 }
 
+type ChainID [ChainIdBytesLen]byte
+
+func (self *ChainID) String() string {
+	return string(self.Base58())
+}
+
+func (self *ChainID) Base58() []byte {
+	out, err := EncodeTZBase58(&PfxChainID, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func NewChainIDFromBase58(src []byte) (*ChainID, error) {
+	prefix, payload, err := DecodeTZBase58(src)
+	if err != nil {
+		return nil, err
+	}
+	if prefix != &PfxChainID {
+		return nil, fmt.Errorf("gotez: invalid ChainID encoding")
+	}
+	var out ChainID
+	copy(out[:], payload)
+	return &out, nil
+}
+
 type BlockPayloadHash [BlockPayloadHashBytesLen]byte
 
 func (self *BlockPayloadHash) String() string {

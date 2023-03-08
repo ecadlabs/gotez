@@ -33,6 +33,11 @@ var data = []mapping{
 		Prefix: "PfxContextHash",
 	},
 	{
+		Type:   "ChainID",
+		Length: "ChainIdBytesLen",
+		Prefix: "PfxChainID",
+	},
+	{
 		Type:   "BlockPayloadHash",
 		Length: "BlockPayloadHashBytesLen",
 		Prefix: "PfxValueHash",
