@@ -104,8 +104,8 @@ var data = []mapping{
 	},
 	{
 		Type:   "Ed25519PrivateKey",
-		Length: "Ed25519PrivateKeyBytesLen",
-		Prefix: "PfxEd25519SecretKey",
+		Length: "Ed25519SeedBytesLen",
+		Prefix: "PfxEd25519Seed",
 	},
 	{
 		Type:   "Ed25519EncryptedPrivateKey",

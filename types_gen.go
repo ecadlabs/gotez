@@ -463,14 +463,14 @@ func NewBLSPublicKeyFromBase58(src []byte) (*BLSPublicKey, error) {
 	return &out, nil
 }
 
-type Ed25519PrivateKey [Ed25519PrivateKeyBytesLen]byte
+type Ed25519PrivateKey [Ed25519SeedBytesLen]byte
 
 func (self *Ed25519PrivateKey) String() string {
 	return string(self.Base58())
 }
 
 func (self *Ed25519PrivateKey) Base58() []byte {
-	out, err := EncodeTZBase58(&PfxEd25519SecretKey, self[:])
+	out, err := EncodeTZBase58(&PfxEd25519Seed, self[:])
 	if err != nil {
 		panic(err)
 	}
@@ -482,7 +482,7 @@ func NewEd25519PrivateKeyFromBase58(src []byte) (*Ed25519PrivateKey, error) {
 	if err != nil {
 		return nil, err
 	}
-	if prefix != &PfxEd25519SecretKey {
+	if prefix != &PfxEd25519Seed {
 		return nil, fmt.Errorf("gotez: invalid Ed25519PrivateKey encoding")
 	}
 	var out Ed25519PrivateKey
