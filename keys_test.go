@@ -15,35 +15,25 @@ import (
 
 func TestKeys(t *testing.T) {
 	type testCase struct {
-		title           string
-		genKey          func() crypto.PrivateKey
-		decodeBase58    func([]byte) (PrivateKey, error)
-		decodePubBase58 func([]byte) (PublicKey, error)
+		title  string
+		genKey func() crypto.PrivateKey
 	}
 	cases := []testCase{
 		{
-			title:           "ed25519",
-			genKey:          func() crypto.PrivateKey { _, k, _ := ed25519.GenerateKey(rand.Reader); return k },
-			decodeBase58:    func(src []byte) (PrivateKey, error) { return NewEd25519PrivateKeyFromBase58(src) },
-			decodePubBase58: func(src []byte) (PublicKey, error) { return NewEd25519PublicKeyFromBase58(src) },
+			title:  "ed25519",
+			genKey: func() crypto.PrivateKey { _, k, _ := ed25519.GenerateKey(rand.Reader); return k },
 		},
 		{
-			title:           "secp256k1",
-			genKey:          func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader); return k },
-			decodeBase58:    func(src []byte) (PrivateKey, error) { return NewSecp256k1PrivateKeyFromBase58(src) },
-			decodePubBase58: func(src []byte) (PublicKey, error) { return NewSecp256k1PublicKeyFromBase58(src) },
+			title:  "secp256k1",
+			genKey: func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader); return k },
 		},
 		{
-			title:           "p256",
-			genKey:          func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader); return k },
-			decodeBase58:    func(src []byte) (PrivateKey, error) { return NewP256PrivateKeyFromBase58(src) },
-			decodePubBase58: func(src []byte) (PublicKey, error) { return NewP256PublicKeyFromBase58(src) },
+			title:  "p256",
+			genKey: func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader); return k },
 		},
 		{
-			title:           "bls",
-			genKey:          func() crypto.PrivateKey { k, _ := minpk.GenerateKey(rand.Reader); return k },
-			decodeBase58:    func(src []byte) (PrivateKey, error) { return NewBLSPrivateKeyFromBase58(src) },
-			decodePubBase58: func(src []byte) (PublicKey, error) { return NewBLSPublicKeyFromBase58(src) },
+			title:  "bls",
+			genKey: func() crypto.PrivateKey { k, _ := minpk.GenerateKey(rand.Reader); return k },
 		},
 	}
 
@@ -80,11 +70,6 @@ func TestKeys(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, tzPriv, decrypted)
 
-			// encode to base58 roundtrip using type specific call
-			tmp6, err := c.decodeBase58(tzPriv.Base58())
-			require.NoError(t, err)
-			require.Equal(t, tzPriv, tmp6)
-
 			// get public
 			pub := priv.Public().(publicKey)
 			// encode to internal roundtrip
@@ -99,11 +84,6 @@ func TestKeys(t *testing.T) {
 			tmp5, err := NewPublicKeyFromBase58(tzPub.Base58())
 			require.NoError(t, err)
 			require.Equal(t, tzPub, tmp5)
-
-			// encode to base58 roundtrip using type specific call
-			tmp7, err := c.decodePubBase58(tzPub.Base58())
-			require.NoError(t, err)
-			require.Equal(t, tzPub, tmp7)
 		})
 	}
 }

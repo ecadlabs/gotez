@@ -9,78 +9,92 @@ import (
 )
 
 type mapping struct {
-	Type   string
-	Length string
-	Prefix string
+	Type          string
+	Length        string
+	Prefix        string
+	GenDecodeFunc bool
 }
 
 const outName = "types_gen.go"
 
 var data = []mapping{
 	{
-		Type:   "BlockHash",
-		Length: "BlockHashBytesLen",
-		Prefix: "PfxBlockHash",
+		Type:          "BlockHash",
+		Length:        "BlockHashBytesLen",
+		Prefix:        "PfxBlockHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "OperationsHash",
-		Length: "OperationListListHashBytesLen",
-		Prefix: "PfxOperationListListHash",
+		Type:          "OperationsHash",
+		Length:        "OperationListListHashBytesLen",
+		Prefix:        "PfxOperationListListHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "ContextHash",
-		Length: "ContextHashBytesLen",
-		Prefix: "PfxContextHash",
+		Type:          "ContextHash",
+		Length:        "ContextHashBytesLen",
+		Prefix:        "PfxContextHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "ChainID",
-		Length: "ChainIdBytesLen",
-		Prefix: "PfxChainID",
+		Type:          "ChainID",
+		Length:        "ChainIdBytesLen",
+		Prefix:        "PfxChainID",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "BlockPayloadHash",
-		Length: "BlockPayloadHashBytesLen",
-		Prefix: "PfxValueHash",
+		Type:          "BlockPayloadHash",
+		Length:        "BlockPayloadHashBytesLen",
+		Prefix:        "PfxValueHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "CycleNonceHash",
-		Length: "CycleNonceBytesLen",
-		Prefix: "PfxCycleNonce",
+		Type:          "CycleNonceHash",
+		Length:        "CycleNonceBytesLen",
+		Prefix:        "PfxCycleNonce",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "Signature",
-		Length: "GenericSignatureBytesLen",
-		Prefix: "PfxGenericSignature",
+		Type:          "Signature",
+		Length:        "GenericSignatureBytesLen",
+		Prefix:        "PfxGenericSignature",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "Ed25519PublicKeyHash",
-		Length: "PKHBytesLen",
-		Prefix: "PfxEd25519PublicKeyHash",
+		Type:          "Ed25519PublicKeyHash",
+		Length:        "PKHBytesLen",
+		Prefix:        "PfxEd25519PublicKeyHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "Secp256k1PublicKeyHash",
-		Length: "PKHBytesLen",
-		Prefix: "PfxSecp256k1PublicKeyHash",
+		Type:          "Secp256k1PublicKeyHash",
+		Length:        "PKHBytesLen",
+		Prefix:        "PfxSecp256k1PublicKeyHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "P256PublicKeyHash",
-		Length: "PKHBytesLen",
-		Prefix: "PfxP256PublicKeyHash",
+		Type:          "P256PublicKeyHash",
+		Length:        "PKHBytesLen",
+		Prefix:        "PfxP256PublicKeyHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "BLSPublicKeyHash",
-		Length: "PKHBytesLen",
-		Prefix: "PfxBLS12_381PublicKeyHash",
+		Type:          "BLSPublicKeyHash",
+		Length:        "PKHBytesLen",
+		Prefix:        "PfxBLS12_381PublicKeyHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "ProtocolHash",
-		Length: "ProtocolHashBytesLen",
-		Prefix: "PfxProtocolHash",
+		Type:          "ProtocolHash",
+		Length:        "ProtocolHashBytesLen",
+		Prefix:        "PfxProtocolHash",
+		GenDecodeFunc: true,
 	},
 	{
-		Type:   "ContractHash",
-		Length: "ContractHashBytesLen",
-		Prefix: "PfxContractHash",
+		Type:          "ContractHash",
+		Length:        "ContractHashBytesLen",
+		Prefix:        "PfxContractHash",
+		GenDecodeFunc: true,
 	},
 	{
 		Type:   "Ed25519PublicKey",
@@ -108,19 +122,9 @@ var data = []mapping{
 		Prefix: "PfxEd25519Seed",
 	},
 	{
-		Type:   "Ed25519EncryptedPrivateKey",
-		Length: "Ed25519EncryptedSeedBytesLen",
-		Prefix: "PfxEd25519EncryptedSeed",
-	},
-	{
 		Type:   "Secp256k1PrivateKey",
 		Length: "Secp256k1PrivateKeyBytesLen",
 		Prefix: "PfxSecp256k1SecretKey",
-	},
-	{
-		Type:   "Secp256k1EncryptedPrivateKey",
-		Length: "Secp256k1EncryptedPrivateKeyBytesLen",
-		Prefix: "PfxSecp256k1EncryptedSecretKey",
 	},
 	{
 		Type:   "P256PrivateKey",
@@ -128,14 +132,24 @@ var data = []mapping{
 		Prefix: "PfxP256SecretKey",
 	},
 	{
-		Type:   "P256EncryptedPrivateKey",
-		Length: "P256EncryptedPrivateKeyBytesLen",
-		Prefix: "PfxP256EncryptedSecretKey",
-	},
-	{
 		Type:   "BLSPrivateKey",
 		Length: "BLSPrivateKeyBytesLen",
 		Prefix: "PfxBLS12_381SecretKey",
+	},
+	{
+		Type:   "Ed25519EncryptedPrivateKey",
+		Length: "Ed25519EncryptedSeedBytesLen",
+		Prefix: "PfxEd25519EncryptedSeed",
+	},
+	{
+		Type:   "Secp256k1EncryptedPrivateKey",
+		Length: "Secp256k1EncryptedPrivateKeyBytesLen",
+		Prefix: "PfxSecp256k1EncryptedSecretKey",
+	},
+	{
+		Type:   "P256EncryptedPrivateKey",
+		Length: "P256EncryptedPrivateKeyBytesLen",
+		Prefix: "PfxP256EncryptedSecretKey",
 	},
 	{
 		Type:   "BLSEncryptedPrivateKey",
@@ -164,6 +178,7 @@ func (self *{{.Type}}) Base58() []byte {
 	return out
 }
 
+{{- if .GenDecodeFunc}}
 func New{{.Type}}FromBase58(src []byte) (*{{.Type}}, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -176,6 +191,7 @@ func New{{.Type}}FromBase58(src []byte) (*{{.Type}}, error) {
 	copy(out[:], payload)
 	return &out, nil
 }
+{{- end}}
 {{end}}
 `
 

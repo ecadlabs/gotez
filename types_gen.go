@@ -17,7 +17,6 @@ func (self *BlockHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewBlockHashFromBase58(src []byte) (*BlockHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -44,7 +43,6 @@ func (self *OperationsHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewOperationsHashFromBase58(src []byte) (*OperationsHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -71,7 +69,6 @@ func (self *ContextHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewContextHashFromBase58(src []byte) (*ContextHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -98,7 +95,6 @@ func (self *ChainID) Base58() []byte {
 	}
 	return out
 }
-
 func NewChainIDFromBase58(src []byte) (*ChainID, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -125,7 +121,6 @@ func (self *BlockPayloadHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewBlockPayloadHashFromBase58(src []byte) (*BlockPayloadHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -152,7 +147,6 @@ func (self *CycleNonceHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewCycleNonceHashFromBase58(src []byte) (*CycleNonceHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -179,7 +173,6 @@ func (self *Signature) Base58() []byte {
 	}
 	return out
 }
-
 func NewSignatureFromBase58(src []byte) (*Signature, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -206,7 +199,6 @@ func (self *Ed25519PublicKeyHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewEd25519PublicKeyHashFromBase58(src []byte) (*Ed25519PublicKeyHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -233,7 +225,6 @@ func (self *Secp256k1PublicKeyHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewSecp256k1PublicKeyHashFromBase58(src []byte) (*Secp256k1PublicKeyHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -260,7 +251,6 @@ func (self *P256PublicKeyHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewP256PublicKeyHashFromBase58(src []byte) (*P256PublicKeyHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -287,7 +277,6 @@ func (self *BLSPublicKeyHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewBLSPublicKeyHashFromBase58(src []byte) (*BLSPublicKeyHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -314,7 +303,6 @@ func (self *ProtocolHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewProtocolHashFromBase58(src []byte) (*ProtocolHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -341,7 +329,6 @@ func (self *ContractHash) Base58() []byte {
 	}
 	return out
 }
-
 func NewContractHashFromBase58(src []byte) (*ContractHash, error) {
 	prefix, payload, err := DecodeTZBase58(src)
 	if err != nil {
@@ -369,19 +356,6 @@ func (self *Ed25519PublicKey) Base58() []byte {
 	return out
 }
 
-func NewEd25519PublicKeyFromBase58(src []byte) (*Ed25519PublicKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxEd25519PublicKey {
-		return nil, fmt.Errorf("gotez: invalid Ed25519PublicKey encoding")
-	}
-	var out Ed25519PublicKey
-	copy(out[:], payload)
-	return &out, nil
-}
-
 type Secp256k1PublicKey [Secp256k1PublicKeyBytesLen]byte
 
 func (self *Secp256k1PublicKey) String() string {
@@ -394,19 +368,6 @@ func (self *Secp256k1PublicKey) Base58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func NewSecp256k1PublicKeyFromBase58(src []byte) (*Secp256k1PublicKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxSecp256k1PublicKey {
-		return nil, fmt.Errorf("gotez: invalid Secp256k1PublicKey encoding")
-	}
-	var out Secp256k1PublicKey
-	copy(out[:], payload)
-	return &out, nil
 }
 
 type P256PublicKey [P256PublicKeyBytesLen]byte
@@ -423,19 +384,6 @@ func (self *P256PublicKey) Base58() []byte {
 	return out
 }
 
-func NewP256PublicKeyFromBase58(src []byte) (*P256PublicKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxP256PublicKey {
-		return nil, fmt.Errorf("gotez: invalid P256PublicKey encoding")
-	}
-	var out P256PublicKey
-	copy(out[:], payload)
-	return &out, nil
-}
-
 type BLSPublicKey [BLSPublicKeyBytesLen]byte
 
 func (self *BLSPublicKey) String() string {
@@ -448,19 +396,6 @@ func (self *BLSPublicKey) Base58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func NewBLSPublicKeyFromBase58(src []byte) (*BLSPublicKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxBLS12_381PublicKey {
-		return nil, fmt.Errorf("gotez: invalid BLSPublicKey encoding")
-	}
-	var out BLSPublicKey
-	copy(out[:], payload)
-	return &out, nil
 }
 
 type Ed25519PrivateKey [Ed25519SeedBytesLen]byte
@@ -477,46 +412,6 @@ func (self *Ed25519PrivateKey) Base58() []byte {
 	return out
 }
 
-func NewEd25519PrivateKeyFromBase58(src []byte) (*Ed25519PrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxEd25519Seed {
-		return nil, fmt.Errorf("gotez: invalid Ed25519PrivateKey encoding")
-	}
-	var out Ed25519PrivateKey
-	copy(out[:], payload)
-	return &out, nil
-}
-
-type Ed25519EncryptedPrivateKey [Ed25519EncryptedSeedBytesLen]byte
-
-func (self *Ed25519EncryptedPrivateKey) String() string {
-	return string(self.Base58())
-}
-
-func (self *Ed25519EncryptedPrivateKey) Base58() []byte {
-	out, err := EncodeTZBase58(&PfxEd25519EncryptedSeed, self[:])
-	if err != nil {
-		panic(err)
-	}
-	return out
-}
-
-func NewEd25519EncryptedPrivateKeyFromBase58(src []byte) (*Ed25519EncryptedPrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxEd25519EncryptedSeed {
-		return nil, fmt.Errorf("gotez: invalid Ed25519EncryptedPrivateKey encoding")
-	}
-	var out Ed25519EncryptedPrivateKey
-	copy(out[:], payload)
-	return &out, nil
-}
-
 type Secp256k1PrivateKey [Secp256k1PrivateKeyBytesLen]byte
 
 func (self *Secp256k1PrivateKey) String() string {
@@ -529,46 +424,6 @@ func (self *Secp256k1PrivateKey) Base58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func NewSecp256k1PrivateKeyFromBase58(src []byte) (*Secp256k1PrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxSecp256k1SecretKey {
-		return nil, fmt.Errorf("gotez: invalid Secp256k1PrivateKey encoding")
-	}
-	var out Secp256k1PrivateKey
-	copy(out[:], payload)
-	return &out, nil
-}
-
-type Secp256k1EncryptedPrivateKey [Secp256k1EncryptedPrivateKeyBytesLen]byte
-
-func (self *Secp256k1EncryptedPrivateKey) String() string {
-	return string(self.Base58())
-}
-
-func (self *Secp256k1EncryptedPrivateKey) Base58() []byte {
-	out, err := EncodeTZBase58(&PfxSecp256k1EncryptedSecretKey, self[:])
-	if err != nil {
-		panic(err)
-	}
-	return out
-}
-
-func NewSecp256k1EncryptedPrivateKeyFromBase58(src []byte) (*Secp256k1EncryptedPrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxSecp256k1EncryptedSecretKey {
-		return nil, fmt.Errorf("gotez: invalid Secp256k1EncryptedPrivateKey encoding")
-	}
-	var out Secp256k1EncryptedPrivateKey
-	copy(out[:], payload)
-	return &out, nil
 }
 
 type P256PrivateKey [P256PrivateKeyBytesLen]byte
@@ -585,17 +440,46 @@ func (self *P256PrivateKey) Base58() []byte {
 	return out
 }
 
-func NewP256PrivateKeyFromBase58(src []byte) (*P256PrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
+type BLSPrivateKey [BLSPrivateKeyBytesLen]byte
+
+func (self *BLSPrivateKey) String() string {
+	return string(self.Base58())
+}
+
+func (self *BLSPrivateKey) Base58() []byte {
+	out, err := EncodeTZBase58(&PfxBLS12_381SecretKey, self[:])
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	if prefix != &PfxP256SecretKey {
-		return nil, fmt.Errorf("gotez: invalid P256PrivateKey encoding")
+	return out
+}
+
+type Ed25519EncryptedPrivateKey [Ed25519EncryptedSeedBytesLen]byte
+
+func (self *Ed25519EncryptedPrivateKey) String() string {
+	return string(self.Base58())
+}
+
+func (self *Ed25519EncryptedPrivateKey) Base58() []byte {
+	out, err := EncodeTZBase58(&PfxEd25519EncryptedSeed, self[:])
+	if err != nil {
+		panic(err)
 	}
-	var out P256PrivateKey
-	copy(out[:], payload)
-	return &out, nil
+	return out
+}
+
+type Secp256k1EncryptedPrivateKey [Secp256k1EncryptedPrivateKeyBytesLen]byte
+
+func (self *Secp256k1EncryptedPrivateKey) String() string {
+	return string(self.Base58())
+}
+
+func (self *Secp256k1EncryptedPrivateKey) Base58() []byte {
+	out, err := EncodeTZBase58(&PfxSecp256k1EncryptedSecretKey, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
 }
 
 type P256EncryptedPrivateKey [P256EncryptedPrivateKeyBytesLen]byte
@@ -612,46 +496,6 @@ func (self *P256EncryptedPrivateKey) Base58() []byte {
 	return out
 }
 
-func NewP256EncryptedPrivateKeyFromBase58(src []byte) (*P256EncryptedPrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxP256EncryptedSecretKey {
-		return nil, fmt.Errorf("gotez: invalid P256EncryptedPrivateKey encoding")
-	}
-	var out P256EncryptedPrivateKey
-	copy(out[:], payload)
-	return &out, nil
-}
-
-type BLSPrivateKey [BLSPrivateKeyBytesLen]byte
-
-func (self *BLSPrivateKey) String() string {
-	return string(self.Base58())
-}
-
-func (self *BLSPrivateKey) Base58() []byte {
-	out, err := EncodeTZBase58(&PfxBLS12_381SecretKey, self[:])
-	if err != nil {
-		panic(err)
-	}
-	return out
-}
-
-func NewBLSPrivateKeyFromBase58(src []byte) (*BLSPrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxBLS12_381SecretKey {
-		return nil, fmt.Errorf("gotez: invalid BLSPrivateKey encoding")
-	}
-	var out BLSPrivateKey
-	copy(out[:], payload)
-	return &out, nil
-}
-
 type BLSEncryptedPrivateKey [BLSEncryptedPrivateKeyBytesLen]byte
 
 func (self *BLSEncryptedPrivateKey) String() string {
@@ -664,18 +508,5 @@ func (self *BLSEncryptedPrivateKey) Base58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func NewBLSEncryptedPrivateKeyFromBase58(src []byte) (*BLSEncryptedPrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
-	if err != nil {
-		return nil, err
-	}
-	if prefix != &PfxBLS12_381EncryptedSecretKey {
-		return nil, fmt.Errorf("gotez: invalid BLSEncryptedPrivateKey encoding")
-	}
-	var out BLSEncryptedPrivateKey
-	copy(out[:], payload)
-	return &out, nil
 }
 
