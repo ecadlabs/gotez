@@ -9,8 +9,6 @@ import (
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
-	"github.com/ecadlabs/gotez/base58"
-	"github.com/ecadlabs/gotez/base58/prefix"
 	"github.com/ecadlabs/gotez/encoding"
 	"golang.org/x/crypto/blake2b"
 )
@@ -179,37 +177,6 @@ func (pk *P256PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { 
 // stub
 func (pk *BLSPrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
 
-func NewPublicKeyFromBase58(src []byte) (PublicKey, error) {
-	pre, payload, err := base58.DecodeTZ(src)
-	if err != nil {
-		return nil, err
-	}
-	switch pre {
-	case &prefix.Ed25519PublicKey:
-		var out Ed25519PublicKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.Secp256k1PublicKey:
-		var out Secp256k1PublicKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.P256PublicKey:
-		var out P256PublicKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.BLS12_381PublicKey:
-		var out BLSPublicKey
-		copy(out[:], payload)
-		return &out, nil
-
-	default:
-		return nil, ErrPublicKeyType
-	}
-}
-
 func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 	switch key := src.(type) {
 	case *ecdsa.PublicKey:
@@ -252,88 +219,6 @@ func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 
 	default:
 		return nil, ErrPublicKeyType
-	}
-}
-
-func NewPrivateKeyFromBase58(src []byte) (PrivateKey, error) {
-	pre, payload, err := base58.DecodeTZ(src)
-	if err != nil {
-		return nil, err
-	}
-	switch pre {
-	case &prefix.Ed25519Seed:
-		var out Ed25519PrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.Secp256k1SecretKey:
-		var out Secp256k1PrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.P256SecretKey:
-		var out P256PrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.BLS12_381SecretKey:
-		var out BLSPrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	default:
-		return nil, ErrPrivateKeyType
-	}
-}
-
-func NewEncryptedPrivateKeyFromBase58(src []byte) (EncryptedPrivateKey, error) {
-	pre, payload, err := base58.DecodeTZ(src)
-	if err != nil {
-		return nil, err
-	}
-	switch pre {
-	case &prefix.Ed25519Seed:
-		var out Ed25519PrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.Secp256k1SecretKey:
-		var out Secp256k1PrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.P256SecretKey:
-		var out P256PrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.BLS12_381SecretKey:
-		var out BLSPrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.Ed25519EncryptedSeed:
-		var out Ed25519EncryptedPrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.Secp256k1EncryptedSecretKey:
-		var out Secp256k1EncryptedPrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.P256EncryptedSecretKey:
-		var out P256EncryptedPrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.BLS12_381EncryptedSecretKey:
-		var out BLSEncryptedPrivateKey
-		copy(out[:], payload)
-		return &out, nil
-
-	default:
-		return nil, ErrPrivateKeyType
 	}
 }
 

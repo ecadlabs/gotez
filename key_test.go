@@ -1,4 +1,4 @@
-package gotez
+package gotez_test
 
 import (
 	"crypto"
@@ -10,6 +10,8 @@ import (
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
+	tz "github.com/ecadlabs/gotez"
+	"github.com/ecadlabs/gotez/b58"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,19 +22,19 @@ func TestKeys(t *testing.T) {
 	}
 	cases := []testCase{
 		{
-			title:  "ed25519",
+			title:  "Ed25519",
 			genKey: func() crypto.PrivateKey { _, k, _ := ed25519.GenerateKey(rand.Reader); return k },
 		},
 		{
-			title:  "secp256k1",
+			title:  "Secp256k1",
 			genKey: func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader); return k },
 		},
 		{
-			title:  "p256",
+			title:  "P256",
 			genKey: func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader); return k },
 		},
 		{
-			title:  "bls",
+			title:  "BLS",
 			genKey: func() crypto.PrivateKey { k, _ := minpk.GenerateKey(rand.Reader); return k },
 		},
 	}
@@ -51,7 +53,7 @@ func TestKeys(t *testing.T) {
 			// generate key
 			priv := c.genKey().(privateKey)
 			// encode to internal roundtrip
-			tzPriv, err := NewPrivateKey(priv)
+			tzPriv, err := tz.NewPrivateKey(priv)
 			require.NoError(t, err)
 			tmp, err := tzPriv.PrivateKey()
 			require.NoError(t, err)
@@ -59,12 +61,12 @@ func TestKeys(t *testing.T) {
 			require.Equal(t, priv, tmp)
 
 			// encode to base58 roundtrip
-			tmp2, err := NewPrivateKeyFromBase58(tzPriv.ToBase58())
+			tmp2, err := b58.ParsePrivateKey(tzPriv.ToBase58())
 			require.NoError(t, err)
 			require.Equal(t, tzPriv, tmp2)
 
 			// encode to base58 roundtrip using encrypted type
-			tmp3, err := NewEncryptedPrivateKeyFromBase58(tzPriv.ToBase58())
+			tmp3, err := b58.ParsePrivateKey(tzPriv.ToBase58())
 			require.NoError(t, err)
 			decrypted, err := tmp3.Decrypt(nil)
 			require.NoError(t, err)
@@ -73,7 +75,7 @@ func TestKeys(t *testing.T) {
 			// get public
 			pub := priv.Public().(publicKey)
 			// encode to internal roundtrip
-			tzPub, err := NewPublicKey(pub)
+			tzPub, err := tz.NewPublicKey(pub)
 			require.NoError(t, err)
 			tmp4, err := tzPub.PublicKey()
 			require.NoError(t, err)
@@ -81,7 +83,7 @@ func TestKeys(t *testing.T) {
 			require.Equal(t, pub, tmp4)
 
 			// encode to base58 roundtrip
-			tmp5, err := NewPublicKeyFromBase58(tzPub.ToBase58())
+			tmp5, err := b58.ParsePublicKey(tzPub.ToBase58())
 			require.NoError(t, err)
 			require.Equal(t, tzPub, tmp5)
 		})

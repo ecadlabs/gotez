@@ -5,8 +5,6 @@ import (
 	"math/big"
 
 	"github.com/ecadlabs/goblst/minpk"
-	"github.com/ecadlabs/gotez/base58"
-	"github.com/ecadlabs/gotez/base58/prefix"
 )
 
 type Signature interface {
@@ -20,42 +18,6 @@ func (*P256Signature) Signature()      {}
 func (*BLSSignature) Signature()       {}
 
 var ErrSignatureType = errors.New("gotez: unknown signature type")
-
-func NewSignatureFromBase58(src []byte) (Signature, error) {
-	pre, payload, err := base58.DecodeTZ(src)
-	if err != nil {
-		return nil, err
-	}
-	switch pre {
-	case &prefix.GenericSignature:
-		var out GenericSignature
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.Ed25519Signature:
-		var out Ed25519Signature
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.Secp256k1Signature:
-		var out Secp256k1Signature
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.P256Signature:
-		var out P256Signature
-		copy(out[:], payload)
-		return &out, nil
-
-	case &prefix.BLS12_381Signature:
-		var out BLSSignature
-		copy(out[:], payload)
-		return &out, nil
-
-	default:
-		return nil, ErrSignatureType
-	}
-}
 
 func NewEd25519Signature(sig []byte) *Ed25519Signature {
 	var out Ed25519Signature
@@ -78,6 +40,10 @@ func NewSecp256k1Signature(r, s *big.Int) *Secp256k1Signature {
 	return &out
 }
 
+func (sig *Secp256k1Signature) Get() (r, s *big.Int) {
+	return new(big.Int).SetBytes(sig[:32]), new(big.Int).SetBytes(sig[32:])
+}
+
 func NewP256Signature(r, s *big.Int) *P256Signature {
 	sr := r.Bytes()
 	ss := s.Bytes()
@@ -90,7 +56,11 @@ func NewP256Signature(r, s *big.Int) *P256Signature {
 	return &out
 }
 
-func NewBLSSignatureFrom(sig *minpk.Signature) *BLSSignature {
+func (sig *P256Signature) Get() (r, s *big.Int) {
+	return new(big.Int).SetBytes(sig[:32]), new(big.Int).SetBytes(sig[32:])
+}
+
+func NewBLSSignature(sig *minpk.Signature) *BLSSignature {
 	var out BLSSignature
 	s := sig.Bytes()
 	if len(s) != len(out) {
@@ -98,4 +68,8 @@ func NewBLSSignatureFrom(sig *minpk.Signature) *BLSSignature {
 	}
 	copy(out[:], s)
 	return &out
+}
+
+func (sig *BLSSignature) Get() (*minpk.Signature, error) {
+	return minpk.SignatureFromBytes(sig[:])
 }

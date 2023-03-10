@@ -1,14 +1,12 @@
 package base58
 
-//go:generate go run generate.go
-
 import (
 	"bytes"
 	"crypto/sha256"
 	"errors"
 	"fmt"
 
-	"github.com/ecadlabs/gotez/base58/prefix"
+	"github.com/ecadlabs/gotez/b58/prefix"
 )
 
 const alphabetStart = 49
