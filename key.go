@@ -9,6 +9,8 @@ import (
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
+	"github.com/ecadlabs/gotez/base58"
+	"github.com/ecadlabs/gotez/base58/prefix"
 	"github.com/ecadlabs/gotez/encoding"
 	"golang.org/x/crypto/blake2b"
 )
@@ -178,27 +180,27 @@ func (pk *P256PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { 
 func (pk *BLSPrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
 
 func NewPublicKeyFromBase58(src []byte) (PublicKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
+	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
 		return nil, err
 	}
-	switch prefix {
-	case &PfxEd25519PublicKey:
+	switch pre {
+	case &prefix.Ed25519PublicKey:
 		var out Ed25519PublicKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxSecp256k1PublicKey:
+	case &prefix.Secp256k1PublicKey:
 		var out Secp256k1PublicKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxP256PublicKey:
+	case &prefix.P256PublicKey:
 		var out P256PublicKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxBLS12_381PublicKey:
+	case &prefix.BLS12_381PublicKey:
 		var out BLSPublicKey
 		copy(out[:], payload)
 		return &out, nil
@@ -208,7 +210,7 @@ func NewPublicKeyFromBase58(src []byte) (PublicKey, error) {
 	}
 }
 
-func NewPublicKeyFrom(src crypto.PublicKey) (PublicKey, error) {
+func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 	switch key := src.(type) {
 	case *ecdsa.PublicKey:
 		payload := elliptic.MarshalCompressed(key.Curve, key.X, key.Y)
@@ -254,27 +256,27 @@ func NewPublicKeyFrom(src crypto.PublicKey) (PublicKey, error) {
 }
 
 func NewPrivateKeyFromBase58(src []byte) (PrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
+	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
 		return nil, err
 	}
-	switch prefix {
-	case &PfxEd25519Seed:
+	switch pre {
+	case &prefix.Ed25519Seed:
 		var out Ed25519PrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxSecp256k1SecretKey:
+	case &prefix.Secp256k1SecretKey:
 		var out Secp256k1PrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxP256SecretKey:
+	case &prefix.P256SecretKey:
 		var out P256PrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxBLS12_381SecretKey:
+	case &prefix.BLS12_381SecretKey:
 		var out BLSPrivateKey
 		copy(out[:], payload)
 		return &out, nil
@@ -285,47 +287,47 @@ func NewPrivateKeyFromBase58(src []byte) (PrivateKey, error) {
 }
 
 func NewEncryptedPrivateKeyFromBase58(src []byte) (EncryptedPrivateKey, error) {
-	prefix, payload, err := DecodeTZBase58(src)
+	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
 		return nil, err
 	}
-	switch prefix {
-	case &PfxEd25519Seed:
+	switch pre {
+	case &prefix.Ed25519Seed:
 		var out Ed25519PrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxSecp256k1SecretKey:
+	case &prefix.Secp256k1SecretKey:
 		var out Secp256k1PrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxP256SecretKey:
+	case &prefix.P256SecretKey:
 		var out P256PrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxBLS12_381SecretKey:
+	case &prefix.BLS12_381SecretKey:
 		var out BLSPrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxEd25519EncryptedSeed:
+	case &prefix.Ed25519EncryptedSeed:
 		var out Ed25519EncryptedPrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxSecp256k1EncryptedSecretKey:
+	case &prefix.Secp256k1EncryptedSecretKey:
 		var out Secp256k1EncryptedPrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxP256EncryptedSecretKey:
+	case &prefix.P256EncryptedSecretKey:
 		var out P256EncryptedPrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
-	case &PfxBLS12_381EncryptedSecretKey:
+	case &prefix.BLS12_381EncryptedSecretKey:
 		var out BLSEncryptedPrivateKey
 		copy(out[:], payload)
 		return &out, nil
@@ -335,7 +337,7 @@ func NewEncryptedPrivateKeyFromBase58(src []byte) (EncryptedPrivateKey, error) {
 	}
 }
 
-func NewPrivateKeyFrom(src crypto.PrivateKey) (PrivateKey, error) {
+func NewPrivateKey(src crypto.PrivateKey) (PrivateKey, error) {
 	switch key := src.(type) {
 	case *ecdsa.PrivateKey:
 		b := key.D.Bytes()

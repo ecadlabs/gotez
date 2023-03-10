@@ -17,6 +17,7 @@ const (
 	ContextHashBytesLen           = 32
 	ChainIdBytesLen               = 4
 	GenericSignatureBytesLen      = 64
+	BLSSignatureBytesLen          = 96
 	CycleNonceBytesLen            = 32
 	ProtocolHashBytesLen          = 32
 	ContractHashBytesLen          = 20
@@ -51,7 +52,7 @@ func (*OriginatedContract) OriginatedContractID() {}
 func (*ImplicitContract) ContractID()             {}
 
 type Base58Encoder interface {
-	Base58() []byte
+	ToBase58() []byte
 	String() string
 }
 

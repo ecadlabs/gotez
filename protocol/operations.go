@@ -64,7 +64,7 @@ func (*DoubleEndorsementEvidence) Kind() string       { return "double_endorseme
 type InlinedEndorsement struct {
 	Branch    *tz.BlockHash
 	Contents  InlinedEndorsementContents
-	Signature *tz.Signature
+	Signature *tz.GenericSignature
 }
 
 type InlinedEndorsementContents interface {
@@ -145,7 +145,7 @@ func (*DoublePreendorsementEvidence) Kind() string       { return "double_preend
 type InlinedPreendorsement struct {
 	Branch    *tz.BlockHash
 	Contents  InlinedPreendorsementContents
-	Signature *tz.Signature
+	Signature *tz.GenericSignature
 }
 
 type InlinedPreendorsementContents interface {
@@ -191,7 +191,7 @@ func (*DrainDelegate) Kind() string       { return "drain_delegate" }
 type InlinedEmmyEndorsement struct {
 	Branch    *tz.BlockHash
 	Contents  InlinedEmmyEndorsementContents
-	Signature *tz.Signature
+	Signature *tz.GenericSignature
 }
 
 type InlinedEmmyEndorsementContents interface {

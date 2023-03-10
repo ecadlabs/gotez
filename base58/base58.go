@@ -1,10 +1,14 @@
 package base58
 
+//go:generate go run generate.go
+
 import (
 	"bytes"
 	"crypto/sha256"
 	"errors"
 	"fmt"
+
+	"github.com/ecadlabs/gotez/base58/prefix"
 )
 
 const alphabetStart = 49
@@ -38,7 +42,7 @@ func Decode(src []byte) ([]byte, error) {
 	// count and skip leading zeros
 	for ; i < len(src); i++ {
 		c := int(src[i]) - alphabetStart
-		if c >= len(base58alphabetF) || base58alphabetF[c] == -1 {
+		if c < 0 || c >= len(base58alphabetF) || base58alphabetF[c] == -1 {
 			return nil, fmt.Errorf("gotez: base58 decoding error: unexpected character at position %d: %c", i, src[i])
 		}
 		if base58alphabetF[c] != 0 {
@@ -49,7 +53,7 @@ func Decode(src []byte) ([]byte, error) {
 	acc := make([]byte, 0, len(src)/4)
 	for ; i < len(src); i++ {
 		c := int(src[i]) - alphabetStart
-		if c >= len(base58alphabetF) || base58alphabetF[c] == -1 {
+		if c < 0 || c >= len(base58alphabetF) || base58alphabetF[c] == -1 {
 			return nil, fmt.Errorf("gotez: base58 decoding error: unexpected character at position %d: %c", i, src[i])
 		}
 		carry := int(base58alphabetF[c])
@@ -134,4 +138,35 @@ func EncodeCheck(data []byte) []byte {
 	s0 := sha256.Sum256(data)
 	s1 := sha256.Sum256(s0[:])
 	return Encode(append(data, s1[:4]...))
+}
+
+// ErrPrefix is returned in case of unknown Tezos base58 prefix
+var ErrPrefix = errors.New("gotez: unknown Tezos base58 prefix")
+
+func DecodeTZ(data []byte) (pre *prefix.Prefix, payload []byte, err error) {
+	buf, err := DecodeCheck(data)
+	if err != nil {
+		return
+	}
+	for _, p := range prefix.List {
+		if bytes.HasPrefix(buf, p.Prefix) {
+			plLen := len(buf) - len(p.Prefix)
+			if p.Len != 0 && plLen != p.Len {
+				return p, nil, fmt.Errorf("gotez: invalid base58 message length: expected %d, got %d", p.Len, plLen)
+			}
+			return p, buf[len(p.Prefix):], nil
+		}
+	}
+	err = ErrPrefix
+	return
+}
+
+func EncodeTZ(pre *prefix.Prefix, payload []byte) ([]byte, error) {
+	if pre.Len != 0 && len(payload) != pre.Len {
+		return nil, fmt.Errorf("gotez: invalid base58 message length: expected %d, got %d", pre.Len, len(payload))
+	}
+	data := make([]byte, len(pre.Prefix)+len(payload))
+	copy(data, pre.Prefix)
+	copy(data[len(pre.Prefix):], payload)
+	return EncodeCheck(data), nil
 }
