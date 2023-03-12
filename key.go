@@ -36,7 +36,7 @@ var (
 
 type PublicKeyHash interface {
 	Base58Encoder
-	PublicKeyHash() []byte
+	PublicKeyHash()
 }
 
 type PublicKey interface {
@@ -55,10 +55,10 @@ type EncryptedPrivateKey interface {
 	Decrypt(passCb func() ([]byte, error)) (PrivateKey, error)
 }
 
-func (pkh *Ed25519PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
-func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
-func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
-func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
+func (pkh *Ed25519PublicKeyHash) PublicKeyHash()   {}
+func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() {}
+func (pkh *P256PublicKeyHash) PublicKeyHash()      {}
+func (pkh *BLSPublicKeyHash) PublicKeyHash()       {}
 
 func (pk *Ed25519PublicKey) Hash() PublicKeyHash {
 	digest, err := blake2b.New(20, nil)

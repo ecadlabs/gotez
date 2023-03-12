@@ -1,3 +1,4 @@
+// Package b58 contains Base58 decoding functions of various Tezos types
 package b58
 
 import (
