@@ -41,7 +41,7 @@ func TestKeys(t *testing.T) {
 
 	type privateKey interface {
 		crypto.Signer
-		Equal(x crypto.Signer) bool
+		Equal(x crypto.PrivateKey) bool
 	}
 
 	type publicKey interface {

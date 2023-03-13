@@ -62,7 +62,10 @@ func (sig *BLSSignature) Signature(crypto.PublicKey) (signature.Signature, error
 	return minpk.SignatureFromBytes(sig[:])
 }
 
-var ErrSignatureType = errors.New("gotez: unknown signature type")
+var (
+	ErrSignatureType = errors.New("gotez: unknown signature type")
+	ErrCurve         = errors.New("gotez: unknown curve type")
+)
 
 func NewEd25519Signature(sig []byte) *Ed25519Signature {
 	var out Ed25519Signature
@@ -117,4 +120,27 @@ func NewBLSSignature(sig *minpk.Signature) *BLSSignature {
 
 func (sig *BLSSignature) Get() (*minpk.Signature, error) {
 	return minpk.SignatureFromBytes(sig[:])
+}
+
+func NewSignature(sig signature.Signature) (Signature, error) {
+	switch s := sig.(type) {
+	case signature.ED25519:
+		return NewEd25519Signature(s), nil
+
+	case *signature.ECDSA:
+		switch {
+		case s.Curve == elliptic.P256():
+			return NewP256Signature(s.R, s.S), nil
+		case curveEqual(s.Curve, secp256k1.S256()):
+			return NewSecp256k1Signature(s.R, s.S), nil
+		default:
+			return nil, ErrCurve
+		}
+
+	case *minpk.Signature:
+		return NewBLSSignature(s), nil
+
+	default:
+		return nil, ErrSignatureType
+	}
 }
