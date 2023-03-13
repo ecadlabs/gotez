@@ -40,6 +40,37 @@ func ParsePublicKey(src []byte) (tz.PublicKey, error) {
 	}
 }
 
+func ParsePublicHash(src []byte) (tz.PublicKeyHash, error) {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return nil, err
+	}
+	switch pre {
+	case &prefix.Ed25519PublicKeyHash:
+		var out tz.Ed25519PublicKeyHash
+		copy(out[:], payload)
+		return &out, nil
+
+	case &prefix.Secp256k1PublicKeyHash:
+		var out tz.Secp256k1PublicKeyHash
+		copy(out[:], payload)
+		return &out, nil
+
+	case &prefix.P256PublicKeyHash:
+		var out tz.P256PublicKeyHash
+		copy(out[:], payload)
+		return &out, nil
+
+	case &prefix.BLS12_381PublicKeyHash:
+		var out tz.BLSPublicKeyHash
+		copy(out[:], payload)
+		return &out, nil
+
+	default:
+		return nil, tz.ErrPublicKeyType
+	}
+}
+
 func ParsePrivateKey(src []byte) (tz.PrivateKey, error) {
 	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
