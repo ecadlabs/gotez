@@ -10,12 +10,10 @@ import (
 
 type UnknownOperation struct{}
 
-func (UnknownOperation) Kind() string       { return "unknown" }
-func (UnknownOperation) OperationContents() {}
+func (UnknownOperation) OperationKind() string { return "unknown" }
 
 type OperationContents interface {
-	OperationContents()
-	Kind() string
+	OperationKind() string
 }
 
 type EmmyEndorsement struct {
@@ -24,16 +22,14 @@ type EmmyEndorsement struct {
 
 func (*EmmyEndorsement) InlinedEndorsementContents()     {}
 func (*EmmyEndorsement) InlinedEmmyEndorsementContents() {}
-func (*EmmyEndorsement) OperationContents()              {}
-func (*EmmyEndorsement) Kind() string                    { return "endorsement" }
+func (*EmmyEndorsement) OperationKind() string           { return "endorsement" }
 
 type SeedNonceRevelation struct {
 	Level int32
 	Nonce *[tz.SeedNonceBytesLen]byte
 }
 
-func (*SeedNonceRevelation) OperationContents() {}
-func (*SeedNonceRevelation) Kind() string       { return "seed_nonce_revelation" }
+func (*SeedNonceRevelation) OperationKind() string { return "seed_nonce_revelation" }
 
 type DoubleEndorsementEvidence struct {
 	Op1  InlinedEndorsement
@@ -81,8 +77,7 @@ func (op *DoubleEndorsementEvidence) EncodeTZ(ctx *encoding.Context) ([]byte, er
 	return buf.Bytes(), nil
 }
 
-func (*DoubleEndorsementEvidence) OperationContents() {}
-func (*DoubleEndorsementEvidence) Kind() string       { return "double_endorsement_evidence" }
+func (*DoubleEndorsementEvidence) OperationKind() string { return "double_endorsement_evidence" }
 
 type InlinedEndorsement struct {
 	Branch    *tz.BlockHash
@@ -111,24 +106,21 @@ type Endorsement struct {
 }
 
 func (*Endorsement) InlinedEndorsementContents() {}
-func (*Endorsement) OperationContents()          {}
-func (*Endorsement) Kind() string                { return "endorsement" }
+func (*Endorsement) OperationKind() string       { return "endorsement" }
 
 type DoubleBakingEvidence struct {
 	Block1 ShellHeader `tz:"dyn"`
 	Block2 ShellHeader `tz:"dyn"`
 }
 
-func (*DoubleBakingEvidence) OperationContents() {}
-func (*DoubleBakingEvidence) Kind() string       { return "double_baking_evidence" }
+func (*DoubleBakingEvidence) OperationKind() string { return "double_baking_evidence" }
 
 type ActivateAccount struct {
 	PKH    *tz.Ed25519PublicKeyHash
 	Secret *[tz.SecretBytesLen]byte
 }
 
-func (*ActivateAccount) OperationContents() {}
-func (*ActivateAccount) Kind() string       { return "activate_account" }
+func (*ActivateAccount) OperationKind() string { return "activate_account" }
 
 type Proposals struct {
 	Source    tz.PublicKeyHash
@@ -136,8 +128,7 @@ type Proposals struct {
 	Proposals []*tz.ProtocolHash `tz:"dyn"`
 }
 
-func (*Proposals) OperationContents() {}
-func (*Proposals) Kind() string       { return "proposals" }
+func (*Proposals) OperationKind() string { return "proposals" }
 
 type BallotKind uint8
 
@@ -154,16 +145,14 @@ type Ballot struct {
 	Ballot   BallotKind
 }
 
-func (*Ballot) OperationContents() {}
-func (*Ballot) Kind() string       { return "ballot" }
+func (*Ballot) OperationKind() string { return "ballot" }
 
 type DoublePreendorsementEvidence struct {
 	Op1 InlinedPreendorsement `tz:"dyn"`
 	Op2 InlinedPreendorsement `tz:"dyn"`
 }
 
-func (*DoublePreendorsementEvidence) OperationContents() {}
-func (*DoublePreendorsementEvidence) Kind() string       { return "double_preendorsement_evidence" }
+func (*DoublePreendorsementEvidence) OperationKind() string { return "double_preendorsement_evidence" }
 
 type InlinedPreendorsement struct {
 	Branch    *tz.BlockHash
@@ -190,17 +179,15 @@ type Preendorsement struct {
 	BlockPayloadHash *tz.BlockPayloadHash
 }
 
-func (*Preendorsement) OperationContents()             {}
 func (*Preendorsement) InlinedPreendorsementContents() {}
-func (*Preendorsement) Kind() string                   { return "preendorsement" }
+func (*Preendorsement) OperationKind() string          { return "preendorsement" }
 
 type VDFRevelation struct {
 	Field0 *[200]byte
 	Field1 *[200]byte
 }
 
-func (*VDFRevelation) OperationContents() {}
-func (*VDFRevelation) Kind() string       { return "vdf_revelation" }
+func (*VDFRevelation) OperationKind() string { return "vdf_revelation" }
 
 type DrainDelegate struct {
 	ConsensusKey tz.PublicKeyHash
@@ -208,8 +195,7 @@ type DrainDelegate struct {
 	Destination  tz.PublicKeyHash
 }
 
-func (*DrainDelegate) OperationContents() {}
-func (*DrainDelegate) Kind() string       { return "drain_delegate" }
+func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
 
 type InlinedEmmyEndorsement struct {
 	Branch    *tz.BlockHash
@@ -234,15 +220,13 @@ type EndorsementWithSlot struct {
 	Slot        uint16
 }
 
-func (*EndorsementWithSlot) OperationContents() {}
-func (*EndorsementWithSlot) Kind() string       { return "endorsement" }
+func (*EndorsementWithSlot) OperationKind() string { return "endorsement_with_slot" }
 
 type FailingNoop struct {
 	Arbitrary []byte `tz:"dyn"`
 }
 
-func (*FailingNoop) OperationContents() {}
-func (*FailingNoop) Kind() string       { return "failing_noop" }
+func (*FailingNoop) OperationKind() string { return "failing_noop" }
 
 type ManagerOperation struct {
 	Source       tz.PublicKeyHash
@@ -257,8 +241,7 @@ type Reveal struct {
 	PublicKey tz.PublicKey
 }
 
-func (*Reveal) OperationContents() {}
-func (*Reveal) Kind() string       { return "reveal" }
+func (*Reveal) OperationKind() string { return "reveal" }
 
 type Transaction struct {
 	ManagerOperation
@@ -267,8 +250,7 @@ type Transaction struct {
 	Parameters  tz.Option[Parameters]
 }
 
-func (*Transaction) OperationContents() {}
-func (*Transaction) Kind() string       { return "transaction" }
+func (*Transaction) OperationKind() string { return "transaction" }
 
 type Parameters struct {
 	Entrypoint Entrypoint
@@ -316,32 +298,28 @@ type Origination struct {
 	Storage  []byte `tz:"dyn"`
 }
 
-func (*Origination) OperationContents() {}
-func (*Origination) Kind() string       { return "origination" }
+func (*Origination) OperationKind() string { return "origination" }
 
 type Delegation struct {
 	ManagerOperation
 	Delegate tz.Option[tz.PublicKeyHash]
 }
 
-func (*Delegation) OperationContents() {}
-func (*Delegation) Kind() string       { return "delegation" }
+func (*Delegation) OperationKind() string { return "delegation" }
 
 type RegisterGlobalConstant struct {
 	ManagerOperation
 	Value []byte `tz:"dyn"`
 }
 
-func (*RegisterGlobalConstant) OperationContents() {}
-func (*RegisterGlobalConstant) Kind() string       { return "register_global_constant" }
+func (*RegisterGlobalConstant) OperationKind() string { return "register_global_constant" }
 
 type SetDepositsLimit struct {
 	ManagerOperation
 	Limit tz.Option[tz.BigUint]
 }
 
-func (*SetDepositsLimit) OperationContents() {}
-func (*SetDepositsLimit) Kind() string       { return "set_deposits_limit" }
+func (*SetDepositsLimit) OperationKind() string { return "set_deposits_limit" }
 
 type IncreasePaidStorage struct {
 	ManagerOperation
@@ -349,16 +327,14 @@ type IncreasePaidStorage struct {
 	Destination tz.OriginatedContractID
 }
 
-func (*IncreasePaidStorage) OperationContents() {}
-func (*IncreasePaidStorage) Kind() string       { return "increase_paid_storage" }
+func (*IncreasePaidStorage) OperationKind() string { return "increase_paid_storage" }
 
 type UpdateConsensusKey struct {
 	ManagerOperation
 	PublicKey tz.PublicKey
 }
 
-func (*UpdateConsensusKey) OperationContents() {}
-func (*UpdateConsensusKey) Kind() string       { return "update_consensus_key" }
+func (*UpdateConsensusKey) OperationKind() string { return "update_consensus_key" }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[OperationContents]{

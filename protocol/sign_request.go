@@ -8,7 +8,7 @@ import (
 )
 
 type SignRequest interface {
-	SignRequest()
+	RequestKind() string
 }
 
 type WithWatermark interface {
@@ -21,7 +21,7 @@ type EmmyBlockRequest struct {
 	BlockHeader ShellHeader
 }
 
-func (*EmmyBlockRequest) SignRequest() {}
+func (*EmmyBlockRequest) RequestKind() string { return "block" }
 func (r *EmmyBlockRequest) Watermark() *Watermark {
 	return &Watermark{
 		Chain: r.Chain,
@@ -38,7 +38,7 @@ type TenderbakeBlockRequest struct {
 	BlockHeader TenderbakeBlockHeader
 }
 
-func (*TenderbakeBlockRequest) SignRequest() {}
+func (*TenderbakeBlockRequest) RequestKind() string { return "block" }
 func (r *TenderbakeBlockRequest) Watermark() *Watermark {
 	return &Watermark{
 		Chain: r.Chain,
@@ -56,7 +56,7 @@ type EmmyEndorsementRequest struct {
 	Operation InlinedEmmyEndorsementContents
 }
 
-func (*EmmyEndorsementRequest) SignRequest() {}
+func (*EmmyEndorsementRequest) RequestKind() string { return "endorsement" }
 func (r *EmmyEndorsementRequest) Watermark() *Watermark {
 	return &Watermark{
 		Chain: r.Chain,
@@ -74,7 +74,7 @@ type PreendorsementRequest struct {
 	Operation InlinedPreendorsementContents
 }
 
-func (*PreendorsementRequest) SignRequest() {}
+func (*PreendorsementRequest) RequestKind() string { return "preendorsement" }
 func (r *PreendorsementRequest) Watermark() *Watermark {
 	return &Watermark{
 		Chain: r.Chain,
@@ -92,7 +92,7 @@ type EndorsementRequest struct {
 	Operation InlinedEndorsementContents
 }
 
-func (*EndorsementRequest) SignRequest() {}
+func (*EndorsementRequest) RequestKind() string { return "endorsement" }
 func (r *EndorsementRequest) Watermark() *Watermark {
 	return &Watermark{
 		Chain: r.Chain,
@@ -109,7 +109,7 @@ type GenericOperationRequest struct {
 	Operations []OperationContents
 }
 
-func (*GenericOperationRequest) SignRequest() {}
+func (*GenericOperationRequest) RequestKind() string { return "generic" }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SignRequest]{

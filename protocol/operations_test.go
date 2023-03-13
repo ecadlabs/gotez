@@ -119,7 +119,7 @@ func TestDecodeOperations(t *testing.T) {
 		{
 			title: "endorsement_with_slot",
 			src:   "0a00000065a60703a9567bf69ec66b368c3d8562eba4cbf29278c2c10447a684e3aa143685000008773b0ef3e51b218d04c29211b89f5b7582a7169b4810e6dbe46732b44c84331ae6cb32ced7c53ef55e7a2358ed66dedcb98daff1d8ec4f0638f74f215083526d2e030002",
-			kind:  "endorsement",
+			kind:  "endorsement_with_slot",
 			expect: &EndorsementWithSlot{
 				Endorsement: InlinedEmmyEndorsement{
 					Branch: &tz.BlockHash{
@@ -603,7 +603,7 @@ func TestDecodeOperations(t *testing.T) {
 				require.NoError(t, err)
 				require.Empty(t, rest)
 				require.Equal(t, test.expect, op)
-				require.Equal(t, test.kind, op.Kind())
+				require.Equal(t, test.kind, op.OperationKind())
 			})
 
 			if !test.skipEncode {
