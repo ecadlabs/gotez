@@ -11,10 +11,9 @@ import (
 
 func TestSignRequest(t *testing.T) {
 	type testCase struct {
-		title     string
-		src       string
-		expect    SignRequest
-		watermark *Watermark
+		title  string
+		src    string
+		expect SignRequest
 	}
 
 	testCases := []testCase{
@@ -39,14 +38,6 @@ func TestSignRequest(t *testing.T) {
 					},
 				},
 			},
-			watermark: &Watermark{
-				Chain: &tz.ChainID{0xed, 0x9d, 0x21, 0x7c},
-				Level: Level{
-					Level: 2,
-					Round: tz.Some(int32(4)),
-				},
-				Order: WmOrderPreendorsement,
-			},
 		},
 		{
 			title: "endorsement",
@@ -68,14 +59,6 @@ func TestSignRequest(t *testing.T) {
 						0xb9, 0x5e, 0x69, 0x8d,
 					},
 				},
-			},
-			watermark: &Watermark{
-				Chain: &tz.ChainID{0xed, 0x9d, 0x21, 0x7c},
-				Level: Level{
-					Level: 20877,
-					Round: tz.Some(int32(0)),
-				},
-				Order: WmOrderEndorsement,
 			},
 		},
 		{
@@ -120,14 +103,6 @@ func TestSignRequest(t *testing.T) {
 					SeedNonceHash:             tz.None[*tz.CycleNonceHash](),
 					LiquidityBakingToggleVote: 0,
 				},
-			},
-			watermark: &Watermark{
-				Chain: &tz.ChainID{0xed, 0x9d, 0x21, 0x7c},
-				Level: Level{
-					Level: 20878,
-					Round: tz.Some(int32(0)),
-				},
-				Order: WmOrderDefault,
 			},
 		},
 		{
@@ -225,297 +200,6 @@ func TestSignRequest(t *testing.T) {
 			_, err = encoding.Decode(buf, &req)
 			require.NoError(t, err)
 			require.Equal(t, test.expect, req)
-			if test.watermark != nil {
-				require.Equal(t, test.watermark, req.(WithWatermark).Watermark())
-			}
 		})
-	}
-}
-
-func TestWatermark(t *testing.T) {
-	type expect struct {
-		wm     Watermark
-		expect bool
-	}
-
-	type testCase struct {
-		stored Watermark
-		expect []expect
-	}
-
-	testCases := []testCase{
-		{
-			stored: Watermark{
-				Chain: &tz.ChainID{},
-				Level: Level{
-					Level: 1,
-					Round: tz.Some(int32(1)),
-				},
-				Order: WmOrderDefault,
-			},
-			expect: []expect{
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.Some(int32(0)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // level above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.None[int32](),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: false, // round is set above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // level and round above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // round above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 0,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: false, // level below
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(1)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: false, // level and round below
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(1)),
-						},
-						Order: WmOrderEndorsement,
-					},
-					expect: true, // don't have endorsement
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{0xed, 0x9d, 0x21, 0x7c},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(1)),
-						},
-						Order: WmOrderEndorsement,
-					},
-					expect: false, // wrong chain
-				},
-			},
-		},
-		{
-			stored: Watermark{
-				Chain: &tz.ChainID{},
-				Level: Level{
-					Level: 1,
-					Round: tz.Some(int32(1)),
-				},
-				Order: WmOrderEndorsement,
-			},
-			expect: []expect{
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.Some(int32(0)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // level above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.Some(int32(0)),
-						},
-						Order: WmOrderEndorsement,
-					},
-					expect: true, // level above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // level and round above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderEndorsement,
-					},
-					expect: true, // level and round above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // round above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderEndorsement,
-					},
-					expect: true, // order above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 0,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: false, // level below
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 0,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderEndorsement,
-					},
-					expect: false, // level below
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(1)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: false, // level and round below
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 1,
-							Round: tz.Some(int32(1)),
-						},
-						Order: WmOrderEndorsement,
-					},
-					expect: false, // have endorsement
-				},
-			},
-		},
-		{
-			stored: Watermark{
-				Chain: &tz.ChainID{},
-				Level: Level{
-					Level: 1,
-					Round: tz.None[int32](),
-				},
-				Order: WmOrderDefault,
-			},
-			expect: []expect{
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.None[int32](),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // level above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 2,
-							Round: tz.Some(int32(2)),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: true, // level above
-				},
-				{
-					wm: Watermark{
-						Chain: &tz.ChainID{},
-						Level: Level{
-							Level: 0,
-							Round: tz.None[int32](),
-						},
-						Order: WmOrderDefault,
-					},
-					expect: false, // level below
-				},
-			},
-		},
-	}
-
-	for _, c := range testCases {
-		for _, ex := range c.expect {
-			require.Equal(t, ex.expect, ex.wm.Validate(&c.stored))
-		}
 	}
 }

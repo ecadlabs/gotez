@@ -1,8 +1,6 @@
 package protocol
 
 import (
-	"bytes"
-
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 )
@@ -11,27 +9,17 @@ type SignRequest interface {
 	RequestKind() string
 }
 
-type WithWatermark interface {
+type SignRequestWithLevel interface {
 	SignRequest
-	Watermark() *Watermark
+	Level() int32
 }
-
 type EmmyBlockRequest struct {
 	Chain       *tz.ChainID
 	BlockHeader ShellHeader
 }
 
 func (*EmmyBlockRequest) RequestKind() string { return "block" }
-func (r *EmmyBlockRequest) Watermark() *Watermark {
-	return &Watermark{
-		Chain: r.Chain,
-		Level: Level{
-			Level: r.BlockHeader.Level,
-			Round: tz.None[int32](),
-		},
-		Order: WmOrderDefault,
-	}
-}
+func (r *EmmyBlockRequest) Level() int32      { return r.BlockHeader.Level }
 
 type TenderbakeBlockRequest struct {
 	Chain       *tz.ChainID
@@ -39,16 +27,7 @@ type TenderbakeBlockRequest struct {
 }
 
 func (*TenderbakeBlockRequest) RequestKind() string { return "block" }
-func (r *TenderbakeBlockRequest) Watermark() *Watermark {
-	return &Watermark{
-		Chain: r.Chain,
-		Level: Level{
-			Level: r.BlockHeader.Level,
-			Round: tz.Some(r.BlockHeader.PayloadRound),
-		},
-		Order: WmOrderDefault,
-	}
-}
+func (r *TenderbakeBlockRequest) Level() int32      { return r.BlockHeader.Level }
 
 type EmmyEndorsementRequest struct {
 	Chain     *tz.ChainID
@@ -57,16 +36,7 @@ type EmmyEndorsementRequest struct {
 }
 
 func (*EmmyEndorsementRequest) RequestKind() string { return "endorsement" }
-func (r *EmmyEndorsementRequest) Watermark() *Watermark {
-	return &Watermark{
-		Chain: r.Chain,
-		Level: Level{
-			Level: r.Operation.(*EmmyEndorsement).Level,
-			Round: tz.None[int32](),
-		},
-		Order: WmOrderEndorsement,
-	}
-}
+func (r *EmmyEndorsementRequest) Level() int32      { return r.Operation.(*EmmyEndorsement).Level }
 
 type PreendorsementRequest struct {
 	Chain     *tz.ChainID
@@ -75,16 +45,7 @@ type PreendorsementRequest struct {
 }
 
 func (*PreendorsementRequest) RequestKind() string { return "preendorsement" }
-func (r *PreendorsementRequest) Watermark() *Watermark {
-	return &Watermark{
-		Chain: r.Chain,
-		Level: Level{
-			Level: r.Operation.(*Preendorsement).Level,
-			Round: tz.Some(r.Operation.(*Preendorsement).Round),
-		},
-		Order: WmOrderPreendorsement,
-	}
-}
+func (r *PreendorsementRequest) Level() int32      { return r.Operation.(*Preendorsement).Level }
 
 type EndorsementRequest struct {
 	Chain     *tz.ChainID
@@ -93,16 +54,7 @@ type EndorsementRequest struct {
 }
 
 func (*EndorsementRequest) RequestKind() string { return "endorsement" }
-func (r *EndorsementRequest) Watermark() *Watermark {
-	return &Watermark{
-		Chain: r.Chain,
-		Level: Level{
-			Level: r.Operation.(*Endorsement).Level,
-			Round: tz.Some(r.Operation.(*Endorsement).Round),
-		},
-		Order: WmOrderEndorsement,
-	}
-}
+func (r *EndorsementRequest) Level() int32      { return r.Operation.(*Endorsement).Level }
 
 type GenericOperationRequest struct {
 	Branch     *tz.BlockHash
@@ -122,53 +74,4 @@ func init() {
 			0x13: (*EndorsementRequest)(nil),
 		},
 	})
-}
-
-const (
-	WmOrderDefault = iota
-	WmOrderPreendorsement
-	WmOrderEndorsement
-)
-
-type Level struct {
-	Level int32
-	Round tz.Option[int32]
-}
-
-func (l *Level) Cmp(other *Level) tz.Option[int] {
-	if l.Round.IsNone() && other.Round.IsSome() {
-		return tz.None[int]()
-	}
-
-	if d := l.Level - other.Level; d == 0 {
-		switch {
-		case l.Round.IsSome() && other.Round.IsSome():
-			return tz.Some(int(l.Round.Unwrap() - other.Round.Unwrap()))
-		case l.Round.IsSome() && other.Round.IsNone():
-			return tz.Some(1)
-		default:
-			return tz.Some(0)
-		}
-	} else {
-		return tz.Some(int(d))
-	}
-}
-
-type Watermark struct {
-	Chain *tz.ChainID
-	Level Level
-	Order int
-}
-
-func (w *Watermark) Validate(stored *Watermark) bool {
-	c := w.Level.Cmp(&stored.Level)
-	switch {
-	case !bytes.Equal(w.Chain[:], stored.Chain[:]):
-		return false
-	case c.IsSome() &&
-		(c.Unwrap() > 0 || c.Unwrap() == 0 && w.Order > stored.Order):
-		return true
-	default:
-		return false
-	}
 }
