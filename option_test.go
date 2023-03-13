@@ -10,7 +10,7 @@ import (
 type args struct {
 	data []byte
 	v    any
-	opt  []encoding.DecodeOption
+	opt  []encoding.Option
 }
 
 type testCase struct {

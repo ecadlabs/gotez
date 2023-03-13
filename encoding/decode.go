@@ -6,73 +6,12 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
-	"strings"
 )
 
 var ErrBuffer = errors.New("gotez: buffer is too short")
 
 type Decoder interface {
 	DecodeTZ(data []byte, ctx *Context) (rest []byte, err error)
-}
-
-type Context struct {
-	typeReg *TypeRegistry
-	enumReg *EnumRegistry
-}
-
-func applyOptions(opts []DecodeOption) (*Context, []flag) {
-	var ctx Context
-	flags := make([]flag, 0, len(opts))
-	for _, fn := range opts {
-		fn(&flags, &ctx)
-	}
-	return &ctx, flags
-}
-
-type DecodeOption func(fl *[]flag, opt *Context)
-
-func Types(tr *TypeRegistry) func(*[]flag, *Context) {
-	return func(fl *[]flag, c *Context) {
-		c.typeReg = tr
-	}
-}
-
-func Enums(er *EnumRegistry) func(*[]flag, *Context) {
-	return func(fl *[]flag, c *Context) {
-		c.enumReg = er
-	}
-}
-
-func Ctx(ctx *Context) func(*[]flag, *Context) {
-	return func(fl *[]flag, c *Context) {
-		*c = *ctx
-	}
-}
-
-func Dynamic() func(*[]flag, *Context) {
-	return func(fl *[]flag, c *Context) {
-		*fl = append(*fl, flDynamic{})
-	}
-}
-
-func Optional() func(*[]flag, *Context) {
-	return func(fl *[]flag, c *Context) {
-		*fl = append(*fl, flOptional{})
-	}
-}
-
-func (ctx *Context) types() *TypeRegistry {
-	if ctx.typeReg != nil {
-		return ctx.typeReg
-	}
-	return defaultTypeRegistry
-}
-
-func (ctx *Context) enums() *EnumRegistry {
-	if ctx.enumReg != nil {
-		return ctx.enumReg
-	}
-	return defaultEnumRegistry
 }
 
 var be = binary.BigEndian
@@ -130,38 +69,6 @@ func decodeInt(data []byte, out reflect.Value) (rest []byte, err error) {
 	default:
 		panic("gotez: unhandled type")
 	}
-}
-
-type flag interface {
-	flag()
-}
-
-type flOmit struct{}
-type flOptional struct{}
-type flDynamic struct{}
-type flConst string
-
-func (flOmit) flag()     {}
-func (flOptional) flag() {}
-func (flDynamic) flag()  {}
-func (flConst) flag()    {}
-
-func parseTag(tag string) []flag {
-	opt := strings.Split(tag, ",")
-	out := make([]flag, 0, len(opt))
-	for _, o := range opt {
-		switch {
-		case o == "omit" || o == "-":
-			out = append(out, flOmit{})
-		case o == "dynamic" || o == "dyn":
-			out = append(out, flDynamic{})
-		case o == "optional" || o == "opt":
-			out = append(out, flOptional{})
-		case strings.HasPrefix(o, "const="):
-			out = append(out, flConst(strings.SplitN(opt[0], "=", 2)[1]))
-		}
-	}
-	return out
 }
 
 func decodeBuiltin(data []byte, out reflect.Value, ctx *Context) (rest []byte, err error) {
@@ -232,13 +139,11 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context) (rest []byte, e
 		return data, nil
 
 	default:
-		return nil, fmt.Errorf("gotez: unsupported type %v", k)
+		return nil, fmt.Errorf("gotez: unsupported type %v", typ)
 	}
 }
 
-var (
-	decoderType = reflect.TypeOf((*Decoder)(nil)).Elem()
-)
+var decoderType = reflect.TypeOf((*Decoder)(nil)).Elem()
 
 func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag) ([]byte, error) {
 	var dec func(data []byte) ([]byte, error)
@@ -301,26 +206,23 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag) ([]byt
 		// concrete type
 		if out.Kind() != reflect.Interface {
 			// user type
-			if reflect.PtrTo(out.Type()).Implements(decoderType) && out.CanAddr() {
+			if out.Type().Implements(decoderType) {
+				dec := out.Interface().(Decoder)
+				return dec.DecodeTZ(data, ctx)
+			} else if reflect.PtrTo(out.Type()).Implements(decoderType) && out.CanAddr() {
 				dec := out.Addr().Interface().(Decoder)
 				return dec.DecodeTZ(data, ctx)
 			}
 			return decodeBuiltin(data, out, ctx)
 		}
 
-		// user interface type
-		val, rest, err := ctx.types().tryDecode(out.Type(), data)
+		// decode enum
+		val, rest, err := ctx.enums().tryDecode(out.Type(), data, ctx)
 		if err != nil {
 			return nil, err
 		}
 		if !val.IsValid() {
-			// decode enum
-			if val, rest, err = ctx.enums().tryDecode(out.Type(), data, ctx); err != nil {
-				return nil, err
-			}
-			if !val.IsValid() {
-				return nil, fmt.Errorf("gotez: unsupported interface type %v", out.Type())
-			}
+			return nil, fmt.Errorf("gotez: unsupported interface type %v", out.Type())
 		}
 		out.Set(val)
 		return rest, nil
@@ -356,7 +258,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag) ([]byt
 	return rest, nil
 }
 
-func Decode(data []byte, v any, opt ...DecodeOption) (rest []byte, err error) {
+func Decode(data []byte, v any, opt ...Option) (rest []byte, err error) {
 	if v == nil {
 		return nil, errors.New("gotez: nil interface")
 	}

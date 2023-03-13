@@ -12,7 +12,7 @@ func TestBigInt(t *testing.T) {
 	type args struct {
 		data []byte
 		v    *BigInt
-		opt  []encoding.DecodeOption
+		opt  []encoding.Option
 	}
 
 	type testCase struct {
@@ -80,7 +80,7 @@ func TestBigUint(t *testing.T) {
 	type args struct {
 		data []byte
 		v    *BigUint
-		opt  []encoding.DecodeOption
+		opt  []encoding.Option
 	}
 
 	type testCase struct {

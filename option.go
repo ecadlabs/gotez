@@ -1,6 +1,7 @@
 package gotez
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/ecadlabs/gotez/encoding"
@@ -91,6 +92,20 @@ func (op *Option[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, 
 	}
 	*op = out
 	return data, nil
+}
+
+func (op *Option[T]) EncodeTZ(ctx *encoding.Context) ([]byte, error) {
+	var buf bytes.Buffer
+	if op.IsSome() {
+		buf.WriteByte(255)
+		val := op.Unwrap()
+		if err := encoding.Encode(&buf, &val, encoding.Ctx(ctx)); err != nil {
+			return nil, err
+		}
+		return buf.Bytes(), nil
+	} else {
+		return []byte{0}, nil
+	}
 }
 
 func (op Option[T]) String() string {

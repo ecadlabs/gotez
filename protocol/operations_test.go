@@ -1,6 +1,7 @@
 package protocol
 
 import (
+	"bytes"
 	"encoding/hex"
 	"testing"
 
@@ -11,16 +12,17 @@ import (
 
 func TestDecodeOperations(t *testing.T) {
 	type testCase struct {
-		title  string
-		kind   string
-		src    string
-		expect OperationContents
+		title      string
+		kind       string
+		src        string
+		expect     OperationContents
+		skipEncode bool
 	}
 
 	testCases := []testCase{
 		{
 			title: "activate_account",
-			src:   "04c55cf02dbeecc978d9c84625dcae72bb77ea4fbd41f98b15efc63fa893d61d7d6eee4a2ce9427ac466804fe735e06e97e26da8236b6341b91c625d5e82b3524ec0a88cc982365e70f8a5b9bc65df2ea6d21ee244cc3a96fb33031c394c78b1179ff1b8a44237740c",
+			src:   "04c55cf02dbeecc978d9c84625dcae72bb77ea4fbd41f98b15efc63fa893d61d7d6eee4a2ce9427ac4",
 			kind:  "activate_account",
 			expect: &ActivateAccount{
 				PKH:    &tz.Ed25519PublicKeyHash{0xc5, 0x5c, 0xf0, 0x2d, 0xbe, 0xec, 0xc9, 0x78, 0xd9, 0xc8, 0x46, 0x25, 0xdc, 0xae, 0x72, 0xbb, 0x77, 0xea, 0x4f, 0xbd},
@@ -42,7 +44,7 @@ func TestDecodeOperations(t *testing.T) {
 		},
 		{
 			title: "ballot",
-			src:   "060002298c03ed7d454a101eb7022bc95f7e5f41ac78000002cf7663cf120f3dc8189d5dc7d4d7a0483bcc53f3f18e700f5a2f5076aa8b9dc55c0066804fe735e06e97e26da8236b6341b91c625d5e82b3524ec0a88cc982365e70f8a5b9bc65df2ea6d21ee244cc3a96fb33031c394c78b1179ff1b8a44237740c",
+			src:   "060002298c03ed7d454a101eb7022bc95f7e5f41ac78000002cf7663cf120f3dc8189d5dc7d4d7a0483bcc53f3f18e700f5a2f5076aa8b9dc55c00",
 			kind:  "ballot",
 			expect: &Ballot{
 				Source: &tz.Ed25519PublicKeyHash{0x2, 0x29, 0x8c, 0x3, 0xed, 0x7d, 0x45, 0x4a, 0x10, 0x1e, 0xb7, 0x2, 0x2b, 0xc9, 0x5f, 0x7e, 0x5f, 0x41, 0xac, 0x78},
@@ -215,6 +217,7 @@ func TestDecodeOperations(t *testing.T) {
 					},
 				},
 			},
+			skipEncode: true, // header decoding is incomplete
 		},
 		{
 			title: "double_preendorsement_evidence",
@@ -592,13 +595,24 @@ func TestDecodeOperations(t *testing.T) {
 	for _, tc := range testCases {
 		test := tc
 		t.Run(test.title, func(t *testing.T) {
-			buf, err := hex.DecodeString(test.src)
+			data, err := hex.DecodeString(test.src)
 			require.NoError(t, err)
-			var op OperationContents
-			_, err = encoding.Decode(buf, &op)
-			require.NoError(t, err)
-			require.Equal(t, test.expect, op)
-			require.Equal(t, test.kind, op.Kind())
+			t.Run("Decode", func(t *testing.T) {
+				var op OperationContents
+				rest, err := encoding.Decode(data, &op)
+				require.NoError(t, err)
+				require.Empty(t, rest)
+				require.Equal(t, test.expect, op)
+				require.Equal(t, test.kind, op.Kind())
+			})
+
+			if !test.skipEncode {
+				t.Run("Encode", func(t *testing.T) {
+					var buf bytes.Buffer
+					require.NoError(t, encoding.Encode(&buf, &test.expect))
+					require.Equal(t, data, buf.Bytes())
+				})
+			}
 		})
 	}
 }

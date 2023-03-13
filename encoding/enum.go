@@ -2,69 +2,10 @@ package encoding
 
 import (
 	"fmt"
+	"io"
 	"reflect"
 	"sync"
 )
-
-// TypeRegistry stores interface type constructors (decoders)
-type TypeRegistry struct {
-	types map[reflect.Type]any
-	mtx   sync.RWMutex
-}
-
-// NewTypeRegistry returns new empty TypeRegistry
-func NewTypeRegistry() *TypeRegistry {
-	return &TypeRegistry{
-		types: make(map[reflect.Type]any),
-	}
-}
-
-var (
-	errorType = reflect.TypeOf((*error)(nil)).Elem()
-	bytesType = reflect.TypeOf([]byte(nil))
-)
-
-// RegisterType registers user interface type. The argument is a constructor function of type `func([]byte) (UserType, []byte, error)`.
-// It panics if any other type is passed
-func (r *TypeRegistry) RegisterType(fn any) {
-	ft := reflect.TypeOf(fn)
-	if ft.Kind() != reflect.Func {
-		panic(fmt.Sprintf("gotez: function expected: %v", ft))
-	}
-	if ft.NumIn() != 1 || ft.In(0) != bytesType ||
-		ft.NumOut() != 3 || ft.Out(1) != bytesType || ft.Out(2) != errorType {
-		panic(fmt.Sprintf("gotez: invalid signature: %v", ft))
-	}
-	t := ft.Out(0)
-	if t.Kind() != reflect.Interface {
-		panic(fmt.Sprintf("gotez: user type must be an interface: %v", t))
-	}
-	r.mtx.Lock()
-	defer r.mtx.Unlock()
-	if _, ok := r.types[t]; ok {
-		panic(fmt.Sprintf("gotez: duplicate user type: %v", t))
-	}
-	r.types[t] = fn
-}
-
-func (r *TypeRegistry) tryDecode(t reflect.Type, data []byte) (reflect.Value, []byte, error) {
-	r.mtx.RLock()
-	f, ok := r.types[t]
-	r.mtx.RUnlock()
-	if !ok {
-		return reflect.Value{}, nil, nil
-	}
-	out := reflect.ValueOf(f).Call([]reflect.Value{reflect.ValueOf(data)})
-	if !out[2].IsNil() {
-		return reflect.Value{}, nil, fmt.Errorf("gotez: %w", out[2].Interface().(error))
-	}
-	return out[0], out[1].Interface().([]byte), nil
-}
-
-// RegisterType registers user interface type in the global registry
-func RegisterType[T any](fn func([]byte) (T, []byte, error)) {
-	defaultTypeRegistry.RegisterType(fn)
-}
 
 type enumData struct {
 	def      reflect.Type
@@ -135,6 +76,30 @@ func (e *EnumRegistry) tryDecode(t reflect.Type, data []byte, ctx *Context) (ref
 	return val, data, err
 }
 
+func (e *EnumRegistry) tryEncode(out io.Writer, v reflect.Value, ctx *Context) (bool, error) {
+	e.mtx.RLock()
+	enum, ok := e.types[v.Type()]
+	e.mtx.RUnlock()
+	if !ok {
+		return false, nil
+	}
+	var tag *uint8
+	el := v.Elem()
+	for t, typ := range enum.variants {
+		if typ == el.Type() {
+			tag = &t
+			break
+		}
+	}
+	if tag == nil {
+		return false, fmt.Errorf("gotez: unknown enum variant %v", el.Type())
+	}
+	if _, err := out.Write([]byte{*tag}); err != nil {
+		return false, err
+	}
+	return true, encodeValue(out, el, ctx, nil)
+}
+
 type Variants[T any] map[uint8]T
 
 type Enum[T any] struct {
@@ -154,7 +119,4 @@ func NewEnumRegistry() *EnumRegistry {
 	}
 }
 
-var (
-	defaultTypeRegistry = NewTypeRegistry()
-	defaultEnumRegistry = NewEnumRegistry()
-)
+var defaultEnumRegistry = NewEnumRegistry()

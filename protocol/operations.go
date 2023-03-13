@@ -1,6 +1,9 @@
 package protocol
 
 import (
+	"bytes"
+	"errors"
+
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 )
@@ -56,6 +59,26 @@ func (op *DoubleEndorsementEvidence) DecodeTZ(data []byte, ctx *encoding.Context
 		op.Slot = tz.Some(slot)
 	}
 	return data, nil
+}
+
+func (op *DoubleEndorsementEvidence) EncodeTZ(ctx *encoding.Context) ([]byte, error) {
+	var buf bytes.Buffer
+	if err := encoding.Encode(&buf, &op.Op1, encoding.Ctx(ctx), encoding.Dynamic()); err != nil {
+		return nil, err
+	}
+	if err := encoding.Encode(&buf, &op.Op2, encoding.Ctx(ctx), encoding.Dynamic()); err != nil {
+		return nil, err
+	}
+	if _, ok := op.Op1.Contents.(*EmmyEndorsement); ok {
+		if op.Slot.IsNone() {
+			return nil, errors.New("gotex: DoubleEndorsementEvidence: slot is required")
+		}
+		slot := op.Slot.Unwrap()
+		if err := encoding.Encode(&buf, &slot, encoding.Ctx(ctx)); err != nil {
+			return nil, err
+		}
+	}
+	return buf.Bytes(), nil
 }
 
 func (*DoubleEndorsementEvidence) OperationContents() {}

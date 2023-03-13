@@ -3,6 +3,8 @@ package gotez
 //go:generate go run generate.go
 
 import (
+	"bytes"
+	"errors"
 	"time"
 
 	"github.com/ecadlabs/gotez/encoding"
@@ -82,6 +84,16 @@ func (str *String) DecodeTZ(data []byte, ctx *encoding.Context) ([]byte, error) 
 	}
 	*str = String(data[1 : length+1])
 	return data[length+1:], nil
+}
+
+func (str String) EncodeTZ(ctx *encoding.Context) ([]byte, error) {
+	var buf bytes.Buffer
+	if len(str) > 255 {
+		return nil, errors.New("gotez: string is too long")
+	}
+	buf.WriteByte(byte(len(str)))
+	buf.Write([]byte(str))
+	return buf.Bytes(), nil
 }
 
 type Timestamp int64
