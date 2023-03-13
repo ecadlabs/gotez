@@ -1,22 +1,66 @@
 package gotez
 
 import (
+	"crypto"
+	"crypto/ecdsa"
+	"crypto/ed25519"
+	"crypto/elliptic"
 	"errors"
 	"math/big"
 
+	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
+	"github.com/ecadlabs/gotez/signature"
 )
 
 type Signature interface {
 	Base58Encoder
-	Signature()
+	Signature(pub crypto.PublicKey) (signature.Signature, error)
 }
 
-func (*GenericSignature) Signature()   {}
-func (*Ed25519Signature) Signature()   {}
-func (*Secp256k1Signature) Signature() {}
-func (*P256Signature) Signature()      {}
-func (*BLSSignature) Signature()       {}
+func (sig *GenericSignature) Signature(pub crypto.PublicKey) (signature.Signature, error) {
+	switch pk := pub.(type) {
+	case *ecdsa.PublicKey:
+		r, s := (*P256Signature)(sig).Get()
+		return &signature.ECDSA{
+			R:     r,
+			S:     s,
+			Curve: pk.Curve,
+		}, nil
+
+	case ed25519.PublicKey:
+		return signature.ED25519(sig[:]), nil
+
+	default:
+		return nil, errors.New("gotez: generic signature encoding can't be used with BLS")
+	}
+}
+
+func (sig *Ed25519Signature) Signature(crypto.PublicKey) (signature.Signature, error) {
+	return signature.ED25519(sig[:]), nil
+}
+
+func (sig *Secp256k1Signature) Signature(crypto.PublicKey) (signature.Signature, error) {
+	r, s := new(big.Int).SetBytes(sig[:32]), new(big.Int).SetBytes(sig[32:])
+	return &signature.ECDSA{
+		R:     r,
+		S:     s,
+		Curve: secp256k1.S256(),
+	}, nil
+}
+
+func (sig *P256Signature) Signature(crypto.PublicKey) (signature.Signature, error) {
+	r, s := new(big.Int).SetBytes(sig[:32]), new(big.Int).SetBytes(sig[32:])
+	return &signature.ECDSA{
+		R:     r,
+		S:     s,
+		Curve: elliptic.P256(),
+	}, nil
+}
+
+func (sig *BLSSignature) Signature(crypto.PublicKey) (signature.Signature, error) {
+	return minpk.SignatureFromBytes(sig[:])
+}
 
 var ErrSignatureType = errors.New("gotez: unknown signature type")
 
