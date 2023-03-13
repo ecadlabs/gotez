@@ -8,6 +8,7 @@ import (
 )
 
 type Signature interface {
+	Base58Encoder
 	Signature()
 }
 
