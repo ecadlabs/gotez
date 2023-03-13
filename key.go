@@ -47,7 +47,7 @@ type PublicKey interface {
 
 type PrivateKey interface {
 	EncryptedPrivateKey
-	PrivateKey() (crypto.PrivateKey, error)
+	PrivateKey() (crypto.Signer, error)
 }
 
 type EncryptedPrivateKey interface {
@@ -141,23 +141,23 @@ func (pk *BLSPublicKey) PublicKey() (crypto.PublicKey, error) {
 	return minpk.PublicKeyFromBytes(pk[:])
 }
 
-func (priv *Ed25519PrivateKey) PrivateKey() (crypto.PrivateKey, error) {
+func (priv *Ed25519PrivateKey) PrivateKey() (crypto.Signer, error) {
 	if len(priv) != ed25519.SeedSize {
 		panic("gotez: invalid ed25519 private key length") // unlikely
 	}
 	return ed25519.NewKeyFromSeed(priv[:]), nil
 }
 
-func (priv *Secp256k1PrivateKey) PrivateKey() (crypto.PrivateKey, error) {
+func (priv *Secp256k1PrivateKey) PrivateKey() (crypto.Signer, error) {
 	return ecPrivateKeyFromBytes(priv[:], secp256k1.S256())
 
 }
 
-func (priv *P256PrivateKey) PrivateKey() (crypto.PrivateKey, error) {
+func (priv *P256PrivateKey) PrivateKey() (crypto.Signer, error) {
 	return ecPrivateKeyFromBytes(priv[:], elliptic.P256())
 }
 
-func (priv *BLSPrivateKey) PrivateKey() (crypto.PrivateKey, error) {
+func (priv *BLSPrivateKey) PrivateKey() (crypto.Signer, error) {
 	return minpk.PrivateKeyFromBytes(priv[:])
 }
 
@@ -222,7 +222,7 @@ func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 	}
 }
 
-func NewPrivateKey(src crypto.PrivateKey) (PrivateKey, error) {
+func NewPrivateKey(src crypto.Signer) (PrivateKey, error) {
 	switch key := src.(type) {
 	case *ecdsa.PrivateKey:
 		b := key.D.Bytes()

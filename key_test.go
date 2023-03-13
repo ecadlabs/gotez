@@ -18,30 +18,30 @@ import (
 func TestKeys(t *testing.T) {
 	type testCase struct {
 		title  string
-		genKey func() crypto.PrivateKey
+		genKey func() crypto.Signer
 	}
 	cases := []testCase{
 		{
 			title:  "Ed25519",
-			genKey: func() crypto.PrivateKey { _, k, _ := ed25519.GenerateKey(rand.Reader); return k },
+			genKey: func() crypto.Signer { _, k, _ := ed25519.GenerateKey(rand.Reader); return k },
 		},
 		{
 			title:  "Secp256k1",
-			genKey: func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader); return k },
+			genKey: func() crypto.Signer { k, _ := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader); return k },
 		},
 		{
 			title:  "P256",
-			genKey: func() crypto.PrivateKey { k, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader); return k },
+			genKey: func() crypto.Signer { k, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader); return k },
 		},
 		{
 			title:  "BLS",
-			genKey: func() crypto.PrivateKey { k, _ := minpk.GenerateKey(rand.Reader); return k },
+			genKey: func() crypto.Signer { k, _ := minpk.GenerateKey(rand.Reader); return k },
 		},
 	}
 
 	type privateKey interface {
-		Public() crypto.PublicKey
-		Equal(x crypto.PrivateKey) bool
+		crypto.Signer
+		Equal(x crypto.Signer) bool
 	}
 
 	type publicKey interface {
