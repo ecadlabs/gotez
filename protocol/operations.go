@@ -183,8 +183,8 @@ func (*Preendorsement) InlinedPreendorsementContents() {}
 func (*Preendorsement) OperationKind() string          { return "preendorsement" }
 
 type VDFRevelation struct {
-	Field0 *[200]byte
-	Field1 *[200]byte
+	Field0 *[100]byte
+	Field1 *[100]byte
 }
 
 func (*VDFRevelation) OperationKind() string { return "vdf_revelation" }
