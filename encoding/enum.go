@@ -100,6 +100,24 @@ func (e *EnumRegistry) tryEncode(out io.Writer, v reflect.Value, ctx *Context) (
 	return true, encodeValue(out, el, ctx, nil)
 }
 
+func (e *EnumRegistry) ForEach(typ any, cb func(tag uint8, v any)) {
+	t := reflect.TypeOf(typ)
+	if t.Kind() != reflect.Pointer || t.Elem().Kind() != reflect.Interface {
+		panic("gotez: pointer to an interface expected")
+	}
+	t = t.Elem()
+	e.mtx.RLock()
+	enum, ok := e.types[t]
+	e.mtx.RUnlock()
+	if !ok {
+		return
+	}
+	for tag, typ := range enum.variants {
+		v := reflect.New(typ).Elem().Interface()
+		cb(tag, v)
+	}
+}
+
 type Variants[T any] map[uint8]T
 
 type Enum[T any] struct {
@@ -110,6 +128,11 @@ type Enum[T any] struct {
 // RegisterEnum registers enum type in the global registry
 func RegisterEnum[T any](enum *Enum[T]) {
 	defaultEnumRegistry.RegisterEnum(enum.Variants, enum.Default)
+}
+
+func ForEachInEnum[T any](cb func(tag uint8, v T)) {
+	var typ T
+	defaultEnumRegistry.ForEach(&typ, func(tag uint8, v any) { cb(tag, v.(T)) })
 }
 
 // NewEnumRegistry returns new empty EnumRegistry

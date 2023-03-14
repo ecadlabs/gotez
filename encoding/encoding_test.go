@@ -470,3 +470,25 @@ func TestEnum(t *testing.T) {
 		})
 	}
 }
+
+func TestEnumForEach(t *testing.T) {
+	RegisterEnum(&Enum[testEnum]{
+		Variants: Variants[testEnum]{
+			0: variant1(0),
+			1: (*variant2)(nil),
+		},
+		Default: variant3(0),
+	})
+
+	expect := map[uint8]testEnum{
+		0: variant1(0),
+		1: (*variant2)(nil),
+	}
+
+	result := make(map[uint8]testEnum)
+	ForEachInEnum(func(tag uint8, v testEnum) {
+		result[tag] = v
+	})
+
+	require.Equal(t, expect, result)
+}
