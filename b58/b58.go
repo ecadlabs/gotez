@@ -2,6 +2,8 @@
 package b58
 
 import (
+	"errors"
+
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/b58/base58"
 	"github.com/ecadlabs/gotez/b58/prefix"
@@ -36,7 +38,7 @@ func ParsePublicKey(src []byte) (tz.PublicKey, error) {
 		return &out, nil
 
 	default:
-		return nil, tz.ErrPublicKeyType
+		return nil, errors.New("gotez: unknown public key prefix")
 	}
 }
 
@@ -67,7 +69,7 @@ func ParsePublicKeyHash(src []byte) (tz.PublicKeyHash, error) {
 		return &out, nil
 
 	default:
-		return nil, tz.ErrPublicKeyType
+		return nil, errors.New("gotez: unknown public key prefix")
 	}
 }
 
@@ -98,7 +100,7 @@ func ParsePrivateKey(src []byte) (tz.PrivateKey, error) {
 		return &out, nil
 
 	default:
-		return nil, tz.ErrPrivateKeyType
+		return nil, errors.New("gotez: unknown private key prefix")
 	}
 }
 
@@ -149,7 +151,7 @@ func ParseEncryptedPrivateKey(src []byte) (tz.EncryptedPrivateKey, error) {
 		return &out, nil
 
 	default:
-		return nil, tz.ErrPrivateKeyType
+		return nil, errors.New("gotez: unknown private key prefix")
 	}
 }
 
@@ -185,6 +187,6 @@ func ParseSignature(src []byte) (tz.Signature, error) {
 		return &out, nil
 
 	default:
-		return nil, tz.ErrSignatureType
+		return nil, errors.New("gotez: unknown signature prefix")
 	}
 }

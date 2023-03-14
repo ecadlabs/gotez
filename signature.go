@@ -6,6 +6,7 @@ import (
 	"crypto/ed25519"
 	"crypto/elliptic"
 	"errors"
+	"fmt"
 	"math/big"
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
@@ -61,11 +62,6 @@ func (sig *P256Signature) Signature(crypto.PublicKey) (signature.Signature, erro
 func (sig *BLSSignature) Signature(crypto.PublicKey) (signature.Signature, error) {
 	return minpk.SignatureFromBytes(sig[:])
 }
-
-var (
-	ErrSignatureType = errors.New("gotez: unknown signature type")
-	ErrCurve         = errors.New("gotez: unknown curve type")
-)
 
 func NewEd25519Signature(sig []byte) *Ed25519Signature {
 	var out Ed25519Signature
@@ -134,13 +130,14 @@ func NewSignature(sig signature.Signature) (Signature, error) {
 		case curveEqual(s.Curve, secp256k1.S256()):
 			return NewSecp256k1Signature(s.R, s.S), nil
 		default:
-			return nil, ErrCurve
+			return nil, fmt.Errorf("gotez: unknown curve `%s`", s.Curve.Params().Name)
+
 		}
 
 	case *minpk.Signature:
 		return NewBLSSignature(s), nil
 
 	default:
-		return nil, ErrSignatureType
+		return nil, fmt.Errorf("gotez: unknown signature type %T", sig)
 	}
 }

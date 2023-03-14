@@ -7,6 +7,7 @@ import (
 	"crypto/ed25519"
 	"crypto/elliptic"
 	"errors"
+	"fmt"
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
@@ -30,8 +31,6 @@ const (
 )
 
 var (
-	ErrPrivateKeyType      = errors.New("gotez: unknown private key type")
-	ErrPublicKeyType       = errors.New("gotez: unknown public key type")
 	ErrInvalidDecryptedLen = errors.New("gotez: invalid decrypted key length")
 )
 
@@ -287,7 +286,7 @@ func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 			copy(out[:], payload)
 			return &out, nil
 		default:
-			return nil, ErrPublicKeyType
+			return nil, fmt.Errorf("gotez: unknown curve `%s`", key.Curve.Params().Name)
 		}
 
 	case ed25519.PublicKey:
@@ -308,7 +307,8 @@ func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 		return &out, nil
 
 	default:
-		return nil, ErrPublicKeyType
+		return nil, fmt.Errorf("gotez: unknown public key type %T", src)
+
 	}
 }
 
@@ -334,7 +334,7 @@ func NewPrivateKey(src crypto.Signer) (PrivateKey, error) {
 			copy(out[:], payload)
 			return &out, nil
 		default:
-			return nil, ErrPrivateKeyType
+			return nil, fmt.Errorf("gotez: unknown curve `%s`", key.Curve.Params().Name)
 		}
 
 	case ed25519.PrivateKey:
@@ -356,7 +356,7 @@ func NewPrivateKey(src crypto.Signer) (PrivateKey, error) {
 		return &out, nil
 
 	default:
-		return nil, ErrPrivateKeyType
+		return nil, fmt.Errorf("gotez: unknown private key type %T", src)
 	}
 }
 
