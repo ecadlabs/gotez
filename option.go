@@ -2,6 +2,7 @@ package gotez
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 
 	"github.com/ecadlabs/gotez/encoding"
@@ -106,6 +107,28 @@ func (op *Option[T]) EncodeTZ(ctx *encoding.Context) ([]byte, error) {
 	} else {
 		return []byte{0}, nil
 	}
+}
+
+func (op *Option[T]) MarshalJSON() ([]byte, error) {
+	var v *T
+	if op.IsSome() {
+		x := op.Unwrap()
+		v = &x
+	}
+	return json.Marshal(v)
+}
+
+func (op *Option[T]) UnmarshalJSON(data []byte) error {
+	var v *T
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	if v != nil {
+		*op = Some(*v)
+	} else {
+		*op = None[T]()
+	}
+	return nil
 }
 
 func (op Option[T]) String() string {

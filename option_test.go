@@ -1,6 +1,7 @@
 package gotez
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/ecadlabs/gotez/encoding"
@@ -21,7 +22,7 @@ type testCase struct {
 	wantResult any
 }
 
-func TestDecode(t *testing.T) {
+func TestOption(t *testing.T) {
 	tests := []testCase{
 		{
 			name: "option some",
@@ -58,5 +59,30 @@ func TestDecode(t *testing.T) {
 				require.Equal(t, tt.wantRest, gotRest)
 			}
 		})
+	}
+}
+
+func TestOptionJSON(t *testing.T) {
+	cases := []struct {
+		v      Option[int32]
+		expect string
+	}{
+		{
+			v:      Some[int32](123),
+			expect: "123",
+		},
+		{
+			v:      None[int32](),
+			expect: "null",
+		},
+	}
+	for _, tt := range cases {
+		j, err := json.Marshal(&tt.v)
+		require.NoError(t, err)
+		require.Equal(t, []byte(tt.expect), j)
+
+		var val Option[int32]
+		require.NoError(t, json.Unmarshal([]byte(tt.expect), &val))
+		require.Equal(t, &tt.v, &val)
 	}
 }
