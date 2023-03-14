@@ -40,7 +40,7 @@ func ParsePublicKey(src []byte) (tz.PublicKey, error) {
 	}
 }
 
-func ParsePublicHash(src []byte) (tz.PublicKeyHash, error) {
+func ParsePublicKeyHash(src []byte) (tz.PublicKeyHash, error) {
 	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
 		return nil, err
