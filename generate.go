@@ -167,6 +167,7 @@ var data = []mapping{
 const tplSrc = `package gotez
 
 import (
+	"fmt"
 	"github.com/ecadlabs/gotez/b58/base58"
 	"github.com/ecadlabs/gotez/b58/prefix"
 )
@@ -175,16 +176,32 @@ import (
 {{range .}}
 type {{.Type}} [{{.Length}}]byte
 
-func (self *{{.Type}}) String() string {
-	return string(self.ToBase58())
-}
-
 func (self *{{.Type}}) ToBase58() []byte {
 	out, err := base58.EncodeTZ(&prefix.{{.Prefix}}, self[:])
 	if err != nil {
 		panic(err)
 	}
 	return out
+}
+
+func (self *{{.Type}}) String() string {
+	return string(self.ToBase58())
+}
+
+func (self *{{.Type}}) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.{{.Prefix}}, self[:])
+}
+
+func (self *{{.Type}}) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.{{.Prefix}} {
+		return fmt.Errorf("gotez: invalid {{.Type}} encoding")
+	}
+	copy(self[:], payload)
+	return nil
 }
 {{end}}
 `
