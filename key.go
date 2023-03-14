@@ -1,6 +1,7 @@
 package gotez
 
 import (
+	"bytes"
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/ed25519"
@@ -36,11 +37,13 @@ var (
 
 type PublicKeyHash interface {
 	Base58Encoder
+	BinaryEncoder
 	PublicKeyHash() []byte
 }
 
 type PublicKey interface {
 	Base58Encoder
+	BinaryEncoder
 	PublicKey() (crypto.PublicKey, error)
 	Hash() PublicKeyHash
 }
@@ -59,6 +62,50 @@ func (pkh *Ed25519PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
 func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
 func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
 func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
+
+func (pkh *Ed25519PublicKeyHash) ToBinary() []byte {
+	var (
+		x   PublicKeyHash = pkh
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
+func (pkh *Secp256k1PublicKeyHash) ToBinary() []byte {
+	var (
+		x   PublicKeyHash = pkh
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
+func (pkh *P256PublicKeyHash) ToBinary() []byte {
+	var (
+		x   PublicKeyHash = pkh
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
+func (pkh *BLSPublicKeyHash) ToBinary() []byte {
+	var (
+		x   PublicKeyHash = pkh
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
 
 func (pk *Ed25519PublicKey) Hash() PublicKeyHash {
 	digest, err := blake2b.New(20, nil)
@@ -141,6 +188,50 @@ func (pk *BLSPublicKey) PublicKey() (crypto.PublicKey, error) {
 	return minpk.PublicKeyFromBytes(pk[:])
 }
 
+func (pk *Ed25519PublicKey) ToBinary() []byte {
+	var (
+		x   PublicKey = pk
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
+func (pk *Secp256k1PublicKey) ToBinary() []byte {
+	var (
+		x   PublicKey = pk
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
+func (pk *P256PublicKey) ToBinary() []byte {
+	var (
+		x   PublicKey = pk
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
+func (pk *BLSPublicKey) ToBinary() []byte {
+	var (
+		x   PublicKey = pk
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
 func (priv *Ed25519PrivateKey) PrivateKey() (crypto.Signer, error) {
 	if len(priv) != ed25519.SeedSize {
 		panic("gotez: invalid ed25519 private key length") // unlikely
@@ -150,7 +241,6 @@ func (priv *Ed25519PrivateKey) PrivateKey() (crypto.Signer, error) {
 
 func (priv *Secp256k1PrivateKey) PrivateKey() (crypto.Signer, error) {
 	return ecPrivateKeyFromBytes(priv[:], secp256k1.S256())
-
 }
 
 func (priv *P256PrivateKey) PrivateKey() (crypto.Signer, error) {

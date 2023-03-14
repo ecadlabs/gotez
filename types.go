@@ -58,6 +58,10 @@ type Base58Encoder interface {
 	String() string
 }
 
+type BinaryEncoder interface {
+	ToBinary() []byte
+}
+
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[ContractID]{
 		Variants: encoding.Variants[ContractID]{
