@@ -14,7 +14,6 @@ import (
 	"github.com/ecadlabs/gotez/b58/base58"
 	"github.com/ecadlabs/gotez/b58/prefix"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/hashmap"
 	"golang.org/x/crypto/blake2b"
 )
 
@@ -40,7 +39,7 @@ var (
 type PublicKeyHash interface {
 	Base58Encoder
 	PublicKeyHash() []byte
-	hashmap.ToComparable[PublicKeyHash, EncodedPublicKeyHash]
+	ToComparable[PublicKeyHash, EncodedPublicKeyHash]
 }
 
 type PublicKey interface {
@@ -309,7 +308,7 @@ func (pk *P256PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { 
 // stub
 func (pk *BLSPrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
 
-func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
+func NewPublicKey(src crypto.PublicKey) PublicKey {
 	switch key := src.(type) {
 	case *ecdsa.PublicKey:
 		payload := elliptic.MarshalCompressed(key.Curve, key.X, key.Y)
@@ -320,16 +319,16 @@ func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 				panic("gotez: invalid public key length")
 			}
 			copy(out[:], payload)
-			return &out, nil
+			return &out
 		case curveEqual(key.Curve, secp256k1.S256()):
 			var out Secp256k1PublicKey
 			if len(payload) != len(out) {
 				panic("gotez: invalid public key length")
 			}
 			copy(out[:], payload)
-			return &out, nil
+			return &out
 		default:
-			return nil, fmt.Errorf("gotez: unknown curve `%s`", key.Curve.Params().Name)
+			panic(fmt.Sprintf("gotez: unknown curve `%s`", key.Curve.Params().Name))
 		}
 
 	case ed25519.PublicKey:
@@ -338,7 +337,7 @@ func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 			panic("gotez: invalid public key length")
 		}
 		copy(out[:], key)
-		return &out, nil
+		return &out
 
 	case *minpk.PublicKey:
 		payload := key.Bytes()
@@ -347,15 +346,14 @@ func NewPublicKey(src crypto.PublicKey) (PublicKey, error) {
 			panic("gotez: invalid public key length")
 		}
 		copy(out[:], payload)
-		return &out, nil
+		return &out
 
 	default:
-		return nil, fmt.Errorf("gotez: unknown public key type %T", src)
-
+		panic(fmt.Sprintf("gotez: unknown public key type %T", src))
 	}
 }
 
-func NewPrivateKey(src crypto.Signer) (PrivateKey, error) {
+func NewPrivateKey(src crypto.Signer) PrivateKey {
 	switch key := src.(type) {
 	case *ecdsa.PrivateKey:
 		b := key.D.Bytes()
@@ -368,16 +366,16 @@ func NewPrivateKey(src crypto.Signer) (PrivateKey, error) {
 				panic("gotez: invalid private key length")
 			}
 			copy(out[:], payload)
-			return &out, nil
+			return &out
 		case curveEqual(key.Curve, secp256k1.S256()):
 			var out Secp256k1PrivateKey
 			if len(out) != len(payload) {
 				panic("gotez: invalid private key length")
 			}
 			copy(out[:], payload)
-			return &out, nil
+			return &out
 		default:
-			return nil, fmt.Errorf("gotez: unknown curve `%s`", key.Curve.Params().Name)
+			panic(fmt.Sprintf("gotez: unknown curve `%s`", key.Curve.Params().Name))
 		}
 
 	case ed25519.PrivateKey:
@@ -387,7 +385,7 @@ func NewPrivateKey(src crypto.Signer) (PrivateKey, error) {
 			panic("gotez: invalid private key length")
 		}
 		copy(out[:], payload)
-		return &out, nil
+		return &out
 
 	case *minpk.PrivateKey:
 		payload := key.Bytes()
@@ -396,10 +394,10 @@ func NewPrivateKey(src crypto.Signer) (PrivateKey, error) {
 			panic("gotez: invalid private key length")
 		}
 		copy(out[:], payload)
-		return &out, nil
+		return &out
 
 	default:
-		return nil, fmt.Errorf("gotez: unknown private key type %T", src)
+		panic(fmt.Sprintf("gotez: unknown private key type %T", src))
 	}
 }
 

@@ -30,6 +30,15 @@ const (
 	ProofOfWorkNonceBytesLen      = 8
 )
 
+type Comparable[K any] interface {
+	comparable
+	ToKey() K
+}
+
+type ToComparable[K any, H Comparable[K]] interface {
+	ToComparable() H
+}
+
 type ContractID interface {
 	Base58Encoder
 	ContractID()

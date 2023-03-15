@@ -53,8 +53,7 @@ func TestKeys(t *testing.T) {
 			// generate key
 			priv := c.genKey().(privateKey)
 			// encode to internal roundtrip
-			tzPriv, err := tz.NewPrivateKey(priv)
-			require.NoError(t, err)
+			tzPriv := tz.NewPrivateKey(priv)
 			tmp, err := tzPriv.PrivateKey()
 			require.NoError(t, err)
 			require.True(t, priv.Equal(tmp))
@@ -75,8 +74,7 @@ func TestKeys(t *testing.T) {
 			// get public
 			pub := priv.Public().(publicKey)
 			// encode to internal roundtrip
-			tzPub, err := tz.NewPublicKey(pub)
-			require.NoError(t, err)
+			tzPub := tz.NewPublicKey(pub)
 			tmp4, err := tzPub.PublicKey()
 			require.NoError(t, err)
 			require.True(t, pub.Equal(tmp4))
