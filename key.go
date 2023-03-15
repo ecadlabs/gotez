@@ -11,7 +11,10 @@ import (
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
+	"github.com/ecadlabs/gotez/b58/base58"
+	"github.com/ecadlabs/gotez/b58/prefix"
 	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/hashmap"
 	"golang.org/x/crypto/blake2b"
 )
 
@@ -36,13 +39,12 @@ var (
 
 type PublicKeyHash interface {
 	Base58Encoder
-	BinaryEncoder
 	PublicKeyHash() []byte
+	hashmap.ToComparable[PublicKeyHash, EncodedPublicKeyHash]
 }
 
 type PublicKey interface {
 	Base58Encoder
-	BinaryEncoder
 	PublicKey() (crypto.PublicKey, error)
 	Hash() PublicKeyHash
 }
@@ -62,40 +64,72 @@ func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
 func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
 func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
 
-func (pkh *Ed25519PublicKeyHash) ToBinary() []byte {
-	var (
-		x   PublicKeyHash = pkh
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
+const publicKeyHashComparableKeyLen = PKHBytesLen + 1
+
+type EncodedPublicKeyHash [publicKeyHashComparableKeyLen]byte
+
+func (k EncodedPublicKeyHash) ToKey() PublicKeyHash {
+	var pkh PublicKeyHash
+	if _, err := encoding.Decode(k[:], &pkh); err != nil {
 		panic(err)
 	}
-	return buf.Bytes()
+	return pkh
 }
 
-func (pkh *Secp256k1PublicKeyHash) ToBinary() []byte {
-	var (
-		x   PublicKeyHash = pkh
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
+func (k EncodedPublicKeyHash) MarshalText() (text []byte, err error) {
+	var pkh PublicKeyHash
+	if _, err := encoding.Decode(k[:], &pkh); err != nil {
+		return nil, err
 	}
-	return buf.Bytes()
+	return pkh.ToBase58(), nil
 }
 
-func (pkh *P256PublicKeyHash) ToBinary() []byte {
+func (k *EncodedPublicKeyHash) UnmarshalText(text []byte) error {
+	pre, payload, err := base58.DecodeTZ(text)
+	if err != nil {
+		return err
+	}
+	var result PublicKeyHash
+	switch pre {
+	case &prefix.Ed25519PublicKeyHash:
+		var out Ed25519PublicKeyHash
+		copy(out[:], payload)
+		result = &out
+
+	case &prefix.Secp256k1PublicKeyHash:
+		var out Secp256k1PublicKeyHash
+		copy(out[:], payload)
+		result = &out
+
+	case &prefix.P256PublicKeyHash:
+		var out P256PublicKeyHash
+		copy(out[:], payload)
+		result = &out
+
+	case &prefix.BLS12_381PublicKeyHash:
+		var out BLSPublicKeyHash
+		copy(out[:], payload)
+		result = &out
+
+	default:
+		return errors.New("gotez: unknown public key prefix")
+	}
 	var (
-		x   PublicKeyHash = pkh
+		x   PublicKeyHash = result
 		buf bytes.Buffer
 	)
 	if err := encoding.Encode(&buf, &x); err != nil {
 		panic(err)
 	}
-	return buf.Bytes()
+	out := buf.Bytes()
+	if len(out) != publicKeyHashComparableKeyLen {
+		panic("invalid public key hash length")
+	}
+	copy(k[:], out)
+	return nil
 }
 
-func (pkh *BLSPublicKeyHash) ToBinary() []byte {
+func (pkh *Ed25519PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	var (
 		x   PublicKeyHash = pkh
 		buf bytes.Buffer
@@ -103,7 +137,60 @@ func (pkh *BLSPublicKeyHash) ToBinary() []byte {
 	if err := encoding.Encode(&buf, &x); err != nil {
 		panic(err)
 	}
-	return buf.Bytes()
+	b := buf.Bytes()
+	if len(b) != publicKeyHashComparableKeyLen {
+		panic("invalid public key hash length")
+	}
+	copy(out[:], b)
+	return
+}
+
+func (pkh *Secp256k1PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
+	var (
+		x   PublicKeyHash = pkh
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	b := buf.Bytes()
+	if len(b) != publicKeyHashComparableKeyLen {
+		panic("invalid public key hash length")
+	}
+	copy(out[:], b)
+	return
+}
+
+func (pkh *P256PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
+	var (
+		x   PublicKeyHash = pkh
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	b := buf.Bytes()
+	if len(b) != publicKeyHashComparableKeyLen {
+		panic("invalid public key hash length")
+	}
+	copy(out[:], b)
+	return
+}
+
+func (pkh *BLSPublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
+	var (
+		x   PublicKeyHash = pkh
+		buf bytes.Buffer
+	)
+	if err := encoding.Encode(&buf, &x); err != nil {
+		panic(err)
+	}
+	b := buf.Bytes()
+	if len(b) != publicKeyHashComparableKeyLen {
+		panic("invalid public key hash length")
+	}
+	copy(out[:], b)
+	return
 }
 
 func (pk *Ed25519PublicKey) Hash() PublicKeyHash {
@@ -185,50 +272,6 @@ func (pk *P256PublicKey) PublicKey() (crypto.PublicKey, error) {
 
 func (pk *BLSPublicKey) PublicKey() (crypto.PublicKey, error) {
 	return minpk.PublicKeyFromBytes(pk[:])
-}
-
-func (pk *Ed25519PublicKey) ToBinary() []byte {
-	var (
-		x   PublicKey = pk
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
-	}
-	return buf.Bytes()
-}
-
-func (pk *Secp256k1PublicKey) ToBinary() []byte {
-	var (
-		x   PublicKey = pk
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
-	}
-	return buf.Bytes()
-}
-
-func (pk *P256PublicKey) ToBinary() []byte {
-	var (
-		x   PublicKey = pk
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
-	}
-	return buf.Bytes()
-}
-
-func (pk *BLSPublicKey) ToBinary() []byte {
-	var (
-		x   PublicKey = pk
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
-	}
-	return buf.Bytes()
 }
 
 func (priv *Ed25519PrivateKey) PrivateKey() (crypto.Signer, error) {
