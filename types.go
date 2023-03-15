@@ -35,7 +35,7 @@ type Comparable[K any] interface {
 	ToKey() K
 }
 
-type ToComparable[K any, H Comparable[K]] interface {
+type ToComparable[H Comparable[K], K any] interface {
 	ToComparable() H
 }
 

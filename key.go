@@ -39,7 +39,7 @@ var (
 type PublicKeyHash interface {
 	Base58Encoder
 	PublicKeyHash() []byte
-	ToComparable[PublicKeyHash, EncodedPublicKeyHash]
+	ToComparable[EncodedPublicKeyHash, PublicKeyHash]
 }
 
 type PublicKey interface {
