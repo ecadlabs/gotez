@@ -184,11 +184,11 @@ func (self *{{.Type}}) ToBase58() []byte {
 	return out
 }
 
-func (self *{{.Type}}) String() string {
+func (self {{.Type}}) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *{{.Type}}) MarshalText() ([]byte, error) {
+func (self {{.Type}}) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.{{.Prefix}}, self[:])
 }
 

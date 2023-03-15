@@ -18,11 +18,11 @@ func (self *BlockHash) ToBase58() []byte {
 	return out
 }
 
-func (self *BlockHash) String() string {
+func (self BlockHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *BlockHash) MarshalText() ([]byte, error) {
+func (self BlockHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BlockHash, self[:])
 }
 
@@ -48,11 +48,11 @@ func (self *OperationsHash) ToBase58() []byte {
 	return out
 }
 
-func (self *OperationsHash) String() string {
+func (self OperationsHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *OperationsHash) MarshalText() ([]byte, error) {
+func (self OperationsHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.OperationListListHash, self[:])
 }
 
@@ -78,11 +78,11 @@ func (self *ContextHash) ToBase58() []byte {
 	return out
 }
 
-func (self *ContextHash) String() string {
+func (self ContextHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *ContextHash) MarshalText() ([]byte, error) {
+func (self ContextHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.ContextHash, self[:])
 }
 
@@ -108,11 +108,11 @@ func (self *ChainID) ToBase58() []byte {
 	return out
 }
 
-func (self *ChainID) String() string {
+func (self ChainID) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *ChainID) MarshalText() ([]byte, error) {
+func (self ChainID) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.ChainID, self[:])
 }
 
@@ -138,11 +138,11 @@ func (self *BlockPayloadHash) ToBase58() []byte {
 	return out
 }
 
-func (self *BlockPayloadHash) String() string {
+func (self BlockPayloadHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *BlockPayloadHash) MarshalText() ([]byte, error) {
+func (self BlockPayloadHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.ValueHash, self[:])
 }
 
@@ -168,11 +168,11 @@ func (self *CycleNonceHash) ToBase58() []byte {
 	return out
 }
 
-func (self *CycleNonceHash) String() string {
+func (self CycleNonceHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *CycleNonceHash) MarshalText() ([]byte, error) {
+func (self CycleNonceHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.CycleNonce, self[:])
 }
 
@@ -198,11 +198,11 @@ func (self *Ed25519PublicKeyHash) ToBase58() []byte {
 	return out
 }
 
-func (self *Ed25519PublicKeyHash) String() string {
+func (self Ed25519PublicKeyHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Ed25519PublicKeyHash) MarshalText() ([]byte, error) {
+func (self Ed25519PublicKeyHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Ed25519PublicKeyHash, self[:])
 }
 
@@ -228,11 +228,11 @@ func (self *Secp256k1PublicKeyHash) ToBase58() []byte {
 	return out
 }
 
-func (self *Secp256k1PublicKeyHash) String() string {
+func (self Secp256k1PublicKeyHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Secp256k1PublicKeyHash) MarshalText() ([]byte, error) {
+func (self Secp256k1PublicKeyHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Secp256k1PublicKeyHash, self[:])
 }
 
@@ -258,11 +258,11 @@ func (self *P256PublicKeyHash) ToBase58() []byte {
 	return out
 }
 
-func (self *P256PublicKeyHash) String() string {
+func (self P256PublicKeyHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *P256PublicKeyHash) MarshalText() ([]byte, error) {
+func (self P256PublicKeyHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.P256PublicKeyHash, self[:])
 }
 
@@ -288,11 +288,11 @@ func (self *BLSPublicKeyHash) ToBase58() []byte {
 	return out
 }
 
-func (self *BLSPublicKeyHash) String() string {
+func (self BLSPublicKeyHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *BLSPublicKeyHash) MarshalText() ([]byte, error) {
+func (self BLSPublicKeyHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BLS12_381PublicKeyHash, self[:])
 }
 
@@ -318,11 +318,11 @@ func (self *ProtocolHash) ToBase58() []byte {
 	return out
 }
 
-func (self *ProtocolHash) String() string {
+func (self ProtocolHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *ProtocolHash) MarshalText() ([]byte, error) {
+func (self ProtocolHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.ProtocolHash, self[:])
 }
 
@@ -348,11 +348,11 @@ func (self *ContractHash) ToBase58() []byte {
 	return out
 }
 
-func (self *ContractHash) String() string {
+func (self ContractHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *ContractHash) MarshalText() ([]byte, error) {
+func (self ContractHash) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.ContractHash, self[:])
 }
 
@@ -378,11 +378,11 @@ func (self *Ed25519PublicKey) ToBase58() []byte {
 	return out
 }
 
-func (self *Ed25519PublicKey) String() string {
+func (self Ed25519PublicKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Ed25519PublicKey) MarshalText() ([]byte, error) {
+func (self Ed25519PublicKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Ed25519PublicKey, self[:])
 }
 
@@ -408,11 +408,11 @@ func (self *Secp256k1PublicKey) ToBase58() []byte {
 	return out
 }
 
-func (self *Secp256k1PublicKey) String() string {
+func (self Secp256k1PublicKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Secp256k1PublicKey) MarshalText() ([]byte, error) {
+func (self Secp256k1PublicKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Secp256k1PublicKey, self[:])
 }
 
@@ -438,11 +438,11 @@ func (self *P256PublicKey) ToBase58() []byte {
 	return out
 }
 
-func (self *P256PublicKey) String() string {
+func (self P256PublicKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *P256PublicKey) MarshalText() ([]byte, error) {
+func (self P256PublicKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.P256PublicKey, self[:])
 }
 
@@ -468,11 +468,11 @@ func (self *BLSPublicKey) ToBase58() []byte {
 	return out
 }
 
-func (self *BLSPublicKey) String() string {
+func (self BLSPublicKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *BLSPublicKey) MarshalText() ([]byte, error) {
+func (self BLSPublicKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BLS12_381PublicKey, self[:])
 }
 
@@ -498,11 +498,11 @@ func (self *Ed25519PrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *Ed25519PrivateKey) String() string {
+func (self Ed25519PrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Ed25519PrivateKey) MarshalText() ([]byte, error) {
+func (self Ed25519PrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Ed25519Seed, self[:])
 }
 
@@ -528,11 +528,11 @@ func (self *Secp256k1PrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *Secp256k1PrivateKey) String() string {
+func (self Secp256k1PrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Secp256k1PrivateKey) MarshalText() ([]byte, error) {
+func (self Secp256k1PrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Secp256k1SecretKey, self[:])
 }
 
@@ -558,11 +558,11 @@ func (self *P256PrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *P256PrivateKey) String() string {
+func (self P256PrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *P256PrivateKey) MarshalText() ([]byte, error) {
+func (self P256PrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.P256SecretKey, self[:])
 }
 
@@ -588,11 +588,11 @@ func (self *BLSPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *BLSPrivateKey) String() string {
+func (self BLSPrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *BLSPrivateKey) MarshalText() ([]byte, error) {
+func (self BLSPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BLS12_381SecretKey, self[:])
 }
 
@@ -618,11 +618,11 @@ func (self *Ed25519EncryptedPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *Ed25519EncryptedPrivateKey) String() string {
+func (self Ed25519EncryptedPrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Ed25519EncryptedPrivateKey) MarshalText() ([]byte, error) {
+func (self Ed25519EncryptedPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Ed25519EncryptedSeed, self[:])
 }
 
@@ -648,11 +648,11 @@ func (self *Secp256k1EncryptedPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *Secp256k1EncryptedPrivateKey) String() string {
+func (self Secp256k1EncryptedPrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Secp256k1EncryptedPrivateKey) MarshalText() ([]byte, error) {
+func (self Secp256k1EncryptedPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Secp256k1EncryptedSecretKey, self[:])
 }
 
@@ -678,11 +678,11 @@ func (self *P256EncryptedPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *P256EncryptedPrivateKey) String() string {
+func (self P256EncryptedPrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *P256EncryptedPrivateKey) MarshalText() ([]byte, error) {
+func (self P256EncryptedPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.P256EncryptedSecretKey, self[:])
 }
 
@@ -708,11 +708,11 @@ func (self *BLSEncryptedPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self *BLSEncryptedPrivateKey) String() string {
+func (self BLSEncryptedPrivateKey) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *BLSEncryptedPrivateKey) MarshalText() ([]byte, error) {
+func (self BLSEncryptedPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BLS12_381EncryptedSecretKey, self[:])
 }
 
@@ -738,11 +738,11 @@ func (self *GenericSignature) ToBase58() []byte {
 	return out
 }
 
-func (self *GenericSignature) String() string {
+func (self GenericSignature) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *GenericSignature) MarshalText() ([]byte, error) {
+func (self GenericSignature) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.GenericSignature, self[:])
 }
 
@@ -768,11 +768,11 @@ func (self *Ed25519Signature) ToBase58() []byte {
 	return out
 }
 
-func (self *Ed25519Signature) String() string {
+func (self Ed25519Signature) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Ed25519Signature) MarshalText() ([]byte, error) {
+func (self Ed25519Signature) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Ed25519Signature, self[:])
 }
 
@@ -798,11 +798,11 @@ func (self *Secp256k1Signature) ToBase58() []byte {
 	return out
 }
 
-func (self *Secp256k1Signature) String() string {
+func (self Secp256k1Signature) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *Secp256k1Signature) MarshalText() ([]byte, error) {
+func (self Secp256k1Signature) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Secp256k1Signature, self[:])
 }
 
@@ -828,11 +828,11 @@ func (self *P256Signature) ToBase58() []byte {
 	return out
 }
 
-func (self *P256Signature) String() string {
+func (self P256Signature) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *P256Signature) MarshalText() ([]byte, error) {
+func (self P256Signature) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.P256Signature, self[:])
 }
 
@@ -858,11 +858,11 @@ func (self *BLSSignature) ToBase58() []byte {
 	return out
 }
 
-func (self *BLSSignature) String() string {
+func (self BLSSignature) String() string {
 	return string(self.ToBase58())
 }
 
-func (self *BLSSignature) MarshalText() ([]byte, error) {
+func (self BLSSignature) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BLS12_381Signature, self[:])
 }
 
