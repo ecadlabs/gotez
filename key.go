@@ -2,15 +2,9 @@ package gotez
 
 import (
 	"bytes"
-	"crypto"
-	"crypto/ecdsa"
-	"crypto/ed25519"
-	"crypto/elliptic"
 	"errors"
-	"fmt"
+	"math/big"
 
-	"github.com/decred/dcrd/dcrec/secp256k1/v4"
-	"github.com/ecadlabs/goblst/minpk"
 	"github.com/ecadlabs/gotez/b58/base58"
 	"github.com/ecadlabs/gotez/b58/prefix"
 	"github.com/ecadlabs/gotez/encoding"
@@ -44,13 +38,13 @@ type PublicKeyHash interface {
 
 type PublicKey interface {
 	Base58Encoder
-	PublicKey() (crypto.PublicKey, error)
+	PublicKey()
 	Hash() PublicKeyHash
 }
 
 type PrivateKey interface {
+	PrivateKey()
 	EncryptedPrivateKey
-	PrivateKey() (crypto.Signer, error)
 }
 
 type EncryptedPrivateKey interface {
@@ -62,6 +56,16 @@ func (pkh *Ed25519PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
 func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
 func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
 func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
+
+func (priv *Ed25519PrivateKey) PrivateKey()   {}
+func (priv *Secp256k1PrivateKey) PrivateKey() {}
+func (priv *P256PrivateKey) PrivateKey()      {}
+func (priv *BLSPrivateKey) PrivateKey()       {}
+
+func (pk *Ed25519PublicKey) PublicKey()   {}
+func (pk *Secp256k1PublicKey) PublicKey() {}
+func (pk *P256PublicKey) PublicKey()      {}
+func (pk *BLSPublicKey) PublicKey()       {}
 
 const publicKeyHashComparableKeyLen = PKHBytesLen + 1
 
@@ -192,6 +196,42 @@ func (pkh *BLSPublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	return
 }
 
+func NewEd25519PublicKey(key []byte) *Ed25519PublicKey {
+	var out Ed25519PublicKey
+	if len(key) != len(out) {
+		panic("gotez: invalid Ed25519 public key length")
+	}
+	copy(out[:], key)
+	return &out
+}
+
+func NewSecp256k1PublicKey(compressedPoint []byte) *Secp256k1PublicKey {
+	var out Secp256k1PublicKey
+	if len(compressedPoint) != len(out) {
+		panic("gotez: invalid Secp256k1 public key length")
+	}
+	copy(out[:], compressedPoint)
+	return &out
+}
+
+func NewP256PublicKey(compressedPoint []byte) *P256PublicKey {
+	var out P256PublicKey
+	if len(compressedPoint) != len(out) {
+		panic("gotez: invalid P256 public key length")
+	}
+	copy(out[:], compressedPoint)
+	return &out
+}
+
+func NewBLSPublicKey(compressedPoint []byte) *BLSPublicKey {
+	var out BLSPublicKey
+	if len(compressedPoint) != len(out) {
+		panic("gotez: invalid BLS public key length")
+	}
+	copy(out[:], compressedPoint)
+	return &out
+}
+
 func (pk *Ed25519PublicKey) Hash() PublicKeyHash {
 	digest, err := blake2b.New(20, nil)
 	if err != nil {
@@ -236,60 +276,42 @@ func (pk *BLSPublicKey) Hash() PublicKeyHash {
 	return &out
 }
 
-func (pk *Ed25519PublicKey) PublicKey() (crypto.PublicKey, error) {
-	if len(pk) != ed25519.PublicKeySize {
-		panic("gotez: invalid ed25519 public key length") // unlikely
+func NewEd25519PrivateKey(key []byte) *Ed25519PrivateKey {
+	var out Ed25519PrivateKey
+	if len(key) != len(out) {
+		panic("gotez: invalid Ed25519 private key length")
 	}
-	out := make(ed25519.PublicKey, ed25519.PublicKeySize)
-	copy(out, pk[:])
-	return out, nil
+	copy(out[:], key)
+	return &out
 }
 
-func (pk *Secp256k1PublicKey) PublicKey() (crypto.PublicKey, error) {
-	x, y, err := unmarshalCompressed(pk[:], secp256k1.S256())
-	if err != nil {
-		return nil, err
+func NewSecp256k1PrivateKey(scalar *big.Int) *Secp256k1PrivateKey {
+	var out Secp256k1PrivateKey
+	payload := scalar.Bytes()
+	if len(payload) > len(out) {
+		panic("gotez: invalid Secp256k1 private key length")
 	}
-	return &ecdsa.PublicKey{
-		Curve: secp256k1.S256(),
-		X:     x,
-		Y:     y,
-	}, nil
+	copy(out[len(out)-len(payload):], payload)
+	return &out
 }
 
-func (pk *P256PublicKey) PublicKey() (crypto.PublicKey, error) {
-	x, y, err := unmarshalCompressed(pk[:], elliptic.P256())
-	if err != nil {
-		return nil, err
+func NewP256PrivateKey(scalar *big.Int) *P256PrivateKey {
+	var out P256PrivateKey
+	payload := scalar.Bytes()
+	if len(payload) > len(out) {
+		panic("gotez: invalid P256 private key length")
 	}
-	return &ecdsa.PublicKey{
-		Curve: elliptic.P256(),
-		X:     x,
-		Y:     y,
-	}, nil
+	copy(out[len(out)-len(payload):], payload)
+	return &out
 }
 
-func (pk *BLSPublicKey) PublicKey() (crypto.PublicKey, error) {
-	return minpk.PublicKeyFromBytes(pk[:])
-}
-
-func (priv *Ed25519PrivateKey) PrivateKey() (crypto.Signer, error) {
-	if len(priv) != ed25519.SeedSize {
-		panic("gotez: invalid ed25519 private key length") // unlikely
+func NewBLSPrivateKey(scalar []byte) *BLSPrivateKey {
+	var out BLSPrivateKey
+	if len(scalar) != len(out) {
+		panic("gotez: invalid BLS private key length")
 	}
-	return ed25519.NewKeyFromSeed(priv[:]), nil
-}
-
-func (priv *Secp256k1PrivateKey) PrivateKey() (crypto.Signer, error) {
-	return ecPrivateKeyFromBytes(priv[:], secp256k1.S256())
-}
-
-func (priv *P256PrivateKey) PrivateKey() (crypto.Signer, error) {
-	return ecPrivateKeyFromBytes(priv[:], elliptic.P256())
-}
-
-func (priv *BLSPrivateKey) PrivateKey() (crypto.Signer, error) {
-	return minpk.PrivateKeyFromBytes(priv[:])
+	copy(out[:], scalar)
+	return &out
 }
 
 // stub
@@ -307,99 +329,6 @@ func (pk *P256PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { 
 
 // stub
 func (pk *BLSPrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
-
-func NewPublicKey(src crypto.PublicKey) PublicKey {
-	switch key := src.(type) {
-	case *ecdsa.PublicKey:
-		payload := elliptic.MarshalCompressed(key.Curve, key.X, key.Y)
-		switch {
-		case key.Curve == elliptic.P256():
-			var out P256PublicKey
-			if len(payload) != len(out) {
-				panic("gotez: invalid public key length")
-			}
-			copy(out[:], payload)
-			return &out
-		case curveEqual(key.Curve, secp256k1.S256()):
-			var out Secp256k1PublicKey
-			if len(payload) != len(out) {
-				panic("gotez: invalid public key length")
-			}
-			copy(out[:], payload)
-			return &out
-		default:
-			panic(fmt.Sprintf("gotez: unknown curve `%s`", key.Curve.Params().Name))
-		}
-
-	case ed25519.PublicKey:
-		var out Ed25519PublicKey
-		if len(key) != len(out) {
-			panic("gotez: invalid public key length")
-		}
-		copy(out[:], key)
-		return &out
-
-	case *minpk.PublicKey:
-		payload := key.Bytes()
-		var out BLSPublicKey
-		if len(payload) != len(out) {
-			panic("gotez: invalid public key length")
-		}
-		copy(out[:], payload)
-		return &out
-
-	default:
-		panic(fmt.Sprintf("gotez: unknown public key type %T", src))
-	}
-}
-
-func NewPrivateKey(src crypto.Signer) PrivateKey {
-	switch key := src.(type) {
-	case *ecdsa.PrivateKey:
-		b := key.D.Bytes()
-		payload := make([]byte, (key.Params().N.BitLen()+7)>>3)
-		copy(payload[len(payload)-len(b):], b)
-		switch {
-		case key.Curve == elliptic.P256():
-			var out P256PrivateKey
-			if len(out) != len(payload) {
-				panic("gotez: invalid private key length")
-			}
-			copy(out[:], payload)
-			return &out
-		case curveEqual(key.Curve, secp256k1.S256()):
-			var out Secp256k1PrivateKey
-			if len(out) != len(payload) {
-				panic("gotez: invalid private key length")
-			}
-			copy(out[:], payload)
-			return &out
-		default:
-			panic(fmt.Sprintf("gotez: unknown curve `%s`", key.Curve.Params().Name))
-		}
-
-	case ed25519.PrivateKey:
-		payload := key.Seed()
-		var out Ed25519PrivateKey
-		if len(out) != len(payload) {
-			panic("gotez: invalid private key length")
-		}
-		copy(out[:], payload)
-		return &out
-
-	case *minpk.PrivateKey:
-		payload := key.Bytes()
-		var out BLSPrivateKey
-		if len(out) != len(payload) {
-			panic("gotez: invalid private key length")
-		}
-		copy(out[:], payload)
-		return &out
-
-	default:
-		panic(fmt.Sprintf("gotez: unknown private key type %T", src))
-	}
-}
 
 func (pk *Ed25519EncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (PrivateKey, error) {
 	decrypted, err := decryptPrivateKey(pk[:], passCb)
