@@ -291,7 +291,7 @@ func NewSecp256k1PrivateKey(scalar *big.Int) *Secp256k1PrivateKey {
 	if len(payload) > len(out) {
 		panic("gotez: invalid Secp256k1 private key length")
 	}
-	copy(out[len(out)-len(payload):], payload)
+	scalar.FillBytes(out[:])
 	return &out
 }
 
@@ -301,7 +301,7 @@ func NewP256PrivateKey(scalar *big.Int) *P256PrivateKey {
 	if len(payload) > len(out) {
 		panic("gotez: invalid P256 private key length")
 	}
-	copy(out[len(out)-len(payload):], payload)
+	scalar.FillBytes(out[:])
 	return &out
 }
 

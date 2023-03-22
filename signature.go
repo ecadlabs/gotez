@@ -2,6 +2,7 @@ package gotez
 
 import (
 	"math/big"
+	"math/bits"
 )
 
 type Signature interface {
@@ -24,15 +25,17 @@ func NewEd25519Signature(sig []byte) *Ed25519Signature {
 	return &out
 }
 
+func bigByteLen(x *big.Int) int {
+	return len(x.Bits()) * (bits.UintSize / 8)
+}
+
 func NewSecp256k1Signature(r, s *big.Int) *Secp256k1Signature {
-	sr := r.Bytes()
-	ss := s.Bytes()
-	if len(sr) > 32 || len(ss) > 32 {
+	if bigByteLen(r) > 32 || bigByteLen(s) > 32 {
 		panic("gotez: invalid ECDSA signature size")
 	}
 	var out Secp256k1Signature
-	copy(out[32-len(sr):], sr)
-	copy(out[64-len(ss):], ss)
+	r.FillBytes(out[:32])
+	s.FillBytes(out[32:])
 	return &out
 }
 
@@ -41,14 +44,12 @@ func (sig *Secp256k1Signature) Point() (r, s *big.Int) {
 }
 
 func NewP256Signature(r, s *big.Int) *P256Signature {
-	sr := r.Bytes()
-	ss := s.Bytes()
-	if len(sr) > 32 || len(ss) > 32 {
+	if bigByteLen(r) > 32 || bigByteLen(s) > 32 {
 		panic("gotez: invalid ECDSA signature size")
 	}
 	var out P256Signature
-	copy(out[32-len(sr):], sr)
-	copy(out[64-len(ss):], ss)
+	r.FillBytes(out[:32])
+	s.FillBytes(out[32:])
 	return &out
 }
 
