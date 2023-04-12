@@ -5,6 +5,7 @@ package gotez
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/ecadlabs/gotez/encoding"
@@ -26,6 +27,7 @@ const (
 	OperationHashBytesLen         = 32
 	BlockPayloadHashBytesLen      = 32
 	ScriptExprBytesLen            = 32
+	MumbaiSmartRollupHashBytesLen = 32
 	SlotHeaderBytesLen            = 48
 	ProofOfWorkNonceBytesLen      = 8
 )
@@ -81,15 +83,52 @@ func init() {
 	})
 }
 
+type TransactionDestination interface {
+	TransactionDestination()
+}
+
+type TxRollupDestination struct {
+	*RollupAddress
+	Padding uint8
+}
+
+type SmartRollupDestination struct {
+	*SmartRollupAddress
+	Padding uint8
+}
+
+type ZkRollupDestination struct {
+	*ZkRollupAddress
+	Padding uint8
+}
+
+func (*TxRollupDestination) TransactionDestination()    {}
+func (*SmartRollupDestination) TransactionDestination() {}
+func (*OriginatedContract) TransactionDestination()     {}
+func (*ImplicitContract) TransactionDestination()       {}
+func (*ZkRollupDestination) TransactionDestination()    {}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
+		Variants: encoding.Variants[TransactionDestination]{
+			0: (*ImplicitContract)(nil),
+			1: (*OriginatedContract)(nil),
+			2: (*TxRollupDestination)(nil),
+			3: (*SmartRollupDestination)(nil),
+			4: (*ZkRollupDestination)(nil),
+		},
+	})
+}
+
 type String string
 
 func (str *String) DecodeTZ(data []byte, ctx *encoding.Context) ([]byte, error) {
 	if len(data) < 1 {
-		return nil, encoding.ErrBuffer
+		return nil, fmt.Errorf("(string) %w", encoding.ErrBuffer(1))
 	}
 	length := int(data[0])
 	if len(data) < 1+length {
-		return nil, encoding.ErrBuffer
+		return nil, fmt.Errorf("(string) %w", encoding.ErrBuffer(1))
 	}
 	*str = String(data[1 : length+1])
 	return data[length+1:], nil
@@ -98,7 +137,7 @@ func (str *String) DecodeTZ(data []byte, ctx *encoding.Context) ([]byte, error) 
 func (str String) EncodeTZ(ctx *encoding.Context) ([]byte, error) {
 	var buf bytes.Buffer
 	if len(str) > 255 {
-		return nil, errors.New("gotez: string is too long")
+		return nil, errors.New("string is too long")
 	}
 	buf.WriteByte(byte(len(str)))
 	buf.Write([]byte(str))

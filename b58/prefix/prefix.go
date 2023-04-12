@@ -28,9 +28,11 @@ var (
 	BlindedPublicKeyHash   = Prefix{Len: 20, Prefix: []byte{1, 2, 49, 223}} // btz1(37)
 	BLS12_381PublicKeyHash = Prefix{Len: 20, Prefix: []byte{6, 161, 166}}   // tz4(36)
 	//lint:ignore U1000 As defined in Tezos code
-	L2Address     = BLS12_381PublicKeyHash
-	RollupAddress = Prefix{Len: 20, Prefix: []byte{1, 128, 120, 31}}  // txr1(37)
-	ScRollupHash  = Prefix{Len: 20, Prefix: []byte{1, 118, 132, 217}} // scr1(37)
+	L2Address          = BLS12_381PublicKeyHash
+	RollupAddress      = Prefix{Len: 20, Prefix: []byte{1, 128, 120, 31}}  // txr1(37)
+	SmartRollupHash    = Prefix{Len: 20, Prefix: []byte{1, 118, 132, 217}} // scr1(37)
+	ZkRollupHash       = Prefix{Len: 20, Prefix: []byte{1, 23, 224, 125}}
+	SmartRollupAddress = Prefix{Len: 20, Prefix: []byte{6, 124, 117}} // sr1(36)
 
 	// 16
 	CryptoboxPublicKeyHash = Prefix{Len: 16, Prefix: []byte{153, 103}} // id(30)
@@ -46,11 +48,12 @@ var (
 	ScriptExpr            = Prefix{Len: 32, Prefix: []byte{13, 44, 64, 27}}    // expr(54)
 	InboxHash             = Prefix{Len: 32, Prefix: []byte{79, 148, 196}}      // txi(53)
 	InboxListHash         = InboxHash
-	MessageHash           = Prefix{Len: 32, Prefix: []byte{79, 149, 30}}    // txm(53)
-	CommitmentHash        = Prefix{Len: 32, Prefix: []byte{79, 148, 17}}    // txc(53)
-	MessageResultHash     = Prefix{Len: 32, Prefix: []byte{18, 7, 206, 87}} // txmr(54)
-	MessageResultListHash = Prefix{Len: 32, Prefix: []byte{79, 146, 82}}    // txM(53)
-	WithdrawListHash      = Prefix{Len: 32, Prefix: []byte{79, 150, 72}}    // txw(53)
+	MessageHash           = Prefix{Len: 32, Prefix: []byte{79, 149, 30}}       // txm(53)
+	CommitmentHash        = Prefix{Len: 32, Prefix: []byte{79, 148, 17}}       // txc(53)
+	MessageResultHash     = Prefix{Len: 32, Prefix: []byte{18, 7, 206, 87}}    // txmr(54)
+	MessageResultListHash = Prefix{Len: 32, Prefix: []byte{79, 146, 82}}       // txM(53)
+	WithdrawListHash      = Prefix{Len: 32, Prefix: []byte{79, 150, 72}}       // txw(53)
+	MumbaiSmartRollupHash = Prefix{Len: 32, Prefix: []byte{17, 165, 134, 138}} // src1(54)
 
 	// 56
 	Ed25519EncryptedSeed        = Prefix{Len: 56, Prefix: []byte{7, 90, 60, 179, 41}}    // edesk(88)
@@ -152,5 +155,8 @@ var List = []*Prefix{
 	&BLS12_381EncryptedSecretKey,
 	&ScCommitmentHash,
 	&ScStateHash,
-	&ScRollupHash,
+	&SmartRollupHash,
+	&ZkRollupHash,
+	&SmartRollupAddress,
+	&MumbaiSmartRollupHash,
 }

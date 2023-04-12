@@ -47,12 +47,6 @@ func TestEncoding(t *testing.T) {
 		Y uint32
 	}
 
-	type withConst struct {
-		X uint32
-		C uint32 `tz:"const=0xabcd"`
-		Y uint32
-	}
-
 	tests := []testCase{
 		{
 			name:   "bool",
@@ -199,6 +193,14 @@ func TestEncoding(t *testing.T) {
 			encode: true,
 		},
 		{
+			name:   "string",
+			data:   []byte("abcd"),
+			v:      new(string),
+			rest:   []byte{},
+			expect: func() *string { x := "abcd"; return &x }(),
+			encode: true,
+		},
+		{
 			name: "struct",
 			data: []byte{0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x89, 0xab, 0xcd, 0xef},
 			v:    new(withOmit),
@@ -286,31 +288,6 @@ func TestEncoding(t *testing.T) {
 			rest:   []byte{},
 			expect: func() *withDynOpt { x := uint32(0x01234567); return &withDynOpt{X: &x, Y: 0x89abcdef} }(),
 			encode: true,
-		},
-		{
-			name: "const",
-			data: []byte{
-				0x01, 0x23, 0x45, 0x67, // X
-				0x00, 0x00, 0xab, 0xcd, // C
-				0x89, 0xab, 0xcd, 0xef, // Y
-			},
-			v:    new(withConst),
-			rest: []byte{},
-			expect: &withConst{
-				X: 0x01234567,
-				C: 0xabcd,
-				Y: 0x89abcdef,
-			},
-			encode: true,
-		},
-		{
-			name: "const err",
-			data: []byte{
-				0x01, 0x23, 0x45, 0x67, // X
-				0x00, 0x00, 0xaa, 0xaa, // C
-				0x89, 0xab, 0xcd, 0xef, // Y
-			},
-			v: new(withConst),
 		},
 	}
 	for _, tt := range tests {

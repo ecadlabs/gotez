@@ -55,12 +55,10 @@ type flag interface {
 type flOmit struct{}
 type flOptional struct{}
 type flDynamic struct{}
-type flConst string
 
 func (flOmit) flag()     {}
 func (flOptional) flag() {}
 func (flDynamic) flag()  {}
-func (flConst) flag()    {}
 
 func parseTag(tag string) []flag {
 	opt := strings.Split(tag, ",")
@@ -73,8 +71,6 @@ func parseTag(tag string) []flag {
 			out = append(out, flDynamic{})
 		case o == "optional" || o == "opt":
 			out = append(out, flOptional{})
-		case strings.HasPrefix(o, "const="):
-			out = append(out, flConst(strings.SplitN(opt[0], "=", 2)[1]))
 		}
 	}
 	return out

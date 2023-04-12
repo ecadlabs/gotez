@@ -1,6 +1,7 @@
 package gotez
 
 import (
+	"fmt"
 	"math/big"
 
 	"github.com/ecadlabs/gotez/encoding"
@@ -10,14 +11,14 @@ type BigInt []byte
 
 func getLen(data []byte) (int, error) {
 	if len(data) < 1 {
-		return 0, encoding.ErrBuffer
+		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer(1))
 	}
 	i := 0
 	for i < len(data) && data[i]&0x80 != 0 {
 		i += 1
 	}
 	if i == len(data) {
-		return 0, encoding.ErrBuffer
+		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer(i))
 	}
 	return i + 1, nil
 }
@@ -66,6 +67,10 @@ func (b BigInt) String() string {
 	return b.Int().String()
 }
 
+func (b BigInt) MarshalText() (text []byte, err error) {
+	return b.Int().MarshalText()
+}
+
 type BigUint []byte
 
 func (b *BigUint) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
@@ -95,4 +100,8 @@ func (b BigUint) Int() *big.Int {
 
 func (b BigUint) String() string {
 	return b.Int().String()
+}
+
+func (b BigUint) MarshalText() (text []byte, err error) {
+	return b.Int().MarshalText()
 }

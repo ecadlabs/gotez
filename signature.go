@@ -1,8 +1,11 @@
 package gotez
 
 import (
+	"errors"
+	"fmt"
 	"math/big"
 	"math/bits"
+	"unsafe"
 )
 
 type Signature interface {
@@ -64,4 +67,33 @@ func NewBLSSignature(compressedPoint []byte) *BLSSignature {
 	}
 	copy(out[:], compressedPoint)
 	return &out
+}
+
+type AnySignature []byte
+
+func (sig AnySignature) Signature() (Signature, error) {
+	switch len(sig) {
+	case GenericSignatureBytesLen:
+		return (*GenericSignature)(unsafe.Pointer(&sig[0])), nil
+	case BLSSignatureBytesLen:
+		return (*BLSSignature)(unsafe.Pointer(&sig[0])), nil
+	default:
+		return nil, errors.New("gotez: invalid signature length")
+	}
+}
+
+func (sig AnySignature) String() string {
+	s, err := sig.Signature()
+	if err != nil {
+		return fmt.Sprintf("<%v>", err)
+	}
+	return string(s.ToBase58())
+}
+
+func (sig AnySignature) MarshalText() ([]byte, error) {
+	s, err := sig.Signature()
+	if err != nil {
+		return nil, err
+	}
+	return s.ToBase58(), nil
 }

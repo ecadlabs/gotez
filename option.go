@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"reflect"
 
 	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/pretty"
 )
 
 type Option[T any] struct {
@@ -77,21 +79,23 @@ func (op Option[T]) UnwrapOrZero() T {
 }
 
 func (op *Option[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
-	if len(data) < 1 {
-		return nil, encoding.ErrBuffer
+	if len(data) == 0 {
+		// tail entry
+		*op = Option[T]{}
+		return data, nil
 	}
-	out := Option[T]{
+
+	*op = Option[T]{
 		some: data[0] != 0,
 	}
 	data = data[1:]
 
-	if out.some {
-		data, err = encoding.Decode(data, &out.value, encoding.Ctx(ctx))
+	if op.some {
+		data, err = encoding.Decode(data, &op.value, encoding.Ctx(ctx))
 		if err != nil {
 			return nil, err
 		}
 	}
-	*op = out
 	return data, nil
 }
 
@@ -131,9 +135,11 @@ func (op *Option[T]) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (op Option[T]) String() string {
+func (op Option[T]) GoString() string {
+	var tmp T
+	t := reflect.TypeOf(&tmp).Elem()
 	if op.some {
-		return fmt.Sprintf("Some(%v)", op.value)
+		return fmt.Sprintf("Some[%v](%# v)", t, pretty.Formatter(op.value, pretty.OptStringer(true)))
 	}
-	return "None"
+	return fmt.Sprintf("None[%v]", t)
 }

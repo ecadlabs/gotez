@@ -51,7 +51,7 @@ func (v *EnumRegistry) RegisterEnum(variants, def any) {
 	v.types[iftype] = &out
 }
 
-func (e *EnumRegistry) tryDecode(t reflect.Type, data []byte, ctx *Context) (reflect.Value, []byte, error) {
+func (e *EnumRegistry) tryDecode(t reflect.Type, data []byte, ctx *Context, path ErrorPath) (reflect.Value, []byte, error) {
 	e.mtx.RLock()
 	enum, ok := e.types[t]
 	e.mtx.RUnlock()
@@ -59,7 +59,7 @@ func (e *EnumRegistry) tryDecode(t reflect.Type, data []byte, ctx *Context) (ref
 		return reflect.Value{}, nil, nil
 	}
 	if len(data) < 1 {
-		return reflect.Value{}, nil, ErrBuffer
+		return reflect.Value{}, nil, &Error{path, ErrBuffer(1)}
 	}
 	tag := data[0]
 	data = data[1:]
@@ -68,15 +68,16 @@ func (e *EnumRegistry) tryDecode(t reflect.Type, data []byte, ctx *Context) (ref
 		if enum.def != nil {
 			variant = enum.def
 		} else {
-			return reflect.Value{}, nil, fmt.Errorf("gotez: unknown tag %d", tag)
+			return reflect.Value{}, nil, &Error{path, fmt.Errorf("unknown tag %d", tag)}
 		}
 	}
+	path = append(path, TypeSelector{Type: variant})
 	val := reflect.New(variant).Elem()
-	data, err := decodeValue(data, val, ctx, nil)
+	data, err := decodeValue(data, val, ctx, nil, path)
 	return val, data, err
 }
 
-func (e *EnumRegistry) tryEncode(out io.Writer, v reflect.Value, ctx *Context) (bool, error) {
+func (e *EnumRegistry) tryEncode(out io.Writer, v reflect.Value, ctx *Context, path ErrorPath) (bool, error) {
 	e.mtx.RLock()
 	enum, ok := e.types[v.Type()]
 	e.mtx.RUnlock()
@@ -92,12 +93,13 @@ func (e *EnumRegistry) tryEncode(out io.Writer, v reflect.Value, ctx *Context) (
 		}
 	}
 	if tag == nil {
-		return false, fmt.Errorf("gotez: unknown enum variant %v", el.Type())
+		return false, &Error{path, fmt.Errorf("unknown enum variant %v", el.Type())}
 	}
+	path = append(path, TypeSelector{Type: el.Type()})
 	if _, err := out.Write([]byte{*tag}); err != nil {
-		return false, err
+		return false, wrapError(err, path)
 	}
-	return true, encodeValue(out, el, ctx, nil)
+	return true, encodeValue(out, el, ctx, nil, path)
 }
 
 func (e *EnumRegistry) ForEach(typ any, cb func(tag uint8, v any)) {

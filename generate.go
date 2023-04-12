@@ -162,6 +162,36 @@ var data = []mapping{
 		Length: "BLSSignatureBytesLen",
 		Prefix: "BLS12_381Signature",
 	},
+	{
+		Type:   "BlindedPublicKeyHash",
+		Length: "PKHBytesLen",
+		Prefix: "BlindedPublicKeyHash",
+	},
+	{
+		Type:   "RollupAddress",
+		Length: "PKHBytesLen",
+		Prefix: "RollupAddress",
+	},
+	{
+		Type:   "SmartRollupAddress",
+		Length: "PKHBytesLen",
+		Prefix: "SmartRollupHash",
+	},
+	{
+		Type:   "MumbaiSmartRollupHash",
+		Length: "MumbaiSmartRollupHashBytesLen",
+		Prefix: "MumbaiSmartRollupHash",
+	},
+	{
+		Type:   "ZkRollupAddress",
+		Length: "PKHBytesLen",
+		Prefix: "ZkRollupHash",
+	},
+	{
+		Type:   "ScriptExprHash",
+		Length: "ScriptExprBytesLen",
+		Prefix: "ScriptExpr",
+	},
 }
 
 const tplSrc = `package gotez

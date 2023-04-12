@@ -878,3 +878,183 @@ func (self *BLSSignature) UnmarshalText(src []byte) error {
 	return nil
 }
 
+type BlindedPublicKeyHash [PKHBytesLen]byte
+
+func (self *BlindedPublicKeyHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.BlindedPublicKeyHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self BlindedPublicKeyHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self BlindedPublicKeyHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.BlindedPublicKeyHash, self[:])
+}
+
+func (self *BlindedPublicKeyHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.BlindedPublicKeyHash {
+		return fmt.Errorf("gotez: invalid BlindedPublicKeyHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type RollupAddress [PKHBytesLen]byte
+
+func (self *RollupAddress) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.RollupAddress, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self RollupAddress) String() string {
+	return string(self.ToBase58())
+}
+
+func (self RollupAddress) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.RollupAddress, self[:])
+}
+
+func (self *RollupAddress) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.RollupAddress {
+		return fmt.Errorf("gotez: invalid RollupAddress encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type SmartRollupAddress [PKHBytesLen]byte
+
+func (self *SmartRollupAddress) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.SmartRollupHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self SmartRollupAddress) String() string {
+	return string(self.ToBase58())
+}
+
+func (self SmartRollupAddress) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.SmartRollupHash, self[:])
+}
+
+func (self *SmartRollupAddress) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.SmartRollupHash {
+		return fmt.Errorf("gotez: invalid SmartRollupAddress encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type MumbaiSmartRollupHash [MumbaiSmartRollupHashBytesLen]byte
+
+func (self *MumbaiSmartRollupHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.MumbaiSmartRollupHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self MumbaiSmartRollupHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self MumbaiSmartRollupHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.MumbaiSmartRollupHash, self[:])
+}
+
+func (self *MumbaiSmartRollupHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.MumbaiSmartRollupHash {
+		return fmt.Errorf("gotez: invalid MumbaiSmartRollupHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type ZkRollupAddress [PKHBytesLen]byte
+
+func (self *ZkRollupAddress) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.ZkRollupHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self ZkRollupAddress) String() string {
+	return string(self.ToBase58())
+}
+
+func (self ZkRollupAddress) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.ZkRollupHash, self[:])
+}
+
+func (self *ZkRollupAddress) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.ZkRollupHash {
+		return fmt.Errorf("gotez: invalid ZkRollupAddress encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type ScriptExprHash [ScriptExprBytesLen]byte
+
+func (self *ScriptExprHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.ScriptExpr, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self ScriptExprHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self ScriptExprHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.ScriptExpr, self[:])
+}
+
+func (self *ScriptExprHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.ScriptExpr {
+		return fmt.Errorf("gotez: invalid ScriptExprHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
