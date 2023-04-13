@@ -83,11 +83,7 @@ func (*SmartRollupOriginateSuccessfulManagerOperationResult) OperationKind() str
 
 type SmartRollupAddMessages struct {
 	ManagerOperation
-	Message []SmartRollupMessage `tz:"dyn"`
-}
-
-type SmartRollupMessage struct {
-	Payload []byte `tz:"dyn"`
+	Message []Bytes `tz:"dyn"`
 }
 
 func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add_messages" }

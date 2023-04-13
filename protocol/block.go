@@ -49,7 +49,7 @@ type BlockMetadataContents struct {
 	Baker                     tz.PublicKeyHash
 	LevelInfo                 LevelInfo
 	VotingPeriodInfo          VotingPeriodInfo
-	NonceHash                 NonceHash
+	NonceHash                 tz.Option1[*tz.CycleNonceHash]
 	Deactivated               []tz.PublicKeyHash          `tz:"dyn"`
 	BalanceUpdates            []*operations.BalanceUpdate `tz:"dyn"`
 	LiquidityBakingEscapeEMA  int32
@@ -128,27 +128,6 @@ const (
 	VotingPeriodPromotion
 	VotingPeriodAdoption
 )
-
-type NonceHash interface {
-	NonceHash()
-}
-
-type NonceHashNone struct{}
-
-func (NonceHashNone) NonceHash() {}
-
-type NonceHashSome struct{ *tz.CycleNonceHash }
-
-func (NonceHashSome) NonceHash() {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[NonceHash]{
-		Variants: encoding.Variants[NonceHash]{
-			0: NonceHashNone{},
-			1: NonceHashSome{},
-		},
-	})
-}
 
 type OperationsList struct {
 	Operations []*operations.Group `tz:"dyn,dyn"` // yes, twice

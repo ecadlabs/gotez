@@ -197,6 +197,11 @@ var data = []mapping{
 		Length: "HashBytesLen",
 		Prefix: "MumbaiSmartRollupStateHash",
 	},
+	{
+		Type:   "DALCommitment",
+		Length: "SlotHeaderBytesLen",
+		Prefix: "SlotHeader",
+	},
 }
 
 const tplSrc = `package gotez

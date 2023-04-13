@@ -19,12 +19,8 @@ type OperationResultBacktracked[T any] struct {
 
 func (*OperationResultBacktracked[T]) OperationResultKind() string { return "backtracked" }
 
-type OperationError struct {
-	Opaque []byte `tz:"dyn"`
-}
-
 type OperationResultErrors struct {
-	Errors []OperationError `tz:"dyn"`
+	Errors []Bytes `tz:"dyn"`
 }
 
 type OperationResultFailed OperationResultErrors

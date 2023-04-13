@@ -93,6 +93,7 @@ var (
 
 	// 48
 	BLS12_381PublicKey = Prefix{Len: 48, Prefix: []byte{6, 149, 135, 204}} // BLpk(76)
+	SlotHeader         = Prefix{Len: 48, Prefix: []byte{2, 116, 180}}      // sh(74)
 
 	// 32
 	ScCommitmentHash = Prefix{Len: 32, Prefix: []byte{17, 144, 21, 100}}  // scc1(54)

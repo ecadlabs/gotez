@@ -87,3 +87,7 @@ type OriginationSuccessfulManagerOperationResult OriginationResultContents
 
 func (*OriginationSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
 func (*OriginationSuccessfulManagerOperationResult) OperationKind() string             { return "origination" }
+
+type Bytes struct {
+	Bytes []byte `tz:"dyn"`
+}

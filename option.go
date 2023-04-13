@@ -143,3 +143,21 @@ func (op Option[T]) GoString() string {
 	}
 	return fmt.Sprintf("None[%v]", t)
 }
+
+type Option1[T any] struct {
+	Option[T]
+}
+
+func (op *Option1[T]) EncodeTZ(ctx *encoding.Context) ([]byte, error) {
+	var buf bytes.Buffer
+	if op.IsSome() {
+		buf.WriteByte(1)
+		val := op.Unwrap()
+		if err := encoding.Encode(&buf, &val, encoding.Ctx(ctx)); err != nil {
+			return nil, err
+		}
+		return buf.Bytes(), nil
+	} else {
+		return []byte{0}, nil
+	}
+}

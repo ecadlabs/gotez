@@ -1088,3 +1088,33 @@ func (self *MumbaiSmartRollupStateHash) UnmarshalText(src []byte) error {
 	return nil
 }
 
+type DALCommitment [SlotHeaderBytesLen]byte
+
+func (self *DALCommitment) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.SlotHeader, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self DALCommitment) String() string {
+	return string(self.ToBase58())
+}
+
+func (self DALCommitment) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.SlotHeader, self[:])
+}
+
+func (self *DALCommitment) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.SlotHeader {
+		return fmt.Errorf("gotez: invalid DALCommitment encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+

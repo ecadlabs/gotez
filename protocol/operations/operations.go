@@ -86,6 +86,21 @@ type EndorsementContentsAndResult struct {
 
 func (*EndorsementContentsAndResult) OperationContentsAndResult() {}
 
+type DALAttestation struct {
+	Attestor    tz.PublicKeyHash
+	Attestation tz.BigInt
+	Level       int32
+}
+
+func (*DALAttestation) OperationKind() string { return "dal_attestation " }
+
+type DALAttestationContentsAndResult struct {
+	DALAttestation
+	Metadata tz.PublicKeyHash
+}
+
+func (*DALAttestationContentsAndResult) OperationContentsAndResult() {}
+
 type Reveal struct {
 	ManagerOperation
 	PublicKey tz.PublicKey
@@ -420,8 +435,7 @@ type PreendorsementContentsAndResult struct {
 func (*PreendorsementContentsAndResult) OperationContentsAndResult() {}
 
 type VDFRevelation struct {
-	Field0 *[100]byte
-	Field1 *[100]byte
+	Solution [2]*[100]byte
 }
 
 func (*VDFRevelation) OperationKind() string { return "vdf_revelation" }
@@ -459,6 +473,27 @@ type FailingNoop struct {
 
 func (*FailingNoop) OperationKind() string { return "failing_noop" }
 
+type DALPublishSlotHeader struct {
+	ManagerOperation
+	SlotHeader SlotHeader
+}
+
+type SlotHeader struct {
+	Level           int32
+	Index           uint8
+	Сommitment      *tz.DALCommitment
+	CommitmentProof [48]byte
+}
+
+func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_header" }
+
+type DALPublishSlotHeaderContentsAndResult struct {
+	DALPublishSlotHeader
+	Metadata MetadataWithResult[EventResult]
+}
+
+func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
+
 type ManagerOperation struct {
 	Source       tz.PublicKeyHash
 	Fee          tz.BigUint
@@ -491,19 +526,19 @@ func init() {
 
 	encoding.RegisterEnum(&encoding.Enum[OperationContents]{
 		Variants: encoding.Variants[OperationContents]{
-			1:  (*SeedNonceRevelation)(nil),
-			2:  (*DoubleEndorsementEvidence)(nil),
-			3:  (*DoubleBakingEvidence)(nil),
-			4:  (*ActivateAccount)(nil),
-			5:  (*Proposals)(nil),
-			6:  (*Ballot)(nil),
-			7:  (*DoublePreendorsementEvidence)(nil),
-			8:  (*VDFRevelation)(nil),
-			9:  (*DrainDelegate)(nil),
-			17: (*FailingNoop)(nil),
-			20: (*Preendorsement)(nil),
-			21: (*Endorsement)(nil),
-			// 22 Dal_attestation
+			1:   (*SeedNonceRevelation)(nil),
+			2:   (*DoubleEndorsementEvidence)(nil),
+			3:   (*DoubleBakingEvidence)(nil),
+			4:   (*ActivateAccount)(nil),
+			5:   (*Proposals)(nil),
+			6:   (*Ballot)(nil),
+			7:   (*DoublePreendorsementEvidence)(nil),
+			8:   (*VDFRevelation)(nil),
+			9:   (*DrainDelegate)(nil),
+			17:  (*FailingNoop)(nil),
+			20:  (*Preendorsement)(nil),
+			21:  (*Endorsement)(nil),
+			22:  (*DALAttestation)(nil),
 			107: (*Reveal)(nil),
 			108: (*Transaction)(nil),
 			109: (*Origination)(nil),
@@ -529,10 +564,10 @@ func init() {
 			205: (*SmartRollupTimeout)(nil),
 			206: (*SmartRollupExecuteOutboxMessage)(nil),
 			207: (*SmartRollupRecoverBond)(nil),
-			// 230 Dal_publish_slot_header
-			// 250 Zk_rollup_origination
-			// 251 Zk_rollup_publish
-			// 252 Zk_rollup_update
+			230: (*DALPublishSlotHeader)(nil),
+			250: (*ZkRollupOrigination)(nil),
+			251: (*ZkRollupPublish)(nil),
+			252: (*ZkRollupUpdate)(nil),
 			255: (*SignaturePrefix)(nil),
 		},
 	})
@@ -550,6 +585,7 @@ func init() {
 			9:   (*DrainDelegateContentsAndResult)(nil),
 			20:  (*PreendorsementContentsAndResult)(nil),
 			21:  (*EndorsementContentsAndResult)(nil),
+			22:  (*DALAttestationContentsAndResult)(nil),
 			107: (*RevealContentsAndResult)(nil),
 			108: (*TransactionContentsAndResult)(nil),
 			109: (*OriginationContentsAndResult)(nil),
@@ -567,6 +603,10 @@ func init() {
 			205: (*SmartRollupTimeoutContentsAndResult)(nil),
 			206: (*SmartRollupExecuteOutboxMessageContentsAndResult)(nil),
 			207: (*SmartRollupRecoverBondContentsAndResult)(nil),
+			230: (*DALPublishSlotHeaderContentsAndResult)(nil),
+			250: (*ZkRollupOriginationContentsAndResult)(nil),
+			251: (*ZkRollupPublishContentsAndResult)(nil),
+			252: (*ZkRollupUpdateContentsAndResult)(nil),
 			255: (*SignaturePrefix)(nil),
 		},
 	})
