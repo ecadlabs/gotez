@@ -55,7 +55,7 @@ type BondID interface {
 }
 
 type TxRollupBondID struct {
-	Address *tz.RollupAddress
+	Address *tz.TXRollupAddress
 }
 
 func (TxRollupBondID) BondID() {}

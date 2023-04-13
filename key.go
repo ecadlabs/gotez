@@ -67,6 +67,7 @@ func (pk *Secp256k1PublicKey) PublicKey() {}
 func (pk *P256PublicKey) PublicKey()      {}
 func (pk *BLSPublicKey) PublicKey()       {}
 
+const PKHBytesLen = AddressBytesLen
 const publicKeyHashComparableKeyLen = PKHBytesLen + 1
 
 type EncodedPublicKeyHash [publicKeyHashComparableKeyLen]byte

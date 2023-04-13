@@ -12,24 +12,17 @@ import (
 )
 
 const (
-	SeedNonceBytesLen             = 32
-	SecretBytesLen                = 20
-	PKHBytesLen                   = 20
-	BlockHashBytesLen             = 32
-	OperationListListHashBytesLen = 32
-	ContextHashBytesLen           = 32
-	ChainIdBytesLen               = 4
-	GenericSignatureBytesLen      = 64
-	BLSSignatureBytesLen          = 96
-	CycleNonceBytesLen            = 32
-	ProtocolHashBytesLen          = 32
-	ContractHashBytesLen          = 20
-	OperationHashBytesLen         = 32
-	BlockPayloadHashBytesLen      = 32
-	ScriptExprBytesLen            = 32
-	MumbaiSmartRollupHashBytesLen = 32
-	SlotHeaderBytesLen            = 48
-	ProofOfWorkNonceBytesLen      = 8
+	ProofOfWorkNonceBytesLen = 8
+	ChainIdBytesLen          = 4
+	SecretBytesLen           = 20
+	AddressBytesLen          = 20
+	ContractHashBytesLen     = 20
+	SeedNonceBytesLen        = 32
+	CycleNonceBytesLen       = 32
+	HashBytesLen             = 32
+	SlotHeaderBytesLen       = 48
+	GenericSignatureBytesLen = 64
+	BLSSignatureBytesLen     = 96
 )
 
 type Comparable[K any] interface {
@@ -88,7 +81,7 @@ type TransactionDestination interface {
 }
 
 type TxRollupDestination struct {
-	*RollupAddress
+	*TXRollupAddress
 	Padding uint8
 }
 

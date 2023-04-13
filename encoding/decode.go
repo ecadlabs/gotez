@@ -248,7 +248,11 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 		out.Set(val)
 		return rest, err
 	}
-	return nil, &Error{path, fmt.Errorf("unsupported interface type %v", out.Type())}
+	if err != nil {
+		return nil, err
+	} else {
+		return nil, &Error{path, fmt.Errorf("unknown interface type %v", out.Type())}
+	}
 }
 
 func Decode(data []byte, v any, opt ...Option) (rest []byte, err error) {

@@ -19,17 +19,17 @@ const outName = "types_gen.go"
 var data = []mapping{
 	{
 		Type:   "BlockHash",
-		Length: "BlockHashBytesLen",
+		Length: "HashBytesLen",
 		Prefix: "BlockHash",
 	},
 	{
 		Type:   "OperationsHash",
-		Length: "OperationListListHashBytesLen",
+		Length: "HashBytesLen",
 		Prefix: "OperationListListHash",
 	},
 	{
 		Type:   "ContextHash",
-		Length: "ContextHashBytesLen",
+		Length: "HashBytesLen",
 		Prefix: "ContextHash",
 	},
 	{
@@ -39,7 +39,7 @@ var data = []mapping{
 	},
 	{
 		Type:   "BlockPayloadHash",
-		Length: "BlockPayloadHashBytesLen",
+		Length: "HashBytesLen",
 		Prefix: "ValueHash",
 	},
 	{
@@ -49,32 +49,32 @@ var data = []mapping{
 	},
 	{
 		Type:   "Ed25519PublicKeyHash",
-		Length: "PKHBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "Ed25519PublicKeyHash",
 	},
 	{
 		Type:   "Secp256k1PublicKeyHash",
-		Length: "PKHBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "Secp256k1PublicKeyHash",
 	},
 	{
 		Type:   "P256PublicKeyHash",
-		Length: "PKHBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "P256PublicKeyHash",
 	},
 	{
 		Type:   "BLSPublicKeyHash",
-		Length: "PKHBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "BLS12_381PublicKeyHash",
 	},
 	{
 		Type:   "ProtocolHash",
-		Length: "ProtocolHashBytesLen",
+		Length: "HashBytesLen",
 		Prefix: "ProtocolHash",
 	},
 	{
 		Type:   "ContractHash",
-		Length: "ContractHashBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "ContractHash",
 	},
 	{
@@ -164,33 +164,38 @@ var data = []mapping{
 	},
 	{
 		Type:   "BlindedPublicKeyHash",
-		Length: "PKHBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "BlindedPublicKeyHash",
 	},
 	{
-		Type:   "RollupAddress",
-		Length: "PKHBytesLen",
-		Prefix: "RollupAddress",
+		Type:   "TXRollupAddress",
+		Length: "AddressBytesLen",
+		Prefix: "TXRollupAddress",
 	},
 	{
 		Type:   "SmartRollupAddress",
-		Length: "PKHBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "SmartRollupHash",
 	},
 	{
 		Type:   "MumbaiSmartRollupHash",
-		Length: "MumbaiSmartRollupHashBytesLen",
+		Length: "HashBytesLen",
 		Prefix: "MumbaiSmartRollupHash",
 	},
 	{
 		Type:   "ZkRollupAddress",
-		Length: "PKHBytesLen",
+		Length: "AddressBytesLen",
 		Prefix: "ZkRollupHash",
 	},
 	{
 		Type:   "ScriptExprHash",
-		Length: "ScriptExprBytesLen",
+		Length: "HashBytesLen",
 		Prefix: "ScriptExpr",
+	},
+	{
+		Type:   "MumbaiSmartRollupStateHash",
+		Length: "HashBytesLen",
+		Prefix: "MumbaiSmartRollupStateHash",
 	},
 }
 

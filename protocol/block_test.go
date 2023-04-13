@@ -7,14 +7,27 @@ import (
 	"testing"
 
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/pretty"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 var blocks = []string{
-	"3346758",
-	"mumbainet_181313",
+	"332534",
+	"332090",
+	"332530",
+	"332075",
+	"332470",
+	"332053",
+	"332066",
+	"332091",
+	"327682",
+	"332064",
+	"298154",
+	"298135",
+	"41157",
+	"39524",
+	"41821",
+	"332093",
 }
 
 func TestBlock(t *testing.T) {
@@ -30,7 +43,7 @@ func TestBlock(t *testing.T) {
 					fmt.Println(err.Path)
 				}
 			}
-			fmt.Printf("%# v\n", pretty.Formatter(&block, pretty.OptStringer(true), pretty.OptTextMarshaler(true), pretty.OptMaxDepth(20)))
+			//fmt.Printf("%# v\n", pretty.Formatter(&block, pretty.OptStringer(true), pretty.OptTextMarshaler(true), pretty.OptMaxDepth(20)))
 		})
 	}
 }

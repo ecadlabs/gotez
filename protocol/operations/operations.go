@@ -86,6 +86,234 @@ type EndorsementContentsAndResult struct {
 
 func (*EndorsementContentsAndResult) OperationContentsAndResult() {}
 
+type Reveal struct {
+	ManagerOperation
+	PublicKey tz.PublicKey
+}
+
+func (*Reveal) OperationKind() string { return "reveal" }
+
+type RevealContentsAndResult struct {
+	Reveal
+	Metadata MetadataWithResult[EventResult]
+}
+
+func (*RevealContentsAndResult) OperationContentsAndResult() {}
+
+type RevealSuccessfulManagerOperationResult EventResultContents
+
+func (*RevealSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
+func (*RevealSuccessfulManagerOperationResult) OperationKind() string             { return "reveal" }
+
+type Delegation struct {
+	ManagerOperation
+	Delegate tz.Option[tz.PublicKeyHash]
+}
+
+func (*Delegation) OperationKind() string { return "delegation" }
+
+type DelegationContentsAndResult struct {
+	Delegation
+	Metadata MetadataWithResult[EventResult]
+}
+
+func (*DelegationContentsAndResult) OperationContentsAndResult() {}
+
+type DelegationInternalOperationResult struct {
+	Source   tz.TransactionDestination
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   EventResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+
+type DelegationSuccessfulManagerOperationResult EventResultContents
+
+func (*DelegationSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
+func (*DelegationSuccessfulManagerOperationResult) OperationKind() string             { return "delegation" }
+
+type RegisterGlobalConstant struct {
+	ManagerOperation
+	Value expression.Expression `tz:"dyn"`
+}
+
+func (*RegisterGlobalConstant) OperationKind() string { return "register_global_constant" }
+
+type RegisterGlobalConstantResult interface {
+	RegisterGlobalConstantResult()
+	OperationResult
+}
+
+type RegisterGlobalConstantResultContents struct {
+	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+	ConsumedMilligas tz.BigUint
+	StorageSize      tz.BigInt
+	GlobalAddress    *tz.ScriptExprHash
+}
+
+type RegisterGlobalConstantResultApplied struct {
+	OperationResultApplied[RegisterGlobalConstantResultContents]
+}
+
+func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
+
+type RegisterGlobalConstantResultBacktracked struct {
+	OperationResultBacktracked[RegisterGlobalConstantResultContents]
+}
+
+func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
+
+type RegisterGlobalConstantResultFailed struct{ OperationResultFailed }
+
+func (*RegisterGlobalConstantResultFailed) RegisterGlobalConstantResult() {}
+
+type RegisterGlobalConstantResultSkipped struct{ OperationResultSkipped }
+
+func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[RegisterGlobalConstantResult]{
+		Variants: encoding.Variants[RegisterGlobalConstantResult]{
+			0: (*RegisterGlobalConstantResultApplied)(nil),
+			1: (*RegisterGlobalConstantResultFailed)(nil),
+			2: (*RegisterGlobalConstantResultSkipped)(nil),
+			3: (*RegisterGlobalConstantResultBacktracked)(nil),
+		},
+	})
+}
+
+type RegisterGlobalConstantContentsAndResult struct {
+	RegisterGlobalConstant
+	Metadata MetadataWithResult[RegisterGlobalConstantResult]
+}
+
+func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
+
+type SetDepositsLimit struct {
+	ManagerOperation
+	Limit tz.Option[tz.BigUint]
+}
+
+func (*SetDepositsLimit) OperationKind() string { return "set_deposits_limit" }
+
+type SetDepositsLimitContentsAndResult struct {
+	SetDepositsLimit
+	Metadata MetadataWithResult[EventResult]
+}
+
+func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
+
+type SetDepositsLimitSuccessfulManagerOperationResult EventResultContents
+
+func (*SetDepositsLimitSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
+func (*SetDepositsLimitSuccessfulManagerOperationResult) OperationKind() string {
+	return "set_deposits_limit"
+}
+
+type UpdateConsensusKey struct {
+	ManagerOperation
+	PublicKey tz.PublicKey
+}
+
+func (*UpdateConsensusKey) OperationKind() string { return "update_consensus_key" }
+
+type UpdateConsensusKeyContentsAndResult struct {
+	UpdateConsensusKey
+	Metadata MetadataWithResult[EventResult]
+}
+
+func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
+
+type UpdateConsensusKeySuccessfulManagerOperationResult EventResultContents
+
+func (*UpdateConsensusKeySuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
+func (*UpdateConsensusKeySuccessfulManagerOperationResult) OperationKind() string {
+	return "update_consensus_key"
+}
+
+type TransferTicket struct {
+	ManagerOperation
+	TicketContents expression.Expression `tz:"dyn"`
+	TicketType     expression.Expression `tz:"dyn"`
+	TicketTicketer tz.ContractID
+	TicketAmount   tz.BigUint
+	Destination    tz.ContractID
+	Entrypoint     string `tz:"dyn"`
+}
+
+func (*TransferTicket) OperationKind() string { return "transfer_ticket" }
+
+type TransferTicketContentsAndResult struct {
+	TransferTicket
+	Metadata MetadataWithResult[SmartRollupExecuteOutboxMessageResult]
+}
+
+func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
+
+type IncreasePaidStorage struct {
+	ManagerOperation
+	Amount      tz.BigInt
+	Destination tz.OriginatedContractID
+}
+
+func (*IncreasePaidStorage) OperationKind() string { return "increase_paid_storage" }
+
+type IncreasePaidStorageResult interface {
+	IncreasePaidStorageResult()
+	OperationResult
+}
+
+type IncreasePaidStorageResultContents struct {
+	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+	ConsumedMilligas tz.BigUint
+}
+
+type IncreasePaidStorageResultApplied struct {
+	OperationResultApplied[IncreasePaidStorageResultContents]
+}
+
+func (*IncreasePaidStorageResultApplied) IncreasePaidStorageResult() {}
+
+type IncreasePaidStorageResultBacktracked struct {
+	OperationResultBacktracked[IncreasePaidStorageResultContents]
+}
+
+func (*IncreasePaidStorageResultBacktracked) IncreasePaidStorageResult() {}
+
+type IncreasePaidStorageResultFailed struct{ OperationResultFailed }
+
+func (*IncreasePaidStorageResultFailed) IncreasePaidStorageResult() {}
+
+type IncreasePaidStorageResultSkipped struct{ OperationResultSkipped }
+
+func (*IncreasePaidStorageResultSkipped) IncreasePaidStorageResult() {}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[IncreasePaidStorageResult]{
+		Variants: encoding.Variants[IncreasePaidStorageResult]{
+			0: (*IncreasePaidStorageResultApplied)(nil),
+			1: (*IncreasePaidStorageResultFailed)(nil),
+			2: (*IncreasePaidStorageResultSkipped)(nil),
+			3: (*IncreasePaidStorageResultBacktracked)(nil),
+		},
+	})
+}
+
+type IncreasePaidStorageContentsAndResult struct {
+	IncreasePaidStorage
+	Metadata MetadataWithResult[IncreasePaidStorageResult]
+}
+
+func (*IncreasePaidStorageContentsAndResult) OperationContentsAndResult() {}
+
+type IncreasePaidStorageSuccessfulManagerOperationResult IncreasePaidStorageResultContents
+
+func (*IncreasePaidStorageSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
+func (*IncreasePaidStorageSuccessfulManagerOperationResult) OperationKind() string {
+	return "increase_paid_storage"
+}
+
 type DoubleBakingEvidence struct {
 	Block1 shell.BlockHeader `tz:"dyn"`
 	Block2 shell.BlockHeader `tz:"dyn"`
@@ -263,18 +491,19 @@ func init() {
 
 	encoding.RegisterEnum(&encoding.Enum[OperationContents]{
 		Variants: encoding.Variants[OperationContents]{
-			1:   (*SeedNonceRevelation)(nil),
-			2:   (*DoubleEndorsementEvidence)(nil),
-			3:   (*DoubleBakingEvidence)(nil),
-			4:   (*ActivateAccount)(nil),
-			5:   (*Proposals)(nil),
-			6:   (*Ballot)(nil),
-			7:   (*DoublePreendorsementEvidence)(nil),
-			8:   (*VDFRevelation)(nil),
-			9:   (*DrainDelegate)(nil),
-			17:  (*FailingNoop)(nil),
-			20:  (*Preendorsement)(nil),
-			21:  (*Endorsement)(nil),
+			1:  (*SeedNonceRevelation)(nil),
+			2:  (*DoubleEndorsementEvidence)(nil),
+			3:  (*DoubleBakingEvidence)(nil),
+			4:  (*ActivateAccount)(nil),
+			5:  (*Proposals)(nil),
+			6:  (*Ballot)(nil),
+			7:  (*DoublePreendorsementEvidence)(nil),
+			8:  (*VDFRevelation)(nil),
+			9:  (*DrainDelegate)(nil),
+			17: (*FailingNoop)(nil),
+			20: (*Preendorsement)(nil),
+			21: (*Endorsement)(nil),
+			// 22 Dal_attestation
 			107: (*Reveal)(nil),
 			108: (*Transaction)(nil),
 			109: (*Origination)(nil),
@@ -283,7 +512,27 @@ func init() {
 			112: (*SetDepositsLimit)(nil),
 			113: (*IncreasePaidStorage)(nil),
 			114: (*UpdateConsensusKey)(nil),
+			// 150 Tx_rollup_origination
+			// 151 Tx_rollup_submit_batch
+			// 152 Tx_rollup_commit
+			// 153 Tx_rollup_return_bond
+			// 154 Tx_rollup_finalize_commitment
+			// 155 Tx_rollup_remove_commitment
+			// 156 Tx_rollup_rejection
+			// 157 Tx_rollup_dispatch_tickets
+			158: (*TransferTicket)(nil),
 			200: (*SmartRollupOriginate)(nil),
+			201: (*SmartRollupAddMessages)(nil),
+			202: (*SmartRollupCement)(nil),
+			203: (*SmartRollupPublish)(nil),
+			204: (*SmartRollupRefute)(nil),
+			205: (*SmartRollupTimeout)(nil),
+			206: (*SmartRollupExecuteOutboxMessage)(nil),
+			207: (*SmartRollupRecoverBond)(nil),
+			// 230 Dal_publish_slot_header
+			// 250 Zk_rollup_origination
+			// 251 Zk_rollup_publish
+			// 252 Zk_rollup_update
 			255: (*SignaturePrefix)(nil),
 		},
 	})
@@ -309,7 +558,15 @@ func init() {
 			112: (*SetDepositsLimitContentsAndResult)(nil),
 			113: (*IncreasePaidStorageContentsAndResult)(nil),
 			114: (*UpdateConsensusKeyContentsAndResult)(nil),
+			158: (*TransferTicketContentsAndResult)(nil),
 			200: (*SmartRollupOriginateContentsAndResult)(nil),
+			201: (*SmartRollupAddMessagesContentsAndResult)(nil),
+			202: (*SmartRollupCementContentsAndResult)(nil),
+			203: (*SmartRollupPublishContentsAndResult)(nil),
+			204: (*SmartRollupRefuteContentsAndResult)(nil),
+			205: (*SmartRollupTimeoutContentsAndResult)(nil),
+			206: (*SmartRollupExecuteOutboxMessageContentsAndResult)(nil),
+			207: (*SmartRollupRecoverBondContentsAndResult)(nil),
 			255: (*SignaturePrefix)(nil),
 		},
 	})

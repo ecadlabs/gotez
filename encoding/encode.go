@@ -200,7 +200,7 @@ func encodeValue(out io.Writer, val reflect.Value, ctx *Context, fl []flag, path
 		return err
 	}
 	if !ok {
-		return &Error{path, fmt.Errorf("unsupported interface type %v", val.Type())}
+		return &Error{path, fmt.Errorf("unknown interface type %v", val.Type())}
 	}
 	return nil
 }
