@@ -7,43 +7,42 @@ import (
 	"testing"
 
 	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/protocol/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-var blocks = []string{
-	"332534",
-	"332090",
-	"332530",
-	"332075",
-	"332470",
-	"332053",
-	"332066",
-	"332091",
-	"327682",
-	"332064",
-	"298154",
-	"298135",
-	"41157",
-	"39524",
-	"41821",
-	"332093",
+type protoTestData struct {
+	proto  proto.Protocol
+	blocks []string
+}
+
+var testData = []protoTestData{
+	{
+		proto: proto.Proto016PtMumbai,
+		blocks: []string{
+			"3279466",
+		},
+	},
 }
 
 func TestBlock(t *testing.T) {
-	for _, block := range blocks {
-		t.Run(block, func(t *testing.T) {
-			fileName := filepath.Join("test_data", block+".bin")
-			buf, err := os.ReadFile(fileName)
-			require.NoError(t, err)
-			var block BlockInfo
-			_, err = encoding.Decode(buf, &block)
-			if !assert.NoError(t, err) {
-				if err, ok := err.(*encoding.Error); ok {
-					fmt.Println(err.Path)
-				}
+	for _, protoData := range testData {
+		t.Run(protoData.proto.Name(), func(t *testing.T) {
+			for _, block := range protoData.blocks {
+				t.Run(block, func(t *testing.T) {
+					fileName := filepath.Join("test_data", protoData.proto.Name(), block+".bin")
+					buf, err := os.ReadFile(fileName)
+					require.NoError(t, err)
+					var block BlockInfo
+					_, err = encoding.Decode(buf, &block)
+					if !assert.NoError(t, err) {
+						if err, ok := err.(*encoding.Error); ok {
+							fmt.Println(err.Path)
+						}
+					}
+				})
 			}
-			//fmt.Printf("%# v\n", pretty.Formatter(&block, pretty.OptStringer(true), pretty.OptTextMarshaler(true), pretty.OptMaxDepth(20)))
 		})
 	}
 }

@@ -18,6 +18,13 @@ type testCase struct {
 	encoded []byte
 }
 
+type grabSlice []byte
+
+func (g *grabSlice) DecodeTZ(data []byte, ctx *Context) (rest []byte, err error) {
+	*g = grabSlice(data)
+	return data[len(data):], nil
+}
+
 func TestEncoding(t *testing.T) {
 	type withOmit struct {
 		//lint:ignore U1000 test skipping
@@ -45,6 +52,10 @@ func TestEncoding(t *testing.T) {
 	type withDynOpt struct {
 		X *uint32 `tz:"dyn,opt"`
 		Y uint32
+	}
+
+	type withCustomDyn struct {
+		X grabSlice `tz:"dyn"`
 	}
 
 	tests := []testCase{
@@ -288,6 +299,17 @@ func TestEncoding(t *testing.T) {
 			rest:   []byte{},
 			expect: func() *withDynOpt { x := uint32(0x01234567); return &withDynOpt{X: &x, Y: 0x89abcdef} }(),
 			encode: true,
+		},
+		{
+			name: "custom dynamic",
+			data: []byte{
+				0x00, 0x00, 0x00, 0x04, // X length
+				0x89, 0xab, 0xcd, 0xef, // X
+				0x01, 0x02, 0x03, 0x04, // rest
+			},
+			v:      new(withCustomDyn),
+			rest:   []byte{0x01, 0x02, 0x03, 0x04},
+			expect: &withCustomDyn{X: grabSlice{0x89, 0xab, 0xcd, 0xef}},
 		},
 	}
 	for _, tt := range tests {
