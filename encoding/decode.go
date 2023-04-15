@@ -105,7 +105,7 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context, path ErrorPath)
 			sel := &path[len(path)-1]
 			for i := 0; i < l; i++ {
 				*sel = IndexSelector(i)
-				if data, err = decodeValue(data, out.Index(i), ctx, nil, path); err != nil {
+				if data, err = decodeValue(data, out.Index(i), ctx.clone(), nil, path); err != nil {
 					break
 				}
 			}
@@ -126,7 +126,7 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context, path ErrorPath)
 				tmp := reflect.New(typ.Elem()).Elem()
 				s = reflect.Append(s, tmp)
 				el := s.Index(s.Len() - 1) // don't lose data even in case of error
-				if data, err = decodeValue(data, el, ctx, nil, path); err != nil {
+				if data, err = decodeValue(data, el, ctx.clone(), nil, path); err != nil {
 					break
 				}
 				i += 1
@@ -151,7 +151,7 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context, path ErrorPath)
 			}
 			field := out.Field(i)
 			*sel = (*FieldSelector)(&f)
-			if data, err = decodeValue(data, field, ctx, fl, path); err != nil {
+			if data, err = decodeValue(data, field, ctx.clone(), fl, path); err != nil {
 				return nil, err
 			}
 		}
@@ -179,7 +179,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 			}
 			tmp := data[:ln]
 			data = data[ln:]
-			if _, err := decodeValue(tmp, out, ctx, fl, path); err != nil {
+			if _, err := decodeValue(tmp, out, ctx.clone(), fl, path); err != nil {
 				return nil, err
 			}
 			return data, nil
@@ -195,7 +195,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 			some := data[0] != 0
 			data = data[1:]
 			if some {
-				return decodeValue(data, out, ctx, fl, path)
+				return decodeValue(data, out, ctx.clone(), fl, path)
 			} else {
 				return data, nil
 			}
@@ -230,7 +230,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 			dec = out.Addr().Interface().(Decoder)
 		}
 		if dec != nil {
-			rest, err := dec.DecodeTZ(data, ctx)
+			rest, err := dec.DecodeTZ(data, ctx.clone())
 			if err, ok := err.(*Error); ok {
 				return nil, &Error{
 					Path: append(path, err.Path...),
@@ -242,17 +242,30 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 		return decodeBuiltin(data, out, ctx, path)
 	}
 
-	// decode enum
-	val, rest, err := ctx.enums().tryDecode(out.Type(), data, ctx, path)
+	// decode user
+	val, rest, err := ctx.types().tryDecode(out.Type(), data, ctx.clone())
+	if err, ok := err.(*Error); ok {
+		err = &Error{
+			Path: append(path, err.Path...),
+			Err:  err.Err,
+		}
+	}
 	if val.IsValid() {
 		out.Set(val)
 		return rest, err
-	}
-	if err != nil {
+	} else if err != nil {
 		return nil, err
-	} else {
-		return nil, &Error{path, fmt.Errorf("unknown interface type %v", out.Type())}
 	}
+
+	// decode enum
+	val, rest, err = ctx.enums().tryDecode(out.Type(), data, ctx.clone(), path)
+	if val.IsValid() {
+		out.Set(val)
+		return rest, err
+	} else if err != nil {
+		return nil, err
+	}
+	return nil, &Error{path, fmt.Errorf("unknown interface type %v", out.Type())}
 }
 
 func Decode(data []byte, v any, opt ...Option) (rest []byte, err error) {

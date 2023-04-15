@@ -1,19 +1,18 @@
-package operations
+package proto_016_PtMumbai
 
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/expression"
-	"github.com/ecadlabs/gotez/protocol/shell"
+	"github.com/ecadlabs/gotez/protocol/proto"
 )
 
 type OperationContents interface {
-	OperationKind() string
+	proto.OperationContents
 }
 
 type OperationContentsAndResult interface {
-	OperationContentsAndResult()
-	OperationContents
+	proto.OperationContentsAndResult
 }
 
 type SeedNonceRevelation struct {
@@ -142,6 +141,7 @@ type DelegationInternalOperationResult struct {
 }
 
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
 
 type DelegationSuccessfulManagerOperationResult EventResultContents
 
@@ -330,8 +330,8 @@ func (*IncreasePaidStorageSuccessfulManagerOperationResult) OperationKind() stri
 }
 
 type DoubleBakingEvidence struct {
-	Block1 shell.BlockHeader `tz:"dyn"`
-	Block2 shell.BlockHeader `tz:"dyn"`
+	Block1 BlockHeader `tz:"dyn"`
+	Block2 BlockHeader `tz:"dyn"`
 }
 
 func (*DoubleBakingEvidence) OperationKind() string { return "double_baking_evidence" }
@@ -613,8 +613,7 @@ func init() {
 }
 
 type SuccessfulManagerOperationResult interface {
-	OperationContents
-	SuccessfulManagerOperationResult()
+	proto.SuccessfulManagerOperationResult
 }
 
 type EventResult interface {
@@ -664,7 +663,7 @@ type MetadataWithResult[T OperationResult] struct {
 }
 
 type InternalOperationResult interface {
-	InternalOperationResult()
+	proto.InternalOperationResult
 }
 
 type EventInternalOperationResult struct {
@@ -677,6 +676,7 @@ type EventInternalOperationResult struct {
 }
 
 func (*EventInternalOperationResult) InternalOperationResult() {}
+func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[InternalOperationResult]{

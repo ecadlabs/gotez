@@ -90,7 +90,7 @@ func encodeBuiltin(out io.Writer, val reflect.Value, ctx *Context, path ErrorPat
 		sel := &path[len(path)-1]
 		for i := 0; i < val.Len(); i++ {
 			*sel = IndexSelector(i)
-			if err := encodeValue(out, val.Index(i), ctx, nil, path); err != nil {
+			if err := encodeValue(out, val.Index(i), ctx.clone(), nil, path); err != nil {
 				return err
 			}
 		}
@@ -111,7 +111,7 @@ func encodeBuiltin(out io.Writer, val reflect.Value, ctx *Context, path ErrorPat
 				}
 			}
 			*sel = (*FieldSelector)(&f)
-			if err := encodeValue(out, val.Field(i), ctx, fl, path); err != nil {
+			if err := encodeValue(out, val.Field(i), ctx.clone(), fl, path); err != nil {
 				return err
 			}
 		}
@@ -127,7 +127,7 @@ func encodeValue(out io.Writer, val reflect.Value, ctx *Context, fl []flag, path
 		if _, ok := fl[0].(flDynamic); ok {
 			fl = fl[1:]
 			var buf bytes.Buffer
-			if err := encodeValue(&buf, val, ctx, fl, path); err != nil {
+			if err := encodeValue(&buf, val, ctx.clone(), fl, path); err != nil {
 				return err
 			}
 			tmp := buf.Bytes()
@@ -151,7 +151,7 @@ func encodeValue(out io.Writer, val reflect.Value, ctx *Context, fl []flag, path
 				if _, err := out.Write(buf[:]); err != nil {
 					return wrapError(err, path)
 				}
-				return encodeValue(out, val, ctx, fl, path)
+				return encodeValue(out, val, ctx.clone(), fl, path)
 			} else {
 				_, err := out.Write(buf[:])
 				return wrapError(err, path)
@@ -182,7 +182,7 @@ func encodeValue(out io.Writer, val reflect.Value, ctx *Context, fl []flag, path
 			} else {
 				enc = val.Addr().Interface().(Encoder)
 			}
-			tmp, err := enc.EncodeTZ(ctx)
+			tmp, err := enc.EncodeTZ(ctx.clone())
 			if err, ok := err.(*Error); ok {
 				return &Error{
 					Path: append(path, err.Path...),
@@ -195,7 +195,7 @@ func encodeValue(out io.Writer, val reflect.Value, ctx *Context, fl []flag, path
 		return encodeBuiltin(out, val, ctx, path)
 	}
 
-	ok, err := ctx.enums().tryEncode(out, val, ctx, path)
+	ok, err := ctx.enums().tryEncode(out, val, ctx.clone(), path)
 	if err != nil {
 		return err
 	}

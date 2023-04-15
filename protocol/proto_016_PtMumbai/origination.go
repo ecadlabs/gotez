@@ -1,4 +1,4 @@
-package operations
+package proto_016_PtMumbai
 
 import (
 	tz "github.com/ecadlabs/gotez"
@@ -82,6 +82,7 @@ type OriginationInternalOperationResult struct {
 }
 
 func (*OriginationInternalOperationResult) InternalOperationResult() {}
+func (*OriginationInternalOperationResult) OperationKind() string    { return "origination" }
 
 type OriginationSuccessfulManagerOperationResult OriginationResultContents
 

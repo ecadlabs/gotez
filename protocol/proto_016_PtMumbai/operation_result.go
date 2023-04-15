@@ -1,4 +1,4 @@
-package operations
+package proto_016_PtMumbai
 
 import tz "github.com/ecadlabs/gotez"
 

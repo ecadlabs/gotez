@@ -6,20 +6,12 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
-	"github.com/ecadlabs/gotez/protocol/shell"
 )
 
-type ProtocolBlockHeader interface {
-	ProtocolBlockHeader()
-}
-
-type BlockProtocolData interface {
-	BlockProtocolData()
-}
-
 type BlockHeader struct {
-	shell.BlockHeader
+	proto.BlockHeader
 	ProtocolData ProtocolBlockHeader
 }
 
@@ -28,11 +20,26 @@ func (header *BlockHeader) DecodeTZ(data []byte, ctx *encoding.Context) (rest []
 	if err != nil {
 		return nil, err
 	}
-	header.ProtocolData, err = getProtocolBlockHeaderImpl(header.BlockHeader.Proto)
-	if err != nil {
-		return nil, err
+
+	p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+	if !ok {
+		p = header.Proto
 	}
+
+	switch p {
+	case proto.Proto015PtLimaPt:
+		header.ProtocolData = new(proto_015_PtLimaPt.ProtocolBlockHeader)
+	case proto.Proto016PtMumbai:
+		header.ProtocolData = new(proto_016_PtMumbai.ProtocolBlockHeader)
+	default:
+		return nil, fmt.Errorf("gotez: BlockHeader.DecodeTZ: unknown protocol version %d", header.Proto)
+	}
+
 	return encoding.Decode(data, header.ProtocolData, encoding.Ctx(ctx))
+}
+
+type ProtocolBlockHeader interface {
+	ProtocolBlockHeader()
 }
 
 type BlockInfo struct {
@@ -40,50 +47,68 @@ type BlockInfo struct {
 }
 
 type BlockInfoContents struct {
-	ChainID      *tz.ChainID
-	Hash         *tz.BlockHash
-	Header       BlockHeader `tz:"dyn"`
-	ProtocolData BlockProtocolData
+	ChainID    *tz.ChainID
+	Hash       *tz.BlockHash
+	Header     BlockHeader `tz:"dyn"`
+	Metadata   tz.Option[BlockMetadata]
+	Operations []OperationsList `tz:"dyn"`
 }
 
-func (block *BlockInfoContents) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
-	type blockInfoPrefix struct {
+func (header *BlockInfoContents) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
+	type part1 struct {
 		ChainID *tz.ChainID
 		Hash    *tz.BlockHash
+		Header  BlockHeader `tz:"dyn"`
+	}
+	type part2 struct {
+		Metadata   tz.Option[BlockMetadata]
+		Operations []OperationsList `tz:"dyn"`
+	}
+	var (
+		p1 part1
+		p2 part2
+	)
+	data, err = encoding.Decode(data, &p1, encoding.Ctx(ctx))
+	header.ChainID = p1.ChainID
+	header.Hash = p1.Hash
+	header.Header = p1.Header
+	if err != nil {
+		return nil, err
+	}
+	if ctx.Get(proto.ProtocolVersionCtxKey) == nil {
+		ctx = ctx.Set(proto.ProtocolVersionCtxKey, p1.Header.Proto)
 	}
 
-	var pre blockInfoPrefix
-	data, err = encoding.Decode(data, &pre, encoding.Ctx(ctx))
-	block.ChainID = pre.ChainID
-	block.Hash = pre.Hash
-	if err != nil {
-		return nil, err
-	}
-	data, err = encoding.Decode(data, &block.Header, encoding.Ctx(ctx), encoding.Dynamic())
-	if err != nil {
-		return nil, err
-	}
-	block.ProtocolData, err = getBlockProtocolDataImpl(block.Header.BlockHeader.Proto)
-	if err != nil {
-		return nil, err
-	}
-	return encoding.Decode(data, block.ProtocolData, encoding.Ctx(ctx))
+	data, err = encoding.Decode(data, &p2, encoding.Ctx(ctx))
+	header.Metadata = p2.Metadata
+	header.Operations = p2.Operations
+	return data, err
 }
 
-func getProtocolBlockHeaderImpl(p proto.Protocol) (ProtocolBlockHeader, error) {
-	switch p {
-	case proto.Proto016PtMumbai:
-		return new(proto_016_PtMumbai.ProtocolBlockHeader), nil
-	default:
-		return nil, fmt.Errorf("gotez: unknown protocol version %d", p)
-	}
+type BlockMetadata struct {
+	BlockMetadataContents `tz:"dyn"`
 }
 
-func getBlockProtocolDataImpl(p proto.Protocol) (BlockProtocolData, error) {
-	switch p {
-	case proto.Proto016PtMumbai:
-		return new(proto_016_PtMumbai.BlockProtocolData), nil
-	default:
-		return nil, fmt.Errorf("gotez: unknown protocol version %d", p)
-	}
+type BlockMetadataContents interface {
+	BlockMetadataContents()
+}
+
+func init() {
+	encoding.RegisterType(func(data []byte, ctx *encoding.Context) (BlockMetadataContents, []byte, error) {
+		p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+		if !ok {
+			return nil, nil, fmt.Errorf("gotez: protocol version must be passed to the decoder chain")
+		}
+
+		var out BlockMetadataContents
+		switch p {
+		case proto.Proto016PtMumbai:
+			out = new(proto_016_PtMumbai.BlockMetadataContents)
+		default:
+			return nil, nil, fmt.Errorf("gotez: unknown protocol version %d", p)
+		}
+
+		data, err := encoding.Decode(data, out, encoding.Ctx(ctx))
+		return out, data, err
+	})
 }

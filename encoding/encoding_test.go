@@ -369,6 +369,14 @@ type variant11 uint32
 
 func (variant11) testEnum1() {}
 
+type userType interface {
+	UserType()
+}
+
+type stringType string
+
+func (stringType) UserType() {}
+
 func TestEnum(t *testing.T) {
 	enums := NewEnumRegistry()
 	enums.RegisterEnum(Variants[testEnum]{
@@ -468,6 +476,21 @@ func TestEnum(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestUser(t *testing.T) {
+	types := NewTypeRegistry()
+	types.RegisterType(func(data []byte, ctx *Context) (userType, []byte, error) {
+		return stringType("text"), data[len(data):], nil
+	})
+
+	var out userType
+	src := []byte{0x01, 0x23, 0xab, 0xcd}
+
+	gotRest, err := Decode(src, &out, Types(types))
+	require.NoError(t, err)
+	require.Equal(t, []byte{}, gotRest)
+	require.Equal(t, stringType("text"), out)
 }
 
 func TestEnumForEach(t *testing.T) {

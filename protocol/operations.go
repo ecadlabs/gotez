@@ -1,23 +1,99 @@
-package operations
+package protocol
 
 import (
+	"fmt"
+
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
 )
 
-type Group struct {
+type OperationContents interface {
+	proto.OperationContents
+}
+
+func init() {
+	encoding.RegisterType(func(data []byte, ctx *encoding.Context) (OperationContents, []byte, error) {
+		p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+		if !ok {
+			return nil, nil, fmt.Errorf("gotez: protocol version must be passed to the decoder chain")
+		}
+
+		var (
+			dest any
+			out  OperationContents
+		)
+		switch p {
+		case proto.Proto016PtMumbai:
+			var tmp proto_016_PtMumbai.OperationContents
+			dest = &tmp
+			out = tmp
+
+		default:
+			return nil, nil, fmt.Errorf("gotez: unknown protocol version %d", p)
+		}
+
+		data, err := encoding.Decode(data, dest, encoding.Ctx(ctx))
+		return out, data, err
+	})
+}
+
+type OperationContentsAndResult interface {
+	proto.OperationContentsAndResult
+}
+
+func init() {
+	encoding.RegisterType(func(data []byte, ctx *encoding.Context) (OperationContentsAndResult, []byte, error) {
+		p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+		if !ok {
+			return nil, nil, fmt.Errorf("gotez: protocol version must be passed to the decoder chain")
+		}
+
+		var (
+			dest any
+			out  proto_016_PtMumbai.OperationContentsAndResult
+		)
+		switch p {
+		case proto.Proto016PtMumbai:
+			var tmp proto_016_PtMumbai.OperationContentsAndResult
+			dest = &tmp
+			out = tmp
+
+		default:
+			return nil, nil, fmt.Errorf("gotez: unknown protocol version %d", p)
+		}
+
+		data, err := encoding.Decode(data, dest, encoding.Ctx(ctx))
+		return out, data, err
+	})
+}
+
+type SuccessfulManagerOperationResult interface {
+	proto.SuccessfulManagerOperationResult
+}
+
+type InternalOperationResult interface {
+	proto.InternalOperationResult
+}
+
+type OperationsList struct {
+	Operations []*OperationsGroup `tz:"dyn,dyn"` // yes, twice
+}
+
+type OperationsGroup struct {
 	ChainID  *tz.ChainID
 	Hash     *tz.BlockHash
 	Branch   *tz.BlockHash `tz:"dyn"`
 	Contents GroupContents `tz:"dyn"`
 }
 
-type SignedGroup interface {
+type Signed interface {
 	GetSignature() (tz.Signature, error)
 }
 
 type GroupContents interface {
-	SignedGroup
+	Signed
 	GroupContents()
 }
 
@@ -43,8 +119,8 @@ type OperationWithoutMetadata struct {
 func (*OperationWithoutMetadata) GroupContents() {}
 func (op *OperationWithoutMetadata) GetSignature() (tz.Signature, error) {
 	if len(op.Contents) != 0 {
-		if prefix, ok := op.Contents[len(op.Contents)-1].(*SignaturePrefix); ok {
-			if blsPrefix, ok := prefix.SignaturePrefix.(*BLSSignaturePrefix); ok {
+		if prefix, ok := op.Contents[len(op.Contents)-1].(*proto_016_PtMumbai.SignaturePrefix); ok {
+			if blsPrefix, ok := prefix.SignaturePrefix.(*proto_016_PtMumbai.BLSSignaturePrefix); ok {
 				var sig tz.BLSSignature
 				copy(sig[:], blsPrefix[:])
 				copy(sig[:len(blsPrefix)], op.SignatureSuffix[:])
@@ -66,7 +142,7 @@ func (op *OperationWithOptionalMetadata) GetSignature() (tz.Signature, error) {
 func (*OperationWithOptionalMetadata) GroupContents() {}
 
 type OperationWithOptionalMetadataContents interface {
-	SignedGroup
+	Signed
 	OperationWithOptionalMetadataContents()
 }
 

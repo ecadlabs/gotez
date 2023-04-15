@@ -1,4 +1,4 @@
-package operations
+package proto_016_PtMumbai
 
 import (
 	tz "github.com/ecadlabs/gotez"
@@ -166,6 +166,7 @@ type TransactionInternalOperationResult struct {
 }
 
 func (*TransactionInternalOperationResult) InternalOperationResult() {}
+func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
 
 type TransactionSuccessfulManagerOperationResult struct {
 	Result TransactionResultContents
