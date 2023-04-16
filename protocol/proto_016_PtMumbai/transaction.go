@@ -53,7 +53,7 @@ func (*ToTxRollup) TransactionResultContents() {}
 
 type TransactionContentsAndResult struct {
 	Transaction
-	Metadata MetadataWithResult[TransactionResult]
+	Metadata ManagerMetadata[TransactionResult]
 }
 
 func (*TransactionContentsAndResult) OperationContentsAndResult() {}

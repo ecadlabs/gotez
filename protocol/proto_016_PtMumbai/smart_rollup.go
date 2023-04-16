@@ -72,7 +72,7 @@ func init() {
 
 type SmartRollupOriginateContentsAndResult struct {
 	SmartRollupOriginate
-	Metadata MetadataWithResult[SmartRollupOriginateResult]
+	Metadata ManagerMetadata[SmartRollupOriginateResult]
 }
 
 func (*SmartRollupOriginateContentsAndResult) OperationContentsAndResult() {}
@@ -93,7 +93,7 @@ func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add
 
 type SmartRollupAddMessagesContentsAndResult struct {
 	SmartRollupAddMessages
-	Metadata MetadataWithResult[EventResult]
+	Metadata ManagerMetadata[EventResult]
 }
 
 func (*SmartRollupAddMessagesContentsAndResult) OperationContentsAndResult() {}
@@ -149,7 +149,7 @@ func init() {
 
 type SmartRollupCementContentsAndResult struct {
 	SmartRollupCement
-	Metadata MetadataWithResult[SmartRollupCementResult]
+	Metadata ManagerMetadata[SmartRollupCementResult]
 }
 
 func (*SmartRollupCementContentsAndResult) OperationContentsAndResult() {}
@@ -214,7 +214,7 @@ func init() {
 
 type SmartRollupPublishContentsAndResult struct {
 	SmartRollupPublish
-	Metadata MetadataWithResult[SmartRollupPublishResult]
+	Metadata ManagerMetadata[SmartRollupPublishResult]
 }
 
 func (*SmartRollupPublishContentsAndResult) OperationContentsAndResult() {}
@@ -453,7 +453,7 @@ func init() {
 
 type SmartRollupRefuteContentsAndResult struct {
 	SmartRollupRefute
-	Metadata MetadataWithResult[SmartRollupTimeoutResult]
+	Metadata ManagerMetadata[SmartRollupTimeoutResult]
 }
 
 func (*SmartRollupRefuteContentsAndResult) OperationContentsAndResult() {}
@@ -473,7 +473,7 @@ func (*SmartRollupTimeout) OperationKind() string { return "smart_rollup_timeout
 
 type SmartRollupTimeoutContentsAndResult struct {
 	SmartRollupTimeout
-	Metadata MetadataWithResult[SmartRollupTimeoutResult]
+	Metadata ManagerMetadata[SmartRollupTimeoutResult]
 }
 
 func (*SmartRollupTimeoutContentsAndResult) OperationContentsAndResult() {}
@@ -536,7 +536,7 @@ func init() {
 
 type SmartRollupExecuteOutboxMessageContentsAndResult struct {
 	SmartRollupExecuteOutboxMessage
-	Metadata MetadataWithResult[SmartRollupExecuteOutboxMessageResult]
+	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult]
 }
 
 func (*SmartRollupExecuteOutboxMessageContentsAndResult) OperationContentsAndResult() {}
@@ -592,7 +592,7 @@ func init() {
 
 type SmartRollupRecoverBondContentsAndResult struct {
 	SmartRollupRecoverBond
-	Metadata MetadataWithResult[SmartRollupRecoverBondResult]
+	Metadata ManagerMetadata[SmartRollupRecoverBondResult]
 }
 
 func (*SmartRollupRecoverBondContentsAndResult) OperationContentsAndResult() {}

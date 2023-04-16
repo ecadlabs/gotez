@@ -29,6 +29,7 @@ type DoubleEndorsementEvidence = proto_012_Psithaca.DoubleEndorsementEvidence
 type Reveal = proto_005_PsBABY5H.Reveal
 type RevealSuccessfulManagerOperationResult = proto_015_PtLimaPt.RevealSuccessfulManagerOperationResult
 type Delegation = proto_005_PsBABY5H.Delegation
+type DelegationInternalOperationResult = proto_015_PtLimaPt.DelegationInternalOperationResult
 type DelegationSuccessfulManagerOperationResult = proto_015_PtLimaPt.DelegationSuccessfulManagerOperationResult
 type RegisterGlobalConstant = proto_011_PtHangz2.RegisterGlobalConstant
 type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
@@ -104,27 +105,17 @@ func (*DALAttestationContentsAndResult) OperationContentsAndResult() {}
 
 type RevealContentsAndResult struct {
 	Reveal
-	Metadata MetadataWithResult[EventResult]
+	Metadata ManagerMetadata[EventResult]
 }
 
 func (*RevealContentsAndResult) OperationContentsAndResult() {}
 
 type DelegationContentsAndResult struct {
 	Delegation
-	Metadata MetadataWithResult[EventResult]
+	Metadata ManagerMetadata[EventResult]
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
-
-type DelegationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Delegate tz.Option[tz.PublicKeyHash]
-	Result   EventResult
-}
-
-func (*DelegationInternalOperationResult) InternalOperationResult() {}
-func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
 
 type RegisterGlobalConstantResult interface {
 	RegisterGlobalConstantResult()
@@ -171,21 +162,21 @@ func init() {
 
 type RegisterGlobalConstantContentsAndResult struct {
 	RegisterGlobalConstant
-	Metadata MetadataWithResult[RegisterGlobalConstantResult]
+	Metadata ManagerMetadata[RegisterGlobalConstantResult]
 }
 
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
 
 type SetDepositsLimitContentsAndResult struct {
 	SetDepositsLimit
-	Metadata MetadataWithResult[EventResult]
+	Metadata ManagerMetadata[EventResult]
 }
 
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
 
 type UpdateConsensusKeyContentsAndResult struct {
 	UpdateConsensusKey
-	Metadata MetadataWithResult[EventResult]
+	Metadata ManagerMetadata[EventResult]
 }
 
 func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
@@ -204,7 +195,7 @@ func (*TransferTicket) OperationKind() string { return "transfer_ticket" }
 
 type TransferTicketContentsAndResult struct {
 	TransferTicket
-	Metadata MetadataWithResult[SmartRollupExecuteOutboxMessageResult]
+	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult]
 }
 
 func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
@@ -252,7 +243,7 @@ func init() {
 
 type IncreasePaidStorageContentsAndResult struct {
 	IncreasePaidStorage
-	Metadata MetadataWithResult[IncreasePaidStorageResult]
+	Metadata ManagerMetadata[IncreasePaidStorageResult]
 }
 
 func (*IncreasePaidStorageContentsAndResult) OperationContentsAndResult() {}
@@ -335,7 +326,7 @@ func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_h
 
 type DALPublishSlotHeaderContentsAndResult struct {
 	DALPublishSlotHeader
-	Metadata MetadataWithResult[EventResult]
+	Metadata ManagerMetadata[EventResult]
 }
 
 func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
@@ -454,7 +445,7 @@ type SuccessfulManagerOperationResult interface {
 	proto.SuccessfulManagerOperationResult
 }
 
-type MetadataWithResult[T OperationResult] struct {
+type ManagerMetadata[T OperationResult] struct {
 	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`

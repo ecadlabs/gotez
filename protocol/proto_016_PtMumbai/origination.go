@@ -57,7 +57,7 @@ func init() {
 
 type OriginationContentsAndResult struct {
 	Origination
-	Metadata MetadataWithResult[OriginationResult]
+	Metadata ManagerMetadata[OriginationResult]
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}

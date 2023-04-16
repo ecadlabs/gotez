@@ -90,6 +90,16 @@ type RevealSuccessfulManagerOperationResult EventResultContents
 func (*RevealSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
 func (*RevealSuccessfulManagerOperationResult) OperationKind() string             { return "reveal" }
 
+type DelegationInternalOperationResult struct {
+	Source   TransactionDestination
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   EventResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
+
 type DelegationSuccessfulManagerOperationResult EventResultContents
 
 func (*DelegationSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}

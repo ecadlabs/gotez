@@ -32,7 +32,7 @@ const (
 
 type ZkRollupOriginationContentsAndResult struct {
 	ZkRollupOrigination
-	Metadata MetadataWithResult[ZkRollupPublishResult]
+	Metadata ManagerMetadata[ZkRollupPublishResult]
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
@@ -113,7 +113,7 @@ func init() {
 
 type ZkRollupPublishContentsAndResult struct {
 	ZkRollupPublish
-	Metadata MetadataWithResult[ZkRollupPublishResult]
+	Metadata ManagerMetadata[ZkRollupPublishResult]
 }
 
 func (*ZkRollupPublishContentsAndResult) OperationContentsAndResult() {}
@@ -204,7 +204,7 @@ func init() {
 
 type ZkRollupUpdateContentsAndResult struct {
 	ZkRollupUpdate
-	Metadata MetadataWithResult[ZkRollupUpdateResult]
+	Metadata ManagerMetadata[ZkRollupUpdateResult]
 }
 
 func (*ZkRollupUpdateContentsAndResult) OperationContentsAndResult() {}
