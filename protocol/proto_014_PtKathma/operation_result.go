@@ -1,6 +1,9 @@
-package proto_016_PtMumbai
+package proto_014_PtKathma
 
-import tz "github.com/ecadlabs/gotez"
+import (
+	tz "github.com/ecadlabs/gotez"
+	"github.com/ecadlabs/gotez/protocol/proto"
+)
 
 type OperationResult interface {
 	OperationResultKind() string
@@ -20,7 +23,7 @@ type OperationResultBacktracked[T any] struct {
 func (*OperationResultBacktracked[T]) OperationResultKind() string { return "backtracked" }
 
 type OperationResultErrors struct {
-	Errors []Bytes `tz:"dyn"`
+	Errors []proto.Bytes `tz:"dyn"`
 }
 
 type OperationResultFailed OperationResultErrors

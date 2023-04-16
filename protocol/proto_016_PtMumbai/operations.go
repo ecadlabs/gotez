@@ -5,22 +5,59 @@ import (
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/expression"
 	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/proto_001_PtCJ7pwo"
+	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	"github.com/ecadlabs/gotez/protocol/proto_009_PsFLoren"
+	"github.com/ecadlabs/gotez/protocol/proto_011_PtHangz2"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
+	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
+	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
 type OperationContents interface {
 	proto.OperationContents
 }
 
+type ManagerOperation = proto_005_PsBABY5H.ManagerOperation
+type SeedNonceRevelation = proto_005_PsBABY5H.SeedNonceRevelation
+type Preendorsement = proto_012_Psithaca.Preendorsement
+type InlinedPreendorsement = proto_012_Psithaca.InlinedPreendorsement
+type Endorsement = proto_012_Psithaca.Endorsement
+type InlinedEndorsement = proto_012_Psithaca.InlinedEndorsement
+type DoublePreendorsementEvidence = proto_012_Psithaca.DoublePreendorsementEvidence
+type DoubleEndorsementEvidence = proto_012_Psithaca.DoubleEndorsementEvidence
+type Reveal = proto_005_PsBABY5H.Reveal
+type RevealSuccessfulManagerOperationResult = proto_015_PtLimaPt.RevealSuccessfulManagerOperationResult
+type Delegation = proto_005_PsBABY5H.Delegation
+type DelegationSuccessfulManagerOperationResult = proto_015_PtLimaPt.DelegationSuccessfulManagerOperationResult
+type RegisterGlobalConstant = proto_011_PtHangz2.RegisterGlobalConstant
+type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
+type SetDepositsLimitSuccessfulManagerOperationResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerOperationResult
+type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
+type UpdateConsensusKeySuccessfulManagerOperationResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerOperationResult
+type IncreasePaidStorage = kathma.IncreasePaidStorage
+type ActivateAccount = proto_001_PtCJ7pwo.ActivateAccount
+type Proposals = proto_001_PtCJ7pwo.Proposals
+type BallotKind = proto_001_PtCJ7pwo.BallotKind
+type Ballot = proto_001_PtCJ7pwo.Ballot
+type VDFRevelation = kathma.VDFRevelation
+type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
+type FailingNoop = proto_009_PsFLoren.FailingNoop
+type EventResult = proto_015_PtLimaPt.EventResult
+type EventResultContents = proto_015_PtLimaPt.EventResultContents
+type EventInternalOperationResult = proto_015_PtLimaPt.EventInternalOperationResult
+type LazyStorageDiff = proto_015_PtLimaPt.LazyStorageDiff
+type OperationResult = kathma.OperationResult
+
+const (
+	BallotYay  = proto_001_PtCJ7pwo.BallotYay
+	BallotNay  = proto_001_PtCJ7pwo.BallotNay
+	BallotPass = proto_001_PtCJ7pwo.BallotPass
+)
+
 type OperationContentsAndResult interface {
 	proto.OperationContentsAndResult
 }
-
-type SeedNonceRevelation struct {
-	Level int32
-	Nonce *[tz.SeedNonceBytesLen]byte
-}
-
-func (*SeedNonceRevelation) OperationKind() string { return "seed_nonce_revelation" }
 
 type SeedNonceRevelationContentsAndResult struct {
 	SeedNonceRevelation
@@ -29,47 +66,12 @@ type SeedNonceRevelationContentsAndResult struct {
 
 func (*SeedNonceRevelationContentsAndResult) OperationContentsAndResult() {}
 
-type DoubleEndorsementEvidence struct {
-	Op1 InlinedEndorsement `tz:"dyn"`
-	Op2 InlinedEndorsement `tz:"dyn"`
-}
-
-func (*DoubleEndorsementEvidence) OperationKind() string { return "double_endorsement_evidence" }
-
 type DoubleEndorsementEvidenceContentsAndResult struct {
 	DoubleEndorsementEvidence
 	Metadata []*BalanceUpdate `tz:"dyn"`
 }
 
 func (*DoubleEndorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
-
-type InlinedEndorsement struct {
-	Branch    *tz.BlockHash
-	Contents  InlinedEndorsementContents
-	Signature *tz.GenericSignature
-}
-
-type InlinedEndorsementContents interface {
-	InlinedEndorsementContents()
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedEndorsementContents]{
-		Variants: encoding.Variants[InlinedEndorsementContents]{
-			21: (*Endorsement)(nil),
-		},
-	})
-}
-
-type Endorsement struct {
-	Slot             uint16
-	Level            int32
-	Round            int32
-	BlockPayloadHash *tz.BlockPayloadHash
-}
-
-func (*Endorsement) InlinedEndorsementContents() {}
-func (*Endorsement) OperationKind() string       { return "endorsement" }
 
 type EndorsementMetadata struct {
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
@@ -91,7 +93,7 @@ type DALAttestation struct {
 	Level       int32
 }
 
-func (*DALAttestation) OperationKind() string { return "dal_attestation " }
+func (*DALAttestation) OperationKind() string { return "dal_attestation" }
 
 type DALAttestationContentsAndResult struct {
 	DALAttestation
@@ -100,31 +102,12 @@ type DALAttestationContentsAndResult struct {
 
 func (*DALAttestationContentsAndResult) OperationContentsAndResult() {}
 
-type Reveal struct {
-	ManagerOperation
-	PublicKey tz.PublicKey
-}
-
-func (*Reveal) OperationKind() string { return "reveal" }
-
 type RevealContentsAndResult struct {
 	Reveal
 	Metadata MetadataWithResult[EventResult]
 }
 
 func (*RevealContentsAndResult) OperationContentsAndResult() {}
-
-type RevealSuccessfulManagerOperationResult EventResultContents
-
-func (*RevealSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*RevealSuccessfulManagerOperationResult) OperationKind() string             { return "reveal" }
-
-type Delegation struct {
-	ManagerOperation
-	Delegate tz.Option[tz.PublicKeyHash]
-}
-
-func (*Delegation) OperationKind() string { return "delegation" }
 
 type DelegationContentsAndResult struct {
 	Delegation
@@ -134,7 +117,7 @@ type DelegationContentsAndResult struct {
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
 
 type DelegationInternalOperationResult struct {
-	Source   tz.TransactionDestination
+	Source   TransactionDestination
 	Nonce    uint16
 	Delegate tz.Option[tz.PublicKeyHash]
 	Result   EventResult
@@ -142,18 +125,6 @@ type DelegationInternalOperationResult struct {
 
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
 func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
-
-type DelegationSuccessfulManagerOperationResult EventResultContents
-
-func (*DelegationSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*DelegationSuccessfulManagerOperationResult) OperationKind() string             { return "delegation" }
-
-type RegisterGlobalConstant struct {
-	ManagerOperation
-	Value expression.Expression `tz:"dyn"`
-}
-
-func (*RegisterGlobalConstant) OperationKind() string { return "register_global_constant" }
 
 type RegisterGlobalConstantResult interface {
 	RegisterGlobalConstantResult()
@@ -168,22 +139,22 @@ type RegisterGlobalConstantResultContents struct {
 }
 
 type RegisterGlobalConstantResultApplied struct {
-	OperationResultApplied[RegisterGlobalConstantResultContents]
+	kathma.OperationResultApplied[RegisterGlobalConstantResultContents]
 }
 
 func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
 
 type RegisterGlobalConstantResultBacktracked struct {
-	OperationResultBacktracked[RegisterGlobalConstantResultContents]
+	kathma.OperationResultBacktracked[RegisterGlobalConstantResultContents]
 }
 
 func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
 
-type RegisterGlobalConstantResultFailed struct{ OperationResultFailed }
+type RegisterGlobalConstantResultFailed struct{ kathma.OperationResultFailed }
 
 func (*RegisterGlobalConstantResultFailed) RegisterGlobalConstantResult() {}
 
-type RegisterGlobalConstantResultSkipped struct{ OperationResultSkipped }
+type RegisterGlobalConstantResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
 
@@ -205,13 +176,6 @@ type RegisterGlobalConstantContentsAndResult struct {
 
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
 
-type SetDepositsLimit struct {
-	ManagerOperation
-	Limit tz.Option[tz.BigUint]
-}
-
-func (*SetDepositsLimit) OperationKind() string { return "set_deposits_limit" }
-
 type SetDepositsLimitContentsAndResult struct {
 	SetDepositsLimit
 	Metadata MetadataWithResult[EventResult]
@@ -219,33 +183,12 @@ type SetDepositsLimitContentsAndResult struct {
 
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
 
-type SetDepositsLimitSuccessfulManagerOperationResult EventResultContents
-
-func (*SetDepositsLimitSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*SetDepositsLimitSuccessfulManagerOperationResult) OperationKind() string {
-	return "set_deposits_limit"
-}
-
-type UpdateConsensusKey struct {
-	ManagerOperation
-	PublicKey tz.PublicKey
-}
-
-func (*UpdateConsensusKey) OperationKind() string { return "update_consensus_key" }
-
 type UpdateConsensusKeyContentsAndResult struct {
 	UpdateConsensusKey
 	Metadata MetadataWithResult[EventResult]
 }
 
 func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
-
-type UpdateConsensusKeySuccessfulManagerOperationResult EventResultContents
-
-func (*UpdateConsensusKeySuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*UpdateConsensusKeySuccessfulManagerOperationResult) OperationKind() string {
-	return "update_consensus_key"
-}
 
 type TransferTicket struct {
 	ManagerOperation
@@ -266,14 +209,6 @@ type TransferTicketContentsAndResult struct {
 
 func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
 
-type IncreasePaidStorage struct {
-	ManagerOperation
-	Amount      tz.BigInt
-	Destination tz.OriginatedContractID
-}
-
-func (*IncreasePaidStorage) OperationKind() string { return "increase_paid_storage" }
-
 type IncreasePaidStorageResult interface {
 	IncreasePaidStorageResult()
 	OperationResult
@@ -285,22 +220,22 @@ type IncreasePaidStorageResultContents struct {
 }
 
 type IncreasePaidStorageResultApplied struct {
-	OperationResultApplied[IncreasePaidStorageResultContents]
+	kathma.OperationResultApplied[IncreasePaidStorageResultContents]
 }
 
 func (*IncreasePaidStorageResultApplied) IncreasePaidStorageResult() {}
 
 type IncreasePaidStorageResultBacktracked struct {
-	OperationResultBacktracked[IncreasePaidStorageResultContents]
+	kathma.OperationResultBacktracked[IncreasePaidStorageResultContents]
 }
 
 func (*IncreasePaidStorageResultBacktracked) IncreasePaidStorageResult() {}
 
-type IncreasePaidStorageResultFailed struct{ OperationResultFailed }
+type IncreasePaidStorageResultFailed struct{ kathma.OperationResultFailed }
 
 func (*IncreasePaidStorageResultFailed) IncreasePaidStorageResult() {}
 
-type IncreasePaidStorageResultSkipped struct{ OperationResultSkipped }
+type IncreasePaidStorageResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*IncreasePaidStorageResultSkipped) IncreasePaidStorageResult() {}
 
@@ -343,13 +278,6 @@ type DoubleBakingEvidenceContentsAndResult struct {
 
 func (*DoubleBakingEvidenceContentsAndResult) OperationContentsAndResult() {}
 
-type ActivateAccount struct {
-	PKH    *tz.Ed25519PublicKeyHash
-	Secret *[tz.SecretBytesLen]byte
-}
-
-func (*ActivateAccount) OperationKind() string { return "activate_account" }
-
 type ActivateAccountContentsAndResult struct {
 	ActivateAccount
 	Metadata []*BalanceUpdate `tz:"dyn"`
@@ -357,74 +285,12 @@ type ActivateAccountContentsAndResult struct {
 
 func (*ActivateAccountContentsAndResult) OperationContentsAndResult() {}
 
-type Proposals struct {
-	Source    tz.PublicKeyHash
-	Period    int32
-	Proposals []*tz.ProtocolHash `tz:"dyn"`
-}
-
-func (*Proposals) OperationKind() string       { return "proposals" }
-func (*Proposals) OperationContentsAndResult() {}
-
-type BallotKind uint8
-
-const (
-	BallotYay BallotKind = iota
-	BallotNay
-	BallotPass
-)
-
-type Ballot struct {
-	Source   tz.PublicKeyHash
-	Period   int32
-	Proposal *tz.ProtocolHash
-	Ballot   BallotKind
-}
-
-func (*Ballot) OperationKind() string       { return "ballot" }
-func (*Ballot) OperationContentsAndResult() {}
-
-type DoublePreendorsementEvidence struct {
-	Op1 InlinedPreendorsement `tz:"dyn"`
-	Op2 InlinedPreendorsement `tz:"dyn"`
-}
-
-func (*DoublePreendorsementEvidence) OperationKind() string { return "double_preendorsement_evidence" }
-
 type DoublePreendorsementEvidenceContentsAndResult struct {
 	DoublePreendorsementEvidence
 	Metadata []*BalanceUpdate `tz:"dyn"`
 }
 
 func (*DoublePreendorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
-
-type InlinedPreendorsement struct {
-	Branch    *tz.BlockHash
-	Contents  InlinedPreendorsementContents
-	Signature *tz.GenericSignature
-}
-
-type InlinedPreendorsementContents interface {
-	InlinedPreendorsementContents()
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedPreendorsementContents]{
-		Variants: encoding.Variants[InlinedPreendorsementContents]{
-			20: (*Preendorsement)(nil),
-		},
-	})
-}
-
-type Preendorsement struct {
-	Slot             uint16
-	Level            int32
-	Round            int32
-	BlockPayloadHash *tz.BlockPayloadHash
-}
-
-func (*Preendorsement) InlinedPreendorsementContents() {}
-func (*Preendorsement) OperationKind() string          { return "preendorsement" }
 
 type PreendorsementMetadata = EndorsementMetadata
 type PreendorsementContentsAndResult struct {
@@ -434,26 +300,12 @@ type PreendorsementContentsAndResult struct {
 
 func (*PreendorsementContentsAndResult) OperationContentsAndResult() {}
 
-type VDFRevelation struct {
-	Solution [2]*[100]byte
-}
-
-func (*VDFRevelation) OperationKind() string { return "vdf_revelation" }
-
 type VDFRevelationContentsAndResult struct {
 	VDFRevelation
 	Metadata []*BalanceUpdate `tz:"dyn"`
 }
 
 func (*VDFRevelationContentsAndResult) OperationContentsAndResult() {}
-
-type DrainDelegate struct {
-	ConsensusKey tz.PublicKeyHash
-	Delegate     tz.PublicKeyHash
-	Destination  tz.PublicKeyHash
-}
-
-func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
 
 type DrainDelegateMetadata struct {
 	BalanceUpdates               []*BalanceUpdate `tz:"dyn"`
@@ -466,12 +318,6 @@ type DrainDelegateContentsAndResult struct {
 }
 
 func (*DrainDelegateContentsAndResult) OperationContentsAndResult() {}
-
-type FailingNoop struct {
-	Arbitrary []byte `tz:"dyn"`
-}
-
-func (*FailingNoop) OperationKind() string { return "failing_noop" }
 
 type DALPublishSlotHeader struct {
 	ManagerOperation
@@ -493,14 +339,6 @@ type DALPublishSlotHeaderContentsAndResult struct {
 }
 
 func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
-
-type ManagerOperation struct {
-	Source       tz.PublicKeyHash
-	Fee          tz.BigUint
-	Counter      tz.BigUint
-	GasLimit     tz.BigUint
-	StorageLimit tz.BigUint
-}
 
 type SignaturePrefix struct {
 	SignaturePrefix SignaturePrefixPayload
@@ -616,46 +454,6 @@ type SuccessfulManagerOperationResult interface {
 	proto.SuccessfulManagerOperationResult
 }
 
-type EventResult interface {
-	EventResult()
-	OperationResult
-}
-
-type EventResultContents struct {
-	ConsumedMilligas tz.BigUint
-}
-
-type EventResultApplied struct {
-	OperationResultApplied[EventResultContents]
-}
-
-func (*EventResultApplied) EventResult() {}
-
-type EventResultBacktracked struct {
-	OperationResultBacktracked[EventResultContents]
-}
-
-func (*EventResultBacktracked) EventResult() {}
-
-type EventResultFailed struct{ OperationResultFailed }
-
-func (*EventResultFailed) EventResult() {}
-
-type EventResultSkipped struct{ OperationResultSkipped }
-
-func (*EventResultSkipped) EventResult() {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[EventResult]{
-		Variants: encoding.Variants[EventResult]{
-			0: (*EventResultApplied)(nil),
-			1: (*EventResultFailed)(nil),
-			2: (*EventResultSkipped)(nil),
-			3: (*EventResultBacktracked)(nil),
-		},
-	})
-}
-
 type MetadataWithResult[T OperationResult] struct {
 	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
 	OperationResult          T
@@ -665,18 +463,6 @@ type MetadataWithResult[T OperationResult] struct {
 type InternalOperationResult interface {
 	proto.InternalOperationResult
 }
-
-type EventInternalOperationResult struct {
-	Source  tz.TransactionDestination
-	Nonce   uint16
-	Type    expression.Expression
-	Tag     tz.Option[Entrypoint]
-	Payload tz.Option[expression.Expression]
-	Result  EventResult
-}
-
-func (*EventInternalOperationResult) InternalOperationResult() {}
-func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[InternalOperationResult]{
@@ -700,8 +486,4 @@ func init() {
 			200: (*SmartRollupOriginateSuccessfulManagerOperationResult)(nil),
 		},
 	})
-}
-
-type LazyStorageDiff struct {
-	Opaque []byte `tz:"dyn"` // TODO: lazy storage diff
 }

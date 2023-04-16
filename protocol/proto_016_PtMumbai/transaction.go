@@ -4,59 +4,25 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/expression"
+	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
+	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
-type Parameters struct {
-	Entrypoint Entrypoint
-	Value      expression.Expression `tz:"dyn"`
-}
+type Transaction = proto_005_PsBABY5H.Transaction
+type Parameters = proto_005_PsBABY5H.Parameters
+type Entrypoint = proto_005_PsBABY5H.Entrypoint
+type TransactionResult = proto_015_PtLimaPt.TransactionResult
+type TransactionDestination = proto_015_PtLimaPt.TransactionDestination
+type TransactionInternalOperationResult = proto_015_PtLimaPt.TransactionInternalOperationResult
+type ToSmartRollup = proto_015_PtLimaPt.ToSmartRollup
 
-type Entrypoint interface {
-	Entrypoint()
-}
-
-type EpDefault struct{}
-type EpRoot struct{}
-type EpDo struct{}
-type EpSetDelegate struct{}
-type EpRemoveDelegate struct{}
-type EpNamed struct {
-	tz.String
-}
-
-func (EpDefault) Entrypoint()        {}
-func (EpRoot) Entrypoint()           {}
-func (EpDo) Entrypoint()             {}
-func (EpSetDelegate) Entrypoint()    {}
-func (EpRemoveDelegate) Entrypoint() {}
-func (EpNamed) Entrypoint()          {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[Entrypoint]{
-		Variants: encoding.Variants[Entrypoint]{
-			0:   EpDefault{},
-			1:   EpRoot{},
-			2:   EpDo{},
-			3:   EpSetDelegate{},
-			4:   EpRemoveDelegate{},
-			255: EpNamed{},
-		},
-	})
-}
-
-type Transaction struct {
-	ManagerOperation
-	Amount      tz.BigUint
-	Destination tz.ContractID
-	Parameters  tz.Option[Parameters]
-}
-
-func (*Transaction) OperationKind() string { return "transaction" }
-
-type TransactionResult interface {
-	TransactionResult()
-	OperationResult
-}
+type EpDefault = proto_005_PsBABY5H.EpDefault
+type EpRoot = proto_005_PsBABY5H.EpRoot
+type EpDo = proto_005_PsBABY5H.EpDo
+type EpSetDelegate = proto_005_PsBABY5H.EpSetDelegate
+type EpRemoveDelegate = proto_005_PsBABY5H.EpRemoveDelegate
+type EpNamed = proto_005_PsBABY5H.EpNamed
 
 type TransactionResultContents interface {
 	TransactionResultContents()
@@ -76,22 +42,6 @@ type ToContract struct {
 
 func (*ToContract) TransactionResultContents() {}
 
-type TicketReceipt struct {
-	TicketToken TicketToken
-	Updates     []*TicketReceiptUpdate `tz:"dyn"`
-}
-
-type TicketToken struct {
-	Ticketer    tz.ContractID
-	ContentType expression.Expression
-	Content     expression.Expression
-}
-
-type TicketReceiptUpdate struct {
-	Account tz.TransactionDestination
-	Amount  tz.BigInt
-}
-
 type ToTxRollup struct {
 	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
@@ -101,12 +51,12 @@ type ToTxRollup struct {
 
 func (*ToTxRollup) TransactionResultContents() {}
 
-type ToSmartRollup struct {
-	ConsumedMilligas tz.BigUint
-	TicketUpdates    []*TicketReceipt `tz:"dyn"`
+type TransactionContentsAndResult struct {
+	Transaction
+	Metadata MetadataWithResult[TransactionResult]
 }
 
-func (*ToSmartRollup) TransactionResultContents() {}
+func (*TransactionContentsAndResult) OperationContentsAndResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionResultContents]{
@@ -119,22 +69,22 @@ func init() {
 }
 
 type TransactionResultApplied struct {
-	OperationResultApplied[TransactionResultContents]
+	kathma.OperationResultApplied[TransactionResultContents]
 }
 
 func (*TransactionResultApplied) TransactionResult() {}
 
 type TransactionResultBacktracked struct {
-	OperationResultBacktracked[TransactionResultContents]
+	kathma.OperationResultBacktracked[TransactionResultContents]
 }
 
 func (*TransactionResultBacktracked) TransactionResult() {}
 
-type TransactionResultFailed struct{ OperationResultFailed }
+type TransactionResultFailed struct{ kathma.OperationResultFailed }
 
 func (*TransactionResultFailed) TransactionResult() {}
 
-type TransactionResultSkipped struct{ OperationResultSkipped }
+type TransactionResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*TransactionResultSkipped) TransactionResult() {}
 
@@ -148,25 +98,6 @@ func init() {
 		},
 	})
 }
-
-type TransactionContentsAndResult struct {
-	Transaction
-	Metadata MetadataWithResult[TransactionResult]
-}
-
-func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-
-type TransactionInternalOperationResult struct {
-	Source      tz.TransactionDestination
-	Nonce       uint16
-	Amount      tz.BigUint
-	Destination tz.TransactionDestination
-	Parameters  tz.Option[Parameters]
-	Result      TransactionResult
-}
-
-func (*TransactionInternalOperationResult) InternalOperationResult() {}
-func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
 
 type TransactionSuccessfulManagerOperationResult struct {
 	Result TransactionResultContents

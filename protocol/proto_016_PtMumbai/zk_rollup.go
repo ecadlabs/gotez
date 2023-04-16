@@ -4,6 +4,7 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/expression"
+	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
 type ZkRollupOrigination struct {
@@ -80,22 +81,22 @@ type ZkRollupPublishResult interface {
 }
 
 type ZkRollupPublishResultApplied struct {
-	OperationResultApplied[ZkRollupPublishResultContents]
+	kathma.OperationResultApplied[ZkRollupPublishResultContents]
 }
 
 func (*ZkRollupPublishResultApplied) ZkRollupPublishResult() {}
 
 type ZkRollupPublishResultBacktracked struct {
-	OperationResultBacktracked[ZkRollupPublishResultContents]
+	kathma.OperationResultBacktracked[ZkRollupPublishResultContents]
 }
 
 func (*ZkRollupPublishResultBacktracked) ZkRollupPublishResult() {}
 
-type ZkRollupPublishResultFailed struct{ OperationResultFailed }
+type ZkRollupPublishResultFailed struct{ kathma.OperationResultFailed }
 
 func (*ZkRollupPublishResultFailed) ZkRollupPublishResult() {}
 
-type ZkRollupPublishResultSkipped struct{ OperationResultSkipped }
+type ZkRollupPublishResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*ZkRollupPublishResultSkipped) ZkRollupPublishResult() {}
 
@@ -171,22 +172,22 @@ type ZkRollupUpdateResult interface {
 }
 
 type ZkRollupUpdateResultApplied struct {
-	OperationResultApplied[ZkRollupUpdateResultContents]
+	kathma.OperationResultApplied[ZkRollupUpdateResultContents]
 }
 
 func (*ZkRollupUpdateResultApplied) ZkRollupUpdateResult() {}
 
 type ZkRollupUpdateResultBacktracked struct {
-	OperationResultBacktracked[ZkRollupUpdateResultContents]
+	kathma.OperationResultBacktracked[ZkRollupUpdateResultContents]
 }
 
 func (*ZkRollupUpdateResultBacktracked) ZkRollupUpdateResult() {}
 
-type ZkRollupUpdateResultFailed struct{ OperationResultFailed }
+type ZkRollupUpdateResultFailed struct{ kathma.OperationResultFailed }
 
 func (*ZkRollupUpdateResultFailed) ZkRollupUpdateResult() {}
 
-type ZkRollupUpdateResultSkipped struct{ OperationResultSkipped }
+type ZkRollupUpdateResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*ZkRollupUpdateResultSkipped) ZkRollupUpdateResult() {}
 

@@ -3,7 +3,13 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/proto_009_PsFLoren"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
+	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
 )
+
+type BalanceUpdateOrigin = proto_012_Psithaca.BalanceUpdateOrigin
 
 type BalanceUpdate struct {
 	Kind   BalanceUpdateKind
@@ -11,44 +17,30 @@ type BalanceUpdate struct {
 	Origin BalanceUpdateOrigin
 }
 
-type BalanceUpdateOrigin uint8
-
-const (
-	BalanceUpdateOriginBlockApplication BalanceUpdateOrigin = iota
-	BalanceUpdateOriginProtocolMigration
-	BalanceUpdateOriginSubsidy
-	BalanceUpdateOriginSimulation
-)
-
 type BalanceUpdateKind interface {
-	BalanceUpdateKind() string
+	proto.BalanceUpdateKind
 }
 
-type BalanceUpdateContract struct {
-	Contract tz.ContractID
-}
-
-func (*BalanceUpdateContract) BalanceUpdateKind() string { return "contract" }
-
-type BalanceUpdateDeposits struct {
-	Delegate tz.PublicKeyHash
-}
-
-func (*BalanceUpdateDeposits) BalanceUpdateKind() string { return "deposits" }
-
-type BalanceUpdateLostEndorsingRewards struct {
-	Delegate      tz.PublicKeyHash
-	Participation bool
-	Revelation    bool
-}
-
-func (*BalanceUpdateLostEndorsingRewards) BalanceUpdateKind() string { return "lost_endorsing_rewards" }
-
-type BalanceUpdateCommitments struct {
-	Committer *tz.BlindedPublicKeyHash
-}
-
-func (*BalanceUpdateCommitments) BalanceUpdateKind() string { return "commitments" }
+type BalanceUpdateContract = proto_009_PsFLoren.BalanceUpdateContract
+type BalanceUpdateDeposits = proto_012_Psithaca.BalanceUpdateDeposits
+type BalanceUpdateLostEndorsingRewards = proto_012_Psithaca.BalanceUpdateLostEndorsingRewards
+type BalanceUpdateCommitments = proto_012_Psithaca.BalanceUpdateCommitments
+type BalanceUpdateBlockFees = proto_009_PsFLoren.BalanceUpdateBlockFees
+type BalanceUpdateNonceRevelationRewards = proto_012_Psithaca.BalanceUpdateNonceRevelationRewards
+type BalanceUpdateDoubleSigningEvidenceRewards = proto_012_Psithaca.BalanceUpdateDoubleSigningEvidenceRewards
+type BalanceUpdateEndorsingRewards = proto_012_Psithaca.BalanceUpdateEndorsingRewards
+type BalanceUpdateBakingRewards = proto_012_Psithaca.BalanceUpdateBakingRewards
+type BalanceUpdateBakingBonuses = proto_012_Psithaca.BalanceUpdateBakingBonuses
+type BalanceUpdateStorageFees = proto_012_Psithaca.BalanceUpdateStorageFees
+type BalanceUpdateDoubleSigningPunishments = proto_012_Psithaca.BalanceUpdateDoubleSigningPunishments
+type BalanceUpdateLiquidityBakingSubsidies = proto_012_Psithaca.BalanceUpdateLiquidityBakingSubsidies
+type BalanceUpdateBurned = proto_012_Psithaca.BalanceUpdateBurned
+type BalanceUpdateBootstrap = proto_012_Psithaca.BalanceUpdateBootstrap
+type BalanceUpdateInvoice = proto_012_Psithaca.BalanceUpdateInvoice
+type BalanceUpdateInitialCommitments = proto_012_Psithaca.BalanceUpdateInitialCommitments
+type BalanceUpdateMinted = proto_012_Psithaca.BalanceUpdateMinted
+type BalanceUpdateTxRollupRejectionRewards = proto_013_PtJakart.BalanceUpdateTxRollupRejectionRewards
+type BalanceUpdateTxRollupRejectionPunishments = proto_013_PtJakart.BalanceUpdateTxRollupRejectionPunishments
 
 type BondID interface {
 	BondID()
@@ -81,102 +73,6 @@ type BalanceUpdateFrozenBonds struct {
 }
 
 func (*BalanceUpdateFrozenBonds) BalanceUpdateKind() string { return "frozen_bonds" }
-
-type BalanceUpdateBlockFees struct{}
-
-func (BalanceUpdateBlockFees) BalanceUpdateKind() string {
-	return "block_fees"
-}
-
-type BalanceUpdateNonceRevelationRewards struct{}
-
-func (BalanceUpdateNonceRevelationRewards) BalanceUpdateKind() string {
-	return "nonce_revelation_rewards"
-}
-
-type BalanceUpdateDoubleSigningEvidenceRewards struct{}
-
-func (BalanceUpdateDoubleSigningEvidenceRewards) BalanceUpdateKind() string {
-	return "double_signing_evidence_rewards"
-}
-
-type BalanceUpdateEndorsingRewards struct{}
-
-func (BalanceUpdateEndorsingRewards) BalanceUpdateKind() string {
-	return "endorsing_rewards"
-}
-
-type BalanceUpdateBakingRewards struct{}
-
-func (BalanceUpdateBakingRewards) BalanceUpdateKind() string {
-	return "baking_rewards"
-}
-
-type BalanceUpdateBakingBonuses struct{}
-
-func (BalanceUpdateBakingBonuses) BalanceUpdateKind() string {
-	return "baking_bonuses"
-}
-
-type BalanceUpdateStorageFees struct{}
-
-func (BalanceUpdateStorageFees) BalanceUpdateKind() string {
-	return "storage_fees"
-}
-
-type BalanceUpdateDoubleSigningPunishments struct{}
-
-func (BalanceUpdateDoubleSigningPunishments) BalanceUpdateKind() string {
-	return "double_signing_punishments"
-}
-
-type BalanceUpdateLiquidityBakingSubsidies struct{}
-
-func (BalanceUpdateLiquidityBakingSubsidies) BalanceUpdateKind() string {
-	return "liquidity_baking_subsidies"
-}
-
-type BalanceUpdateBurned struct{}
-
-func (BalanceUpdateBurned) BalanceUpdateKind() string {
-	return "burned"
-}
-
-type BalanceUpdateBootstrap struct{}
-
-func (BalanceUpdateBootstrap) BalanceUpdateKind() string {
-	return "bootstrap"
-}
-
-type BalanceUpdateInvoice struct{}
-
-func (BalanceUpdateInvoice) BalanceUpdateKind() string {
-	return "invoice"
-}
-
-type BalanceUpdateInitialCommitments struct{}
-
-func (BalanceUpdateInitialCommitments) BalanceUpdateKind() string {
-	return "initial_commitments"
-}
-
-type BalanceUpdateMinted struct{}
-
-func (BalanceUpdateMinted) BalanceUpdateKind() string {
-	return "minted"
-}
-
-type BalanceUpdateTxRollupRejectionRewards struct{}
-
-func (BalanceUpdateTxRollupRejectionRewards) BalanceUpdateKind() string {
-	return "tx_rollup_rejection_rewards"
-}
-
-type BalanceUpdateTxRollupRejectionPunishments struct{}
-
-func (BalanceUpdateTxRollupRejectionPunishments) BalanceUpdateKind() string {
-	return "tx_rollup_rejection_punishments"
-}
 
 type BalanceUpdateSmartRollupRefutationPunishments struct{}
 

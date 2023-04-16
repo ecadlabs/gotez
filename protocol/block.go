@@ -6,7 +6,6 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/proto"
-	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
 )
 
@@ -27,8 +26,8 @@ func (header *BlockHeader) DecodeTZ(data []byte, ctx *encoding.Context) (rest []
 	}
 
 	switch p {
-	case proto.Proto015PtLimaPt:
-		header.ProtocolData = new(proto_015_PtLimaPt.ProtocolBlockHeader)
+	//case proto.Proto015PtLimaPt:
+	//	header.ProtocolData = new(proto_015_PtLimaPt.ProtocolBlockHeader)
 	case proto.Proto016PtMumbai:
 		header.ProtocolData = new(proto_016_PtMumbai.ProtocolBlockHeader)
 	default:

@@ -3,22 +3,12 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/expression"
+	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
-type Script struct {
-	Code    expression.Expression `tz:"dyn"`
-	Storage expression.Expression `tz:"dyn"`
-}
-
-type Origination struct {
-	ManagerOperation
-	Balance  tz.BigUint
-	Delegate tz.Option[tz.PublicKeyHash]
-	Script   Script
-}
-
-func (*Origination) OperationKind() string { return "origination" }
+type Origination = proto_005_PsBABY5H.Origination
+type Script = proto_005_PsBABY5H.Script
 
 type OriginationResult interface {
 	OriginationResult()
@@ -35,22 +25,22 @@ type OriginationResultContents struct {
 }
 
 type OriginationResultApplied struct {
-	OperationResultApplied[OriginationResultContents]
+	kathma.OperationResultApplied[OriginationResultContents]
 }
 
 func (*OriginationResultApplied) OriginationResult() {}
 
 type OriginationResultBacktracked struct {
-	OperationResultBacktracked[OriginationResultContents]
+	kathma.OperationResultBacktracked[OriginationResultContents]
 }
 
 func (*OriginationResultBacktracked) OriginationResult() {}
 
-type OriginationResultFailed struct{ OperationResultFailed }
+type OriginationResultFailed struct{ kathma.OperationResultFailed }
 
 func (*OriginationResultFailed) OriginationResult() {}
 
-type OriginationResultSkipped struct{ OperationResultSkipped }
+type OriginationResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*OriginationResultSkipped) OriginationResult() {}
 
@@ -73,7 +63,7 @@ type OriginationContentsAndResult struct {
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}
 
 type OriginationInternalOperationResult struct {
-	Source   tz.TransactionDestination
+	Source   TransactionDestination
 	Nonce    uint16
 	Balance  tz.BigUint
 	Delegate tz.Option[tz.PublicKeyHash]
@@ -88,7 +78,3 @@ type OriginationSuccessfulManagerOperationResult OriginationResultContents
 
 func (*OriginationSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
 func (*OriginationSuccessfulManagerOperationResult) OperationKind() string             { return "origination" }
-
-type Bytes struct {
-	Bytes []byte `tz:"dyn"`
-}

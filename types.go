@@ -76,43 +76,6 @@ func init() {
 	})
 }
 
-type TransactionDestination interface {
-	TransactionDestination()
-}
-
-type TxRollupDestination struct {
-	*TXRollupAddress
-	Padding uint8
-}
-
-type SmartRollupDestination struct {
-	*SmartRollupAddress
-	Padding uint8
-}
-
-type ZkRollupDestination struct {
-	*ZkRollupAddress
-	Padding uint8
-}
-
-func (*TxRollupDestination) TransactionDestination()    {}
-func (*SmartRollupDestination) TransactionDestination() {}
-func (*OriginatedContract) TransactionDestination()     {}
-func (*ImplicitContract) TransactionDestination()       {}
-func (*ZkRollupDestination) TransactionDestination()    {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
-		Variants: encoding.Variants[TransactionDestination]{
-			0: (*ImplicitContract)(nil),
-			1: (*OriginatedContract)(nil),
-			2: (*TxRollupDestination)(nil),
-			3: (*SmartRollupDestination)(nil),
-			4: (*ZkRollupDestination)(nil),
-		},
-	})
-}
-
 type String string
 
 func (str *String) DecodeTZ(data []byte, ctx *encoding.Context) ([]byte, error) {

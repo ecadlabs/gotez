@@ -4,6 +4,9 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/expression"
+	"github.com/ecadlabs/gotez/protocol/proto"
+	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
+	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
 type PVMKind uint8
@@ -37,22 +40,22 @@ type SmartRollupOriginateResultContents struct {
 }
 
 type SmartRollupOriginateResultApplied struct {
-	OperationResultApplied[SmartRollupOriginateResultContents]
+	kathma.OperationResultApplied[SmartRollupOriginateResultContents]
 }
 
 func (*SmartRollupOriginateResultApplied) SmartRollupOriginateResult() {}
 
 type SmartRollupOriginateResultBacktracked struct {
-	OperationResultBacktracked[SmartRollupOriginateResultContents]
+	kathma.OperationResultBacktracked[SmartRollupOriginateResultContents]
 }
 
 func (*SmartRollupOriginateResultBacktracked) SmartRollupOriginateResult() {}
 
-type SmartRollupOriginateResultFailed struct{ OperationResultFailed }
+type SmartRollupOriginateResultFailed struct{ kathma.OperationResultFailed }
 
 func (*SmartRollupOriginateResultFailed) SmartRollupOriginateResult() {}
 
-type SmartRollupOriginateResultSkipped struct{ OperationResultSkipped }
+type SmartRollupOriginateResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*SmartRollupOriginateResultSkipped) SmartRollupOriginateResult() {}
 
@@ -83,7 +86,7 @@ func (*SmartRollupOriginateSuccessfulManagerOperationResult) OperationKind() str
 
 type SmartRollupAddMessages struct {
 	ManagerOperation
-	Message []Bytes `tz:"dyn"`
+	Message []proto.Bytes `tz:"dyn"`
 }
 
 func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add_messages" }
@@ -114,22 +117,22 @@ type SmartRollupCementResult interface {
 }
 
 type SmartRollupCementResultApplied struct {
-	OperationResultApplied[SmartRollupCementResultContents]
+	kathma.OperationResultApplied[SmartRollupCementResultContents]
 }
 
 func (*SmartRollupCementResultApplied) SmartRollupCementResult() {}
 
 type SmartRollupCementResultBacktracked struct {
-	OperationResultBacktracked[SmartRollupCementResultContents]
+	kathma.OperationResultBacktracked[SmartRollupCementResultContents]
 }
 
 func (*SmartRollupCementResultBacktracked) SmartRollupCementResult() {}
 
-type SmartRollupCementResultFailed struct{ OperationResultFailed }
+type SmartRollupCementResultFailed struct{ kathma.OperationResultFailed }
 
 func (*SmartRollupCementResultFailed) SmartRollupCementResult() {}
 
-type SmartRollupCementResultSkipped struct{ OperationResultSkipped }
+type SmartRollupCementResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*SmartRollupCementResultSkipped) SmartRollupCementResult() {}
 
@@ -179,22 +182,22 @@ type SmartRollupPublishResult interface {
 }
 
 type SmartRollupPublishResultApplied struct {
-	OperationResultApplied[SmartRollupPublishResultContents]
+	kathma.OperationResultApplied[SmartRollupPublishResultContents]
 }
 
 func (*SmartRollupPublishResultApplied) SmartRollupPublishResult() {}
 
 type SmartRollupPublishResultBacktracked struct {
-	OperationResultBacktracked[SmartRollupPublishResultContents]
+	kathma.OperationResultBacktracked[SmartRollupPublishResultContents]
 }
 
 func (*SmartRollupPublishResultBacktracked) SmartRollupPublishResult() {}
 
-type SmartRollupPublishResultFailed struct{ OperationResultFailed }
+type SmartRollupPublishResultFailed struct{ kathma.OperationResultFailed }
 
 func (*SmartRollupPublishResultFailed) SmartRollupPublishResult() {}
 
-type SmartRollupPublishResultSkipped struct{ OperationResultSkipped }
+type SmartRollupPublishResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*SmartRollupPublishResultSkipped) SmartRollupPublishResult() {}
 
@@ -418,22 +421,22 @@ type SmartRollupTimeoutResult interface {
 }
 
 type SmartRollupTimeoutResultApplied struct {
-	OperationResultApplied[SmartRollupTimeoutResultContents]
+	kathma.OperationResultApplied[SmartRollupTimeoutResultContents]
 }
 
 func (*SmartRollupTimeoutResultApplied) SmartRollupTimeoutResult() {}
 
 type SmartRollupTimeoutResultBacktracked struct {
-	OperationResultBacktracked[SmartRollupTimeoutResultContents]
+	kathma.OperationResultBacktracked[SmartRollupTimeoutResultContents]
 }
 
 func (*SmartRollupTimeoutResultBacktracked) SmartRollupTimeoutResult() {}
 
-type SmartRollupTimeoutResultFailed struct{ OperationResultFailed }
+type SmartRollupTimeoutResultFailed struct{ kathma.OperationResultFailed }
 
 func (*SmartRollupTimeoutResultFailed) SmartRollupTimeoutResult() {}
 
-type SmartRollupTimeoutResultSkipped struct{ OperationResultSkipped }
+type SmartRollupTimeoutResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*SmartRollupTimeoutResultSkipped) SmartRollupTimeoutResult() {}
 
@@ -486,6 +489,8 @@ func (*SmartRollupExecuteOutboxMessage) OperationKind() string {
 	return "smart_rollup_execute_outbox_message"
 }
 
+type TicketReceipt = proto_015_PtLimaPt.TicketReceipt
+
 type SmartRollupExecuteOutboxMessageResultContents struct {
 	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
 	TicketUpdates       []*TicketReceipt `tz:"dyn"`
@@ -499,22 +504,22 @@ type SmartRollupExecuteOutboxMessageResult interface {
 }
 
 type SmartRollupExecuteOutboxMessageResultApplied struct {
-	OperationResultApplied[SmartRollupExecuteOutboxMessageResultContents]
+	kathma.OperationResultApplied[SmartRollupExecuteOutboxMessageResultContents]
 }
 
 func (*SmartRollupExecuteOutboxMessageResultApplied) SmartRollupExecuteOutboxMessageResult() {}
 
 type SmartRollupExecuteOutboxMessageResultBacktracked struct {
-	OperationResultBacktracked[SmartRollupExecuteOutboxMessageResultContents]
+	kathma.OperationResultBacktracked[SmartRollupExecuteOutboxMessageResultContents]
 }
 
 func (*SmartRollupExecuteOutboxMessageResultBacktracked) SmartRollupExecuteOutboxMessageResult() {}
 
-type SmartRollupExecuteOutboxMessageResultFailed struct{ OperationResultFailed }
+type SmartRollupExecuteOutboxMessageResultFailed struct{ kathma.OperationResultFailed }
 
 func (*SmartRollupExecuteOutboxMessageResultFailed) SmartRollupExecuteOutboxMessageResult() {}
 
-type SmartRollupExecuteOutboxMessageResultSkipped struct{ OperationResultSkipped }
+type SmartRollupExecuteOutboxMessageResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*SmartRollupExecuteOutboxMessageResultSkipped) SmartRollupExecuteOutboxMessageResult() {}
 
@@ -555,22 +560,22 @@ type SmartRollupRecoverBondResult interface {
 }
 
 type SmartRollupRecoverBondResultApplied struct {
-	OperationResultApplied[SmartRollupRecoverBondResultContents]
+	kathma.OperationResultApplied[SmartRollupRecoverBondResultContents]
 }
 
 func (*SmartRollupRecoverBondResultApplied) SmartRollupRecoverBondResult() {}
 
 type SmartRollupRecoverBondResultBacktracked struct {
-	OperationResultBacktracked[SmartRollupRecoverBondResultContents]
+	kathma.OperationResultBacktracked[SmartRollupRecoverBondResultContents]
 }
 
 func (*SmartRollupRecoverBondResultBacktracked) SmartRollupRecoverBondResult() {}
 
-type SmartRollupRecoverBondResultFailed struct{ OperationResultFailed }
+type SmartRollupRecoverBondResultFailed struct{ kathma.OperationResultFailed }
 
 func (*SmartRollupRecoverBondResultFailed) SmartRollupRecoverBondResult() {}
 
-type SmartRollupRecoverBondResultSkipped struct{ OperationResultSkipped }
+type SmartRollupRecoverBondResultSkipped struct{ kathma.OperationResultSkipped }
 
 func (*SmartRollupRecoverBondResultSkipped) SmartRollupRecoverBondResult() {}
 
@@ -591,31 +596,3 @@ type SmartRollupRecoverBondContentsAndResult struct {
 }
 
 func (*SmartRollupRecoverBondContentsAndResult) OperationContentsAndResult() {}
-
-/*
-  Smart_rollup_recover_bond (tag 207)
-  ===================================
-
-  +---------------+----------------------+------------------------+
-  | Name          | Size                 | Contents               |
-  +===============+======================+========================+
-  | Tag           | 1 byte               | unsigned 8-bit integer |
-  +---------------+----------------------+------------------------+
-  | source        | 21 bytes             | $public_key_hash       |
-  +---------------+----------------------+------------------------+
-  | fee           | Determined from data | $N.t                   |
-  +---------------+----------------------+------------------------+
-  | counter       | Determined from data | $N.t                   |
-  +---------------+----------------------+------------------------+
-  | gas_limit     | Determined from data | $N.t                   |
-  +---------------+----------------------+------------------------+
-  | storage_limit | Determined from data | $N.t                   |
-  +---------------+----------------------+------------------------+
-  | rollup        | 20 bytes             | bytes                  |
-  +---------------+----------------------+------------------------+
-  | staker        | 21 bytes             | $public_key_hash       |
-  +---------------+----------------------+------------------------+
-  | metadata      | Determined from data | $X_689                 |
-  +---------------+----------------------+------------------------+
-
-*/

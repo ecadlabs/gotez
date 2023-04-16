@@ -3,6 +3,8 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/proto_008_PtEdo2Zk"
+	"github.com/ecadlabs/gotez/protocol/proto_009_PsFLoren"
 )
 
 type UnsignedProtocolBlockHeader struct {
@@ -30,6 +32,8 @@ type BlockHeader struct {
 	Signature tz.AnySignature
 }
 
+type VotingPeriodInfo proto_009_PsFLoren.VotingPeriodInfo
+
 type BlockMetadataContents struct {
 	proto.BlockMetadataHeader
 	Proposer                  tz.PublicKeyHash
@@ -47,32 +51,4 @@ type BlockMetadataContents struct {
 	DALAttestation            tz.Option[tz.BigInt]
 }
 
-type LevelInfo struct {
-	Level              int32
-	LevelPosition      int32
-	Cycle              int32
-	CyclePosition      int32
-	ExpectedCommitment bool
-}
-
-type VotingPeriodInfo struct {
-	VotingPeriod VotingPeriod
-	Position     int32
-	Remaining    int32
-}
-
-type VotingPeriod struct {
-	Index         int32
-	Kind          VotingPeriodKind
-	StartPosition int32
-}
-
-type VotingPeriodKind uint8
-
-const (
-	VotingPeriodProposal VotingPeriodKind = iota
-	VotingPeriodExploration
-	VotingPeriodCooldown
-	VotingPeriodPromotion
-	VotingPeriodAdoption
-)
+type LevelInfo = proto_008_PtEdo2Zk.LevelInfo
