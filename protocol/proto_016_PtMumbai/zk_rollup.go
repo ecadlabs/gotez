@@ -3,7 +3,8 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/expression"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
 	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
@@ -66,7 +67,7 @@ type ZkRollupPrice struct {
 type ZkRollupTicket struct {
 	Contents expression.Expression
 	Ty       expression.Expression
-	Ticketer tz.ContractID
+	Ticketer core.ContractID
 }
 
 type ZkRollupPublishResultContents struct {
@@ -77,7 +78,7 @@ type ZkRollupPublishResultContents struct {
 
 type ZkRollupPublishResult interface {
 	ZkRollupPublishResult()
-	OperationResult
+	core.OperationResult
 }
 
 type ZkRollupPublishResultApplied struct {
@@ -168,7 +169,7 @@ type ZkRollupUpdateResultContents struct {
 
 type ZkRollupUpdateResult interface {
 	ZkRollupUpdateResult()
-	OperationResult
+	core.OperationResult
 }
 
 type ZkRollupUpdateResultApplied struct {

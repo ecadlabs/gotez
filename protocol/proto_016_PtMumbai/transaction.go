@@ -3,26 +3,27 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/expression"
-	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
-type Transaction = proto_005_PsBABY5H.Transaction
-type Parameters = proto_005_PsBABY5H.Parameters
-type Entrypoint = proto_005_PsBABY5H.Entrypoint
+type Transaction = proto_012_Psithaca.Transaction
+type Parameters = proto_012_Psithaca.Parameters
+type Entrypoint = proto_012_Psithaca.Entrypoint
 type TransactionResult = proto_015_PtLimaPt.TransactionResult
 type TransactionDestination = proto_015_PtLimaPt.TransactionDestination
 type TransactionInternalOperationResult = proto_015_PtLimaPt.TransactionInternalOperationResult
 type ToSmartRollup = proto_015_PtLimaPt.ToSmartRollup
 
-type EpDefault = proto_005_PsBABY5H.EpDefault
-type EpRoot = proto_005_PsBABY5H.EpRoot
-type EpDo = proto_005_PsBABY5H.EpDo
-type EpSetDelegate = proto_005_PsBABY5H.EpSetDelegate
-type EpRemoveDelegate = proto_005_PsBABY5H.EpRemoveDelegate
-type EpNamed = proto_005_PsBABY5H.EpNamed
+type EpDefault = proto_012_Psithaca.EpDefault
+type EpRoot = proto_012_Psithaca.EpRoot
+type EpDo = proto_012_Psithaca.EpDo
+type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
+type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
+type EpNamed = proto_012_Psithaca.EpNamed
 
 type TransactionResultContents interface {
 	TransactionResultContents()
@@ -30,9 +31,9 @@ type TransactionResultContents interface {
 
 type ToContract struct {
 	Storage                      tz.Option[expression.Expression]
-	BalanceUpdates               []*BalanceUpdate          `tz:"dyn"`
-	TicketUpdates                []*TicketReceipt          `tz:"dyn"`
-	OriginatedContracts          []tz.OriginatedContractID `tz:"dyn"`
+	BalanceUpdates               []*BalanceUpdate            `tz:"dyn"`
+	TicketUpdates                []*TicketReceipt            `tz:"dyn"`
+	OriginatedContracts          []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas             tz.BigUint
 	StorageSize                  tz.BigInt
 	PaidStorageSizeDiff          tz.BigInt

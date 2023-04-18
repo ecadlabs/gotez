@@ -25,6 +25,11 @@ const (
 	BLSSignatureBytesLen     = 96
 )
 
+type Base58Encoder interface {
+	ToBase58() []byte
+	String() string
+}
+
 type Comparable[K any] interface {
 	comparable
 	ToKey() K
@@ -32,48 +37,6 @@ type Comparable[K any] interface {
 
 type ToComparable[H Comparable[K], K any] interface {
 	ToComparable() H
-}
-
-type ContractID interface {
-	Base58Encoder
-	ContractID()
-}
-
-type OriginatedContract struct {
-	*ContractHash
-	Padding uint8
-}
-
-type ImplicitContract struct {
-	PublicKeyHash
-}
-
-type OriginatedContractID interface {
-	Base58Encoder
-	OriginatedContractID()
-}
-
-func (*OriginatedContract) ContractID()           {}
-func (*OriginatedContract) OriginatedContractID() {}
-func (*ImplicitContract) ContractID()             {}
-
-type Base58Encoder interface {
-	ToBase58() []byte
-	String() string
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[ContractID]{
-		Variants: encoding.Variants[ContractID]{
-			0: (*ImplicitContract)(nil),
-			1: (*OriginatedContract)(nil),
-		},
-	})
-	encoding.RegisterEnum(&encoding.Enum[OriginatedContractID]{
-		Variants: encoding.Variants[OriginatedContractID]{
-			1: (*OriginatedContract)(nil),
-		},
-	})
 }
 
 type String string

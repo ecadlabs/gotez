@@ -1,4 +1,12 @@
-package proto_009_PsFLoren
+package proto_012_Psithaca
+
+type LevelInfo struct {
+	Level              int32
+	LevelPosition      int32
+	Cycle              int32
+	CyclePosition      int32
+	ExpectedCommitment bool
+}
 
 type VotingPeriodInfo struct {
 	VotingPeriod VotingPeriod

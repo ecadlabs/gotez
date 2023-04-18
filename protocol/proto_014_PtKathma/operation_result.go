@@ -2,7 +2,7 @@ package proto_014_PtKathma
 
 import (
 	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/core"
 )
 
 type OperationResult interface {
@@ -23,7 +23,7 @@ type OperationResultBacktracked[T any] struct {
 func (*OperationResultBacktracked[T]) OperationResultKind() string { return "backtracked" }
 
 type OperationResultErrors struct {
-	Errors []proto.Bytes `tz:"dyn"`
+	Errors []core.Bytes `tz:"dyn"`
 }
 
 type OperationResultFailed OperationResultErrors

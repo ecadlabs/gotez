@@ -5,12 +5,12 @@ import (
 
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
 )
 
 type BlockHeader struct {
-	proto.BlockHeader
+	core.BlockHeader
 	ProtocolData ProtocolBlockHeader
 }
 
@@ -20,7 +20,7 @@ func (header *BlockHeader) DecodeTZ(data []byte, ctx *encoding.Context) (rest []
 		return nil, err
 	}
 
-	p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+	p, ok := ctx.Get(core.ProtocolVersionCtxKey).(core.Protocol)
 	if !ok {
 		p = header.Proto
 	}
@@ -28,7 +28,7 @@ func (header *BlockHeader) DecodeTZ(data []byte, ctx *encoding.Context) (rest []
 	switch p {
 	//case proto.Proto015PtLimaPt:
 	//	header.ProtocolData = new(proto_015_PtLimaPt.ProtocolBlockHeader)
-	case proto.Proto016PtMumbai:
+	case core.Proto016PtMumbai:
 		header.ProtocolData = new(proto_016_PtMumbai.ProtocolBlockHeader)
 	default:
 		return nil, fmt.Errorf("gotez: BlockHeader.DecodeTZ: unknown protocol version %d", header.Proto)
@@ -74,8 +74,8 @@ func (header *BlockInfoContents) DecodeTZ(data []byte, ctx *encoding.Context) (r
 	if err != nil {
 		return nil, err
 	}
-	if ctx.Get(proto.ProtocolVersionCtxKey) == nil {
-		ctx = ctx.Set(proto.ProtocolVersionCtxKey, p1.Header.Proto)
+	if ctx.Get(core.ProtocolVersionCtxKey) == nil {
+		ctx = ctx.Set(core.ProtocolVersionCtxKey, p1.Header.Proto)
 	}
 
 	data, err = encoding.Decode(data, &p2, encoding.Ctx(ctx))
@@ -94,14 +94,14 @@ type BlockMetadataContents interface {
 
 func init() {
 	encoding.RegisterType(func(data []byte, ctx *encoding.Context) (BlockMetadataContents, []byte, error) {
-		p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+		p, ok := ctx.Get(core.ProtocolVersionCtxKey).(core.Protocol)
 		if !ok {
 			return nil, nil, fmt.Errorf("gotez: protocol version must be passed to the decoder chain")
 		}
 
 		var out BlockMetadataContents
 		switch p {
-		case proto.Proto016PtMumbai:
+		case core.Proto016PtMumbai:
 			out = new(proto_016_PtMumbai.BlockMetadataContents)
 		default:
 			return nil, nil, fmt.Errorf("gotez: unknown protocol version %d", p)

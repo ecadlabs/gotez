@@ -1,4 +1,4 @@
-package proto
+package core
 
 import (
 	tz "github.com/ecadlabs/gotez"

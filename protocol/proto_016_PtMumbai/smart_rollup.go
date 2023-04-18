@@ -3,8 +3,8 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/expression"
-	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
 	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
@@ -28,7 +28,7 @@ func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_origi
 
 type SmartRollupOriginateResult interface {
 	SmartRollupOriginateResult()
-	OperationResult
+	core.OperationResult
 }
 
 type SmartRollupOriginateResultContents struct {
@@ -86,7 +86,7 @@ func (*SmartRollupOriginateSuccessfulManagerOperationResult) OperationKind() str
 
 type SmartRollupAddMessages struct {
 	ManagerOperation
-	Message []proto.Bytes `tz:"dyn"`
+	Message []core.Bytes `tz:"dyn"`
 }
 
 func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add_messages" }
@@ -113,7 +113,7 @@ type SmartRollupCementResultContents struct {
 
 type SmartRollupCementResult interface {
 	SmartRollupCementResult()
-	OperationResult
+	core.OperationResult
 }
 
 type SmartRollupCementResultApplied struct {
@@ -178,7 +178,7 @@ type SmartRollupPublishResultContents struct {
 
 type SmartRollupPublishResult interface {
 	SmartRollupPublishResult()
-	OperationResult
+	core.OperationResult
 }
 
 type SmartRollupPublishResultApplied struct {
@@ -417,7 +417,7 @@ const (
 
 type SmartRollupTimeoutResult interface {
 	SmartRollupTimeoutResult()
-	OperationResult
+	core.OperationResult
 }
 
 type SmartRollupTimeoutResultApplied struct {
@@ -500,7 +500,7 @@ type SmartRollupExecuteOutboxMessageResultContents struct {
 
 type SmartRollupExecuteOutboxMessageResult interface {
 	SmartRollupExecuteOutboxMessageResult()
-	OperationResult
+	core.OperationResult
 }
 
 type SmartRollupExecuteOutboxMessageResultApplied struct {
@@ -556,7 +556,7 @@ type SmartRollupRecoverBondResultContents struct {
 
 type SmartRollupRecoverBondResult interface {
 	SmartRollupRecoverBondResult()
-	OperationResult
+	core.OperationResult
 }
 
 type SmartRollupRecoverBondResultApplied struct {

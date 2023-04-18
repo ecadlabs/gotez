@@ -2,9 +2,8 @@ package proto_016_PtMumbai
 
 import (
 	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/protocol/proto"
-	"github.com/ecadlabs/gotez/protocol/proto_008_PtEdo2Zk"
-	"github.com/ecadlabs/gotez/protocol/proto_009_PsFLoren"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 )
 
 type UnsignedProtocolBlockHeader struct {
@@ -23,7 +22,7 @@ type ProtocolBlockHeader struct {
 func (*ProtocolBlockHeader) ProtocolBlockHeader() {}
 
 type UnsignedBlockHeader struct {
-	proto.BlockHeader
+	core.BlockHeader
 	UnsignedProtocolBlockHeader
 }
 
@@ -32,10 +31,10 @@ type BlockHeader struct {
 	Signature tz.AnySignature
 }
 
-type VotingPeriodInfo proto_009_PsFLoren.VotingPeriodInfo
+type VotingPeriodInfo proto_012_Psithaca.VotingPeriodInfo
 
 type BlockMetadataContents struct {
-	proto.BlockMetadataHeader
+	core.BlockMetadataHeader
 	Proposer                  tz.PublicKeyHash
 	Baker                     tz.PublicKeyHash
 	LevelInfo                 LevelInfo
@@ -51,4 +50,4 @@ type BlockMetadataContents struct {
 	DALAttestation            tz.Option[tz.BigInt]
 }
 
-type LevelInfo = proto_008_PtEdo2Zk.LevelInfo
+type LevelInfo = proto_012_Psithaca.LevelInfo

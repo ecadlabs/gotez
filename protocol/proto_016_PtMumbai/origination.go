@@ -3,21 +3,22 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
-type Origination = proto_005_PsBABY5H.Origination
-type Script = proto_005_PsBABY5H.Script
+type Origination = proto_012_Psithaca.Origination
+type Script = proto_012_Psithaca.Script
 
 type OriginationResult interface {
 	OriginationResult()
-	OperationResult
+	core.OperationResult
 }
 
 type OriginationResultContents struct {
-	BalanceUpdates      []*BalanceUpdate          `tz:"dyn"`
-	OriginatedContracts []tz.OriginatedContractID `tz:"dyn"`
+	BalanceUpdates      []*BalanceUpdate            `tz:"dyn"`
+	OriginatedContracts []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	StorageSize         tz.BigInt
 	PaidStorageSizeDiff tz.BigInt

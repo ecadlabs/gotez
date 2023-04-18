@@ -2,15 +2,16 @@ package proto_014_PtKathma
 
 import (
 	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 )
 
-type ManagerOperation = proto_005_PsBABY5H.ManagerOperation
+type ManagerOperation = proto_012_Psithaca.ManagerOperation
 
 type IncreasePaidStorage struct {
 	ManagerOperation
 	Amount      tz.BigInt
-	Destination tz.OriginatedContractID
+	Destination core.OriginatedContractID
 }
 
 func (*IncreasePaidStorage) OperationKind() string { return "increase_paid_storage" }

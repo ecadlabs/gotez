@@ -5,17 +5,17 @@ import (
 
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
 )
 
 type OperationContents interface {
-	proto.OperationContents
+	core.OperationContents
 }
 
 func init() {
 	encoding.RegisterType(func(data []byte, ctx *encoding.Context) (OperationContents, []byte, error) {
-		p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+		p, ok := ctx.Get(core.ProtocolVersionCtxKey).(core.Protocol)
 		if !ok {
 			return nil, nil, fmt.Errorf("gotez: protocol version must be passed to the decoder chain")
 		}
@@ -25,7 +25,7 @@ func init() {
 			out  OperationContents
 		)
 		switch p {
-		case proto.Proto016PtMumbai:
+		case core.Proto016PtMumbai:
 			var tmp proto_016_PtMumbai.OperationContents
 			dest = &tmp
 			out = tmp
@@ -40,12 +40,12 @@ func init() {
 }
 
 type OperationContentsAndResult interface {
-	proto.OperationContentsAndResult
+	core.OperationContentsAndResult
 }
 
 func init() {
 	encoding.RegisterType(func(data []byte, ctx *encoding.Context) (OperationContentsAndResult, []byte, error) {
-		p, ok := ctx.Get(proto.ProtocolVersionCtxKey).(proto.Protocol)
+		p, ok := ctx.Get(core.ProtocolVersionCtxKey).(core.Protocol)
 		if !ok {
 			return nil, nil, fmt.Errorf("gotez: protocol version must be passed to the decoder chain")
 		}
@@ -55,7 +55,7 @@ func init() {
 			out  proto_016_PtMumbai.OperationContentsAndResult
 		)
 		switch p {
-		case proto.Proto016PtMumbai:
+		case core.Proto016PtMumbai:
 			var tmp proto_016_PtMumbai.OperationContentsAndResult
 			dest = &tmp
 			out = tmp
@@ -70,11 +70,11 @@ func init() {
 }
 
 type SuccessfulManagerOperationResult interface {
-	proto.SuccessfulManagerOperationResult
+	core.SuccessfulManagerOperationResult
 }
 
 type InternalOperationResult interface {
-	proto.InternalOperationResult
+	core.InternalOperationResult
 }
 
 type OperationsList struct {

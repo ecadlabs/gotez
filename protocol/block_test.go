@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/proto"
+	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -18,13 +18,13 @@ type blockTestData struct {
 }
 
 type protoTestData struct {
-	proto  proto.Protocol
+	proto  core.Protocol
 	blocks []blockTestData
 }
 
 var testData = []protoTestData{
 	{
-		proto: proto.Proto016PtMumbai,
+		proto: core.Proto016PtMumbai,
 		blocks: []blockTestData{
 			{"3279466", false},
 			{"181313", true},
@@ -59,7 +59,7 @@ func TestBlock(t *testing.T) {
 					var out BlockInfo
 					ctx := encoding.NewContext()
 					if block.forceVersion {
-						ctx = ctx.Set(proto.ProtocolVersionCtxKey, protoData.proto)
+						ctx = ctx.Set(core.ProtocolVersionCtxKey, protoData.proto)
 					}
 					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx))
 					if !assert.NoError(t, err) {

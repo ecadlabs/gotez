@@ -3,8 +3,7 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/proto"
-	"github.com/ecadlabs/gotez/protocol/proto_009_PsFLoren"
+	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
 )
@@ -18,14 +17,14 @@ type BalanceUpdate struct {
 }
 
 type BalanceUpdateKind interface {
-	proto.BalanceUpdateKind
+	core.BalanceUpdateKind
 }
 
-type BalanceUpdateContract = proto_009_PsFLoren.BalanceUpdateContract
+type BalanceUpdateContract = proto_012_Psithaca.BalanceUpdateContract
 type BalanceUpdateDeposits = proto_012_Psithaca.BalanceUpdateDeposits
 type BalanceUpdateLostEndorsingRewards = proto_012_Psithaca.BalanceUpdateLostEndorsingRewards
 type BalanceUpdateCommitments = proto_012_Psithaca.BalanceUpdateCommitments
-type BalanceUpdateBlockFees = proto_009_PsFLoren.BalanceUpdateBlockFees
+type BalanceUpdateBlockFees = proto_012_Psithaca.BalanceUpdateBlockFees
 type BalanceUpdateNonceRevelationRewards = proto_012_Psithaca.BalanceUpdateNonceRevelationRewards
 type BalanceUpdateDoubleSigningEvidenceRewards = proto_012_Psithaca.BalanceUpdateDoubleSigningEvidenceRewards
 type BalanceUpdateEndorsingRewards = proto_012_Psithaca.BalanceUpdateEndorsingRewards
@@ -68,7 +67,7 @@ func init() {
 }
 
 type BalanceUpdateFrozenBonds struct {
-	Contract tz.ContractID
+	Contract core.ContractID
 	BondID   BondID
 }
 

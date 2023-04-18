@@ -3,18 +3,17 @@ package proto_015_PtLimaPt
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/expression"
-	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
-type ManagerOperation = proto_005_PsBABY5H.ManagerOperation
+type ManagerOperation = proto_012_Psithaca.ManagerOperation
 
 type LazyStorageDiff struct {
 	Opaque []byte `tz:"dyn"` // TODO: lazy storage diff
 }
-
-type OperationResult = kathma.OperationResult
 
 type UpdateConsensusKey struct {
 	ManagerOperation
@@ -31,11 +30,11 @@ type DrainDelegate struct {
 
 func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
 
-type Entrypoint = proto_005_PsBABY5H.Entrypoint
+type Entrypoint = proto_012_Psithaca.Entrypoint
 
 type EventResult interface {
 	EventResult()
-	OperationResult
+	core.OperationResult
 }
 
 type EventResultContents struct {

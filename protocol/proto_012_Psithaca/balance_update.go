@@ -2,6 +2,7 @@ package proto_012_Psithaca
 
 import (
 	tz "github.com/ecadlabs/gotez"
+	"github.com/ecadlabs/gotez/protocol/core"
 )
 
 type BalanceUpdateOrigin uint8
@@ -12,6 +13,16 @@ const (
 	BalanceUpdateOriginSubsidy
 	BalanceUpdateOriginSimulation
 )
+
+type BalanceUpdateContract struct {
+	Contract core.ContractID
+}
+
+func (*BalanceUpdateContract) BalanceUpdateKind() string { return "contract" }
+
+type BalanceUpdateBlockFees struct{}
+
+func (BalanceUpdateBlockFees) BalanceUpdateKind() string { return "block_fees" }
 
 type BalanceUpdateDeposits struct {
 	Delegate tz.PublicKeyHash

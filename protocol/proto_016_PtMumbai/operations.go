@@ -3,61 +3,49 @@ package proto_016_PtMumbai
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/expression"
-	"github.com/ecadlabs/gotez/protocol/proto"
-	"github.com/ecadlabs/gotez/protocol/proto_001_PtCJ7pwo"
-	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
-	"github.com/ecadlabs/gotez/protocol/proto_009_PsFLoren"
-	"github.com/ecadlabs/gotez/protocol/proto_011_PtHangz2"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
 type OperationContents interface {
-	proto.OperationContents
+	core.OperationContents
 }
 
-type ManagerOperation = proto_005_PsBABY5H.ManagerOperation
-type SeedNonceRevelation = proto_005_PsBABY5H.SeedNonceRevelation
+type ManagerOperation = proto_012_Psithaca.ManagerOperation
+type SeedNonceRevelation = proto_012_Psithaca.SeedNonceRevelation
 type Preendorsement = proto_012_Psithaca.Preendorsement
 type InlinedPreendorsement = proto_012_Psithaca.InlinedPreendorsement
 type Endorsement = proto_012_Psithaca.Endorsement
 type InlinedEndorsement = proto_012_Psithaca.InlinedEndorsement
 type DoublePreendorsementEvidence = proto_012_Psithaca.DoublePreendorsementEvidence
 type DoubleEndorsementEvidence = proto_012_Psithaca.DoubleEndorsementEvidence
-type Reveal = proto_005_PsBABY5H.Reveal
+type Reveal = proto_012_Psithaca.Reveal
 type RevealSuccessfulManagerOperationResult = proto_015_PtLimaPt.RevealSuccessfulManagerOperationResult
-type Delegation = proto_005_PsBABY5H.Delegation
+type Delegation = proto_012_Psithaca.Delegation
 type DelegationInternalOperationResult = proto_015_PtLimaPt.DelegationInternalOperationResult
 type DelegationSuccessfulManagerOperationResult = proto_015_PtLimaPt.DelegationSuccessfulManagerOperationResult
-type RegisterGlobalConstant = proto_011_PtHangz2.RegisterGlobalConstant
+type RegisterGlobalConstant = proto_012_Psithaca.RegisterGlobalConstant
 type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
 type SetDepositsLimitSuccessfulManagerOperationResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerOperationResult
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
 type UpdateConsensusKeySuccessfulManagerOperationResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerOperationResult
 type IncreasePaidStorage = kathma.IncreasePaidStorage
-type ActivateAccount = proto_001_PtCJ7pwo.ActivateAccount
-type Proposals = proto_001_PtCJ7pwo.Proposals
-type BallotKind = proto_001_PtCJ7pwo.BallotKind
-type Ballot = proto_001_PtCJ7pwo.Ballot
+type ActivateAccount = proto_012_Psithaca.ActivateAccount
+type Proposals = proto_012_Psithaca.Proposals
+type Ballot = proto_012_Psithaca.Ballot
 type VDFRevelation = kathma.VDFRevelation
 type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
-type FailingNoop = proto_009_PsFLoren.FailingNoop
+type FailingNoop = proto_012_Psithaca.FailingNoop
 type EventResult = proto_015_PtLimaPt.EventResult
 type EventResultContents = proto_015_PtLimaPt.EventResultContents
 type EventInternalOperationResult = proto_015_PtLimaPt.EventInternalOperationResult
 type LazyStorageDiff = proto_015_PtLimaPt.LazyStorageDiff
-type OperationResult = kathma.OperationResult
-
-const (
-	BallotYay  = proto_001_PtCJ7pwo.BallotYay
-	BallotNay  = proto_001_PtCJ7pwo.BallotNay
-	BallotPass = proto_001_PtCJ7pwo.BallotPass
-)
 
 type OperationContentsAndResult interface {
-	proto.OperationContentsAndResult
+	core.OperationContentsAndResult
 }
 
 type SeedNonceRevelationContentsAndResult struct {
@@ -119,7 +107,7 @@ func (*DelegationContentsAndResult) OperationContentsAndResult() {}
 
 type RegisterGlobalConstantResult interface {
 	RegisterGlobalConstantResult()
-	OperationResult
+	core.OperationResult
 }
 
 type RegisterGlobalConstantResultContents struct {
@@ -185,9 +173,9 @@ type TransferTicket struct {
 	ManagerOperation
 	TicketContents expression.Expression `tz:"dyn"`
 	TicketType     expression.Expression `tz:"dyn"`
-	TicketTicketer tz.ContractID
+	TicketTicketer core.ContractID
 	TicketAmount   tz.BigUint
-	Destination    tz.ContractID
+	Destination    core.ContractID
 	Entrypoint     string `tz:"dyn"`
 }
 
@@ -202,7 +190,7 @@ func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
 
 type IncreasePaidStorageResult interface {
 	IncreasePaidStorageResult()
-	OperationResult
+	core.OperationResult
 }
 
 type IncreasePaidStorageResultContents struct {
@@ -442,17 +430,17 @@ func init() {
 }
 
 type SuccessfulManagerOperationResult interface {
-	proto.SuccessfulManagerOperationResult
+	core.SuccessfulManagerOperationResult
 }
 
-type ManagerMetadata[T OperationResult] struct {
+type ManagerMetadata[T core.OperationResult] struct {
 	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`
 }
 
 type InternalOperationResult interface {
-	proto.InternalOperationResult
+	core.InternalOperationResult
 }
 
 func init() {

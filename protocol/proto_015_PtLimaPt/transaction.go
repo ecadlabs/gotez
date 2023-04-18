@@ -3,12 +3,13 @@ package proto_015_PtLimaPt
 import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/expression"
-	"github.com/ecadlabs/gotez/protocol/proto_005_PsBABY5H"
+	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 )
 
-type Transaction = proto_005_PsBABY5H.Transaction
-type Parameters = proto_005_PsBABY5H.Parameters
+type Transaction = proto_012_Psithaca.Transaction
+type Parameters = proto_012_Psithaca.Parameters
 
 type TicketReceipt struct {
 	TicketToken TicketToken
@@ -16,7 +17,7 @@ type TicketReceipt struct {
 }
 
 type TicketToken struct {
-	Ticketer    tz.ContractID
+	Ticketer    core.ContractID
 	ContentType expression.Expression
 	Content     expression.Expression
 }
@@ -35,7 +36,7 @@ func (*ToSmartRollup) TransactionResultContents() {}
 
 type TransactionResult interface {
 	TransactionResult()
-	OperationResult
+	core.OperationResult
 }
 
 type TransactionDestination interface {
@@ -57,8 +58,8 @@ type ZkRollupDestination struct {
 	Padding uint8
 }
 
-type OriginatedContract tz.OriginatedContract
-type ImplicitContract tz.ImplicitContract
+type OriginatedContract core.OriginatedContract
+type ImplicitContract core.ImplicitContract
 
 func (*TxRollupDestination) TransactionDestination()    {}
 func (*SmartRollupDestination) TransactionDestination() {}
