@@ -5,10 +5,6 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core"
 )
 
-type OperationResult interface {
-	OperationResultKind() string
-}
-
 type OperationResultApplied[T any] struct {
 	Result T
 }
