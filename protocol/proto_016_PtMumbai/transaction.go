@@ -6,7 +6,6 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
-	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
@@ -70,22 +69,22 @@ func init() {
 }
 
 type TransactionResultApplied struct {
-	kathma.OperationResultApplied[TransactionResultContents]
+	core.OperationResultApplied[TransactionResultContents]
 }
 
 func (*TransactionResultApplied) TransactionResult() {}
 
 type TransactionResultBacktracked struct {
-	kathma.OperationResultBacktracked[TransactionResultContents]
+	core.OperationResultBacktracked[TransactionResultContents]
 }
 
 func (*TransactionResultBacktracked) TransactionResult() {}
 
-type TransactionResultFailed struct{ kathma.OperationResultFailed }
+type TransactionResultFailed struct{ core.OperationResultFailed }
 
 func (*TransactionResultFailed) TransactionResult() {}
 
-type TransactionResultSkipped struct{ kathma.OperationResultSkipped }
+type TransactionResultSkipped struct{ core.OperationResultSkipped }
 
 func (*TransactionResultSkipped) TransactionResult() {}
 

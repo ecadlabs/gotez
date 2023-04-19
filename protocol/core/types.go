@@ -9,10 +9,6 @@ type OperationContents interface {
 	OperationKind() string
 }
 
-type OperationResult interface {
-	OperationResultKind() string
-}
-
 type OperationContentsAndResult interface {
 	OperationContentsAndResult()
 	OperationContents
@@ -80,4 +76,14 @@ func init() {
 			1: (*OriginatedContract)(nil),
 		},
 	})
+}
+
+type BalanceUpdate interface {
+	BalanceUpdate()
+}
+
+type ManagerMetadata[T OperationResult, B BalanceUpdate] struct {
+	BalanceUpdates           []B `tz:"dyn"`
+	OperationResult          T
+	InternalOperationResults []InternalOperationResult `tz:"dyn"`
 }

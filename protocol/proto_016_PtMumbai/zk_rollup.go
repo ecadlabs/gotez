@@ -4,32 +4,11 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/core/expression"
-	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
+	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
-type ZkRollupOrigination struct {
-	ManagerOperation
-	PublicParameters []byte              `tz:"dyn"`
-	CircuitsInfo     []*CircuitsInfoElem `tz:"dyn"`
-	InitState        []byte              `tz:"dyn"`
-	NbOps            int32
-}
-
-func (*ZkRollupOrigination) OperationKind() string { return "zk_rollup_origination" }
-
-type CircuitsInfoElem struct {
-	Value string `tz:"dyn"`
-	Tag   CircuitsInfoTag
-}
-
-type CircuitsInfoTag uint8
-
-const (
-	CircuitsInfoPublic CircuitsInfoTag = iota
-	CircuitsInfoPrivate
-	CircuitsInfoFee
-)
+type ZkRollupOrigination = proto_015_PtLimaPt.ZkRollupOrigination
+type ZkRollupPublish = proto_015_PtLimaPt.ZkRollupPublish
 
 type ZkRollupOriginationContentsAndResult struct {
 	ZkRollupOrigination
@@ -37,38 +16,6 @@ type ZkRollupOriginationContentsAndResult struct {
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
-
-type ZkRollupPublish struct {
-	ManagerOperation
-	ZkRollup *tz.ZkRollupAddress
-	Op       []*ZkRollupOpElem `tz:"dyn"`
-}
-
-func (*ZkRollupPublish) OperationKind() string { return "zk_rollup_publish" }
-
-type ZkRollupOpElem struct {
-	Op     ZkRollupOp
-	Ticket tz.Option1[ZkRollupTicket]
-}
-
-type ZkRollupOp struct {
-	OpCode   int32
-	Price    ZkRollupPrice
-	L1Dst    tz.PublicKeyHash
-	RollupID *tz.ZkRollupAddress
-	Payload  []byte `tz:"dyn"`
-}
-
-type ZkRollupPrice struct {
-	ID     *tz.ScriptExprHash
-	Amount tz.BigInt
-}
-
-type ZkRollupTicket struct {
-	Contents expression.Expression
-	Ty       expression.Expression
-	Ticketer core.ContractID
-}
 
 type ZkRollupPublishResultContents struct {
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
@@ -82,22 +29,22 @@ type ZkRollupPublishResult interface {
 }
 
 type ZkRollupPublishResultApplied struct {
-	kathma.OperationResultApplied[ZkRollupPublishResultContents]
+	core.OperationResultApplied[ZkRollupPublishResultContents]
 }
 
 func (*ZkRollupPublishResultApplied) ZkRollupPublishResult() {}
 
 type ZkRollupPublishResultBacktracked struct {
-	kathma.OperationResultBacktracked[ZkRollupPublishResultContents]
+	core.OperationResultBacktracked[ZkRollupPublishResultContents]
 }
 
 func (*ZkRollupPublishResultBacktracked) ZkRollupPublishResult() {}
 
-type ZkRollupPublishResultFailed struct{ kathma.OperationResultFailed }
+type ZkRollupPublishResultFailed struct{ core.OperationResultFailed }
 
 func (*ZkRollupPublishResultFailed) ZkRollupPublishResult() {}
 
-type ZkRollupPublishResultSkipped struct{ kathma.OperationResultSkipped }
+type ZkRollupPublishResultSkipped struct{ core.OperationResultSkipped }
 
 func (*ZkRollupPublishResultSkipped) ZkRollupPublishResult() {}
 
@@ -173,22 +120,22 @@ type ZkRollupUpdateResult interface {
 }
 
 type ZkRollupUpdateResultApplied struct {
-	kathma.OperationResultApplied[ZkRollupUpdateResultContents]
+	core.OperationResultApplied[ZkRollupUpdateResultContents]
 }
 
 func (*ZkRollupUpdateResultApplied) ZkRollupUpdateResult() {}
 
 type ZkRollupUpdateResultBacktracked struct {
-	kathma.OperationResultBacktracked[ZkRollupUpdateResultContents]
+	core.OperationResultBacktracked[ZkRollupUpdateResultContents]
 }
 
 func (*ZkRollupUpdateResultBacktracked) ZkRollupUpdateResult() {}
 
-type ZkRollupUpdateResultFailed struct{ kathma.OperationResultFailed }
+type ZkRollupUpdateResultFailed struct{ core.OperationResultFailed }
 
 func (*ZkRollupUpdateResultFailed) ZkRollupUpdateResult() {}
 
-type ZkRollupUpdateResultSkipped struct{ kathma.OperationResultSkipped }
+type ZkRollupUpdateResultSkipped struct{ core.OperationResultSkipped }
 
 func (*ZkRollupUpdateResultSkipped) ZkRollupUpdateResult() {}
 

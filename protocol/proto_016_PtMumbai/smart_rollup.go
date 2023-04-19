@@ -4,8 +4,6 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/core/expression"
-	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
@@ -16,15 +14,7 @@ const (
 	PVM_WASM_2_0_0
 )
 
-type SmartRollupOriginate struct {
-	ManagerOperation
-	PVMKind
-	Kernel           []byte                `tz:"dyn"`
-	OriginationProof []byte                `tz:"dyn"`
-	ParametersTy     expression.Expression `tz:"dyn"`
-}
-
-func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_originate" }
+type SmartRollupOriginate = proto_015_PtLimaPt.SmartRollupOriginate
 
 type SmartRollupOriginateResult interface {
 	SmartRollupOriginateResult()
@@ -40,22 +30,22 @@ type SmartRollupOriginateResultContents struct {
 }
 
 type SmartRollupOriginateResultApplied struct {
-	kathma.OperationResultApplied[SmartRollupOriginateResultContents]
+	core.OperationResultApplied[SmartRollupOriginateResultContents]
 }
 
 func (*SmartRollupOriginateResultApplied) SmartRollupOriginateResult() {}
 
 type SmartRollupOriginateResultBacktracked struct {
-	kathma.OperationResultBacktracked[SmartRollupOriginateResultContents]
+	core.OperationResultBacktracked[SmartRollupOriginateResultContents]
 }
 
 func (*SmartRollupOriginateResultBacktracked) SmartRollupOriginateResult() {}
 
-type SmartRollupOriginateResultFailed struct{ kathma.OperationResultFailed }
+type SmartRollupOriginateResultFailed struct{ core.OperationResultFailed }
 
 func (*SmartRollupOriginateResultFailed) SmartRollupOriginateResult() {}
 
-type SmartRollupOriginateResultSkipped struct{ kathma.OperationResultSkipped }
+type SmartRollupOriginateResultSkipped struct{ core.OperationResultSkipped }
 
 func (*SmartRollupOriginateResultSkipped) SmartRollupOriginateResult() {}
 
@@ -117,22 +107,22 @@ type SmartRollupCementResult interface {
 }
 
 type SmartRollupCementResultApplied struct {
-	kathma.OperationResultApplied[SmartRollupCementResultContents]
+	core.OperationResultApplied[SmartRollupCementResultContents]
 }
 
 func (*SmartRollupCementResultApplied) SmartRollupCementResult() {}
 
 type SmartRollupCementResultBacktracked struct {
-	kathma.OperationResultBacktracked[SmartRollupCementResultContents]
+	core.OperationResultBacktracked[SmartRollupCementResultContents]
 }
 
 func (*SmartRollupCementResultBacktracked) SmartRollupCementResult() {}
 
-type SmartRollupCementResultFailed struct{ kathma.OperationResultFailed }
+type SmartRollupCementResultFailed struct{ core.OperationResultFailed }
 
 func (*SmartRollupCementResultFailed) SmartRollupCementResult() {}
 
-type SmartRollupCementResultSkipped struct{ kathma.OperationResultSkipped }
+type SmartRollupCementResultSkipped struct{ core.OperationResultSkipped }
 
 func (*SmartRollupCementResultSkipped) SmartRollupCementResult() {}
 
@@ -182,22 +172,22 @@ type SmartRollupPublishResult interface {
 }
 
 type SmartRollupPublishResultApplied struct {
-	kathma.OperationResultApplied[SmartRollupPublishResultContents]
+	core.OperationResultApplied[SmartRollupPublishResultContents]
 }
 
 func (*SmartRollupPublishResultApplied) SmartRollupPublishResult() {}
 
 type SmartRollupPublishResultBacktracked struct {
-	kathma.OperationResultBacktracked[SmartRollupPublishResultContents]
+	core.OperationResultBacktracked[SmartRollupPublishResultContents]
 }
 
 func (*SmartRollupPublishResultBacktracked) SmartRollupPublishResult() {}
 
-type SmartRollupPublishResultFailed struct{ kathma.OperationResultFailed }
+type SmartRollupPublishResultFailed struct{ core.OperationResultFailed }
 
 func (*SmartRollupPublishResultFailed) SmartRollupPublishResult() {}
 
-type SmartRollupPublishResultSkipped struct{ kathma.OperationResultSkipped }
+type SmartRollupPublishResultSkipped struct{ core.OperationResultSkipped }
 
 func (*SmartRollupPublishResultSkipped) SmartRollupPublishResult() {}
 
@@ -421,22 +411,22 @@ type SmartRollupTimeoutResult interface {
 }
 
 type SmartRollupTimeoutResultApplied struct {
-	kathma.OperationResultApplied[SmartRollupTimeoutResultContents]
+	core.OperationResultApplied[SmartRollupTimeoutResultContents]
 }
 
 func (*SmartRollupTimeoutResultApplied) SmartRollupTimeoutResult() {}
 
 type SmartRollupTimeoutResultBacktracked struct {
-	kathma.OperationResultBacktracked[SmartRollupTimeoutResultContents]
+	core.OperationResultBacktracked[SmartRollupTimeoutResultContents]
 }
 
 func (*SmartRollupTimeoutResultBacktracked) SmartRollupTimeoutResult() {}
 
-type SmartRollupTimeoutResultFailed struct{ kathma.OperationResultFailed }
+type SmartRollupTimeoutResultFailed struct{ core.OperationResultFailed }
 
 func (*SmartRollupTimeoutResultFailed) SmartRollupTimeoutResult() {}
 
-type SmartRollupTimeoutResultSkipped struct{ kathma.OperationResultSkipped }
+type SmartRollupTimeoutResultSkipped struct{ core.OperationResultSkipped }
 
 func (*SmartRollupTimeoutResultSkipped) SmartRollupTimeoutResult() {}
 
@@ -504,22 +494,22 @@ type SmartRollupExecuteOutboxMessageResult interface {
 }
 
 type SmartRollupExecuteOutboxMessageResultApplied struct {
-	kathma.OperationResultApplied[SmartRollupExecuteOutboxMessageResultContents]
+	core.OperationResultApplied[SmartRollupExecuteOutboxMessageResultContents]
 }
 
 func (*SmartRollupExecuteOutboxMessageResultApplied) SmartRollupExecuteOutboxMessageResult() {}
 
 type SmartRollupExecuteOutboxMessageResultBacktracked struct {
-	kathma.OperationResultBacktracked[SmartRollupExecuteOutboxMessageResultContents]
+	core.OperationResultBacktracked[SmartRollupExecuteOutboxMessageResultContents]
 }
 
 func (*SmartRollupExecuteOutboxMessageResultBacktracked) SmartRollupExecuteOutboxMessageResult() {}
 
-type SmartRollupExecuteOutboxMessageResultFailed struct{ kathma.OperationResultFailed }
+type SmartRollupExecuteOutboxMessageResultFailed struct{ core.OperationResultFailed }
 
 func (*SmartRollupExecuteOutboxMessageResultFailed) SmartRollupExecuteOutboxMessageResult() {}
 
-type SmartRollupExecuteOutboxMessageResultSkipped struct{ kathma.OperationResultSkipped }
+type SmartRollupExecuteOutboxMessageResultSkipped struct{ core.OperationResultSkipped }
 
 func (*SmartRollupExecuteOutboxMessageResultSkipped) SmartRollupExecuteOutboxMessageResult() {}
 
@@ -560,22 +550,22 @@ type SmartRollupRecoverBondResult interface {
 }
 
 type SmartRollupRecoverBondResultApplied struct {
-	kathma.OperationResultApplied[SmartRollupRecoverBondResultContents]
+	core.OperationResultApplied[SmartRollupRecoverBondResultContents]
 }
 
 func (*SmartRollupRecoverBondResultApplied) SmartRollupRecoverBondResult() {}
 
 type SmartRollupRecoverBondResultBacktracked struct {
-	kathma.OperationResultBacktracked[SmartRollupRecoverBondResultContents]
+	core.OperationResultBacktracked[SmartRollupRecoverBondResultContents]
 }
 
 func (*SmartRollupRecoverBondResultBacktracked) SmartRollupRecoverBondResult() {}
 
-type SmartRollupRecoverBondResultFailed struct{ kathma.OperationResultFailed }
+type SmartRollupRecoverBondResultFailed struct{ core.OperationResultFailed }
 
 func (*SmartRollupRecoverBondResultFailed) SmartRollupRecoverBondResult() {}
 
-type SmartRollupRecoverBondResultSkipped struct{ kathma.OperationResultSkipped }
+type SmartRollupRecoverBondResultSkipped struct{ core.OperationResultSkipped }
 
 func (*SmartRollupRecoverBondResultSkipped) SmartRollupRecoverBondResult() {}
 

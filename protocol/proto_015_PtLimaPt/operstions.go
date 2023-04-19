@@ -6,7 +6,6 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
-	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
 type ManagerOperation = proto_012_Psithaca.ManagerOperation
@@ -42,22 +41,22 @@ type EventResultContents struct {
 }
 
 type EventResultApplied struct {
-	kathma.OperationResultApplied[EventResultContents]
+	core.OperationResultApplied[EventResultContents]
 }
 
 func (*EventResultApplied) EventResult() {}
 
 type EventResultBacktracked struct {
-	kathma.OperationResultBacktracked[EventResultContents]
+	core.OperationResultBacktracked[EventResultContents]
 }
 
 func (*EventResultBacktracked) EventResult() {}
 
-type EventResultFailed struct{ kathma.OperationResultFailed }
+type EventResultFailed struct{ core.OperationResultFailed }
 
 func (*EventResultFailed) EventResult() {}
 
-type EventResultSkipped struct{ kathma.OperationResultSkipped }
+type EventResultSkipped struct{ core.OperationResultSkipped }
 
 func (*EventResultSkipped) EventResult() {}
 

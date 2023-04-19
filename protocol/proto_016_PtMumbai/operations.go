@@ -4,9 +4,9 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
-	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
+	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
+	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
@@ -32,17 +32,18 @@ type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
 type SetDepositsLimitSuccessfulManagerOperationResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerOperationResult
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
 type UpdateConsensusKeySuccessfulManagerOperationResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerOperationResult
-type IncreasePaidStorage = kathma.IncreasePaidStorage
+type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
 type ActivateAccount = proto_012_Psithaca.ActivateAccount
 type Proposals = proto_012_Psithaca.Proposals
 type Ballot = proto_012_Psithaca.Ballot
-type VDFRevelation = kathma.VDFRevelation
+type VDFRevelation = proto_014_PtKathma.VDFRevelation
 type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type EventResult = proto_015_PtLimaPt.EventResult
 type EventResultContents = proto_015_PtLimaPt.EventResultContents
 type EventInternalOperationResult = proto_015_PtLimaPt.EventInternalOperationResult
 type LazyStorageDiff = proto_015_PtLimaPt.LazyStorageDiff
+type TransferTicket = proto_013_PtJakart.TransferTicket
 
 type OperationContentsAndResult interface {
 	core.OperationContentsAndResult
@@ -118,22 +119,22 @@ type RegisterGlobalConstantResultContents struct {
 }
 
 type RegisterGlobalConstantResultApplied struct {
-	kathma.OperationResultApplied[RegisterGlobalConstantResultContents]
+	core.OperationResultApplied[RegisterGlobalConstantResultContents]
 }
 
 func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
 
 type RegisterGlobalConstantResultBacktracked struct {
-	kathma.OperationResultBacktracked[RegisterGlobalConstantResultContents]
+	core.OperationResultBacktracked[RegisterGlobalConstantResultContents]
 }
 
 func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
 
-type RegisterGlobalConstantResultFailed struct{ kathma.OperationResultFailed }
+type RegisterGlobalConstantResultFailed struct{ core.OperationResultFailed }
 
 func (*RegisterGlobalConstantResultFailed) RegisterGlobalConstantResult() {}
 
-type RegisterGlobalConstantResultSkipped struct{ kathma.OperationResultSkipped }
+type RegisterGlobalConstantResultSkipped struct{ core.OperationResultSkipped }
 
 func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
 
@@ -169,18 +170,6 @@ type UpdateConsensusKeyContentsAndResult struct {
 
 func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
 
-type TransferTicket struct {
-	ManagerOperation
-	TicketContents expression.Expression `tz:"dyn"`
-	TicketType     expression.Expression `tz:"dyn"`
-	TicketTicketer core.ContractID
-	TicketAmount   tz.BigUint
-	Destination    core.ContractID
-	Entrypoint     string `tz:"dyn"`
-}
-
-func (*TransferTicket) OperationKind() string { return "transfer_ticket" }
-
 type TransferTicketContentsAndResult struct {
 	TransferTicket
 	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult]
@@ -199,22 +188,22 @@ type IncreasePaidStorageResultContents struct {
 }
 
 type IncreasePaidStorageResultApplied struct {
-	kathma.OperationResultApplied[IncreasePaidStorageResultContents]
+	core.OperationResultApplied[IncreasePaidStorageResultContents]
 }
 
 func (*IncreasePaidStorageResultApplied) IncreasePaidStorageResult() {}
 
 type IncreasePaidStorageResultBacktracked struct {
-	kathma.OperationResultBacktracked[IncreasePaidStorageResultContents]
+	core.OperationResultBacktracked[IncreasePaidStorageResultContents]
 }
 
 func (*IncreasePaidStorageResultBacktracked) IncreasePaidStorageResult() {}
 
-type IncreasePaidStorageResultFailed struct{ kathma.OperationResultFailed }
+type IncreasePaidStorageResultFailed struct{ core.OperationResultFailed }
 
 func (*IncreasePaidStorageResultFailed) IncreasePaidStorageResult() {}
 
-type IncreasePaidStorageResultSkipped struct{ kathma.OperationResultSkipped }
+type IncreasePaidStorageResultSkipped struct{ core.OperationResultSkipped }
 
 func (*IncreasePaidStorageResultSkipped) IncreasePaidStorageResult() {}
 

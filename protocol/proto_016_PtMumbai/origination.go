@@ -5,7 +5,6 @@ import (
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
-	kathma "github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
 type Origination = proto_012_Psithaca.Origination
@@ -26,22 +25,22 @@ type OriginationResultContents struct {
 }
 
 type OriginationResultApplied struct {
-	kathma.OperationResultApplied[OriginationResultContents]
+	core.OperationResultApplied[OriginationResultContents]
 }
 
 func (*OriginationResultApplied) OriginationResult() {}
 
 type OriginationResultBacktracked struct {
-	kathma.OperationResultBacktracked[OriginationResultContents]
+	core.OperationResultBacktracked[OriginationResultContents]
 }
 
 func (*OriginationResultBacktracked) OriginationResult() {}
 
-type OriginationResultFailed struct{ kathma.OperationResultFailed }
+type OriginationResultFailed struct{ core.OperationResultFailed }
 
 func (*OriginationResultFailed) OriginationResult() {}
 
-type OriginationResultSkipped struct{ kathma.OperationResultSkipped }
+type OriginationResultSkipped struct{ core.OperationResultSkipped }
 
 func (*OriginationResultSkipped) OriginationResult() {}
 

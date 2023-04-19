@@ -16,6 +16,8 @@ type BalanceUpdate struct {
 	Origin BalanceUpdateOrigin
 }
 
+func (*BalanceUpdate) BalanceUpdate() {}
+
 type BalanceUpdateKind interface {
 	core.BalanceUpdateKind
 }
