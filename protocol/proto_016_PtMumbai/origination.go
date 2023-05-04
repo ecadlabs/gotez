@@ -15,8 +15,8 @@ type OriginationResult interface {
 	core.OperationResult
 }
 
-type OriginationResultContents struct {
-	BalanceUpdates      []*BalanceUpdate            `tz:"dyn"`
+type OriginationResultContents[T core.BalanceUpdate] struct {
+	BalanceUpdates      []T                         `tz:"dyn"`
 	OriginatedContracts []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	StorageSize         tz.BigInt
@@ -24,17 +24,17 @@ type OriginationResultContents struct {
 	LazyStorageDiff     tz.Option[LazyStorageDiff]
 }
 
-func (OriginationResultContents) SuccessfulManagerOperationResult() {}
-func (OriginationResultContents) OperationKind() string             { return "origination" }
+func (OriginationResultContents[T]) SuccessfulManagerOperationResult() {}
+func (OriginationResultContents[T]) OperationKind() string             { return "origination" }
 
 type OriginationResultApplied struct {
-	core.OperationResultApplied[OriginationResultContents]
+	core.OperationResultApplied[OriginationResultContents[*BalanceUpdate]]
 }
 
 func (*OriginationResultApplied) OriginationResult() {}
 
 type OriginationResultBacktracked struct {
-	core.OperationResultBacktracked[OriginationResultContents]
+	core.OperationResultBacktracked[OriginationResultContents[*BalanceUpdate]]
 }
 
 func (*OriginationResultBacktracked) OriginationResult() {}
@@ -60,7 +60,7 @@ func init() {
 
 type OriginationContentsAndResult struct {
 	Origination
-	Metadata ManagerMetadata[OriginationResult]
+	Metadata ManagerMetadata[OriginationResult, *BalanceUpdate]
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}

@@ -12,19 +12,19 @@ type ZkRollupPublish = proto_015_PtLimaPt.ZkRollupPublish
 
 type ZkRollupOriginationContentsAndResult struct {
 	ZkRollupOrigination
-	Metadata ManagerMetadata[ZkRollupPublishResult]
+	Metadata ManagerMetadata[ZkRollupPublishResult, *BalanceUpdate]
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
 
-type ZkRollupPublishResultContents struct {
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+type ZkRollupPublishResultContents[T core.BalanceUpdate] struct {
+	BalanceUpdates   []T `tz:"dyn"`
 	ConsumedMilligas tz.BigUint
 	Size             tz.BigInt
 }
 
-func (ZkRollupPublishResultContents) SuccessfulManagerOperationResult() {}
-func (ZkRollupPublishResultContents) OperationKind() string {
+func (ZkRollupPublishResultContents[T]) SuccessfulManagerOperationResult() {}
+func (ZkRollupPublishResultContents[T]) OperationKind() string {
 	return "zk_rollup_publish"
 }
 
@@ -34,13 +34,13 @@ type ZkRollupPublishResult interface {
 }
 
 type ZkRollupPublishResultApplied struct {
-	core.OperationResultApplied[ZkRollupPublishResultContents]
+	core.OperationResultApplied[ZkRollupPublishResultContents[*BalanceUpdate]]
 }
 
 func (*ZkRollupPublishResultApplied) ZkRollupPublishResult() {}
 
 type ZkRollupPublishResultBacktracked struct {
-	core.OperationResultBacktracked[ZkRollupPublishResultContents]
+	core.OperationResultBacktracked[ZkRollupPublishResultContents[*BalanceUpdate]]
 }
 
 func (*ZkRollupPublishResultBacktracked) ZkRollupPublishResult() {}
@@ -66,7 +66,7 @@ func init() {
 
 type ZkRollupPublishContentsAndResult struct {
 	ZkRollupPublish
-	Metadata ManagerMetadata[ZkRollupPublishResult]
+	Metadata ManagerMetadata[ZkRollupPublishResult, *BalanceUpdate]
 }
 
 func (*ZkRollupPublishContentsAndResult) OperationContentsAndResult() {}
@@ -113,14 +113,14 @@ type FeePi struct {
 	NewState []byte `tz:"dyn"`
 }
 
-type ZkRollupUpdateResultContents struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
+type ZkRollupUpdateResultContents[T core.BalanceUpdate] struct {
+	BalanceUpdates      []T `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	PaidStorageSizeDiff tz.BigInt
 }
 
-func (ZkRollupUpdateResultContents) SuccessfulManagerOperationResult() {}
-func (ZkRollupUpdateResultContents) OperationKind() string {
+func (ZkRollupUpdateResultContents[T]) SuccessfulManagerOperationResult() {}
+func (ZkRollupUpdateResultContents[T]) OperationKind() string {
 	return "zk_rollup_update"
 }
 
@@ -130,13 +130,13 @@ type ZkRollupUpdateResult interface {
 }
 
 type ZkRollupUpdateResultApplied struct {
-	core.OperationResultApplied[ZkRollupUpdateResultContents]
+	core.OperationResultApplied[ZkRollupUpdateResultContents[*BalanceUpdate]]
 }
 
 func (*ZkRollupUpdateResultApplied) ZkRollupUpdateResult() {}
 
 type ZkRollupUpdateResultBacktracked struct {
-	core.OperationResultBacktracked[ZkRollupUpdateResultContents]
+	core.OperationResultBacktracked[ZkRollupUpdateResultContents[*BalanceUpdate]]
 }
 
 func (*ZkRollupUpdateResultBacktracked) ZkRollupUpdateResult() {}
@@ -162,7 +162,7 @@ func init() {
 
 type ZkRollupUpdateContentsAndResult struct {
 	ZkRollupUpdate
-	Metadata ManagerMetadata[ZkRollupUpdateResult]
+	Metadata ManagerMetadata[ZkRollupUpdateResult, *BalanceUpdate]
 }
 
 func (*ZkRollupUpdateContentsAndResult) OperationContentsAndResult() {}

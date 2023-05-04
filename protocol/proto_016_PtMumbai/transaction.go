@@ -29,8 +29,8 @@ type TransactionResultDestination interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionResultDestination]{
 		Variants: encoding.Variants[TransactionResultDestination]{
-			0: (*ToContract)(nil),
-			1: (*ToTxRollup)(nil),
+			0: (*ToContract[*BalanceUpdate])(nil),
+			1: (*ToTxRollup[*BalanceUpdate])(nil),
 			2: (*ToSmartRollup)(nil),
 		},
 	})
@@ -43,9 +43,9 @@ type TransactionResultContents struct {
 func (TransactionResultContents) SuccessfulManagerOperationResult() {}
 func (TransactionResultContents) OperationKind() string             { return "transaction" }
 
-type ToContract struct {
+type ToContract[T core.BalanceUpdate] struct {
 	Storage                      tz.Option[expression.Expression]
-	BalanceUpdates               []*BalanceUpdate            `tz:"dyn"`
+	BalanceUpdates               []T                         `tz:"dyn"`
 	TicketUpdates                []*TicketReceipt            `tz:"dyn"`
 	OriginatedContracts          []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas             tz.BigUint
@@ -55,23 +55,23 @@ type ToContract struct {
 	LazyStorageDiff              tz.Option[LazyStorageDiff]
 }
 
-func (*ToContract) TransactionResultDestination() {}
+func (*ToContract[T]) TransactionResultDestination() {}
 
-type ToTxRollup struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
+type ToTxRollup[T core.BalanceUpdate] struct {
+	BalanceUpdates      []T `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	TicketHash          *tz.ScriptExprHash
 	PaidStorageSizeDiff tz.BigUint
 }
 
-func (*ToTxRollup) TransactionResultDestination() {}
+func (*ToTxRollup[T]) TransactionResultDestination() {}
 
-type TransactionContentsAndResult struct {
+type TransactionContentsAndResult[T core.BalanceUpdate] struct {
 	Transaction
-	Metadata ManagerMetadata[TransactionResult]
+	Metadata ManagerMetadata[TransactionResult, *BalanceUpdate]
 }
 
-func (*TransactionContentsAndResult) OperationContentsAndResult() {}
+func (*TransactionContentsAndResult[T]) OperationContentsAndResult() {}
 
 type TransactionResultApplied struct {
 	core.OperationResultApplied[TransactionResultContents]
