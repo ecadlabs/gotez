@@ -23,6 +23,11 @@ type ZkRollupPublishResultContents struct {
 	Size             tz.BigInt
 }
 
+func (ZkRollupPublishResultContents) SuccessfulManagerOperationResult() {}
+func (ZkRollupPublishResultContents) OperationKind() string {
+	return "zk_rollup_publish"
+}
+
 type ZkRollupPublishResult interface {
 	ZkRollupPublishResult()
 	core.OperationResult
@@ -112,6 +117,11 @@ type ZkRollupUpdateResultContents struct {
 	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	PaidStorageSizeDiff tz.BigInt
+}
+
+func (ZkRollupUpdateResultContents) SuccessfulManagerOperationResult() {}
+func (ZkRollupUpdateResultContents) OperationKind() string {
+	return "zk_rollup_update"
 }
 
 type ZkRollupUpdateResult interface {

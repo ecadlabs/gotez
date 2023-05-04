@@ -23,15 +23,15 @@ type InlinedEndorsement = proto_012_Psithaca.InlinedEndorsement
 type DoublePreendorsementEvidence = proto_012_Psithaca.DoublePreendorsementEvidence
 type DoubleEndorsementEvidence = proto_012_Psithaca.DoubleEndorsementEvidence
 type Reveal = proto_012_Psithaca.Reveal
-type RevealSuccessfulManagerOperationResult = proto_015_PtLimaPt.RevealSuccessfulManagerOperationResult
+type RevealResultContents = proto_015_PtLimaPt.RevealResultContents
 type Delegation = proto_012_Psithaca.Delegation
 type DelegationInternalOperationResult = proto_015_PtLimaPt.DelegationInternalOperationResult
-type DelegationSuccessfulManagerOperationResult = proto_015_PtLimaPt.DelegationSuccessfulManagerOperationResult
+type DelegationResultContents = proto_015_PtLimaPt.DelegationResultContents
 type RegisterGlobalConstant = proto_012_Psithaca.RegisterGlobalConstant
 type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
-type SetDepositsLimitSuccessfulManagerOperationResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerOperationResult
+type SetDepositsLimitResultContents = proto_015_PtLimaPt.SetDepositsLimitResultContents
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
-type UpdateConsensusKeySuccessfulManagerOperationResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerOperationResult
+type UpdateConsensusKeyResultContents = proto_015_PtLimaPt.UpdateConsensusKeyResultContents
 type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
 type ActivateAccount = proto_012_Psithaca.ActivateAccount
 type Proposals = proto_012_Psithaca.Proposals
@@ -118,6 +118,11 @@ type RegisterGlobalConstantResultContents struct {
 	GlobalAddress    *tz.ScriptExprHash
 }
 
+func (RegisterGlobalConstantResultContents) SuccessfulManagerOperationResult() {}
+func (RegisterGlobalConstantResultContents) OperationKind() string {
+	return "register_global_constant"
+}
+
 type RegisterGlobalConstantResultApplied struct {
 	core.OperationResultApplied[RegisterGlobalConstantResultContents]
 }
@@ -187,6 +192,11 @@ type IncreasePaidStorageResultContents struct {
 	ConsumedMilligas tz.BigUint
 }
 
+func (IncreasePaidStorageResultContents) SuccessfulManagerOperationResult() {}
+func (IncreasePaidStorageResultContents) OperationKind() string {
+	return "increase_paid_storage"
+}
+
 type IncreasePaidStorageResultApplied struct {
 	core.OperationResultApplied[IncreasePaidStorageResultContents]
 }
@@ -224,13 +234,6 @@ type IncreasePaidStorageContentsAndResult struct {
 }
 
 func (*IncreasePaidStorageContentsAndResult) OperationContentsAndResult() {}
-
-type IncreasePaidStorageSuccessfulManagerOperationResult IncreasePaidStorageResultContents
-
-func (*IncreasePaidStorageSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*IncreasePaidStorageSuccessfulManagerOperationResult) OperationKind() string {
-	return "increase_paid_storage"
-}
 
 type DoubleBakingEvidence struct {
 	Block1 BlockHeader `tz:"dyn"`
@@ -444,14 +447,14 @@ func init() {
 
 	encoding.RegisterEnum(&encoding.Enum[SuccessfulManagerOperationResult]{
 		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
-			0:   (*RevealSuccessfulManagerOperationResult)(nil),
-			1:   (*TransactionSuccessfulManagerOperationResult)(nil),
-			2:   (*OriginationSuccessfulManagerOperationResult)(nil),
-			3:   (*DelegationSuccessfulManagerOperationResult)(nil),
-			5:   (*SetDepositsLimitSuccessfulManagerOperationResult)(nil),
-			6:   (*UpdateConsensusKeySuccessfulManagerOperationResult)(nil),
-			9:   (*IncreasePaidStorageSuccessfulManagerOperationResult)(nil),
-			200: (*SmartRollupOriginateSuccessfulManagerOperationResult)(nil),
+			0:   (*RevealResultContents)(nil),
+			1:   (*TransactionResultContents)(nil),
+			2:   (*OriginationResultContents)(nil),
+			3:   (*DelegationResultContents)(nil),
+			5:   (*SetDepositsLimitResultContents)(nil),
+			6:   (*UpdateConsensusKeyResultContents)(nil),
+			9:   (*IncreasePaidStorageResultContents)(nil),
+			200: (*SmartRollupOriginateResultContents)(nil),
 		},
 	})
 }

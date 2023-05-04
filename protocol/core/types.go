@@ -14,11 +14,6 @@ type OperationContentsAndResult interface {
 	OperationContents
 }
 
-type SuccessfulManagerOperationResult interface {
-	OperationContents
-	SuccessfulManagerOperationResult()
-}
-
 type InternalOperationResult interface {
 	OperationContents
 	InternalOperationResult()

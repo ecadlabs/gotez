@@ -11,6 +11,9 @@ import (
 type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
 
+type TransactionResultDestination interface {
+	TransactionResultDestination()
+}
 type TicketReceipt struct {
 	TicketToken TicketToken
 	Updates     []*TicketReceiptUpdate `tz:"dyn"`
@@ -32,12 +35,7 @@ type ToSmartRollup struct {
 	TicketUpdates    []*TicketReceipt `tz:"dyn"`
 }
 
-func (*ToSmartRollup) TransactionResultContents() {}
-
-type TransactionResult interface {
-	TransactionResult()
-	core.OperationResult
-}
+func (*ToSmartRollup) TransactionResultDestination() {}
 
 type TransactionDestination interface {
 	TransactionDestination()
@@ -78,15 +76,3 @@ func init() {
 		},
 	})
 }
-
-type TransactionInternalOperationResult struct {
-	Source      TransactionDestination
-	Nonce       uint16
-	Amount      tz.BigUint
-	Destination TransactionDestination
-	Parameters  tz.Option[Parameters]
-	Result      TransactionResult
-}
-
-func (*TransactionInternalOperationResult) InternalOperationResult() {}
-func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }

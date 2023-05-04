@@ -29,6 +29,11 @@ type SmartRollupOriginateResultContents struct {
 	Size                  tz.BigInt
 }
 
+func (SmartRollupOriginateResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupOriginateResultContents) OperationKind() string {
+	return "smart_rollup_originate"
+}
+
 type SmartRollupOriginateResultApplied struct {
 	core.OperationResultApplied[SmartRollupOriginateResultContents]
 }
@@ -67,13 +72,6 @@ type SmartRollupOriginateContentsAndResult struct {
 
 func (*SmartRollupOriginateContentsAndResult) OperationContentsAndResult() {}
 
-type SmartRollupOriginateSuccessfulManagerOperationResult SmartRollupOriginateResultContents
-
-func (*SmartRollupOriginateSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*SmartRollupOriginateSuccessfulManagerOperationResult) OperationKind() string {
-	return "smart_rollup_originate"
-}
-
 type SmartRollupAddMessages struct {
 	ManagerOperation
 	Message []core.Bytes `tz:"dyn"`
@@ -100,6 +98,9 @@ type SmartRollupCementResultContents struct {
 	ConsumedMilligas tz.BigUint
 	InboxLevel       int32
 }
+
+func (SmartRollupCementResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupCementResultContents) OperationKind() string             { return "smart_rollup_cement" }
 
 type SmartRollupCementResult interface {
 	SmartRollupCementResult()
@@ -165,6 +166,9 @@ type SmartRollupPublishResultContents struct {
 	PublishedAtLevel int32
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
 }
+
+func (SmartRollupPublishResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupPublishResultContents) OperationKind() string             { return "smart_rollup_publish" }
 
 type SmartRollupPublishResult interface {
 	SmartRollupPublishResult()
@@ -351,6 +355,9 @@ type SmartRollupTimeoutResultContents struct {
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
 }
 
+func (SmartRollupTimeoutResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupTimeoutResultContents) OperationKind() string             { return "smart_rollup_timeout" }
+
 type GameStatus interface {
 	GameStatusKind() string
 }
@@ -488,6 +495,11 @@ type SmartRollupExecuteOutboxMessageResultContents struct {
 	PaidStorageSizeDiff tz.BigInt
 }
 
+func (SmartRollupExecuteOutboxMessageResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupExecuteOutboxMessageResultContents) OperationKind() string {
+	return "smart_rollup_execute_outbox_message"
+}
+
 type SmartRollupExecuteOutboxMessageResult interface {
 	SmartRollupExecuteOutboxMessageResult()
 	core.OperationResult
@@ -542,6 +554,11 @@ func (*SmartRollupRecoverBond) OperationKind() string { return "smart_rollup_rec
 type SmartRollupRecoverBondResultContents struct {
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
 	ConsumedMilligas tz.BigUint
+}
+
+func (SmartRollupRecoverBondResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupRecoverBondResultContents) OperationKind() string {
+	return "smart_rollup_recover_bond"
 }
 
 type SmartRollupRecoverBondResult interface {

@@ -40,6 +40,9 @@ type EventResultContents struct {
 	ConsumedMilligas tz.BigUint
 }
 
+func (EventResultContents) SuccessfulManagerOperationResult() {}
+func (EventResultContents) OperationKind() string             { return "event" }
+
 type EventResultApplied struct {
 	core.OperationResultApplied[EventResultContents]
 }
@@ -83,10 +86,10 @@ type EventInternalOperationResult struct {
 func (*EventInternalOperationResult) InternalOperationResult() {}
 func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
-type RevealSuccessfulManagerOperationResult EventResultContents
+type RevealResultContents EventResultContents
 
-func (*RevealSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*RevealSuccessfulManagerOperationResult) OperationKind() string             { return "reveal" }
+func (*RevealResultContents) SuccessfulManagerOperationResult() {}
+func (*RevealResultContents) OperationKind() string             { return "reveal" }
 
 type DelegationInternalOperationResult struct {
 	Source   TransactionDestination
@@ -98,21 +101,21 @@ type DelegationInternalOperationResult struct {
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
 func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
 
-type DelegationSuccessfulManagerOperationResult EventResultContents
+type DelegationResultContents EventResultContents
 
-func (*DelegationSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*DelegationSuccessfulManagerOperationResult) OperationKind() string             { return "delegation" }
+func (*DelegationResultContents) SuccessfulManagerOperationResult() {}
+func (*DelegationResultContents) OperationKind() string             { return "delegation" }
 
-type SetDepositsLimitSuccessfulManagerOperationResult EventResultContents
+type SetDepositsLimitResultContents EventResultContents
 
-func (*SetDepositsLimitSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*SetDepositsLimitSuccessfulManagerOperationResult) OperationKind() string {
+func (*SetDepositsLimitResultContents) SuccessfulManagerOperationResult() {}
+func (*SetDepositsLimitResultContents) OperationKind() string {
 	return "set_deposits_limit"
 }
 
-type UpdateConsensusKeySuccessfulManagerOperationResult EventResultContents
+type UpdateConsensusKeyResultContents EventResultContents
 
-func (*UpdateConsensusKeySuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*UpdateConsensusKeySuccessfulManagerOperationResult) OperationKind() string {
+func (*UpdateConsensusKeyResultContents) SuccessfulManagerOperationResult() {}
+func (*UpdateConsensusKeyResultContents) OperationKind() string {
 	return "update_consensus_key"
 }

@@ -24,6 +24,9 @@ type OriginationResultContents struct {
 	LazyStorageDiff     tz.Option[LazyStorageDiff]
 }
 
+func (OriginationResultContents) SuccessfulManagerOperationResult() {}
+func (OriginationResultContents) OperationKind() string             { return "origination" }
+
 type OriginationResultApplied struct {
 	core.OperationResultApplied[OriginationResultContents]
 }
@@ -73,8 +76,3 @@ type OriginationInternalOperationResult struct {
 
 func (*OriginationInternalOperationResult) InternalOperationResult() {}
 func (*OriginationInternalOperationResult) OperationKind() string    { return "origination" }
-
-type OriginationSuccessfulManagerOperationResult OriginationResultContents
-
-func (*OriginationSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*OriginationSuccessfulManagerOperationResult) OperationKind() string             { return "origination" }

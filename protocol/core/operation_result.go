@@ -8,13 +8,18 @@ type OperationResult interface {
 	OperationResultKind() string
 }
 
-type OperationResultApplied[T any] struct {
+type SuccessfulManagerOperationResult interface {
+	OperationContents
+	SuccessfulManagerOperationResult()
+}
+
+type OperationResultApplied[T SuccessfulManagerOperationResult] struct {
 	Result T
 }
 
 func (*OperationResultApplied[T]) OperationResultKind() string { return "applied" }
 
-type OperationResultBacktracked[T any] struct {
+type OperationResultBacktracked[T SuccessfulManagerOperationResult] struct {
 	Errors tz.Option[OperationResultErrors]
 	Result T
 }

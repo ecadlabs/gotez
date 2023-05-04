@@ -12,9 +12,7 @@ import (
 type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
 type Entrypoint = proto_012_Psithaca.Entrypoint
-type TransactionResult = proto_015_PtLimaPt.TransactionResult
 type TransactionDestination = proto_015_PtLimaPt.TransactionDestination
-type TransactionInternalOperationResult = proto_015_PtLimaPt.TransactionInternalOperationResult
 type ToSmartRollup = proto_015_PtLimaPt.ToSmartRollup
 
 type EpDefault = proto_012_Psithaca.EpDefault
@@ -24,9 +22,26 @@ type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
 type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
 type EpNamed = proto_012_Psithaca.EpNamed
 
-type TransactionResultContents interface {
-	TransactionResultContents()
+type TransactionResultDestination interface {
+	proto_015_PtLimaPt.TransactionResultDestination
 }
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[TransactionResultDestination]{
+		Variants: encoding.Variants[TransactionResultDestination]{
+			0: (*ToContract)(nil),
+			1: (*ToTxRollup)(nil),
+			2: (*ToSmartRollup)(nil),
+		},
+	})
+}
+
+type TransactionResultContents struct {
+	Result TransactionResultDestination
+}
+
+func (TransactionResultContents) SuccessfulManagerOperationResult() {}
+func (TransactionResultContents) OperationKind() string             { return "transaction" }
 
 type ToContract struct {
 	Storage                      tz.Option[expression.Expression]
@@ -40,7 +55,7 @@ type ToContract struct {
 	LazyStorageDiff              tz.Option[LazyStorageDiff]
 }
 
-func (*ToContract) TransactionResultContents() {}
+func (*ToContract) TransactionResultDestination() {}
 
 type ToTxRollup struct {
 	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
@@ -49,7 +64,7 @@ type ToTxRollup struct {
 	PaidStorageSizeDiff tz.BigUint
 }
 
-func (*ToTxRollup) TransactionResultContents() {}
+func (*ToTxRollup) TransactionResultDestination() {}
 
 type TransactionContentsAndResult struct {
 	Transaction
@@ -57,16 +72,6 @@ type TransactionContentsAndResult struct {
 }
 
 func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[TransactionResultContents]{
-		Variants: encoding.Variants[TransactionResultContents]{
-			0: (*ToContract)(nil),
-			1: (*ToTxRollup)(nil),
-			2: (*ToSmartRollup)(nil),
-		},
-	})
-}
 
 type TransactionResultApplied struct {
 	core.OperationResultApplied[TransactionResultContents]
@@ -88,6 +93,11 @@ type TransactionResultSkipped struct{ core.OperationResultSkipped }
 
 func (*TransactionResultSkipped) TransactionResult() {}
 
+type TransactionResult interface {
+	TransactionResult()
+	core.OperationResult
+}
+
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionResult]{
 		Variants: encoding.Variants[TransactionResult]{
@@ -99,9 +109,14 @@ func init() {
 	})
 }
 
-type TransactionSuccessfulManagerOperationResult struct {
-	Result TransactionResultContents
+type TransactionInternalOperationResult struct {
+	Source      TransactionDestination
+	Nonce       uint16
+	Amount      tz.BigUint
+	Destination TransactionDestination
+	Parameters  tz.Option[Parameters]
+	Result      TransactionResult
 }
 
-func (*TransactionSuccessfulManagerOperationResult) SuccessfulManagerOperationResult() {}
-func (*TransactionSuccessfulManagerOperationResult) OperationKind() string             { return "transaction" }
+func (*TransactionInternalOperationResult) InternalOperationResult() {}
+func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
