@@ -49,28 +49,28 @@ type OperationContentsAndResult interface {
 	core.OperationContentsAndResult
 }
 
-type SeedNonceRevelationContentsAndResult[T core.BalanceUpdate] struct {
+type SeedNonceRevelationContentsAndResult[T core.BalanceUpdateKind] struct {
 	SeedNonceRevelation
-	Metadata []T `tz:"dyn"`
+	Metadata []*BalanceUpdate[T] `tz:"dyn"`
 }
 
 func (*SeedNonceRevelationContentsAndResult[T]) OperationContentsAndResult() {}
 
-type DoubleEndorsementEvidenceContentsAndResult[T core.BalanceUpdate] struct {
+type DoubleEndorsementEvidenceContentsAndResult[T core.BalanceUpdateKind] struct {
 	DoubleEndorsementEvidence
-	Metadata []T `tz:"dyn"`
+	Metadata []*BalanceUpdate[T] `tz:"dyn"`
 }
 
 func (*DoubleEndorsementEvidenceContentsAndResult[T]) OperationContentsAndResult() {}
 
-type EndorsementMetadata[T core.BalanceUpdate] struct {
-	BalanceUpdates   []T `tz:"dyn"`
+type EndorsementMetadata[T core.BalanceUpdateKind] struct {
+	BalanceUpdates   []*BalanceUpdate[T] `tz:"dyn"`
 	Delegate         tz.PublicKeyHash
 	EndorsementPower int32
 	ConsensusKey     tz.PublicKeyHash
 }
 
-type EndorsementContentsAndResult[T core.BalanceUpdate] struct {
+type EndorsementContentsAndResult[T core.BalanceUpdateKind] struct {
 	Endorsement
 	Metadata EndorsementMetadata[T]
 }
@@ -92,27 +92,27 @@ type DALAttestationContentsAndResult struct {
 
 func (*DALAttestationContentsAndResult) OperationContentsAndResult() {}
 
-type RevealContentsAndResult struct {
+type RevealContentsAndResult[T core.BalanceUpdateKind] struct {
 	Reveal
-	Metadata ManagerMetadata[EventResult, *BalanceUpdate]
+	Metadata ManagerMetadata[EventResult, T]
 }
 
-func (*RevealContentsAndResult) OperationContentsAndResult() {}
+func (*RevealContentsAndResult[T]) OperationContentsAndResult() {}
 
-type DelegationContentsAndResult struct {
+type DelegationContentsAndResult[T core.BalanceUpdateKind] struct {
 	Delegation
-	Metadata ManagerMetadata[EventResult, *BalanceUpdate]
+	Metadata ManagerMetadata[EventResult, T]
 }
 
-func (*DelegationContentsAndResult) OperationContentsAndResult() {}
+func (*DelegationContentsAndResult[T]) OperationContentsAndResult() {}
 
 type RegisterGlobalConstantResult interface {
 	RegisterGlobalConstantResult()
 	core.OperationResult
 }
 
-type RegisterGlobalConstantResultContents[T core.BalanceUpdate] struct {
-	BalanceUpdates   []T `tz:"dyn"`
+type RegisterGlobalConstantResultContents[T core.BalanceUpdateKind] struct {
+	BalanceUpdates   []*BalanceUpdate[T] `tz:"dyn"`
 	ConsumedMilligas tz.BigUint
 	StorageSize      tz.BigInt
 	GlobalAddress    *tz.ScriptExprHash
@@ -123,17 +123,17 @@ func (RegisterGlobalConstantResultContents[T]) OperationKind() string {
 	return "register_global_constant"
 }
 
-type RegisterGlobalConstantResultApplied struct {
-	core.OperationResultApplied[RegisterGlobalConstantResultContents[*BalanceUpdate]]
+type RegisterGlobalConstantResultApplied[T core.BalanceUpdateKind] struct {
+	core.OperationResultApplied[RegisterGlobalConstantResultContents[T]]
 }
 
-func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
+func (*RegisterGlobalConstantResultApplied[T]) RegisterGlobalConstantResult() {}
 
-type RegisterGlobalConstantResultBacktracked struct {
-	core.OperationResultBacktracked[RegisterGlobalConstantResultContents[*BalanceUpdate]]
+type RegisterGlobalConstantResultBacktracked[T core.BalanceUpdateKind] struct {
+	core.OperationResultBacktracked[RegisterGlobalConstantResultContents[T]]
 }
 
-func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
+func (*RegisterGlobalConstantResultBacktracked[T]) RegisterGlobalConstantResult() {}
 
 type RegisterGlobalConstantResultFailed struct{ core.OperationResultFailed }
 
@@ -146,49 +146,49 @@ func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[RegisterGlobalConstantResult]{
 		Variants: encoding.Variants[RegisterGlobalConstantResult]{
-			0: (*RegisterGlobalConstantResultApplied)(nil),
+			0: (*RegisterGlobalConstantResultApplied[BalanceUpdateKind])(nil),
 			1: (*RegisterGlobalConstantResultFailed)(nil),
 			2: (*RegisterGlobalConstantResultSkipped)(nil),
-			3: (*RegisterGlobalConstantResultBacktracked)(nil),
+			3: (*RegisterGlobalConstantResultBacktracked[BalanceUpdateKind])(nil),
 		},
 	})
 }
 
-type RegisterGlobalConstantContentsAndResult struct {
+type RegisterGlobalConstantContentsAndResult[T core.BalanceUpdateKind] struct {
 	RegisterGlobalConstant
-	Metadata ManagerMetadata[RegisterGlobalConstantResult, *BalanceUpdate]
+	Metadata ManagerMetadata[RegisterGlobalConstantResult, T]
 }
 
-func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
+func (*RegisterGlobalConstantContentsAndResult[T]) OperationContentsAndResult() {}
 
-type SetDepositsLimitContentsAndResult struct {
+type SetDepositsLimitContentsAndResult[T core.BalanceUpdateKind] struct {
 	SetDepositsLimit
-	Metadata ManagerMetadata[EventResult, *BalanceUpdate]
+	Metadata ManagerMetadata[EventResult, T]
 }
 
-func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
+func (*SetDepositsLimitContentsAndResult[T]) OperationContentsAndResult() {}
 
-type UpdateConsensusKeyContentsAndResult struct {
+type UpdateConsensusKeyContentsAndResult[T core.BalanceUpdateKind] struct {
 	UpdateConsensusKey
-	Metadata ManagerMetadata[EventResult, *BalanceUpdate]
+	Metadata ManagerMetadata[EventResult, T]
 }
 
-func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
+func (*UpdateConsensusKeyContentsAndResult[T]) OperationContentsAndResult() {}
 
-type TransferTicketContentsAndResult struct {
+type TransferTicketContentsAndResult[T core.BalanceUpdateKind] struct {
 	TransferTicket
-	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult, *BalanceUpdate]
+	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult, T]
 }
 
-func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
+func (*TransferTicketContentsAndResult[T]) OperationContentsAndResult() {}
 
 type IncreasePaidStorageResult interface {
 	IncreasePaidStorageResult()
 	core.OperationResult
 }
 
-type IncreasePaidStorageResultContents[T core.BalanceUpdate] struct {
-	BalanceUpdates   []T `tz:"dyn"`
+type IncreasePaidStorageResultContents[T core.BalanceUpdateKind] struct {
+	BalanceUpdates   []*BalanceUpdate[T] `tz:"dyn"`
 	ConsumedMilligas tz.BigUint
 }
 
@@ -197,17 +197,17 @@ func (IncreasePaidStorageResultContents[T]) OperationKind() string {
 	return "increase_paid_storage"
 }
 
-type IncreasePaidStorageResultApplied struct {
-	core.OperationResultApplied[IncreasePaidStorageResultContents[*BalanceUpdate]]
+type IncreasePaidStorageResultApplied[T core.BalanceUpdateKind] struct {
+	core.OperationResultApplied[IncreasePaidStorageResultContents[T]]
 }
 
-func (*IncreasePaidStorageResultApplied) IncreasePaidStorageResult() {}
+func (*IncreasePaidStorageResultApplied[T]) IncreasePaidStorageResult() {}
 
-type IncreasePaidStorageResultBacktracked struct {
-	core.OperationResultBacktracked[IncreasePaidStorageResultContents[*BalanceUpdate]]
+type IncreasePaidStorageResultBacktracked[T core.BalanceUpdateKind] struct {
+	core.OperationResultBacktracked[IncreasePaidStorageResultContents[T]]
 }
 
-func (*IncreasePaidStorageResultBacktracked) IncreasePaidStorageResult() {}
+func (*IncreasePaidStorageResultBacktracked[T]) IncreasePaidStorageResult() {}
 
 type IncreasePaidStorageResultFailed struct{ core.OperationResultFailed }
 
@@ -220,20 +220,20 @@ func (*IncreasePaidStorageResultSkipped) IncreasePaidStorageResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[IncreasePaidStorageResult]{
 		Variants: encoding.Variants[IncreasePaidStorageResult]{
-			0: (*IncreasePaidStorageResultApplied)(nil),
+			0: (*IncreasePaidStorageResultApplied[BalanceUpdateKind])(nil),
 			1: (*IncreasePaidStorageResultFailed)(nil),
 			2: (*IncreasePaidStorageResultSkipped)(nil),
-			3: (*IncreasePaidStorageResultBacktracked)(nil),
+			3: (*IncreasePaidStorageResultBacktracked[BalanceUpdateKind])(nil),
 		},
 	})
 }
 
-type IncreasePaidStorageContentsAndResult struct {
+type IncreasePaidStorageContentsAndResult[T core.BalanceUpdateKind] struct {
 	IncreasePaidStorage
-	Metadata ManagerMetadata[IncreasePaidStorageResult, *BalanceUpdate]
+	Metadata ManagerMetadata[IncreasePaidStorageResult, T]
 }
 
-func (*IncreasePaidStorageContentsAndResult) OperationContentsAndResult() {}
+func (*IncreasePaidStorageContentsAndResult[T]) OperationContentsAndResult() {}
 
 type DoubleBakingEvidence struct {
 	Block1 BlockHeader `tz:"dyn"`
@@ -242,47 +242,47 @@ type DoubleBakingEvidence struct {
 
 func (*DoubleBakingEvidence) OperationKind() string { return "double_baking_evidence" }
 
-type DoubleBakingEvidenceContentsAndResult[T core.BalanceUpdate] struct {
+type DoubleBakingEvidenceContentsAndResult[T core.BalanceUpdateKind] struct {
 	DoubleBakingEvidence
-	Metadata []T `tz:"dyn"`
+	Metadata []*BalanceUpdate[T] `tz:"dyn"`
 }
 
 func (*DoubleBakingEvidenceContentsAndResult[T]) OperationContentsAndResult() {}
 
-type ActivateAccountContentsAndResult[T core.BalanceUpdate] struct {
+type ActivateAccountContentsAndResult[T core.BalanceUpdateKind] struct {
 	ActivateAccount
-	Metadata []T `tz:"dyn"`
+	Metadata []*BalanceUpdate[T] `tz:"dyn"`
 }
 
 func (*ActivateAccountContentsAndResult[T]) OperationContentsAndResult() {}
 
-type DoublePreendorsementEvidenceContentsAndResult[T core.BalanceUpdate] struct {
+type DoublePreendorsementEvidenceContentsAndResult[T core.BalanceUpdateKind] struct {
 	DoublePreendorsementEvidence
-	Metadata []T `tz:"dyn"`
+	Metadata []*BalanceUpdate[T] `tz:"dyn"`
 }
 
 func (*DoublePreendorsementEvidenceContentsAndResult[T]) OperationContentsAndResult() {}
 
-type PreendorsementContentsAndResult[T core.BalanceUpdate] struct {
+type PreendorsementContentsAndResult[T core.BalanceUpdateKind] struct {
 	Preendorsement
 	Metadata EndorsementMetadata[T]
 }
 
 func (*PreendorsementContentsAndResult[T]) OperationContentsAndResult() {}
 
-type VDFRevelationContentsAndResult[T core.BalanceUpdate] struct {
+type VDFRevelationContentsAndResult[T core.BalanceUpdateKind] struct {
 	VDFRevelation
-	Metadata []T `tz:"dyn"`
+	Metadata []*BalanceUpdate[T] `tz:"dyn"`
 }
 
 func (*VDFRevelationContentsAndResult[T]) OperationContentsAndResult() {}
 
-type DrainDelegateMetadata[T core.BalanceUpdate] struct {
-	BalanceUpdates               []T `tz:"dyn"`
+type DrainDelegateMetadata[T core.BalanceUpdateKind] struct {
+	BalanceUpdates               []*BalanceUpdate[T] `tz:"dyn"`
 	AllocatedDestinationContract bool
 }
 
-type DrainDelegateContentsAndResult[T core.BalanceUpdate] struct {
+type DrainDelegateContentsAndResult[T core.BalanceUpdateKind] struct {
 	DrainDelegate
 	Metadata DrainDelegateMetadata[T]
 }
@@ -303,12 +303,12 @@ type SlotHeader struct {
 
 func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_header" }
 
-type DALPublishSlotHeaderContentsAndResult struct {
+type DALPublishSlotHeaderContentsAndResult[T core.BalanceUpdateKind] struct {
 	DALPublishSlotHeader
-	Metadata ManagerMetadata[EventResult, *BalanceUpdate]
+	Metadata ManagerMetadata[EventResult, T]
 }
 
-func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
+func (*DALPublishSlotHeaderContentsAndResult[T]) OperationContentsAndResult() {}
 
 type SignaturePrefix struct {
 	SignaturePrefix SignaturePrefixPayload
@@ -382,39 +382,39 @@ func init() {
 
 	encoding.RegisterEnum(&encoding.Enum[OperationContentsAndResult]{
 		Variants: encoding.Variants[OperationContentsAndResult]{
-			1:   (*SeedNonceRevelationContentsAndResult[*BalanceUpdate])(nil),
-			2:   (*DoubleEndorsementEvidenceContentsAndResult[*BalanceUpdate])(nil),
-			3:   (*DoubleBakingEvidenceContentsAndResult[*BalanceUpdate])(nil),
-			4:   (*ActivateAccountContentsAndResult[*BalanceUpdate])(nil),
+			1:   (*SeedNonceRevelationContentsAndResult[BalanceUpdateKind])(nil),
+			2:   (*DoubleEndorsementEvidenceContentsAndResult[BalanceUpdateKind])(nil),
+			3:   (*DoubleBakingEvidenceContentsAndResult[BalanceUpdateKind])(nil),
+			4:   (*ActivateAccountContentsAndResult[BalanceUpdateKind])(nil),
 			5:   (*Proposals)(nil),
 			6:   (*Ballot)(nil),
-			7:   (*DoublePreendorsementEvidenceContentsAndResult[*BalanceUpdate])(nil),
-			8:   (*VDFRevelationContentsAndResult[*BalanceUpdate])(nil),
-			9:   (*DrainDelegateContentsAndResult[*BalanceUpdate])(nil),
-			20:  (*PreendorsementContentsAndResult[*BalanceUpdate])(nil),
-			21:  (*EndorsementContentsAndResult[*BalanceUpdate])(nil),
+			7:   (*DoublePreendorsementEvidenceContentsAndResult[BalanceUpdateKind])(nil),
+			8:   (*VDFRevelationContentsAndResult[BalanceUpdateKind])(nil),
+			9:   (*DrainDelegateContentsAndResult[BalanceUpdateKind])(nil),
+			20:  (*PreendorsementContentsAndResult[BalanceUpdateKind])(nil),
+			21:  (*EndorsementContentsAndResult[BalanceUpdateKind])(nil),
 			22:  (*DALAttestationContentsAndResult)(nil),
-			107: (*RevealContentsAndResult)(nil),
-			108: (*TransactionContentsAndResult[*BalanceUpdate])(nil),
-			109: (*OriginationContentsAndResult)(nil),
-			110: (*DelegationContentsAndResult)(nil),
-			111: (*RegisterGlobalConstantContentsAndResult)(nil),
-			112: (*SetDepositsLimitContentsAndResult)(nil),
-			113: (*IncreasePaidStorageContentsAndResult)(nil),
-			114: (*UpdateConsensusKeyContentsAndResult)(nil),
-			158: (*TransferTicketContentsAndResult)(nil),
-			200: (*SmartRollupOriginateContentsAndResult)(nil),
-			201: (*SmartRollupAddMessagesContentsAndResult)(nil),
-			202: (*SmartRollupCementContentsAndResult)(nil),
-			203: (*SmartRollupPublishContentsAndResult)(nil),
-			204: (*SmartRollupRefuteContentsAndResult)(nil),
-			205: (*SmartRollupTimeoutContentsAndResult)(nil),
-			206: (*SmartRollupExecuteOutboxMessageContentsAndResult)(nil),
-			207: (*SmartRollupRecoverBondContentsAndResult)(nil),
-			230: (*DALPublishSlotHeaderContentsAndResult)(nil),
-			250: (*ZkRollupOriginationContentsAndResult)(nil),
-			251: (*ZkRollupPublishContentsAndResult)(nil),
-			252: (*ZkRollupUpdateContentsAndResult)(nil),
+			107: (*RevealContentsAndResult[BalanceUpdateKind])(nil),
+			108: (*TransactionContentsAndResult[BalanceUpdateKind])(nil),
+			109: (*OriginationContentsAndResult[BalanceUpdateKind])(nil),
+			110: (*DelegationContentsAndResult[BalanceUpdateKind])(nil),
+			111: (*RegisterGlobalConstantContentsAndResult[BalanceUpdateKind])(nil),
+			112: (*SetDepositsLimitContentsAndResult[BalanceUpdateKind])(nil),
+			113: (*IncreasePaidStorageContentsAndResult[BalanceUpdateKind])(nil),
+			114: (*UpdateConsensusKeyContentsAndResult[BalanceUpdateKind])(nil),
+			158: (*TransferTicketContentsAndResult[BalanceUpdateKind])(nil),
+			200: (*SmartRollupOriginateContentsAndResult[BalanceUpdateKind])(nil),
+			201: (*SmartRollupAddMessagesContentsAndResult[BalanceUpdateKind])(nil),
+			202: (*SmartRollupCementContentsAndResult[BalanceUpdateKind])(nil),
+			203: (*SmartRollupPublishContentsAndResult[BalanceUpdateKind])(nil),
+			204: (*SmartRollupRefuteContentsAndResult[BalanceUpdateKind])(nil),
+			205: (*SmartRollupTimeoutContentsAndResult[BalanceUpdateKind])(nil),
+			206: (*SmartRollupExecuteOutboxMessageContentsAndResult[BalanceUpdateKind])(nil),
+			207: (*SmartRollupRecoverBondContentsAndResult[BalanceUpdateKind])(nil),
+			230: (*DALPublishSlotHeaderContentsAndResult[BalanceUpdateKind])(nil),
+			250: (*ZkRollupOriginationContentsAndResult[BalanceUpdateKind])(nil),
+			251: (*ZkRollupPublishContentsAndResult[BalanceUpdateKind])(nil),
+			252: (*ZkRollupUpdateContentsAndResult[BalanceUpdateKind])(nil),
 			255: (*SignaturePrefix)(nil),
 		},
 	})
@@ -424,9 +424,9 @@ type SuccessfulManagerOperationResult interface {
 	core.SuccessfulManagerOperationResult
 }
 
-type ManagerMetadata[R core.OperationResult, U core.BalanceUpdate] struct {
-	BalanceUpdates           []U `tz:"dyn"`
-	OperationResult          R
+type ManagerMetadata[Res core.OperationResult, Bal core.BalanceUpdateKind] struct {
+	BalanceUpdates           []*BalanceUpdate[Bal] `tz:"dyn"`
+	OperationResult          Res
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`
 }
 
@@ -448,12 +448,12 @@ func init() {
 		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
 			0:   (*RevealResultContents)(nil),
 			1:   (*TransactionResultContents)(nil),
-			2:   (*OriginationResultContents[*BalanceUpdate])(nil),
+			2:   (*OriginationResultContents[BalanceUpdateKind])(nil),
 			3:   (*DelegationResultContents)(nil),
 			5:   (*SetDepositsLimitResultContents)(nil),
 			6:   (*UpdateConsensusKeyResultContents)(nil),
-			9:   (*IncreasePaidStorageResultContents[*BalanceUpdate])(nil),
-			200: (*SmartRollupOriginateResultContents[*BalanceUpdate])(nil),
+			9:   (*IncreasePaidStorageResultContents[BalanceUpdateKind])(nil),
+			200: (*SmartRollupOriginateResultContents[BalanceUpdateKind])(nil),
 		},
 	})
 }

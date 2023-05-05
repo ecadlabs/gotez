@@ -15,8 +15,8 @@ type OriginationResult interface {
 	core.OperationResult
 }
 
-type OriginationResultContents[T core.BalanceUpdate] struct {
-	BalanceUpdates      []T                         `tz:"dyn"`
+type OriginationResultContents[T core.BalanceUpdateKind] struct {
+	BalanceUpdates      []*BalanceUpdate[T]         `tz:"dyn"`
 	OriginatedContracts []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	StorageSize         tz.BigInt
@@ -27,17 +27,17 @@ type OriginationResultContents[T core.BalanceUpdate] struct {
 func (OriginationResultContents[T]) SuccessfulManagerOperationResult() {}
 func (OriginationResultContents[T]) OperationKind() string             { return "origination" }
 
-type OriginationResultApplied struct {
-	core.OperationResultApplied[OriginationResultContents[*BalanceUpdate]]
+type OriginationResultApplied[T core.BalanceUpdateKind] struct {
+	core.OperationResultApplied[OriginationResultContents[T]]
 }
 
-func (*OriginationResultApplied) OriginationResult() {}
+func (*OriginationResultApplied[T]) OriginationResult() {}
 
-type OriginationResultBacktracked struct {
-	core.OperationResultBacktracked[OriginationResultContents[*BalanceUpdate]]
+type OriginationResultBacktracked[T core.BalanceUpdateKind] struct {
+	core.OperationResultBacktracked[OriginationResultContents[T]]
 }
 
-func (*OriginationResultBacktracked) OriginationResult() {}
+func (*OriginationResultBacktracked[T]) OriginationResult() {}
 
 type OriginationResultFailed struct{ core.OperationResultFailed }
 
@@ -50,20 +50,20 @@ func (*OriginationResultSkipped) OriginationResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[OriginationResult]{
 		Variants: encoding.Variants[OriginationResult]{
-			0: (*OriginationResultApplied)(nil),
+			0: (*OriginationResultApplied[BalanceUpdateKind])(nil),
 			1: (*OriginationResultFailed)(nil),
 			2: (*OriginationResultSkipped)(nil),
-			3: (*OriginationResultBacktracked)(nil),
+			3: (*OriginationResultBacktracked[BalanceUpdateKind])(nil),
 		},
 	})
 }
 
-type OriginationContentsAndResult struct {
+type OriginationContentsAndResult[T core.BalanceUpdateKind] struct {
 	Origination
-	Metadata ManagerMetadata[OriginationResult, *BalanceUpdate]
+	Metadata ManagerMetadata[OriginationResult, T]
 }
 
-func (*OriginationContentsAndResult) OperationContentsAndResult() {}
+func (*OriginationContentsAndResult[T]) OperationContentsAndResult() {}
 
 type OriginationInternalOperationResult struct {
 	Source   TransactionDestination

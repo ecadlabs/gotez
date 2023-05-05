@@ -29,8 +29,8 @@ type TransactionResultDestination interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionResultDestination]{
 		Variants: encoding.Variants[TransactionResultDestination]{
-			0: (*ToContract[*BalanceUpdate])(nil),
-			1: (*ToTxRollup[*BalanceUpdate])(nil),
+			0: (*ToContract[BalanceUpdateKind])(nil),
+			1: (*ToTxRollup[BalanceUpdateKind])(nil),
 			2: (*ToSmartRollup)(nil),
 		},
 	})
@@ -43,9 +43,9 @@ type TransactionResultContents struct {
 func (TransactionResultContents) SuccessfulManagerOperationResult() {}
 func (TransactionResultContents) OperationKind() string             { return "transaction" }
 
-type ToContract[T core.BalanceUpdate] struct {
+type ToContract[T core.BalanceUpdateKind] struct {
 	Storage                      tz.Option[expression.Expression]
-	BalanceUpdates               []T                         `tz:"dyn"`
+	BalanceUpdates               []*BalanceUpdate[T]         `tz:"dyn"`
 	TicketUpdates                []*TicketReceipt            `tz:"dyn"`
 	OriginatedContracts          []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas             tz.BigUint
@@ -57,8 +57,8 @@ type ToContract[T core.BalanceUpdate] struct {
 
 func (*ToContract[T]) TransactionResultDestination() {}
 
-type ToTxRollup[T core.BalanceUpdate] struct {
-	BalanceUpdates      []T `tz:"dyn"`
+type ToTxRollup[T core.BalanceUpdateKind] struct {
+	BalanceUpdates      []*BalanceUpdate[T] `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	TicketHash          *tz.ScriptExprHash
 	PaidStorageSizeDiff tz.BigUint
@@ -66,9 +66,9 @@ type ToTxRollup[T core.BalanceUpdate] struct {
 
 func (*ToTxRollup[T]) TransactionResultDestination() {}
 
-type TransactionContentsAndResult[T core.BalanceUpdate] struct {
+type TransactionContentsAndResult[T core.BalanceUpdateKind] struct {
 	Transaction
-	Metadata ManagerMetadata[TransactionResult, *BalanceUpdate]
+	Metadata ManagerMetadata[TransactionResult, T]
 }
 
 func (*TransactionContentsAndResult[T]) OperationContentsAndResult() {}
