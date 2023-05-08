@@ -5,12 +5,6 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core"
 )
 
-type BalanceUpdate[T core.BalanceUpdateKind] struct {
-	Kind   T
-	Change int64
-	Origin BalanceUpdateOrigin
-}
-
 type BalanceUpdateOrigin uint8
 
 const (

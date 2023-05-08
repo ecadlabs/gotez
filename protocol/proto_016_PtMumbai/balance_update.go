@@ -10,7 +10,13 @@ import (
 
 type BalanceUpdateOrigin = proto_012_Psithaca.BalanceUpdateOrigin
 
-type BalanceUpdate[T core.BalanceUpdateKind] proto_012_Psithaca.BalanceUpdate[T]
+type BalanceUpdate struct {
+	Kind   BalanceUpdateKind
+	Change int64
+	Origin BalanceUpdateOrigin
+}
+
+func (*BalanceUpdate) BalanceUpdate() {}
 
 type BalanceUpdateKind interface {
 	core.BalanceUpdateKind

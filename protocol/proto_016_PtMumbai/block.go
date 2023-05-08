@@ -40,8 +40,8 @@ type BlockMetadataContents struct {
 	LevelInfo                 LevelInfo
 	VotingPeriodInfo          VotingPeriodInfo
 	NonceHash                 tz.Option1[*tz.CycleNonceHash]
-	Deactivated               []tz.PublicKeyHash                  `tz:"dyn"`
-	BalanceUpdates            []*BalanceUpdate[BalanceUpdateKind] `tz:"dyn"`
+	Deactivated               []tz.PublicKeyHash `tz:"dyn"`
+	BalanceUpdates            []*BalanceUpdate   `tz:"dyn"`
 	LiquidityBakingEscapeEMA  int32
 	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn"`
 	ProposerConsensusKey      tz.PublicKeyHash

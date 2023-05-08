@@ -21,30 +21,30 @@ type SmartRollupOriginateResult interface {
 	core.OperationResult
 }
 
-type SmartRollupOriginateResultContents[T core.BalanceUpdateKind] struct {
-	BalanceUpdates        []*BalanceUpdate[T] `tz:"dyn"`
+type SmartRollupOriginateResultContents struct {
+	BalanceUpdates        []*BalanceUpdate `tz:"dyn"`
 	Address               *tz.SmartRollupAddress
 	GenesisCommitmentHash *tz.MumbaiSmartRollupHash
 	ConsumedMilligas      tz.BigUint
 	Size                  tz.BigInt
 }
 
-func (SmartRollupOriginateResultContents[T]) SuccessfulManagerOperationResult() {}
-func (SmartRollupOriginateResultContents[T]) OperationKind() string {
+func (SmartRollupOriginateResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupOriginateResultContents) OperationKind() string {
 	return "smart_rollup_originate"
 }
 
-type SmartRollupOriginateResultApplied[T core.BalanceUpdateKind] struct {
-	core.OperationResultApplied[SmartRollupOriginateResultContents[T]]
+type SmartRollupOriginateResultApplied struct {
+	core.OperationResultApplied[SmartRollupOriginateResultContents]
 }
 
-func (*SmartRollupOriginateResultApplied[T]) SmartRollupOriginateResult() {}
+func (*SmartRollupOriginateResultApplied) SmartRollupOriginateResult() {}
 
-type SmartRollupOriginateResultBacktracked[T core.BalanceUpdateKind] struct {
-	core.OperationResultBacktracked[SmartRollupOriginateResultContents[T]]
+type SmartRollupOriginateResultBacktracked struct {
+	core.OperationResultBacktracked[SmartRollupOriginateResultContents]
 }
 
-func (*SmartRollupOriginateResultBacktracked[T]) SmartRollupOriginateResult() {}
+func (*SmartRollupOriginateResultBacktracked) SmartRollupOriginateResult() {}
 
 type SmartRollupOriginateResultFailed struct{ core.OperationResultFailed }
 
@@ -57,20 +57,20 @@ func (*SmartRollupOriginateResultSkipped) SmartRollupOriginateResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupOriginateResult]{
 		Variants: encoding.Variants[SmartRollupOriginateResult]{
-			0: (*SmartRollupOriginateResultApplied[BalanceUpdateKind])(nil),
+			0: (*SmartRollupOriginateResultApplied)(nil),
 			1: (*SmartRollupOriginateResultFailed)(nil),
 			2: (*SmartRollupOriginateResultSkipped)(nil),
-			3: (*SmartRollupOriginateResultBacktracked[BalanceUpdateKind])(nil),
+			3: (*SmartRollupOriginateResultBacktracked)(nil),
 		},
 	})
 }
 
-type SmartRollupOriginateContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupOriginateContentsAndResult struct {
 	SmartRollupOriginate
-	Metadata ManagerMetadata[SmartRollupOriginateResult, T]
+	Metadata ManagerMetadata[SmartRollupOriginateResult]
 }
 
-func (*SmartRollupOriginateContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupOriginateContentsAndResult) OperationContentsAndResult() {}
 
 type SmartRollupAddMessages struct {
 	ManagerOperation
@@ -79,12 +79,12 @@ type SmartRollupAddMessages struct {
 
 func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add_messages" }
 
-type SmartRollupAddMessagesContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupAddMessagesContentsAndResult struct {
 	SmartRollupAddMessages
-	Metadata ManagerMetadata[EventResult, T]
+	Metadata ManagerMetadata[EventResult]
 }
 
-func (*SmartRollupAddMessagesContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupAddMessagesContentsAndResult) OperationContentsAndResult() {}
 
 type SmartRollupCement struct {
 	ManagerOperation
@@ -138,12 +138,12 @@ func init() {
 	})
 }
 
-type SmartRollupCementContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupCementContentsAndResult struct {
 	SmartRollupCement
-	Metadata ManagerMetadata[SmartRollupCementResult, T]
+	Metadata ManagerMetadata[SmartRollupCementResult]
 }
 
-func (*SmartRollupCementContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupCementContentsAndResult) OperationContentsAndResult() {}
 
 type SmartRollupPublish struct {
 	ManagerOperation
@@ -160,32 +160,32 @@ type SmartRollupCommitment struct {
 	NumberOfTicks   int64
 }
 
-type SmartRollupPublishResultContents[T core.BalanceUpdateKind] struct {
+type SmartRollupPublishResultContents struct {
 	ConsumedMilligas tz.BigUint
 	StakedHash       *tz.MumbaiSmartRollupHash
 	PublishedAtLevel int32
-	BalanceUpdates   []*BalanceUpdate[T] `tz:"dyn"`
+	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
 }
 
-func (SmartRollupPublishResultContents[T]) SuccessfulManagerOperationResult() {}
-func (SmartRollupPublishResultContents[T]) OperationKind() string             { return "smart_rollup_publish" }
+func (SmartRollupPublishResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupPublishResultContents) OperationKind() string             { return "smart_rollup_publish" }
 
 type SmartRollupPublishResult interface {
 	SmartRollupPublishResult()
 	core.OperationResult
 }
 
-type SmartRollupPublishResultApplied[T core.BalanceUpdateKind] struct {
-	core.OperationResultApplied[SmartRollupPublishResultContents[T]]
+type SmartRollupPublishResultApplied struct {
+	core.OperationResultApplied[SmartRollupPublishResultContents]
 }
 
-func (*SmartRollupPublishResultApplied[T]) SmartRollupPublishResult() {}
+func (*SmartRollupPublishResultApplied) SmartRollupPublishResult() {}
 
-type SmartRollupPublishResultBacktracked[T core.BalanceUpdateKind] struct {
-	core.OperationResultBacktracked[SmartRollupPublishResultContents[T]]
+type SmartRollupPublishResultBacktracked struct {
+	core.OperationResultBacktracked[SmartRollupPublishResultContents]
 }
 
-func (*SmartRollupPublishResultBacktracked[T]) SmartRollupPublishResult() {}
+func (*SmartRollupPublishResultBacktracked) SmartRollupPublishResult() {}
 
 type SmartRollupPublishResultFailed struct{ core.OperationResultFailed }
 
@@ -198,20 +198,20 @@ func (*SmartRollupPublishResultSkipped) SmartRollupPublishResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupPublishResult]{
 		Variants: encoding.Variants[SmartRollupPublishResult]{
-			0: (*SmartRollupPublishResultApplied[BalanceUpdateKind])(nil),
+			0: (*SmartRollupPublishResultApplied)(nil),
 			1: (*SmartRollupPublishResultFailed)(nil),
 			2: (*SmartRollupPublishResultSkipped)(nil),
-			3: (*SmartRollupPublishResultBacktracked[BalanceUpdateKind])(nil),
+			3: (*SmartRollupPublishResultBacktracked)(nil),
 		},
 	})
 }
 
-type SmartRollupPublishContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupPublishContentsAndResult struct {
 	SmartRollupPublish
-	Metadata ManagerMetadata[SmartRollupPublishResult, T]
+	Metadata ManagerMetadata[SmartRollupPublishResult]
 }
 
-func (*SmartRollupPublishContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupPublishContentsAndResult) OperationContentsAndResult() {}
 
 type SmartRollupRefute struct {
 	ManagerOperation
@@ -349,14 +349,14 @@ type DALPageID struct {
 	PageIndex      int16
 }
 
-type SmartRollupTimeoutResultContents[T core.BalanceUpdateKind] struct {
+type SmartRollupTimeoutResultContents struct {
 	ConsumedMilligas tz.BigUint
 	GameStatus       GameStatus
-	BalanceUpdates   []*BalanceUpdate[T] `tz:"dyn"`
+	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
 }
 
-func (SmartRollupTimeoutResultContents[T]) SuccessfulManagerOperationResult() {}
-func (SmartRollupTimeoutResultContents[T]) OperationKind() string             { return "smart_rollup_timeout" }
+func (SmartRollupTimeoutResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupTimeoutResultContents) OperationKind() string             { return "smart_rollup_timeout" }
 
 type GameStatus interface {
 	GameStatusKind() string
@@ -417,17 +417,17 @@ type SmartRollupTimeoutResult interface {
 	core.OperationResult
 }
 
-type SmartRollupTimeoutResultApplied[T core.BalanceUpdateKind] struct {
-	core.OperationResultApplied[SmartRollupTimeoutResultContents[T]]
+type SmartRollupTimeoutResultApplied struct {
+	core.OperationResultApplied[SmartRollupTimeoutResultContents]
 }
 
-func (*SmartRollupTimeoutResultApplied[T]) SmartRollupTimeoutResult() {}
+func (*SmartRollupTimeoutResultApplied) SmartRollupTimeoutResult() {}
 
-type SmartRollupTimeoutResultBacktracked[T core.BalanceUpdateKind] struct {
-	core.OperationResultBacktracked[SmartRollupTimeoutResultContents[T]]
+type SmartRollupTimeoutResultBacktracked struct {
+	core.OperationResultBacktracked[SmartRollupTimeoutResultContents]
 }
 
-func (*SmartRollupTimeoutResultBacktracked[T]) SmartRollupTimeoutResult() {}
+func (*SmartRollupTimeoutResultBacktracked) SmartRollupTimeoutResult() {}
 
 type SmartRollupTimeoutResultFailed struct{ core.OperationResultFailed }
 
@@ -440,20 +440,20 @@ func (*SmartRollupTimeoutResultSkipped) SmartRollupTimeoutResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupTimeoutResult]{
 		Variants: encoding.Variants[SmartRollupTimeoutResult]{
-			0: (*SmartRollupTimeoutResultApplied[BalanceUpdateKind])(nil),
+			0: (*SmartRollupTimeoutResultApplied)(nil),
 			1: (*SmartRollupTimeoutResultFailed)(nil),
 			2: (*SmartRollupTimeoutResultSkipped)(nil),
-			3: (*SmartRollupTimeoutResultBacktracked[BalanceUpdateKind])(nil),
+			3: (*SmartRollupTimeoutResultBacktracked)(nil),
 		},
 	})
 }
 
-type SmartRollupRefuteContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupRefuteContentsAndResult struct {
 	SmartRollupRefute
-	Metadata ManagerMetadata[SmartRollupTimeoutResult, T]
+	Metadata ManagerMetadata[SmartRollupTimeoutResult]
 }
 
-func (*SmartRollupRefuteContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupRefuteContentsAndResult) OperationContentsAndResult() {}
 
 type SmartRollupTimeout struct {
 	ManagerOperation
@@ -468,12 +468,12 @@ type SmartRollupStakers struct {
 
 func (*SmartRollupTimeout) OperationKind() string { return "smart_rollup_timeout" }
 
-type SmartRollupTimeoutContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupTimeoutContentsAndResult struct {
 	SmartRollupTimeout
-	Metadata ManagerMetadata[SmartRollupTimeoutResult, T]
+	Metadata ManagerMetadata[SmartRollupTimeoutResult]
 }
 
-func (*SmartRollupTimeoutContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupTimeoutContentsAndResult) OperationContentsAndResult() {}
 
 type SmartRollupExecuteOutboxMessage struct {
 	ManagerOperation
@@ -488,15 +488,15 @@ func (*SmartRollupExecuteOutboxMessage) OperationKind() string {
 
 type TicketReceipt = proto_015_PtLimaPt.TicketReceipt
 
-type SmartRollupExecuteOutboxMessageResultContents[T core.BalanceUpdateKind] struct {
-	BalanceUpdates      []*BalanceUpdate[T] `tz:"dyn"`
-	TicketUpdates       []*TicketReceipt    `tz:"dyn"`
+type SmartRollupExecuteOutboxMessageResultContents struct {
+	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
+	TicketUpdates       []*TicketReceipt `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	PaidStorageSizeDiff tz.BigInt
 }
 
-func (SmartRollupExecuteOutboxMessageResultContents[T]) SuccessfulManagerOperationResult() {}
-func (SmartRollupExecuteOutboxMessageResultContents[T]) OperationKind() string {
+func (SmartRollupExecuteOutboxMessageResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupExecuteOutboxMessageResultContents) OperationKind() string {
 	return "smart_rollup_execute_outbox_message"
 }
 
@@ -505,17 +505,17 @@ type SmartRollupExecuteOutboxMessageResult interface {
 	core.OperationResult
 }
 
-type SmartRollupExecuteOutboxMessageResultApplied[T core.BalanceUpdateKind] struct {
-	core.OperationResultApplied[SmartRollupExecuteOutboxMessageResultContents[T]]
+type SmartRollupExecuteOutboxMessageResultApplied struct {
+	core.OperationResultApplied[SmartRollupExecuteOutboxMessageResultContents]
 }
 
-func (*SmartRollupExecuteOutboxMessageResultApplied[T]) SmartRollupExecuteOutboxMessageResult() {}
+func (*SmartRollupExecuteOutboxMessageResultApplied) SmartRollupExecuteOutboxMessageResult() {}
 
-type SmartRollupExecuteOutboxMessageResultBacktracked[T core.BalanceUpdateKind] struct {
-	core.OperationResultBacktracked[SmartRollupExecuteOutboxMessageResultContents[T]]
+type SmartRollupExecuteOutboxMessageResultBacktracked struct {
+	core.OperationResultBacktracked[SmartRollupExecuteOutboxMessageResultContents]
 }
 
-func (*SmartRollupExecuteOutboxMessageResultBacktracked[T]) SmartRollupExecuteOutboxMessageResult() {}
+func (*SmartRollupExecuteOutboxMessageResultBacktracked) SmartRollupExecuteOutboxMessageResult() {}
 
 type SmartRollupExecuteOutboxMessageResultFailed struct{ core.OperationResultFailed }
 
@@ -528,20 +528,20 @@ func (*SmartRollupExecuteOutboxMessageResultSkipped) SmartRollupExecuteOutboxMes
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupExecuteOutboxMessageResult]{
 		Variants: encoding.Variants[SmartRollupExecuteOutboxMessageResult]{
-			0: (*SmartRollupExecuteOutboxMessageResultApplied[BalanceUpdateKind])(nil),
+			0: (*SmartRollupExecuteOutboxMessageResultApplied)(nil),
 			1: (*SmartRollupExecuteOutboxMessageResultFailed)(nil),
 			2: (*SmartRollupExecuteOutboxMessageResultSkipped)(nil),
-			3: (*SmartRollupExecuteOutboxMessageResultBacktracked[BalanceUpdateKind])(nil),
+			3: (*SmartRollupExecuteOutboxMessageResultBacktracked)(nil),
 		},
 	})
 }
 
-type SmartRollupExecuteOutboxMessageContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupExecuteOutboxMessageContentsAndResult struct {
 	SmartRollupExecuteOutboxMessage
-	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult, T]
+	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult]
 }
 
-func (*SmartRollupExecuteOutboxMessageContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupExecuteOutboxMessageContentsAndResult) OperationContentsAndResult() {}
 
 type SmartRollupRecoverBond struct {
 	ManagerOperation
@@ -551,13 +551,13 @@ type SmartRollupRecoverBond struct {
 
 func (*SmartRollupRecoverBond) OperationKind() string { return "smart_rollup_recover_bond" }
 
-type SmartRollupRecoverBondResultContents[T core.BalanceUpdateKind] struct {
-	BalanceUpdates   []*BalanceUpdate[T] `tz:"dyn"`
+type SmartRollupRecoverBondResultContents struct {
+	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
 	ConsumedMilligas tz.BigUint
 }
 
-func (SmartRollupRecoverBondResultContents[T]) SuccessfulManagerOperationResult() {}
-func (SmartRollupRecoverBondResultContents[T]) OperationKind() string {
+func (SmartRollupRecoverBondResultContents) SuccessfulManagerOperationResult() {}
+func (SmartRollupRecoverBondResultContents) OperationKind() string {
 	return "smart_rollup_recover_bond"
 }
 
@@ -566,17 +566,17 @@ type SmartRollupRecoverBondResult interface {
 	core.OperationResult
 }
 
-type SmartRollupRecoverBondResultApplied[T core.BalanceUpdateKind] struct {
-	core.OperationResultApplied[SmartRollupRecoverBondResultContents[T]]
+type SmartRollupRecoverBondResultApplied struct {
+	core.OperationResultApplied[SmartRollupRecoverBondResultContents]
 }
 
-func (*SmartRollupRecoverBondResultApplied[T]) SmartRollupRecoverBondResult() {}
+func (*SmartRollupRecoverBondResultApplied) SmartRollupRecoverBondResult() {}
 
-type SmartRollupRecoverBondResultBacktracked[T core.BalanceUpdateKind] struct {
-	core.OperationResultBacktracked[SmartRollupRecoverBondResultContents[T]]
+type SmartRollupRecoverBondResultBacktracked struct {
+	core.OperationResultBacktracked[SmartRollupRecoverBondResultContents]
 }
 
-func (*SmartRollupRecoverBondResultBacktracked[T]) SmartRollupRecoverBondResult() {}
+func (*SmartRollupRecoverBondResultBacktracked) SmartRollupRecoverBondResult() {}
 
 type SmartRollupRecoverBondResultFailed struct{ core.OperationResultFailed }
 
@@ -589,17 +589,17 @@ func (*SmartRollupRecoverBondResultSkipped) SmartRollupRecoverBondResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupRecoverBondResult]{
 		Variants: encoding.Variants[SmartRollupRecoverBondResult]{
-			0: (*SmartRollupRecoverBondResultApplied[BalanceUpdateKind])(nil),
+			0: (*SmartRollupRecoverBondResultApplied)(nil),
 			1: (*SmartRollupRecoverBondResultFailed)(nil),
 			2: (*SmartRollupRecoverBondResultSkipped)(nil),
-			3: (*SmartRollupRecoverBondResultBacktracked[BalanceUpdateKind])(nil),
+			3: (*SmartRollupRecoverBondResultBacktracked)(nil),
 		},
 	})
 }
 
-type SmartRollupRecoverBondContentsAndResult[T core.BalanceUpdateKind] struct {
+type SmartRollupRecoverBondContentsAndResult struct {
 	SmartRollupRecoverBond
-	Metadata ManagerMetadata[SmartRollupRecoverBondResult, T]
+	Metadata ManagerMetadata[SmartRollupRecoverBondResult]
 }
 
-func (*SmartRollupRecoverBondContentsAndResult[T]) OperationContentsAndResult() {}
+func (*SmartRollupRecoverBondContentsAndResult) OperationContentsAndResult() {}

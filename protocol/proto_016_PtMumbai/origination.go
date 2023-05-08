@@ -15,8 +15,8 @@ type OriginationResult interface {
 	core.OperationResult
 }
 
-type OriginationResultContents[T core.BalanceUpdateKind] struct {
-	BalanceUpdates      []*BalanceUpdate[T]         `tz:"dyn"`
+type OriginationResultContents struct {
+	BalanceUpdates      []*BalanceUpdate            `tz:"dyn"`
 	OriginatedContracts []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	StorageSize         tz.BigInt
@@ -24,20 +24,20 @@ type OriginationResultContents[T core.BalanceUpdateKind] struct {
 	LazyStorageDiff     tz.Option[LazyStorageDiff]
 }
 
-func (OriginationResultContents[T]) SuccessfulManagerOperationResult() {}
-func (OriginationResultContents[T]) OperationKind() string             { return "origination" }
+func (OriginationResultContents) SuccessfulManagerOperationResult() {}
+func (OriginationResultContents) OperationKind() string             { return "origination" }
 
-type OriginationResultApplied[T core.BalanceUpdateKind] struct {
-	core.OperationResultApplied[OriginationResultContents[T]]
+type OriginationResultApplied struct {
+	core.OperationResultApplied[OriginationResultContents]
 }
 
-func (*OriginationResultApplied[T]) OriginationResult() {}
+func (*OriginationResultApplied) OriginationResult() {}
 
-type OriginationResultBacktracked[T core.BalanceUpdateKind] struct {
-	core.OperationResultBacktracked[OriginationResultContents[T]]
+type OriginationResultBacktracked struct {
+	core.OperationResultBacktracked[OriginationResultContents]
 }
 
-func (*OriginationResultBacktracked[T]) OriginationResult() {}
+func (*OriginationResultBacktracked) OriginationResult() {}
 
 type OriginationResultFailed struct{ core.OperationResultFailed }
 
@@ -50,20 +50,20 @@ func (*OriginationResultSkipped) OriginationResult() {}
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[OriginationResult]{
 		Variants: encoding.Variants[OriginationResult]{
-			0: (*OriginationResultApplied[BalanceUpdateKind])(nil),
+			0: (*OriginationResultApplied)(nil),
 			1: (*OriginationResultFailed)(nil),
 			2: (*OriginationResultSkipped)(nil),
-			3: (*OriginationResultBacktracked[BalanceUpdateKind])(nil),
+			3: (*OriginationResultBacktracked)(nil),
 		},
 	})
 }
 
-type OriginationContentsAndResult[T core.BalanceUpdateKind] struct {
+type OriginationContentsAndResult struct {
 	Origination
-	Metadata ManagerMetadata[OriginationResult, T]
+	Metadata ManagerMetadata[OriginationResult]
 }
 
-func (*OriginationContentsAndResult[T]) OperationContentsAndResult() {}
+func (*OriginationContentsAndResult) OperationContentsAndResult() {}
 
 type OriginationInternalOperationResult struct {
 	Source   TransactionDestination
