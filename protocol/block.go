@@ -10,7 +10,8 @@ import (
 )
 
 type BlockInfoProtocolData interface {
-	BlockInfoProtocolData()
+	BlockHeader() *core.BlockHeader
+	BlockMetadata() tz.Option[*core.BlockMetadataHeader]
 }
 
 type BlockInfo struct {

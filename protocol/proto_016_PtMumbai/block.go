@@ -8,8 +8,19 @@ import (
 
 type BlockInfoProtocolData struct {
 	Header     BlockHeader `tz:"dyn"`
-	Metadata   tz.Option[BlockMetadata]
+	Metadata   tz.Option[*BlockMetadata]
 	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
+}
+
+func (block *BlockInfoProtocolData) BlockHeader() *core.BlockHeader {
+	return &block.Header.BlockHeader
+}
+
+func (block *BlockInfoProtocolData) BlockMetadata() tz.Option[*core.BlockMetadataHeader] {
+	if block.Metadata.IsSome() {
+		return tz.Some(&block.Metadata.Unwrap().BlockMetadataHeader)
+	}
+	return tz.None[*core.BlockMetadataHeader]()
 }
 
 func (*BlockInfoProtocolData) BlockInfoProtocolData() {}
