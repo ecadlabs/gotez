@@ -64,6 +64,9 @@ type OriginationContentsAndResult struct {
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}
+func (op *OriginationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Origination
+}
 
 type OriginationInternalOperationResult struct {
 	Source   TransactionDestination

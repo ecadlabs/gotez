@@ -24,6 +24,14 @@ type OperationWithoutMetadata[T OperationContents] struct {
 	SignatureSuffix *tz.GenericSignature
 }
 
+func (ops *OperationWithoutMetadata[T]) Operations() []OperationContents {
+	out := make([]OperationContents, len(ops.Contents))
+	for i, op := range ops.Contents {
+		out[i] = op
+	}
+	return out
+}
+
 func (*OperationWithoutMetadata[T]) GroupContents() {}
 func (op *OperationWithoutMetadata[T]) GetSignature() (tz.Signature, error) {
 	return op.SignatureSuffix, nil
@@ -31,6 +39,10 @@ func (op *OperationWithoutMetadata[T]) GetSignature() (tz.Signature, error) {
 
 type OperationWithOptionalMetadata[T OperationWithOptionalMetadataContents] struct {
 	Contents T
+}
+
+func (ops *OperationWithOptionalMetadata[T]) Operations() []OperationContents {
+	return ops.Contents.Operations()
 }
 
 func (op *OperationWithOptionalMetadata[T]) GetSignature() (tz.Signature, error) {
@@ -44,6 +56,14 @@ type OperationWithOptionalMetadataWithMetadata[T OperationContentsAndResult] str
 	Signature tz.AnySignature
 }
 
+func (ops *OperationWithOptionalMetadataWithMetadata[T]) Operations() []OperationContents {
+	out := make([]OperationContents, len(ops.Contents))
+	for i, op := range ops.Contents {
+		out[i] = op.OperationContents()
+	}
+	return out
+}
+
 func (*OperationWithOptionalMetadataWithMetadata[T]) OperationWithOptionalMetadataContents() {}
 func (op *OperationWithOptionalMetadataWithMetadata[T]) GetSignature() (tz.Signature, error) {
 	return op.Signature.Signature()
@@ -52,6 +72,14 @@ func (op *OperationWithOptionalMetadataWithMetadata[T]) GetSignature() (tz.Signa
 type OperationWithOptionalMetadataWithoutMetadata[T OperationContents] struct {
 	Contents  []T `tz:"dyn"`
 	Signature tz.AnySignature
+}
+
+func (ops *OperationWithOptionalMetadataWithoutMetadata[T]) Operations() []OperationContents {
+	out := make([]OperationContents, len(ops.Contents))
+	for i, op := range ops.Contents {
+		out[i] = op
+	}
+	return out
 }
 
 func (*OperationWithOptionalMetadataWithoutMetadata[T]) OperationWithOptionalMetadataContents() {}

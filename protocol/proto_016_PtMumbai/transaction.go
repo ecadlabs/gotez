@@ -72,6 +72,9 @@ type TransactionContentsAndResult struct {
 }
 
 func (*TransactionContentsAndResult) OperationContentsAndResult() {}
+func (op *TransactionContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Transaction
+}
 
 type TransactionResultApplied struct {
 	core.OperationResultApplied[TransactionResultContents]

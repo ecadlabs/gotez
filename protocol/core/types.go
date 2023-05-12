@@ -11,7 +11,7 @@ type OperationContents interface {
 
 type OperationContentsAndResult interface {
 	OperationContentsAndResult()
-	OperationContents
+	OperationContents() OperationContents
 }
 
 type InternalOperationResult interface {
@@ -84,9 +84,11 @@ type Signed interface {
 type GroupContents interface {
 	Signed
 	GroupContents()
+	Operations() []OperationContents
 }
 
 type OperationWithOptionalMetadataContents interface {
 	Signed
 	OperationWithOptionalMetadataContents()
+	Operations() []OperationContents
 }

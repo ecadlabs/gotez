@@ -22,6 +22,9 @@ type Proposals struct {
 
 func (*Proposals) OperationKind() string       { return "proposals" }
 func (*Proposals) OperationContentsAndResult() {}
+func (op *Proposals) OperationContents() core.OperationContents {
+	return op
+}
 
 type Ballot struct {
 	Source   tz.PublicKeyHash
@@ -32,6 +35,9 @@ type Ballot struct {
 
 func (*Ballot) OperationKind() string       { return "ballot" }
 func (*Ballot) OperationContentsAndResult() {}
+func (op *Ballot) OperationContents() core.OperationContents {
+	return op
+}
 
 type Transaction struct {
 	ManagerOperation

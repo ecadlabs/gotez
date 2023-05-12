@@ -71,6 +71,9 @@ type SmartRollupOriginateContentsAndResult struct {
 }
 
 func (*SmartRollupOriginateContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupOriginateContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupOriginate
+}
 
 type SmartRollupAddMessages struct {
 	ManagerOperation
@@ -85,6 +88,9 @@ type SmartRollupAddMessagesContentsAndResult struct {
 }
 
 func (*SmartRollupAddMessagesContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupAddMessagesContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupAddMessages
+}
 
 type SmartRollupCement struct {
 	ManagerOperation
@@ -144,6 +150,9 @@ type SmartRollupCementContentsAndResult struct {
 }
 
 func (*SmartRollupCementContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupCementContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupCement
+}
 
 type SmartRollupPublish struct {
 	ManagerOperation
@@ -212,6 +221,9 @@ type SmartRollupPublishContentsAndResult struct {
 }
 
 func (*SmartRollupPublishContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupPublishContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupPublish
+}
 
 type SmartRollupRefute struct {
 	ManagerOperation
@@ -454,6 +466,9 @@ type SmartRollupRefuteContentsAndResult struct {
 }
 
 func (*SmartRollupRefuteContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupRefuteContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupRefute
+}
 
 type SmartRollupTimeout struct {
 	ManagerOperation
@@ -474,6 +489,9 @@ type SmartRollupTimeoutContentsAndResult struct {
 }
 
 func (*SmartRollupTimeoutContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupTimeoutContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupTimeout
+}
 
 type SmartRollupExecuteOutboxMessage struct {
 	ManagerOperation
@@ -542,6 +560,9 @@ type SmartRollupExecuteOutboxMessageContentsAndResult struct {
 }
 
 func (*SmartRollupExecuteOutboxMessageContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupExecuteOutboxMessageContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupExecuteOutboxMessage
+}
 
 type SmartRollupRecoverBond struct {
 	ManagerOperation
@@ -603,3 +624,6 @@ type SmartRollupRecoverBondContentsAndResult struct {
 }
 
 func (*SmartRollupRecoverBondContentsAndResult) OperationContentsAndResult() {}
+func (op *SmartRollupRecoverBondContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SmartRollupRecoverBond
+}

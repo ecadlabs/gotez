@@ -55,6 +55,9 @@ type SeedNonceRevelationContentsAndResult struct {
 }
 
 func (*SeedNonceRevelationContentsAndResult) OperationContentsAndResult() {}
+func (op *SeedNonceRevelationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SeedNonceRevelation
+}
 
 type DoubleEndorsementEvidenceContentsAndResult struct {
 	DoubleEndorsementEvidence
@@ -62,6 +65,9 @@ type DoubleEndorsementEvidenceContentsAndResult struct {
 }
 
 func (*DoubleEndorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
+func (op *DoubleEndorsementEvidenceContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DoubleEndorsementEvidence
+}
 
 type EndorsementMetadata struct {
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
@@ -76,6 +82,9 @@ type EndorsementContentsAndResult struct {
 }
 
 func (*EndorsementContentsAndResult) OperationContentsAndResult() {}
+func (op *EndorsementContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Endorsement
+}
 
 type DALAttestation struct {
 	Attestor    tz.PublicKeyHash
@@ -91,6 +100,9 @@ type DALAttestationContentsAndResult struct {
 }
 
 func (*DALAttestationContentsAndResult) OperationContentsAndResult() {}
+func (op *DALAttestationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DALAttestation
+}
 
 type RevealContentsAndResult struct {
 	Reveal
@@ -98,6 +110,9 @@ type RevealContentsAndResult struct {
 }
 
 func (*RevealContentsAndResult) OperationContentsAndResult() {}
+func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Reveal
+}
 
 type DelegationContentsAndResult struct {
 	Delegation
@@ -105,6 +120,9 @@ type DelegationContentsAndResult struct {
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
+func (op *DelegationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Delegation
+}
 
 type RegisterGlobalConstantResult interface {
 	RegisterGlobalConstantResult()
@@ -160,6 +178,9 @@ type RegisterGlobalConstantContentsAndResult struct {
 }
 
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
+func (op *RegisterGlobalConstantContentsAndResult) OperationContents() core.OperationContents {
+	return &op.RegisterGlobalConstant
+}
 
 type SetDepositsLimitContentsAndResult struct {
 	SetDepositsLimit
@@ -167,6 +188,9 @@ type SetDepositsLimitContentsAndResult struct {
 }
 
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
+func (op *SetDepositsLimitContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SetDepositsLimit
+}
 
 type UpdateConsensusKeyContentsAndResult struct {
 	UpdateConsensusKey
@@ -174,6 +198,9 @@ type UpdateConsensusKeyContentsAndResult struct {
 }
 
 func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
+func (op *UpdateConsensusKeyContentsAndResult) OperationContents() core.OperationContents {
+	return &op.UpdateConsensusKey
+}
 
 type TransferTicketContentsAndResult struct {
 	TransferTicket
@@ -181,6 +208,9 @@ type TransferTicketContentsAndResult struct {
 }
 
 func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
+func (op *TransferTicketContentsAndResult) OperationContents() core.OperationContents {
+	return &op.TransferTicket
+}
 
 type IncreasePaidStorageResult interface {
 	IncreasePaidStorageResult()
@@ -234,6 +264,9 @@ type IncreasePaidStorageContentsAndResult struct {
 }
 
 func (*IncreasePaidStorageContentsAndResult) OperationContentsAndResult() {}
+func (op *IncreasePaidStorageContentsAndResult) OperationContents() core.OperationContents {
+	return &op.IncreasePaidStorage
+}
 
 type DoubleBakingEvidence struct {
 	Block1 BlockHeader `tz:"dyn"`
@@ -248,6 +281,9 @@ type DoubleBakingEvidenceContentsAndResult struct {
 }
 
 func (*DoubleBakingEvidenceContentsAndResult) OperationContentsAndResult() {}
+func (op *DoubleBakingEvidenceContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DoubleBakingEvidence
+}
 
 type ActivateAccountContentsAndResult struct {
 	ActivateAccount
@@ -255,6 +291,9 @@ type ActivateAccountContentsAndResult struct {
 }
 
 func (*ActivateAccountContentsAndResult) OperationContentsAndResult() {}
+func (op *ActivateAccountContentsAndResult) OperationContents() core.OperationContents {
+	return &op.ActivateAccount
+}
 
 type DoublePreendorsementEvidenceContentsAndResult struct {
 	DoublePreendorsementEvidence
@@ -262,6 +301,9 @@ type DoublePreendorsementEvidenceContentsAndResult struct {
 }
 
 func (*DoublePreendorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
+func (op *DoublePreendorsementEvidenceContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DoublePreendorsementEvidence
+}
 
 type PreendorsementMetadata = EndorsementMetadata
 type PreendorsementContentsAndResult struct {
@@ -270,6 +312,9 @@ type PreendorsementContentsAndResult struct {
 }
 
 func (*PreendorsementContentsAndResult) OperationContentsAndResult() {}
+func (op *PreendorsementContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Preendorsement
+}
 
 type VDFRevelationContentsAndResult struct {
 	VDFRevelation
@@ -277,6 +322,9 @@ type VDFRevelationContentsAndResult struct {
 }
 
 func (*VDFRevelationContentsAndResult) OperationContentsAndResult() {}
+func (op *VDFRevelationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.VDFRevelation
+}
 
 type DrainDelegateMetadata struct {
 	BalanceUpdates               []*BalanceUpdate `tz:"dyn"`
@@ -289,6 +337,9 @@ type DrainDelegateContentsAndResult struct {
 }
 
 func (*DrainDelegateContentsAndResult) OperationContentsAndResult() {}
+func (op *DrainDelegateContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DrainDelegate
+}
 
 type DALPublishSlotHeader struct {
 	ManagerOperation
@@ -310,6 +361,9 @@ type DALPublishSlotHeaderContentsAndResult struct {
 }
 
 func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
+func (op *DALPublishSlotHeaderContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DALPublishSlotHeader
+}
 
 type SignaturePrefix struct {
 	SignaturePrefix SignaturePrefixPayload
@@ -317,6 +371,9 @@ type SignaturePrefix struct {
 
 func (*SignaturePrefix) OperationKind() string       { return "signature_prefix" }
 func (*SignaturePrefix) OperationContentsAndResult() {}
+func (op *SignaturePrefix) OperationContents() core.OperationContents {
+	return op
+}
 
 type SignaturePrefixPayload interface {
 	SignaturePrefixPayload()

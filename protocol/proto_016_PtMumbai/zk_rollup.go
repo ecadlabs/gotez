@@ -16,6 +16,9 @@ type ZkRollupOriginationContentsAndResult struct {
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
+func (op *ZkRollupOriginationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.ZkRollupOrigination
+}
 
 type ZkRollupPublishResultContents struct {
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
@@ -70,6 +73,9 @@ type ZkRollupPublishContentsAndResult struct {
 }
 
 func (*ZkRollupPublishContentsAndResult) OperationContentsAndResult() {}
+func (op *ZkRollupPublishContentsAndResult) OperationContents() core.OperationContents {
+	return &op.ZkRollupPublish
+}
 
 type ZkRollupUpdate struct {
 	ManagerOperation
@@ -166,3 +172,6 @@ type ZkRollupUpdateContentsAndResult struct {
 }
 
 func (*ZkRollupUpdateContentsAndResult) OperationContentsAndResult() {}
+func (op *ZkRollupUpdateContentsAndResult) OperationContents() core.OperationContents {
+	return &op.ZkRollupUpdate
+}
