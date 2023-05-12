@@ -322,17 +322,19 @@ type SignaturePrefixPayload interface {
 	SignaturePrefixPayload()
 }
 
-type BLSSignaturePrefix [32]byte
-
-func (*BLSSignaturePrefix) SignaturePrefixPayload() {}
-
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SignaturePrefixPayload]{
 		Variants: encoding.Variants[SignaturePrefixPayload]{
 			3: (*BLSSignaturePrefix)(nil),
 		},
 	})
+}
 
+type BLSSignaturePrefix [32]byte
+
+func (*BLSSignaturePrefix) SignaturePrefixPayload() {}
+
+func init() {
 	encoding.RegisterEnum(&encoding.Enum[OperationContents]{
 		Variants: encoding.Variants[OperationContents]{
 			1:   (*SeedNonceRevelation)(nil),

@@ -6,6 +6,18 @@ import (
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 )
 
+type BlockInfoProtocolData struct {
+	Header     BlockHeader `tz:"dyn"`
+	Metadata   tz.Option[BlockMetadata]
+	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
+}
+
+func (*BlockInfoProtocolData) BlockInfoProtocolData() {}
+
+type BlockMetadata struct {
+	BlockMetadataContents `tz:"dyn"`
+}
+
 type UnsignedProtocolBlockHeader struct {
 	PayloadHash               *tz.BlockPayloadHash
 	PayloadRound              int32
@@ -13,13 +25,6 @@ type UnsignedProtocolBlockHeader struct {
 	SeedNonceHash             tz.Option[*tz.CycleNonceHash]
 	LiquidityBakingToggleVote uint8
 }
-
-type ProtocolBlockHeader struct {
-	UnsignedProtocolBlockHeader
-	Signature tz.AnySignature
-}
-
-func (*ProtocolBlockHeader) ProtocolBlockHeader() {}
 
 type UnsignedBlockHeader struct {
 	core.BlockHeader

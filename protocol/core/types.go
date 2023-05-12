@@ -77,8 +77,16 @@ type BalanceUpdate interface {
 	BalanceUpdate()
 }
 
-type ManagerMetadata[T OperationResult, B BalanceUpdate] struct {
-	BalanceUpdates           []B `tz:"dyn"`
-	OperationResult          T
-	InternalOperationResults []InternalOperationResult `tz:"dyn"`
+type Signed interface {
+	GetSignature() (tz.Signature, error)
+}
+
+type GroupContents interface {
+	Signed
+	GroupContents()
+}
+
+type OperationWithOptionalMetadataContents interface {
+	Signed
+	OperationWithOptionalMetadataContents()
 }
