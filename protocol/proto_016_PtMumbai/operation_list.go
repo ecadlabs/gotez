@@ -15,20 +15,7 @@ func init() {
 		Variants: encoding.Variants[GroupContents]{
 			0: (*OperationWithTooLargeMetadata)(nil),
 			1: (*OperationWithoutMetadata)(nil),
-			2: (*OperationWithOptionalMetadata)(nil),
-		},
-	})
-}
-
-type OperationWithOptionalMetadataContents interface {
-	core.OperationWithOptionalMetadataContents
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[OperationWithOptionalMetadataContents]{
-		Variants: encoding.Variants[OperationWithOptionalMetadataContents]{
-			0: (*OperationWithOptionalMetadataWithMetadata)(nil),
-			1: (*OperationWithOptionalMetadataWithoutMetadata)(nil),
+			2: (*core.OperationWithOptionalMetadata[OperationWithOptionalMetadataContents])(nil),
 		},
 	})
 }
@@ -38,11 +25,9 @@ type OperationWithTooLargeMetadata struct {
 }
 
 type OperationWithoutMetadata struct {
-	Contents        []OperationContents
-	SignatureSuffix *tz.GenericSignature
+	core.OperationWithoutMetadata[OperationContents]
 }
 
-func (*OperationWithoutMetadata) GroupContents() {}
 func (op *OperationWithoutMetadata) GetSignature() (tz.Signature, error) {
 	if len(op.Contents) != 0 {
 		if prefix, ok := op.Contents[len(op.Contents)-1].(*SignaturePrefix); ok {
@@ -57,32 +42,15 @@ func (op *OperationWithoutMetadata) GetSignature() (tz.Signature, error) {
 	return op.SignatureSuffix, nil
 }
 
-type OperationWithOptionalMetadata struct {
-	Contents OperationWithOptionalMetadataContents
+type OperationWithOptionalMetadataContents interface {
+	core.OperationWithOptionalMetadataContents
 }
 
-func (op *OperationWithOptionalMetadata) GetSignature() (tz.Signature, error) {
-	return op.Contents.GetSignature()
-}
-
-func (*OperationWithOptionalMetadata) GroupContents() {}
-
-type OperationWithOptionalMetadataWithMetadata struct {
-	Contents  []OperationContentsAndResult `tz:"dyn"`
-	Signature tz.AnySignature
-}
-
-func (*OperationWithOptionalMetadataWithMetadata) OperationWithOptionalMetadataContents() {}
-func (op *OperationWithOptionalMetadataWithMetadata) GetSignature() (tz.Signature, error) {
-	return op.Signature.Signature()
-}
-
-type OperationWithOptionalMetadataWithoutMetadata struct {
-	Contents  []OperationContents `tz:"dyn"`
-	Signature tz.AnySignature
-}
-
-func (*OperationWithOptionalMetadataWithoutMetadata) OperationWithOptionalMetadataContents() {}
-func (op *OperationWithOptionalMetadataWithoutMetadata) GetSignature() (tz.Signature, error) {
-	return op.Signature.Signature()
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[OperationWithOptionalMetadataContents]{
+		Variants: encoding.Variants[OperationWithOptionalMetadataContents]{
+			0: (*core.OperationWithOptionalMetadataWithMetadata[OperationContentsAndResult])(nil),
+			1: (*core.OperationWithOptionalMetadataWithoutMetadata[OperationContents])(nil),
+		},
+	})
 }
