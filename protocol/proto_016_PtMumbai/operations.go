@@ -42,7 +42,7 @@ type FailingNoop = proto_012_Psithaca.FailingNoop
 type EventResult = proto_015_PtLimaPt.EventResult
 type EventResultContents = proto_015_PtLimaPt.EventResultContents
 type EventInternalOperationResult = proto_015_PtLimaPt.EventInternalOperationResult
-type LazyStorageDiff = proto_015_PtLimaPt.LazyStorageDiff
+type LazyStorageDiff = proto_012_Psithaca.LazyStorageDiff
 type TransferTicket = proto_013_PtJakart.TransferTicket
 
 type OperationContentsAndResult interface {

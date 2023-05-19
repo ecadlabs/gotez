@@ -6,6 +6,9 @@ import (
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 )
 
+type VotingPeriodInfo = proto_012_Psithaca.VotingPeriodInfo
+type LevelInfo = proto_012_Psithaca.LevelInfo
+
 type BlockInfoProtocolData struct {
 	Header     BlockHeader `tz:"dyn"`
 	Metadata   tz.Option[*BlockMetadata]
@@ -47,8 +50,6 @@ type BlockHeader struct {
 	Signature tz.AnySignature
 }
 
-type VotingPeriodInfo proto_012_Psithaca.VotingPeriodInfo
-
 type BlockMetadataContents struct {
 	core.BlockMetadataHeader
 	Proposer                  tz.PublicKeyHash
@@ -65,5 +66,3 @@ type BlockMetadataContents struct {
 	ConsumedMilligas          tz.BigUint
 	DALAttestation            tz.Option[tz.BigInt]
 }
-
-type LevelInfo = proto_012_Psithaca.LevelInfo

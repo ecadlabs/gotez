@@ -9,10 +9,7 @@ import (
 )
 
 type ManagerOperation = proto_012_Psithaca.ManagerOperation
-
-type LazyStorageDiff struct {
-	Opaque []byte `tz:"dyn"` // TODO: lazy storage diff
-}
+type Entrypoint = proto_012_Psithaca.Entrypoint
 
 type UpdateConsensusKey struct {
 	ManagerOperation
@@ -28,8 +25,6 @@ type DrainDelegate struct {
 }
 
 func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
-
-type Entrypoint = proto_012_Psithaca.Entrypoint
 
 type EventResult interface {
 	EventResult()
