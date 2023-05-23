@@ -108,6 +108,11 @@ type Origination struct {
 
 func (*Origination) OperationKind() string { return "origination" }
 
+type OriginationResult interface {
+	OriginationResult()
+	core.OperationResult
+}
+
 type Delegation struct {
 	ManagerOperation
 	Delegate tz.Option[tz.PublicKeyHash]
@@ -141,6 +146,11 @@ type RegisterGlobalConstant struct {
 }
 
 func (*RegisterGlobalConstant) OperationKind() string { return "register_global_constant" }
+
+type RegisterGlobalConstantResult interface {
+	RegisterGlobalConstantResult()
+	core.OperationResult
+}
 
 type SetDepositsLimit struct {
 	ManagerOperation
@@ -218,3 +228,10 @@ type Preendorsement struct {
 
 func (*Preendorsement) InlinedPreendorsementContents() {}
 func (*Preendorsement) OperationKind() string          { return "preendorsement" }
+
+type DoubleBakingEvidence struct {
+	Block1 BlockHeader `tz:"dyn"`
+	Block2 BlockHeader `tz:"dyn"`
+}
+
+func (*DoubleBakingEvidence) OperationKind() string { return "double_baking_evidence" }

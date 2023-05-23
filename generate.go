@@ -173,19 +173,14 @@ var data = []mapping{
 		Prefix: "TXRollupAddress",
 	},
 	{
-		Type:   "SmartRollupAddress",
-		Length: "AddressBytesLen",
-		Prefix: "SmartRollupHash",
-	},
-	{
-		Type:   "MumbaiSmartRollupHash",
-		Length: "HashBytesLen",
-		Prefix: "MumbaiSmartRollupHash",
-	},
-	{
 		Type:   "ZkRollupAddress",
 		Length: "AddressBytesLen",
 		Prefix: "ZkRollupHash",
+	},
+	{
+		Type:   "DALCommitment",
+		Length: "SlotHeaderBytesLen",
+		Prefix: "SlotHeader",
 	},
 	{
 		Type:   "ScriptExprHash",
@@ -193,14 +188,34 @@ var data = []mapping{
 		Prefix: "ScriptExpr",
 	},
 	{
-		Type:   "MumbaiSmartRollupStateHash",
-		Length: "HashBytesLen",
-		Prefix: "MumbaiSmartRollupStateHash",
+		Type:   "SmartRollupAddress",
+		Length: "AddressBytesLen",
+		Prefix: "SmartRollupHash",
 	},
 	{
-		Type:   "DALCommitment",
-		Length: "SlotHeaderBytesLen",
-		Prefix: "SlotHeader",
+		Type:   "SmartRollupStateHash",
+		Length: "HashBytesLen",
+		Prefix: "SmartRollupStateHash",
+	},
+	{
+		Type:   "SmartRollupCommitmentHash",
+		Length: "HashBytesLen",
+		Prefix: "SmartRollupCommitmentHash",
+	},
+	{
+		Type:   "ScRollupAddress",
+		Length: "AddressBytesLen",
+		Prefix: "ScRollupHash",
+	},
+	{
+		Type:   "ScRollupStateHash",
+		Length: "HashBytesLen",
+		Prefix: "ScRollupStateHash",
+	},
+	{
+		Type:   "ScRollupCommitmentHash",
+		Length: "HashBytesLen",
+		Prefix: "ScRollupCommitmentHash",
 	},
 }
 

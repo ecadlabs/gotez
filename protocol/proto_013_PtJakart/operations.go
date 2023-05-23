@@ -20,3 +20,8 @@ type TransferTicket struct {
 }
 
 func (*TransferTicket) OperationKind() string { return "transfer_ticket" }
+
+type TransferTicketResult interface {
+	TransferTicketResult()
+	core.OperationResult
+}

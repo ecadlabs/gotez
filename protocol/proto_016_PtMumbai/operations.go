@@ -96,12 +96,16 @@ func (*DALAttestation) OperationKind() string { return "dal_attestation" }
 
 type DALAttestationContentsAndResult struct {
 	DALAttestation
-	Metadata tz.PublicKeyHash
+	Metadata DALAttestationMetadata
 }
 
 func (*DALAttestationContentsAndResult) OperationContentsAndResult() {}
 func (op *DALAttestationContentsAndResult) OperationContents() core.OperationContents {
 	return &op.DALAttestation
+}
+
+type DALAttestationMetadata struct {
+	Delegate tz.PublicKeyHash
 }
 
 type RevealContentsAndResult struct {
@@ -125,8 +129,7 @@ func (op *DelegationContentsAndResult) OperationContents() core.OperationContent
 }
 
 type RegisterGlobalConstantResult interface {
-	RegisterGlobalConstantResult()
-	core.OperationResult
+	proto_012_Psithaca.RegisterGlobalConstantResult
 }
 
 type RegisterGlobalConstantResultContents struct {
@@ -204,7 +207,7 @@ func (op *UpdateConsensusKeyContentsAndResult) OperationContents() core.Operatio
 
 type TransferTicketContentsAndResult struct {
 	TransferTicket
-	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult]
+	Metadata ManagerMetadata[TransferTicketResult]
 }
 
 func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
@@ -212,9 +215,55 @@ func (op *TransferTicketContentsAndResult) OperationContents() core.OperationCon
 	return &op.TransferTicket
 }
 
+type TransferTicketResultContents struct {
+	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
+	TicketUpdates       []*TicketReceipt `tz:"dyn"`
+	ConsumedMilligas    tz.BigUint
+	PaidStorageSizeDiff tz.BigInt
+}
+
+func (TransferTicketResultContents) SuccessfulManagerOperationResult() {}
+func (TransferTicketResultContents) OperationKind() string {
+	return "transfer_ticket"
+}
+
+type TransferTicketResult interface {
+	proto_013_PtJakart.TransferTicketResult
+}
+
+type TransferTicketResultApplied struct {
+	core.OperationResultApplied[TransferTicketResultContents]
+}
+
+func (*TransferTicketResultApplied) TransferTicketResult() {}
+
+type TransferTicketResultBacktracked struct {
+	core.OperationResultBacktracked[TransferTicketResultContents]
+}
+
+func (*TransferTicketResultBacktracked) TransferTicketResult() {}
+
+type TransferTicketResultFailed struct{ core.OperationResultFailed }
+
+func (*TransferTicketResultFailed) TransferTicketResult() {}
+
+type TransferTicketResultSkipped struct{ core.OperationResultSkipped }
+
+func (*TransferTicketResultSkipped) TransferTicketResult() {}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[TransferTicketResult]{
+		Variants: encoding.Variants[TransferTicketResult]{
+			0: (*TransferTicketResultApplied)(nil),
+			1: (*TransferTicketResultFailed)(nil),
+			2: (*TransferTicketResultSkipped)(nil),
+			3: (*TransferTicketResultBacktracked)(nil),
+		},
+	})
+}
+
 type IncreasePaidStorageResult interface {
-	IncreasePaidStorageResult()
-	core.OperationResult
+	proto_014_PtKathma.IncreasePaidStorageResult
 }
 
 type IncreasePaidStorageResultContents struct {

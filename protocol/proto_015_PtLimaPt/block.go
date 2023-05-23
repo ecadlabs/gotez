@@ -1,4 +1,4 @@
-package proto_016_PtMumbai
+package proto_015_PtLimaPt
 
 import (
 	tz "github.com/ecadlabs/gotez"
@@ -34,11 +34,7 @@ type BlockMetadata struct {
 
 type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
 type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
-
-type BlockHeader struct {
-	UnsignedBlockHeader
-	Signature tz.AnySignature
-}
+type BlockHeader = proto_012_Psithaca.BlockHeader
 
 type BlockMetadataContents struct {
 	core.BlockMetadataHeader
@@ -54,5 +50,5 @@ type BlockMetadataContents struct {
 	ProposerConsensusKey      tz.PublicKeyHash
 	BakerConsensusKey         tz.PublicKeyHash
 	ConsumedMilligas          tz.BigUint
-	DALAttestation            tz.Option[tz.BigInt]
+	DALSlotAvailability       tz.Option[tz.BigInt]
 }

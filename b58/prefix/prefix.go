@@ -28,33 +28,35 @@ var (
 	BlindedPublicKeyHash   = Prefix{Len: 20, Prefix: []byte{1, 2, 49, 223}} // btz1(37)
 	BLS12_381PublicKeyHash = Prefix{Len: 20, Prefix: []byte{6, 161, 166}}   // tz4(36)
 	//lint:ignore U1000 As defined in Tezos code
-	L2Address          = BLS12_381PublicKeyHash
-	TXRollupAddress    = Prefix{Len: 20, Prefix: []byte{1, 128, 120, 31}}  // txr1(37)
-	SmartRollupHash    = Prefix{Len: 20, Prefix: []byte{1, 118, 132, 217}} // scr1(37)
-	ZkRollupHash       = Prefix{Len: 20, Prefix: []byte{1, 23, 224, 125}}
-	SmartRollupAddress = Prefix{Len: 20, Prefix: []byte{6, 124, 117}} // sr1(36)
+	L2Address       = BLS12_381PublicKeyHash
+	TXRollupAddress = Prefix{Len: 20, Prefix: []byte{1, 128, 120, 31}} // txr1(37)
+	ZkRollupHash    = Prefix{Len: 20, Prefix: []byte{1, 23, 224, 125}}
+	ScRollupHash    = Prefix{Len: 20, Prefix: []byte{1, 118, 132, 217}} // scr1(37)
+	SmartRollupHash = Prefix{Len: 20, Prefix: []byte{6, 124, 117}}      // sr1(36)
 
 	// 16
 	CryptoboxPublicKeyHash = Prefix{Len: 16, Prefix: []byte{153, 103}} // id(30)
 
 	// 32
-	Ed25519Seed                = Prefix{Len: 32, Prefix: []byte{13, 15, 58, 7}}     // edsk(54)
-	Ed25519PublicKey           = Prefix{Len: 32, Prefix: []byte{13, 15, 37, 217}}   // edpk(54)
-	Secp256k1SecretKey         = Prefix{Len: 32, Prefix: []byte{17, 162, 224, 201}} // spsk(54)
-	P256SecretKey              = Prefix{Len: 32, Prefix: []byte{16, 81, 238, 189}}  // p2sk(54)
-	BLS12_381SecretKey         = Prefix{Len: 32, Prefix: []byte{3, 150, 192, 40}}   // BLsk(54)
-	ValueHash                  = Prefix{Len: 32, Prefix: []byte{1, 106, 242}}       // vh(52)
-	CycleNonce                 = Prefix{Len: 32, Prefix: []byte{69, 220, 169}}      // nce(53)
-	ScriptExpr                 = Prefix{Len: 32, Prefix: []byte{13, 44, 64, 27}}    // expr(54)
-	InboxHash                  = Prefix{Len: 32, Prefix: []byte{79, 148, 196}}      // txi(53)
-	InboxListHash              = InboxHash
-	MessageHash                = Prefix{Len: 32, Prefix: []byte{79, 149, 30}}       // txm(53)
-	CommitmentHash             = Prefix{Len: 32, Prefix: []byte{79, 148, 17}}       // txc(53)
-	MessageResultHash          = Prefix{Len: 32, Prefix: []byte{18, 7, 206, 87}}    // txmr(54)
-	MessageResultListHash      = Prefix{Len: 32, Prefix: []byte{79, 146, 82}}       // txM(53)
-	WithdrawListHash           = Prefix{Len: 32, Prefix: []byte{79, 150, 72}}       // txw(53)
-	MumbaiSmartRollupHash      = Prefix{Len: 32, Prefix: []byte{17, 165, 134, 138}} // src1(54)
-	MumbaiSmartRollupStateHash = Prefix{Len: 32, Prefix: []byte{17, 165, 235, 240}} // srs1(54)
+	Ed25519Seed               = Prefix{Len: 32, Prefix: []byte{13, 15, 58, 7}}     // edsk(54)
+	Ed25519PublicKey          = Prefix{Len: 32, Prefix: []byte{13, 15, 37, 217}}   // edpk(54)
+	Secp256k1SecretKey        = Prefix{Len: 32, Prefix: []byte{17, 162, 224, 201}} // spsk(54)
+	P256SecretKey             = Prefix{Len: 32, Prefix: []byte{16, 81, 238, 189}}  // p2sk(54)
+	BLS12_381SecretKey        = Prefix{Len: 32, Prefix: []byte{3, 150, 192, 40}}   // BLsk(54)
+	ValueHash                 = Prefix{Len: 32, Prefix: []byte{1, 106, 242}}       // vh(52)
+	CycleNonce                = Prefix{Len: 32, Prefix: []byte{69, 220, 169}}      // nce(53)
+	ScriptExpr                = Prefix{Len: 32, Prefix: []byte{13, 44, 64, 27}}    // expr(54)
+	InboxHash                 = Prefix{Len: 32, Prefix: []byte{79, 148, 196}}      // txi(53)
+	InboxListHash             = InboxHash
+	MessageHash               = Prefix{Len: 32, Prefix: []byte{79, 149, 30}}       // txm(53)
+	CommitmentHash            = Prefix{Len: 32, Prefix: []byte{79, 148, 17}}       // txc(53)
+	MessageResultHash         = Prefix{Len: 32, Prefix: []byte{18, 7, 206, 87}}    // txmr(54)
+	MessageResultListHash     = Prefix{Len: 32, Prefix: []byte{79, 146, 82}}       // txM(53)
+	WithdrawListHash          = Prefix{Len: 32, Prefix: []byte{79, 150, 72}}       // txw(53)
+	ScRollupStateHash         = Prefix{Len: 32, Prefix: []byte{17, 144, 122, 202}} // scs1(54)
+	ScRollupCommitmentHash    = Prefix{Len: 32, Prefix: []byte{17, 144, 21, 100}}  // scc1(54)
+	SmartRollupStateHash      = Prefix{Len: 32, Prefix: []byte{17, 165, 235, 240}} // srs1(54)
+	SmartRollupCommitmentHash = Prefix{Len: 32, Prefix: []byte{17, 165, 134, 138}} // src1(54)
 
 	// 56
 	Ed25519EncryptedSeed        = Prefix{Len: 56, Prefix: []byte{7, 90, 60, 179, 41}}    // edesk(88)
@@ -95,9 +97,6 @@ var (
 	BLS12_381PublicKey = Prefix{Len: 48, Prefix: []byte{6, 149, 135, 204}} // BLpk(76)
 	SlotHeader         = Prefix{Len: 48, Prefix: []byte{2, 116, 180}}      // sh(74)
 
-	// 32
-	ScCommitmentHash = Prefix{Len: 32, Prefix: []byte{17, 144, 21, 100}}  // scc1(54)
-	ScStateHash      = Prefix{Len: 32, Prefix: []byte{17, 144, 122, 202}} // scs1(54)
 )
 
 // Full list of prefixes with payload lengths
@@ -155,10 +154,11 @@ var List = []*Prefix{
 	&BLS12_381PublicKey,
 	&BLS12_381SecretKey,
 	&BLS12_381EncryptedSecretKey,
-	&ScCommitmentHash,
-	&ScStateHash,
-	&SmartRollupHash,
 	&ZkRollupHash,
-	&SmartRollupAddress,
-	&MumbaiSmartRollupHash,
+	&ScRollupHash,
+	&ScRollupStateHash,
+	&ScRollupCommitmentHash,
+	&SmartRollupHash,
+	&SmartRollupStateHash,
+	&SmartRollupCommitmentHash,
 }

@@ -4,6 +4,7 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
@@ -14,7 +15,15 @@ const (
 	PVM_WASM_2_0_0
 )
 
-type SmartRollupOriginate = proto_015_PtLimaPt.SmartRollupOriginate
+type SmartRollupOriginate struct {
+	ManagerOperation
+	PVMKind          PVMKind
+	Kernel           []byte                `tz:"dyn"`
+	OriginationProof []byte                `tz:"dyn"`
+	ParametersTy     expression.Expression `tz:"dyn"`
+}
+
+func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_originate" }
 
 type SmartRollupOriginateResult interface {
 	SmartRollupOriginateResult()
@@ -24,7 +33,7 @@ type SmartRollupOriginateResult interface {
 type SmartRollupOriginateResultContents struct {
 	BalanceUpdates        []*BalanceUpdate `tz:"dyn"`
 	Address               *tz.SmartRollupAddress
-	GenesisCommitmentHash *tz.MumbaiSmartRollupHash
+	GenesisCommitmentHash *tz.SmartRollupCommitmentHash
 	ConsumedMilligas      tz.BigUint
 	Size                  tz.BigInt
 }
@@ -95,7 +104,7 @@ func (op *SmartRollupAddMessagesContentsAndResult) OperationContents() core.Oper
 type SmartRollupCement struct {
 	ManagerOperation
 	Rollup     *tz.SmartRollupAddress
-	Commitment *tz.MumbaiSmartRollupHash
+	Commitment *tz.SmartRollupCommitmentHash
 }
 
 func (*SmartRollupCement) OperationKind() string { return "smart_rollup_cement" }
@@ -163,15 +172,15 @@ type SmartRollupPublish struct {
 func (*SmartRollupRefute) OperationKind() string { return "smart_rollup_refute" }
 
 type SmartRollupCommitment struct {
-	CompressedState *tz.MumbaiSmartRollupStateHash
+	CompressedState *tz.SmartRollupStateHash
 	InboxLevel      int32
-	Predecessor     *tz.MumbaiSmartRollupHash
+	Predecessor     *tz.SmartRollupCommitmentHash
 	NumberOfTicks   int64
 }
 
 type SmartRollupPublishResultContents struct {
 	ConsumedMilligas tz.BigUint
-	StakedHash       *tz.MumbaiSmartRollupHash
+	StakedHash       *tz.SmartRollupCommitmentHash
 	PublishedAtLevel int32
 	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
 }
@@ -239,8 +248,8 @@ type SmartRollupRefutation interface {
 }
 
 type RefutationStart struct {
-	PlayerCommitmentHash   *tz.MumbaiSmartRollupHash
-	OpponentCommitmentHash *tz.MumbaiSmartRollupHash
+	PlayerCommitmentHash   *tz.SmartRollupCommitmentHash
+	OpponentCommitmentHash *tz.SmartRollupCommitmentHash
 }
 
 func (*RefutationStart) RefutationKind() string { return "start" }
@@ -272,7 +281,7 @@ type RefutationStepDissection struct {
 func (*RefutationStepDissection) RefutationStepKind() string { return "dissection" }
 
 type RefutationStepDissectionElem struct {
-	State tz.Option[*tz.MumbaiSmartRollupStateHash]
+	State tz.Option[*tz.SmartRollupStateHash]
 	Tick  tz.BigUint
 }
 
@@ -496,7 +505,7 @@ func (op *SmartRollupTimeoutContentsAndResult) OperationContents() core.Operatio
 type SmartRollupExecuteOutboxMessage struct {
 	ManagerOperation
 	Rollup             *tz.SmartRollupAddress
-	CementedCommitment *tz.MumbaiSmartRollupHash
+	CementedCommitment *tz.SmartRollupCommitmentHash
 	OutputProof        []byte `tz:"dyn"`
 }
 

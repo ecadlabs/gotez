@@ -12,9 +12,6 @@ import (
 type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
 type Entrypoint = proto_012_Psithaca.Entrypoint
-type TransactionDestination = proto_015_PtLimaPt.TransactionDestination
-type ToSmartRollup = proto_015_PtLimaPt.ToSmartRollup
-
 type EpDefault = proto_012_Psithaca.EpDefault
 type EpRoot = proto_012_Psithaca.EpRoot
 type EpDo = proto_012_Psithaca.EpDo
@@ -65,6 +62,13 @@ type ToTxRollup struct {
 }
 
 func (*ToTxRollup) TransactionResultDestination() {}
+
+type ToSmartRollup struct {
+	ConsumedMilligas tz.BigUint
+	TicketUpdates    []*TicketReceipt `tz:"dyn"`
+}
+
+func (*ToSmartRollup) TransactionResultDestination() {}
 
 type TransactionContentsAndResult struct {
 	Transaction
@@ -123,3 +127,43 @@ type TransactionInternalOperationResult struct {
 
 func (*TransactionInternalOperationResult) InternalOperationResult() {}
 func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
+
+type TxRollupDestination struct {
+	*tz.TXRollupAddress
+	Padding uint8
+}
+
+type SmartRollupDestination struct {
+	*tz.ScRollupAddress
+	Padding uint8
+}
+
+type ZkRollupDestination struct {
+	*tz.ZkRollupAddress
+	Padding uint8
+}
+
+type OriginatedContract core.OriginatedContract
+type ImplicitContract core.ImplicitContract
+
+func (*TxRollupDestination) TransactionDestination()    {}
+func (*SmartRollupDestination) TransactionDestination() {}
+func (*OriginatedContract) TransactionDestination()     {}
+func (*ImplicitContract) TransactionDestination()       {}
+func (*ZkRollupDestination) TransactionDestination()    {}
+
+type TransactionDestination interface {
+	proto_015_PtLimaPt.TransactionDestination
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
+		Variants: encoding.Variants[TransactionDestination]{
+			0: (*ImplicitContract)(nil),
+			1: (*OriginatedContract)(nil),
+			2: (*TxRollupDestination)(nil),
+			3: (*SmartRollupDestination)(nil),
+			4: (*ZkRollupDestination)(nil),
+		},
+	})
+}

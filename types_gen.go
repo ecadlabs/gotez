@@ -938,66 +938,6 @@ func (self *TXRollupAddress) UnmarshalText(src []byte) error {
 	return nil
 }
 
-type SmartRollupAddress [AddressBytesLen]byte
-
-func (self *SmartRollupAddress) ToBase58() []byte {
-	out, err := base58.EncodeTZ(&prefix.SmartRollupHash, self[:])
-	if err != nil {
-		panic(err)
-	}
-	return out
-}
-
-func (self SmartRollupAddress) String() string {
-	return string(self.ToBase58())
-}
-
-func (self SmartRollupAddress) MarshalText() ([]byte, error) {
-	return base58.EncodeTZ(&prefix.SmartRollupHash, self[:])
-}
-
-func (self *SmartRollupAddress) UnmarshalText(src []byte) error {
-	pre, payload, err := base58.DecodeTZ(src)
-	if err != nil {
-		return err
-	}
-	if pre != &prefix.SmartRollupHash {
-		return fmt.Errorf("gotez: invalid SmartRollupAddress encoding")
-	}
-	copy(self[:], payload)
-	return nil
-}
-
-type MumbaiSmartRollupHash [HashBytesLen]byte
-
-func (self *MumbaiSmartRollupHash) ToBase58() []byte {
-	out, err := base58.EncodeTZ(&prefix.MumbaiSmartRollupHash, self[:])
-	if err != nil {
-		panic(err)
-	}
-	return out
-}
-
-func (self MumbaiSmartRollupHash) String() string {
-	return string(self.ToBase58())
-}
-
-func (self MumbaiSmartRollupHash) MarshalText() ([]byte, error) {
-	return base58.EncodeTZ(&prefix.MumbaiSmartRollupHash, self[:])
-}
-
-func (self *MumbaiSmartRollupHash) UnmarshalText(src []byte) error {
-	pre, payload, err := base58.DecodeTZ(src)
-	if err != nil {
-		return err
-	}
-	if pre != &prefix.MumbaiSmartRollupHash {
-		return fmt.Errorf("gotez: invalid MumbaiSmartRollupHash encoding")
-	}
-	copy(self[:], payload)
-	return nil
-}
-
 type ZkRollupAddress [AddressBytesLen]byte
 
 func (self *ZkRollupAddress) ToBase58() []byte {
@@ -1023,6 +963,36 @@ func (self *ZkRollupAddress) UnmarshalText(src []byte) error {
 	}
 	if pre != &prefix.ZkRollupHash {
 		return fmt.Errorf("gotez: invalid ZkRollupAddress encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type DALCommitment [SlotHeaderBytesLen]byte
+
+func (self *DALCommitment) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.SlotHeader, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self DALCommitment) String() string {
+	return string(self.ToBase58())
+}
+
+func (self DALCommitment) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.SlotHeader, self[:])
+}
+
+func (self *DALCommitment) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.SlotHeader {
+		return fmt.Errorf("gotez: invalid DALCommitment encoding")
 	}
 	copy(self[:], payload)
 	return nil
@@ -1058,61 +1028,181 @@ func (self *ScriptExprHash) UnmarshalText(src []byte) error {
 	return nil
 }
 
-type MumbaiSmartRollupStateHash [HashBytesLen]byte
+type SmartRollupAddress [AddressBytesLen]byte
 
-func (self *MumbaiSmartRollupStateHash) ToBase58() []byte {
-	out, err := base58.EncodeTZ(&prefix.MumbaiSmartRollupStateHash, self[:])
+func (self *SmartRollupAddress) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.SmartRollupHash, self[:])
 	if err != nil {
 		panic(err)
 	}
 	return out
 }
 
-func (self MumbaiSmartRollupStateHash) String() string {
+func (self SmartRollupAddress) String() string {
 	return string(self.ToBase58())
 }
 
-func (self MumbaiSmartRollupStateHash) MarshalText() ([]byte, error) {
-	return base58.EncodeTZ(&prefix.MumbaiSmartRollupStateHash, self[:])
+func (self SmartRollupAddress) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.SmartRollupHash, self[:])
 }
 
-func (self *MumbaiSmartRollupStateHash) UnmarshalText(src []byte) error {
+func (self *SmartRollupAddress) UnmarshalText(src []byte) error {
 	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
 		return err
 	}
-	if pre != &prefix.MumbaiSmartRollupStateHash {
-		return fmt.Errorf("gotez: invalid MumbaiSmartRollupStateHash encoding")
+	if pre != &prefix.SmartRollupHash {
+		return fmt.Errorf("gotez: invalid SmartRollupAddress encoding")
 	}
 	copy(self[:], payload)
 	return nil
 }
 
-type DALCommitment [SlotHeaderBytesLen]byte
+type SmartRollupStateHash [HashBytesLen]byte
 
-func (self *DALCommitment) ToBase58() []byte {
-	out, err := base58.EncodeTZ(&prefix.SlotHeader, self[:])
+func (self *SmartRollupStateHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.SmartRollupStateHash, self[:])
 	if err != nil {
 		panic(err)
 	}
 	return out
 }
 
-func (self DALCommitment) String() string {
+func (self SmartRollupStateHash) String() string {
 	return string(self.ToBase58())
 }
 
-func (self DALCommitment) MarshalText() ([]byte, error) {
-	return base58.EncodeTZ(&prefix.SlotHeader, self[:])
+func (self SmartRollupStateHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.SmartRollupStateHash, self[:])
 }
 
-func (self *DALCommitment) UnmarshalText(src []byte) error {
+func (self *SmartRollupStateHash) UnmarshalText(src []byte) error {
 	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
 		return err
 	}
-	if pre != &prefix.SlotHeader {
-		return fmt.Errorf("gotez: invalid DALCommitment encoding")
+	if pre != &prefix.SmartRollupStateHash {
+		return fmt.Errorf("gotez: invalid SmartRollupStateHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type SmartRollupCommitmentHash [HashBytesLen]byte
+
+func (self *SmartRollupCommitmentHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.SmartRollupCommitmentHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self SmartRollupCommitmentHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self SmartRollupCommitmentHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.SmartRollupCommitmentHash, self[:])
+}
+
+func (self *SmartRollupCommitmentHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.SmartRollupCommitmentHash {
+		return fmt.Errorf("gotez: invalid SmartRollupCommitmentHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type ScRollupAddress [AddressBytesLen]byte
+
+func (self *ScRollupAddress) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.ScRollupHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self ScRollupAddress) String() string {
+	return string(self.ToBase58())
+}
+
+func (self ScRollupAddress) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.ScRollupHash, self[:])
+}
+
+func (self *ScRollupAddress) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.ScRollupHash {
+		return fmt.Errorf("gotez: invalid ScRollupAddress encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type ScRollupStateHash [HashBytesLen]byte
+
+func (self *ScRollupStateHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.ScRollupStateHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self ScRollupStateHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self ScRollupStateHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.ScRollupStateHash, self[:])
+}
+
+func (self *ScRollupStateHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.ScRollupStateHash {
+		return fmt.Errorf("gotez: invalid ScRollupStateHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type ScRollupCommitmentHash [HashBytesLen]byte
+
+func (self *ScRollupCommitmentHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.ScRollupCommitmentHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self ScRollupCommitmentHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self ScRollupCommitmentHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.ScRollupCommitmentHash, self[:])
+}
+
+func (self *ScRollupCommitmentHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.ScRollupCommitmentHash {
+		return fmt.Errorf("gotez: invalid ScRollupCommitmentHash encoding")
 	}
 	copy(self[:], payload)
 	return nil
