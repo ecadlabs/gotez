@@ -2,6 +2,7 @@ package core
 
 import (
 	tz "github.com/ecadlabs/gotez"
+	"github.com/ecadlabs/gotez/encoding"
 )
 
 type OperationsList[T GroupContents] struct {
@@ -20,8 +21,20 @@ type OperationWithTooLargeMetadata[T OperationContents] struct {
 }
 
 type OperationWithoutMetadata[T OperationContents] struct {
-	Contents        []T
-	SignatureSuffix *tz.GenericSignature
+	Contents  []T
+	Signature *tz.GenericSignature // takes the rest, see below
+}
+
+func (op *OperationWithoutMetadata[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
+	if len(data) < tz.GenericSignatureBytesLen {
+		return nil, encoding.ErrBuffer(len(data))
+	}
+	tmp := data[:len(data)-tz.GenericSignatureBytesLen]
+	data = data[len(data)-tz.GenericSignatureBytesLen:]
+	if _, err := encoding.Decode(tmp, &op.Contents, encoding.Ctx(ctx)); err != nil {
+		return nil, err
+	}
+	return encoding.Decode(data, &op.Signature, encoding.Ctx(ctx))
 }
 
 func (ops *OperationWithoutMetadata[T]) Operations() []OperationContents {
@@ -34,7 +47,7 @@ func (ops *OperationWithoutMetadata[T]) Operations() []OperationContents {
 
 func (*OperationWithoutMetadata[T]) GroupContents() {}
 func (op *OperationWithoutMetadata[T]) GetSignature() (tz.Signature, error) {
-	return op.SignatureSuffix, nil
+	return op.Signature, nil
 }
 
 type OperationWithOptionalMetadata[T OperationWithOptionalMetadataContents] struct {

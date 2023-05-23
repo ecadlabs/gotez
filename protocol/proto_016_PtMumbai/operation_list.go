@@ -34,12 +34,12 @@ func (op *OperationWithoutMetadata) GetSignature() (tz.Signature, error) {
 			if blsPrefix, ok := prefix.SignaturePrefix.(*BLSSignaturePrefix); ok {
 				var sig tz.BLSSignature
 				copy(sig[:], blsPrefix[:])
-				copy(sig[:len(blsPrefix)], op.SignatureSuffix[:])
+				copy(sig[:len(blsPrefix)], op.Signature[:])
 				return &sig, nil
 			}
 		}
 	}
-	return op.SignatureSuffix, nil
+	return op.Signature, nil
 }
 
 type OperationWithOptionalMetadataContents interface {

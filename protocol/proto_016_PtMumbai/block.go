@@ -11,7 +11,7 @@ type LevelInfo = proto_012_Psithaca.LevelInfo
 
 type BlockInfoProtocolData struct {
 	Header     BlockHeader `tz:"dyn"`
-	Metadata   tz.Option[*BlockMetadata]
+	Metadata   tz.Option[BlockMetadata]
 	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
 }
 
@@ -21,7 +21,7 @@ func (block *BlockInfoProtocolData) BlockHeader() *core.BlockHeader {
 
 func (block *BlockInfoProtocolData) BlockMetadata() tz.Option[*core.BlockMetadataHeader] {
 	if block.Metadata.IsSome() {
-		return tz.Some(&block.Metadata.Unwrap().BlockMetadataHeader)
+		return tz.Some(&block.Metadata.UnwrapRef().BlockMetadataHeader)
 	}
 	return tz.None[*core.BlockMetadataHeader]()
 }

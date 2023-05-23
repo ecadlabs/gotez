@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/stretchr/testify/assert"
@@ -46,6 +47,15 @@ var testData = []protoTestData{
 			{"41821", true},
 		},
 	},
+	{
+		proto: core.Proto015PtLimaPt,
+		blocks: []blockTestData{
+			{"2981889", false},
+			{"2981890", false},
+			{"2981891", false},
+			{"2981892", false},
+		},
+	},
 }
 
 func TestBlock(t *testing.T) {
@@ -62,6 +72,9 @@ func TestBlock(t *testing.T) {
 						ctx = ctx.Set(core.ProtocolVersionCtxKey, protoData.proto)
 					}
 					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx))
+					c := spew.NewDefaultConfig()
+					c.DisableMethods = true
+					c.Dump(&out.Contents)
 					if !assert.NoError(t, err) {
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)

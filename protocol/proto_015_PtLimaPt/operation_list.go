@@ -29,7 +29,7 @@ type OperationWithoutMetadata struct {
 }
 
 func (op *OperationWithoutMetadata) GetSignature() (tz.Signature, error) {
-	return op.SignatureSuffix, nil
+	return op.Signature, nil
 }
 
 type OperationWithOptionalMetadataContents interface {

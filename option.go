@@ -35,6 +35,13 @@ func (op Option[T]) Unwrap() T {
 	return op.value
 }
 
+func (op Option[T]) UnwrapRef() *T {
+	if !op.some {
+		panic(fmt.Sprintf("called `Unwrap()` on a `None` value of type %T", op))
+	}
+	return &op.value
+}
+
 func (op Option[T]) UnwrapUnchecked() T {
 	return op.value
 }
@@ -91,10 +98,7 @@ func (op *Option[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, 
 	data = data[1:]
 
 	if op.some {
-		data, err = encoding.Decode(data, &op.value, encoding.Ctx(ctx))
-		if err != nil {
-			return nil, err
-		}
+		return encoding.Decode(data, &op.value, encoding.Ctx(ctx))
 	}
 	return data, nil
 }
