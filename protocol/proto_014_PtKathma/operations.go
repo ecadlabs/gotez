@@ -69,13 +69,6 @@ func (*SetDepositsLimitResultContents) OperationKind() string {
 	return "set_deposits_limit"
 }
 
-type UpdateConsensusKeyResultContents EventResultContents
-
-func (*UpdateConsensusKeyResultContents) SuccessfulManagerOperationResult() {}
-func (*UpdateConsensusKeyResultContents) OperationKind() string {
-	return "update_consensus_key"
-}
-
 type EventResultApplied struct {
 	core.OperationResultApplied[EventResultContents]
 }
@@ -580,7 +573,6 @@ func init() {
 			2: (*OriginationResultContents)(nil),
 			3: (*DelegationResultContents)(nil),
 			5: (*SetDepositsLimitResultContents)(nil),
-			6: (*UpdateConsensusKeyResultContents)(nil),
 			9: (*IncreasePaidStorageResultContents)(nil),
 			// 200: (*ScRollupOriginateResultContents)(nil),
 		},

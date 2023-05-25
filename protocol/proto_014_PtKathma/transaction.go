@@ -11,7 +11,30 @@ import (
 
 type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
-type ToScRollup = proto_013_PtJakart.ToScRollup
+type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
+
+type ToScRollup struct {
+	ConsumedMilligas tz.BigUint
+	InboxAfter       ScRollupInbox
+}
+
+type ScRollupInbox struct {
+	Rollup                                 *tz.ScRollupAddress `tz:"dyn"`
+	MessageCounter                         tz.BigInt
+	NbMessagesInCommitmentPeriod           int64
+	StartingLevelOfCurrentCommitmentPeriod int32
+	Level                                  int32
+	CurrentLevelHash                       *[32]byte
+	OldLevelsMessages                      OldLevelsMessages
+}
+
+type OldLevelsMessages struct {
+	Index        int32
+	Content      *[32]byte
+	BackPointers []byte `tz:"dyn"`
+}
+
+func (*ToScRollup) TransactionResultDestination() {}
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
@@ -49,12 +72,16 @@ type ToTxRollup struct {
 
 func (*ToTxRollup) TransactionResultDestination() {}
 
+type ScRollupDestination struct {
+	*tz.ScRollupAddress
+	Padding uint8
+}
+
+func (*ScRollupDestination) TransactionDestination() {}
+
 type TransactionDestination interface {
 	proto_013_PtJakart.TransactionDestination
 }
-
-type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
-type ScRollupDestination = proto_013_PtJakart.ScRollupDestination
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{

@@ -7,10 +7,13 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
+	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
 type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
+type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
+type ScRollupDestination = proto_014_PtKathma.ScRollupDestination
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
@@ -91,9 +94,6 @@ type TicketReceiptUpdate struct {
 type TransactionDestination interface {
 	TransactionDestination()
 }
-
-type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
-type ScRollupDestination = proto_013_PtJakart.ScRollupDestination
 
 type ZkRollupDestination struct {
 	*tz.ZkRollupAddress

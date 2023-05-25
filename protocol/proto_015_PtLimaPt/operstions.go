@@ -4,6 +4,7 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
 	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
@@ -35,14 +36,34 @@ type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
 type EventResult = proto_014_PtKathma.EventResult
 type EventResultContents = proto_014_PtKathma.EventResultContents
-type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
 type RevealResultContents = proto_014_PtKathma.RevealResultContents
-type DelegationInternalOperationResult = proto_014_PtKathma.DelegationInternalOperationResult
 type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
 type SetDepositsLimitResultContents = proto_014_PtKathma.SetDepositsLimitResultContents
 type RevealContentsAndResult = proto_014_PtKathma.RevealContentsAndResult
 type DelegationContentsAndResult = proto_014_PtKathma.DelegationContentsAndResult
 type SetDepositsLimitContentsAndResult = proto_014_PtKathma.SetDepositsLimitContentsAndResult
+
+type EventInternalOperationResult struct {
+	Source  TransactionDestination
+	Nonce   uint16
+	Type    expression.Expression
+	Tag     tz.Option[Entrypoint]
+	Payload tz.Option[expression.Expression]
+	Result  EventResult
+}
+
+func (*EventInternalOperationResult) InternalOperationResult() {}
+func (*EventInternalOperationResult) OperationKind() string    { return "event" }
+
+type DelegationInternalOperationResult struct {
+	Source   TransactionDestination
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   EventResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
 
 type UpdateConsensusKey struct {
 	ManagerOperation
