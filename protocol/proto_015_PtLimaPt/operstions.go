@@ -4,7 +4,6 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
 	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
@@ -34,6 +33,16 @@ type DALSlotAvailability = proto_014_PtKathma.DALSlotAvailability
 type DALSlotAvailabilityContentsAndResult = proto_014_PtKathma.DALSlotAvailabilityContentsAndResult
 type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
+type EventResult = proto_014_PtKathma.EventResult
+type EventResultContents = proto_014_PtKathma.EventResultContents
+type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
+type RevealResultContents = proto_014_PtKathma.RevealResultContents
+type DelegationInternalOperationResult = proto_014_PtKathma.DelegationInternalOperationResult
+type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
+type SetDepositsLimitResultContents = proto_014_PtKathma.SetDepositsLimitResultContents
+type RevealContentsAndResult = proto_014_PtKathma.RevealContentsAndResult
+type DelegationContentsAndResult = proto_014_PtKathma.DelegationContentsAndResult
+type SetDepositsLimitContentsAndResult = proto_014_PtKathma.SetDepositsLimitContentsAndResult
 
 type UpdateConsensusKey struct {
 	ManagerOperation
@@ -49,88 +58,6 @@ type DrainDelegate struct {
 }
 
 func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
-
-type EventResult interface {
-	EventResult()
-	core.OperationResult
-}
-
-type EventResultContents struct {
-	ConsumedMilligas tz.BigUint
-}
-
-func (EventResultContents) SuccessfulManagerOperationResult() {}
-func (EventResultContents) OperationKind() string             { return "event" }
-
-type EventResultApplied struct {
-	core.OperationResultApplied[EventResultContents]
-}
-
-func (*EventResultApplied) EventResult() {}
-
-type EventResultBacktracked struct {
-	core.OperationResultBacktracked[EventResultContents]
-}
-
-func (*EventResultBacktracked) EventResult() {}
-
-type EventResultFailed struct{ core.OperationResultFailed }
-
-func (*EventResultFailed) EventResult() {}
-
-type EventResultSkipped struct{ core.OperationResultSkipped }
-
-func (*EventResultSkipped) EventResult() {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[EventResult]{
-		Variants: encoding.Variants[EventResult]{
-			0: (*EventResultApplied)(nil),
-			1: (*EventResultFailed)(nil),
-			2: (*EventResultSkipped)(nil),
-			3: (*EventResultBacktracked)(nil),
-		},
-	})
-}
-
-type EventInternalOperationResult struct {
-	Source  TransactionDestination
-	Nonce   uint16
-	Type    expression.Expression
-	Tag     tz.Option[Entrypoint]
-	Payload tz.Option[expression.Expression]
-	Result  EventResult
-}
-
-func (*EventInternalOperationResult) InternalOperationResult() {}
-func (*EventInternalOperationResult) OperationKind() string    { return "event" }
-
-type RevealResultContents EventResultContents
-
-func (*RevealResultContents) SuccessfulManagerOperationResult() {}
-func (*RevealResultContents) OperationKind() string             { return "reveal" }
-
-type DelegationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Delegate tz.Option[tz.PublicKeyHash]
-	Result   EventResult
-}
-
-func (*DelegationInternalOperationResult) InternalOperationResult() {}
-func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
-
-type DelegationResultContents EventResultContents
-
-func (*DelegationResultContents) SuccessfulManagerOperationResult() {}
-func (*DelegationResultContents) OperationKind() string             { return "delegation" }
-
-type SetDepositsLimitResultContents EventResultContents
-
-func (*SetDepositsLimitResultContents) SuccessfulManagerOperationResult() {}
-func (*SetDepositsLimitResultContents) OperationKind() string {
-	return "set_deposits_limit"
-}
 
 type UpdateConsensusKeyResultContents EventResultContents
 
@@ -257,26 +184,6 @@ func (op *PreendorsementContentsAndResult) OperationContents() core.OperationCon
 	return &op.Preendorsement
 }
 
-type RevealContentsAndResult struct {
-	Reveal
-	Metadata ManagerMetadata[EventResult]
-}
-
-func (*RevealContentsAndResult) OperationContentsAndResult() {}
-func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
-	return &op.Reveal
-}
-
-type DelegationContentsAndResult struct {
-	Delegation
-	Metadata ManagerMetadata[EventResult]
-}
-
-func (*DelegationContentsAndResult) OperationContentsAndResult() {}
-func (op *DelegationContentsAndResult) OperationContents() core.OperationContents {
-	return &op.Delegation
-}
-
 type RegisterGlobalConstantResult interface {
 	proto_012_Psithaca.RegisterGlobalConstantResult
 }
@@ -332,16 +239,6 @@ type RegisterGlobalConstantContentsAndResult struct {
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
 func (op *RegisterGlobalConstantContentsAndResult) OperationContents() core.OperationContents {
 	return &op.RegisterGlobalConstant
-}
-
-type SetDepositsLimitContentsAndResult struct {
-	SetDepositsLimit
-	Metadata ManagerMetadata[EventResult]
-}
-
-func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
-func (op *SetDepositsLimitContentsAndResult) OperationContents() core.OperationContents {
-	return &op.SetDepositsLimit
 }
 
 type UpdateConsensusKeyContentsAndResult struct {

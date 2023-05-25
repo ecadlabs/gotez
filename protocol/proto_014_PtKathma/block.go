@@ -1,4 +1,4 @@
-package proto_015_PtLimaPt
+package proto_014_PtKathma
 
 import (
 	tz "github.com/ecadlabs/gotez"
@@ -34,7 +34,11 @@ type BlockMetadata struct {
 
 type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
 type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
-type BlockHeader = proto_012_Psithaca.BlockHeader
+
+type BlockHeader struct {
+	UnsignedBlockHeader
+	Signature tz.AnySignature
+}
 
 type BlockMetadataContents struct {
 	core.BlockMetadataHeader
@@ -47,8 +51,6 @@ type BlockMetadataContents struct {
 	BalanceUpdates            []*BalanceUpdate   `tz:"dyn"`
 	LiquidityBakingToggleEMA  int32
 	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn"`
-	ProposerConsensusKey      tz.PublicKeyHash
-	BakerConsensusKey         tz.PublicKeyHash
 	ConsumedMilligas          tz.BigUint
 	DALSlotAvailability       tz.Option[tz.BigInt]
 }

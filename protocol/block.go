@@ -6,6 +6,7 @@ import (
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
+	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
 )
@@ -60,6 +61,8 @@ func (info *BlockInfoContents) DecodeTZ(data []byte, ctx *encoding.Context) (res
 		info.ProtocolData = new(proto_016_PtMumbai.BlockInfoProtocolData)
 	case core.Proto015PtLimaPt:
 		info.ProtocolData = new(proto_015_PtLimaPt.BlockInfoProtocolData)
+	case core.Proto014PtKathma:
+		info.ProtocolData = new(proto_014_PtKathma.BlockInfoProtocolData)
 	default:
 		return nil, fmt.Errorf("gotez: BlockInfoContents.DecodeTZ: unknown protocol version %d", p2.Proto)
 	}

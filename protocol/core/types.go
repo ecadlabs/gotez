@@ -56,8 +56,10 @@ type OriginatedContractID interface {
 	OriginatedContractID()
 }
 
-func (*OriginatedContract) ContractID()           {}
-func (*OriginatedContract) OriginatedContractID() {}
+func (*OriginatedContract) ContractID()             {}
+func (*OriginatedContract) OriginatedContractID()   {}
+func (*OriginatedContract) TransactionDestination() {}
+func (*ImplicitContract) TransactionDestination()   {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[ContractID]{

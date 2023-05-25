@@ -23,13 +23,10 @@ type InlinedEndorsement = proto_012_Psithaca.InlinedEndorsement
 type DoublePreendorsementEvidence = proto_012_Psithaca.DoublePreendorsementEvidence
 type DoubleEndorsementEvidence = proto_012_Psithaca.DoubleEndorsementEvidence
 type Reveal = proto_012_Psithaca.Reveal
-type RevealResultContents = proto_015_PtLimaPt.RevealResultContents
 type Delegation = proto_012_Psithaca.Delegation
-type DelegationInternalOperationResult = proto_015_PtLimaPt.DelegationInternalOperationResult
-type DelegationResultContents = proto_015_PtLimaPt.DelegationResultContents
 type RegisterGlobalConstant = proto_012_Psithaca.RegisterGlobalConstant
 type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
-type SetDepositsLimitResultContents = proto_015_PtLimaPt.SetDepositsLimitResultContents
+type SetDepositsLimitResultContents = proto_014_PtKathma.SetDepositsLimitResultContents
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
 type UpdateConsensusKeyResultContents = proto_015_PtLimaPt.UpdateConsensusKeyResultContents
 type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
@@ -39,11 +36,17 @@ type Ballot = proto_012_Psithaca.Ballot
 type VDFRevelation = proto_014_PtKathma.VDFRevelation
 type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
 type FailingNoop = proto_012_Psithaca.FailingNoop
-type EventResult = proto_015_PtLimaPt.EventResult
-type EventResultContents = proto_015_PtLimaPt.EventResultContents
-type EventInternalOperationResult = proto_015_PtLimaPt.EventInternalOperationResult
 type LazyStorageDiff = proto_012_Psithaca.LazyStorageDiff
 type TransferTicket = proto_013_PtJakart.TransferTicket
+type EventResult = proto_014_PtKathma.EventResult
+type EventResultContents = proto_014_PtKathma.EventResultContents
+type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
+type RevealResultContents = proto_014_PtKathma.RevealResultContents
+type DelegationInternalOperationResult = proto_014_PtKathma.DelegationInternalOperationResult
+type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
+type RevealContentsAndResult = proto_014_PtKathma.RevealContentsAndResult
+type DelegationContentsAndResult = proto_014_PtKathma.DelegationContentsAndResult
+type SetDepositsLimitContentsAndResult = proto_014_PtKathma.SetDepositsLimitContentsAndResult
 
 type OperationContentsAndResult interface {
 	core.OperationContentsAndResult
@@ -108,26 +111,6 @@ type DALAttestationMetadata struct {
 	Delegate tz.PublicKeyHash
 }
 
-type RevealContentsAndResult struct {
-	Reveal
-	Metadata ManagerMetadata[EventResult]
-}
-
-func (*RevealContentsAndResult) OperationContentsAndResult() {}
-func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
-	return &op.Reveal
-}
-
-type DelegationContentsAndResult struct {
-	Delegation
-	Metadata ManagerMetadata[EventResult]
-}
-
-func (*DelegationContentsAndResult) OperationContentsAndResult() {}
-func (op *DelegationContentsAndResult) OperationContents() core.OperationContents {
-	return &op.Delegation
-}
-
 type RegisterGlobalConstantResult interface {
 	proto_012_Psithaca.RegisterGlobalConstantResult
 }
@@ -183,16 +166,6 @@ type RegisterGlobalConstantContentsAndResult struct {
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
 func (op *RegisterGlobalConstantContentsAndResult) OperationContents() core.OperationContents {
 	return &op.RegisterGlobalConstant
-}
-
-type SetDepositsLimitContentsAndResult struct {
-	SetDepositsLimit
-	Metadata ManagerMetadata[EventResult]
-}
-
-func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
-func (op *SetDepositsLimitContentsAndResult) OperationContents() core.OperationContents {
-	return &op.SetDepositsLimit
 }
 
 type UpdateConsensusKeyContentsAndResult struct {

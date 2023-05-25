@@ -1,11 +1,11 @@
-package proto_015_PtLimaPt
+package proto_014_PtKathma
 
 import (
+	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
-	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
 )
 
 type BalanceUpdateOrigin = proto_012_Psithaca.BalanceUpdateOrigin
@@ -42,13 +42,43 @@ type BalanceUpdateInitialCommitments = proto_012_Psithaca.BalanceUpdateInitialCo
 type BalanceUpdateMinted = proto_012_Psithaca.BalanceUpdateMinted
 type BalanceUpdateTxRollupRejectionRewards = proto_013_PtJakart.BalanceUpdateTxRollupRejectionRewards
 type BalanceUpdateTxRollupRejectionPunishments = proto_013_PtJakart.BalanceUpdateTxRollupRejectionPunishments
-type BalanceUpdateScRollupRefutationPunishments = proto_014_PtKathma.BalanceUpdateScRollupRefutationPunishments
-type BalanceUpdateFrozenBonds = proto_014_PtKathma.BalanceUpdateFrozenBonds
 
-type BalanceUpdateScRollupRefutationRewards struct{}
+type BondID interface {
+	BondID()
+}
 
-func (BalanceUpdateScRollupRefutationRewards) BalanceUpdateKind() string {
-	return "smart_rollup_refutation_rewards"
+type TxRollupBondID struct {
+	Address *tz.TXRollupAddress
+}
+
+func (TxRollupBondID) BondID() {}
+
+type ScRollupBondID struct {
+	Address *tz.ScRollupAddress `tz:"dyn"`
+}
+
+func (ScRollupBondID) BondID() {}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[BondID]{
+		Variants: encoding.Variants[BondID]{
+			0: TxRollupBondID{},
+			1: ScRollupBondID{},
+		},
+	})
+}
+
+type BalanceUpdateFrozenBonds struct {
+	Contract core.ContractID
+	BondID   BondID
+}
+
+func (*BalanceUpdateFrozenBonds) BalanceUpdateKind() string { return "frozen_bonds" }
+
+type BalanceUpdateScRollupRefutationPunishments struct{}
+
+func (BalanceUpdateScRollupRefutationPunishments) BalanceUpdateKind() string {
+	return "smart_rollup_refutation_punishments"
 }
 
 func init() {
@@ -76,7 +106,6 @@ func init() {
 			22: BalanceUpdateTxRollupRejectionRewards{},
 			23: BalanceUpdateTxRollupRejectionPunishments{},
 			24: BalanceUpdateScRollupRefutationPunishments{},
-			25: BalanceUpdateScRollupRefutationRewards{},
 		},
 	})
 }

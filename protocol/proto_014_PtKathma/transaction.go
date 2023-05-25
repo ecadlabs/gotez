@@ -1,4 +1,4 @@
-package proto_016_PtMumbai
+package proto_014_PtKathma
 
 import (
 	tz "github.com/ecadlabs/gotez"
@@ -7,18 +7,11 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
-	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
 type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
-type Entrypoint = proto_012_Psithaca.Entrypoint
-type EpDefault = proto_012_Psithaca.EpDefault
-type EpRoot = proto_012_Psithaca.EpRoot
-type EpDo = proto_012_Psithaca.EpDo
-type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
-type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
-type EpNamed = proto_012_Psithaca.EpNamed
+type ToScRollup = proto_013_PtJakart.ToScRollup
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
@@ -29,22 +22,14 @@ func init() {
 		Variants: encoding.Variants[TransactionResultDestination]{
 			0: (*ToContract)(nil),
 			1: (*ToTxRollup)(nil),
-			2: (*ToSmartRollup)(nil),
+			2: (*ToScRollup)(nil),
 		},
 	})
 }
 
-type TransactionResultContents struct {
-	Result TransactionResultDestination
-}
-
-func (TransactionResultContents) SuccessfulManagerOperationResult() {}
-func (TransactionResultContents) OperationKind() string             { return "transaction" }
-
 type ToContract struct {
 	Storage                      tz.Option[expression.Expression]
 	BalanceUpdates               []*BalanceUpdate            `tz:"dyn"`
-	TicketUpdates                []*TicketReceipt            `tz:"dyn"`
 	OriginatedContracts          []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas             tz.BigUint
 	StorageSize                  tz.BigInt
@@ -64,12 +49,30 @@ type ToTxRollup struct {
 
 func (*ToTxRollup) TransactionResultDestination() {}
 
-type ToSmartRollup struct {
-	ConsumedMilligas tz.BigUint
-	TicketUpdates    []*TicketReceipt `tz:"dyn"`
+type TransactionDestination interface {
+	proto_013_PtJakart.TransactionDestination
 }
 
-func (*ToSmartRollup) TransactionResultDestination() {}
+type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
+type ScRollupDestination = proto_013_PtJakart.ScRollupDestination
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
+		Variants: encoding.Variants[TransactionDestination]{
+			0: (*core.ImplicitContract)(nil),
+			1: (*core.OriginatedContract)(nil),
+			2: (*TxRollupDestination)(nil),
+			3: (*ScRollupDestination)(nil),
+		},
+	})
+}
+
+type TransactionResultContents struct {
+	Result TransactionResultDestination
+}
+
+func (TransactionResultContents) SuccessfulManagerOperationResult() {}
+func (TransactionResultContents) OperationKind() string             { return "transaction" }
 
 type TransactionContentsAndResult struct {
 	Transaction
@@ -118,7 +121,7 @@ func init() {
 }
 
 type TransactionInternalOperationResult struct {
-	Source      TransactionDestination
+	Source      core.ContractID
 	Nonce       uint16
 	Amount      tz.BigUint
 	Destination TransactionDestination
@@ -128,30 +131,3 @@ type TransactionInternalOperationResult struct {
 
 func (*TransactionInternalOperationResult) InternalOperationResult() {}
 func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
-
-type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
-
-type SmartRollupDestination struct {
-	*tz.ScRollupAddress
-	Padding uint8
-}
-
-type ZkRollupDestination = proto_015_PtLimaPt.ZkRollupDestination
-
-func (*SmartRollupDestination) TransactionDestination() {}
-
-type TransactionDestination interface {
-	proto_015_PtLimaPt.TransactionDestination
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
-		Variants: encoding.Variants[TransactionDestination]{
-			0: (*core.ImplicitContract)(nil),
-			1: (*core.OriginatedContract)(nil),
-			2: (*TxRollupDestination)(nil),
-			3: (*SmartRollupDestination)(nil),
-			4: (*ZkRollupDestination)(nil),
-		},
-	})
-}
