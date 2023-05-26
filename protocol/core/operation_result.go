@@ -4,7 +4,7 @@ import (
 	tz "github.com/ecadlabs/gotez"
 )
 
-type OperationResult interface {
+type ManagerOperationResult interface {
 	OperationResultKind() string
 }
 
@@ -13,13 +13,13 @@ type SuccessfulManagerOperationResult interface {
 	SuccessfulManagerOperationResult()
 }
 
-type OperationResultApplied[T SuccessfulManagerOperationResult] struct {
+type OperationResultApplied[T any] struct {
 	Result T
 }
 
 func (*OperationResultApplied[T]) OperationResultKind() string { return "applied" }
 
-type OperationResultBacktracked[T SuccessfulManagerOperationResult] struct {
+type OperationResultBacktracked[T any] struct {
 	Errors tz.Option[OperationResultErrors]
 	Result T
 }

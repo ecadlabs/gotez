@@ -49,7 +49,7 @@ type BlockMetadataContents struct {
 	NonceHash                 tz.Option1[*tz.CycleNonceHash]
 	Deactivated               []tz.PublicKeyHash `tz:"dyn"`
 	BalanceUpdates            []*BalanceUpdate   `tz:"dyn"`
-	LiquidityBakingEscapeEMA  int32
+	LiquidityBakingToggleEMA  int32
 	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn"`
 	ProposerConsensusKey      tz.PublicKeyHash
 	BakerConsensusKey         tz.PublicKeyHash

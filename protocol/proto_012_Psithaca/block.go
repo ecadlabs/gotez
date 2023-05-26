@@ -40,7 +40,7 @@ type UnsignedProtocolBlockHeader struct {
 	PayloadRound              int32
 	ProofOfWorkNonce          *[tz.ProofOfWorkNonceBytesLen]byte
 	SeedNonceHash             tz.Option[*tz.CycleNonceHash]
-	LiquidityBakingToggleVote uint8
+	LiquidityBakingEscapeVote bool
 }
 
 type UnsignedBlockHeader struct {
@@ -51,4 +51,41 @@ type UnsignedBlockHeader struct {
 type BlockHeader struct {
 	UnsignedBlockHeader
 	Signature *tz.GenericSignature
+}
+
+type BlockInfoProtocolData struct {
+	Header     BlockHeader `tz:"dyn"`
+	Metadata   tz.Option[BlockMetadata]
+	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
+}
+
+func (block *BlockInfoProtocolData) BlockHeader() *core.BlockHeader {
+	return &block.Header.BlockHeader
+}
+
+func (block *BlockInfoProtocolData) BlockMetadata() tz.Option[*core.BlockMetadataHeader] {
+	if block.Metadata.IsSome() {
+		return tz.Some(&block.Metadata.UnwrapRef().BlockMetadataHeader)
+	}
+	return tz.None[*core.BlockMetadataHeader]()
+}
+
+func (*BlockInfoProtocolData) BlockInfoProtocolData() {}
+
+type BlockMetadata struct {
+	BlockMetadataContents `tz:"dyn"`
+}
+
+type BlockMetadataContents struct {
+	core.BlockMetadataHeader
+	Proposer                  tz.PublicKeyHash
+	Baker                     tz.PublicKeyHash
+	LevelInfo                 LevelInfo
+	VotingPeriodInfo          VotingPeriodInfo
+	NonceHash                 tz.Option1[*tz.CycleNonceHash]
+	ConsumedGas               tz.BigUint
+	Deactivated               []tz.PublicKeyHash `tz:"dyn"`
+	BalanceUpdates            []*BalanceUpdate   `tz:"dyn"`
+	LiquidityBakingEscapeEMA  int32
+	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn"`
 }

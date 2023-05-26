@@ -19,7 +19,7 @@ func (*Origination) OperationKind() string { return "origination" }
 
 type OriginationResult interface {
 	OriginationResult()
-	core.OperationResult
+	core.ManagerOperationResult
 }
 
 type OriginationResultContents struct {

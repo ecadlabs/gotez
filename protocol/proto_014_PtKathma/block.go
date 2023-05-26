@@ -8,6 +8,9 @@ import (
 
 type VotingPeriodInfo = proto_012_Psithaca.VotingPeriodInfo
 type LevelInfo = proto_012_Psithaca.LevelInfo
+type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
+type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
+type BlockHeader = proto_012_Psithaca.BlockHeader
 
 type BlockInfoProtocolData struct {
 	Header     BlockHeader `tz:"dyn"`
@@ -30,14 +33,6 @@ func (*BlockInfoProtocolData) BlockInfoProtocolData() {}
 
 type BlockMetadata struct {
 	BlockMetadataContents `tz:"dyn"`
-}
-
-type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
-type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
-
-type BlockHeader struct {
-	UnsignedBlockHeader
-	Signature tz.AnySignature
 }
 
 type BlockMetadataContents struct {

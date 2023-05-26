@@ -278,58 +278,54 @@ type OperationContentsAndResult interface {
 	core.OperationContentsAndResult
 }
 
-type EventResultContents struct {
+type ConsumedGasResultContents struct {
 	ConsumedGas      tz.BigUint
 	ConsumedMilligas tz.BigUint
 }
-
-func (EventResultContents) SuccessfulManagerOperationResult() {}
-func (EventResultContents) OperationKind() string             { return "event" }
-
-type EventResult interface {
-	EventResult()
-	core.OperationResult
+type ConsumedGasResult interface {
+	ConsumedGasResult()
+	core.ManagerOperationResult
 }
 
-type EventResultApplied struct {
-	core.OperationResultApplied[EventResultContents]
+type ConsumedGasResultApplied struct {
+	core.OperationResultApplied[ConsumedGasResultContents]
 }
 
-func (*EventResultApplied) EventResult() {}
+func (*ConsumedGasResultApplied) ConsumedGasResult() {}
 
-type EventResultBacktracked struct {
-	core.OperationResultBacktracked[EventResultContents]
+type ConsumedGasResultBacktracked struct {
+	core.OperationResultBacktracked[ConsumedGasResultContents]
 }
 
-func (*EventResultBacktracked) EventResult() {}
+func (*ConsumedGasResultBacktracked) ConsumedGasResult() {}
 
-type EventResultFailed struct{ core.OperationResultFailed }
+type ConsumedGasResultFailed struct{ core.OperationResultFailed }
 
-func (*EventResultFailed) EventResult() {}
+func (*ConsumedGasResultFailed) ConsumedGasResult() {}
 
-type EventResultSkipped struct{ core.OperationResultSkipped }
+type ConsumedGasResultSkipped struct{ core.OperationResultSkipped }
 
-func (*EventResultSkipped) EventResult() {}
+func (*ConsumedGasResultSkipped) ConsumedGasResult() {}
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[EventResult]{
-		Variants: encoding.Variants[EventResult]{
-			0: (*EventResultApplied)(nil),
-			1: (*EventResultFailed)(nil),
-			2: (*EventResultSkipped)(nil),
-			3: (*EventResultBacktracked)(nil),
+	encoding.RegisterEnum(&encoding.Enum[ConsumedGasResult]{
+		Variants: encoding.Variants[ConsumedGasResult]{
+			0: (*ConsumedGasResultApplied)(nil),
+			1: (*ConsumedGasResultFailed)(nil),
+			2: (*ConsumedGasResultSkipped)(nil),
+			3: (*ConsumedGasResultBacktracked)(nil),
 		},
 	})
 }
 
-type RevealResultContents EventResultContents
+type RevealResultContents ConsumedGasResultContents
 
 func (*RevealResultContents) SuccessfulManagerOperationResult() {}
 func (*RevealResultContents) OperationKind() string             { return "reveal" }
 
 type RevealContentsAndResult struct {
 	Reveal
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*RevealContentsAndResult) OperationContentsAndResult() {}
@@ -339,7 +335,7 @@ func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
 
 type DelegationContentsAndResult struct {
 	Delegation
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
@@ -347,12 +343,12 @@ func (op *DelegationContentsAndResult) OperationContents() core.OperationContent
 	return &op.Delegation
 }
 
-type DelegationResultContents EventResultContents
+type DelegationResultContents ConsumedGasResultContents
 
 func (*DelegationResultContents) SuccessfulManagerOperationResult() {}
 func (*DelegationResultContents) OperationKind() string             { return "delegation" }
 
-type SetDepositsLimitResultContents EventResultContents
+type SetDepositsLimitResultContents ConsumedGasResultContents
 
 func (*SetDepositsLimitResultContents) SuccessfulManagerOperationResult() {}
 func (*SetDepositsLimitResultContents) OperationKind() string {
@@ -364,11 +360,6 @@ type RegisterGlobalConstantResultContents struct {
 	ConsumedGas    tz.BigUint
 	StorageSize    tz.BigInt
 	GlobalAddress  *tz.ScriptExprHash
-}
-
-func (RegisterGlobalConstantResultContents) SuccessfulManagerOperationResult() {}
-func (RegisterGlobalConstantResultContents) OperationKind() string {
-	return "register_global_constant"
 }
 
 type RegisterGlobalConstantResultApplied struct {
@@ -393,7 +384,7 @@ func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
 
 type RegisterGlobalConstantResult interface {
 	RegisterGlobalConstantResult()
-	core.OperationResult
+	core.ManagerOperationResult
 }
 
 func init() {
@@ -419,7 +410,7 @@ func (op *RegisterGlobalConstantContentsAndResult) OperationContents() core.Oper
 
 type SetDepositsLimitContentsAndResult struct {
 	SetDepositsLimit
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
@@ -449,7 +440,7 @@ func init() {
 	})
 }
 
-type ManagerMetadata[T core.OperationResult] struct {
+type ManagerMetadata[T core.ManagerOperationResult] struct {
 	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`
@@ -459,7 +450,7 @@ type DelegationInternalOperationResult struct {
 	Source   core.ContractID
 	Nonce    uint16
 	Delegate tz.Option[tz.PublicKeyHash]
-	Result   EventResult
+	Result   ConsumedGasResult
 }
 
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
@@ -469,7 +460,7 @@ type RevealInternalOperationResult struct {
 	Source    core.ContractID
 	Nonce     uint16
 	PublicKey tz.PublicKey
-	Result    EventResult
+	Result    ConsumedGasResult
 }
 
 func (*RevealInternalOperationResult) InternalOperationResult() {}
@@ -491,7 +482,7 @@ type SetDepositsLimitInternalOperationResult struct {
 	Source core.ContractID
 	Nonce  uint16
 	Limit  tz.Option[tz.BigUint]
-	Result EventResult
+	Result ConsumedGasResult
 }
 
 func (*SetDepositsLimitInternalOperationResult) InternalOperationResult() {}

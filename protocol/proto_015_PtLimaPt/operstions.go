@@ -33,8 +33,8 @@ type DALSlotAvailability = proto_014_PtKathma.DALSlotAvailability
 type DALSlotAvailabilityContentsAndResult = proto_014_PtKathma.DALSlotAvailabilityContentsAndResult
 type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
-type EventResult = proto_014_PtKathma.EventResult
-type EventResultContents = proto_014_PtKathma.EventResultContents
+type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
+type ConsumedGasResultContents = proto_014_PtKathma.ConsumedGasResultContents
 type RevealResultContents = proto_014_PtKathma.RevealResultContents
 type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
 type SetDepositsLimitResultContents = proto_014_PtKathma.SetDepositsLimitResultContents
@@ -45,7 +45,7 @@ type EventInternalOperationResult struct {
 	Type    expression.Expression
 	Tag     tz.Option[Entrypoint]
 	Payload tz.Option[expression.Expression]
-	Result  EventResult
+	Result  ConsumedGasResult
 }
 
 func (*EventInternalOperationResult) InternalOperationResult() {}
@@ -53,7 +53,7 @@ func (*EventInternalOperationResult) OperationKind() string    { return "event" 
 
 type DelegationContentsAndResult struct {
 	Delegation
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
@@ -65,7 +65,7 @@ type DelegationInternalOperationResult struct {
 	Source   TransactionDestination
 	Nonce    uint16
 	Delegate tz.Option[tz.PublicKeyHash]
-	Result   EventResult
+	Result   ConsumedGasResult
 }
 
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
@@ -73,7 +73,7 @@ func (*DelegationInternalOperationResult) OperationKind() string    { return "de
 
 type RevealContentsAndResult struct {
 	Reveal
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*RevealContentsAndResult) OperationContentsAndResult() {}
@@ -83,7 +83,7 @@ func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
 
 type SetDepositsLimitContentsAndResult struct {
 	SetDepositsLimit
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
@@ -106,7 +106,7 @@ type DrainDelegate struct {
 
 func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
 
-type UpdateConsensusKeyResultContents EventResultContents
+type UpdateConsensusKeyResultContents ConsumedGasResultContents
 
 func (*UpdateConsensusKeyResultContents) SuccessfulManagerOperationResult() {}
 func (*UpdateConsensusKeyResultContents) OperationKind() string {
@@ -242,11 +242,6 @@ type RegisterGlobalConstantResultContents struct {
 	GlobalAddress    *tz.ScriptExprHash
 }
 
-func (RegisterGlobalConstantResultContents) SuccessfulManagerOperationResult() {}
-func (RegisterGlobalConstantResultContents) OperationKind() string {
-	return "register_global_constant"
-}
-
 type RegisterGlobalConstantResultApplied struct {
 	core.OperationResultApplied[RegisterGlobalConstantResultContents]
 }
@@ -290,7 +285,7 @@ func (op *RegisterGlobalConstantContentsAndResult) OperationContents() core.Oper
 
 type UpdateConsensusKeyContentsAndResult struct {
 	UpdateConsensusKey
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
@@ -370,11 +365,6 @@ type TransferTicketResultContents struct {
 	PaidStorageSizeDiff tz.BigInt
 }
 
-func (TransferTicketResultContents) SuccessfulManagerOperationResult() {}
-func (TransferTicketResultContents) OperationKind() string {
-	return "transfer_ticket"
-}
-
 type TransferTicketResult interface {
 	proto_013_PtJakart.TransferTicketResult
 }
@@ -412,7 +402,7 @@ func init() {
 
 type DALPublishSlotHeaderContentsAndResult struct {
 	DALPublishSlotHeader
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
@@ -436,14 +426,9 @@ type ZkRollupPublishResultContents struct {
 	Size             tz.BigInt
 }
 
-func (ZkRollupPublishResultContents) SuccessfulManagerOperationResult() {}
-func (ZkRollupPublishResultContents) OperationKind() string {
-	return "zk_rollup_publish"
-}
-
 type ZkRollupPublishResult interface {
 	ZkRollupPublishResult()
-	core.OperationResult
+	core.ManagerOperationResult
 }
 
 type ZkRollupPublishResultApplied struct {
@@ -577,7 +562,7 @@ func init() {
 	})
 }
 
-type ManagerMetadata[T core.OperationResult] struct {
+type ManagerMetadata[T core.ManagerOperationResult] struct {
 	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`

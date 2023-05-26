@@ -26,14 +26,9 @@ type ZkRollupPublishResultContents struct {
 	Size             tz.BigInt
 }
 
-func (ZkRollupPublishResultContents) SuccessfulManagerOperationResult() {}
-func (ZkRollupPublishResultContents) OperationKind() string {
-	return "zk_rollup_publish"
-}
-
 type ZkRollupPublishResult interface {
 	ZkRollupPublishResult()
-	core.OperationResult
+	core.ManagerOperationResult
 }
 
 type ZkRollupPublishResultApplied struct {
@@ -125,14 +120,9 @@ type ZkRollupUpdateResultContents struct {
 	PaidStorageSizeDiff tz.BigInt
 }
 
-func (ZkRollupUpdateResultContents) SuccessfulManagerOperationResult() {}
-func (ZkRollupUpdateResultContents) OperationKind() string {
-	return "zk_rollup_update"
-}
-
 type ZkRollupUpdateResult interface {
 	ZkRollupUpdateResult()
-	core.OperationResult
+	core.ManagerOperationResult
 }
 
 type ZkRollupUpdateResultApplied struct {

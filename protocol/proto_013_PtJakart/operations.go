@@ -26,8 +26,8 @@ type Ballot = proto_012_Psithaca.Ballot
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
-type EventResult = proto_012_Psithaca.EventResult
-type EventResultContents = proto_012_Psithaca.EventResultContents
+type ConsumedGasResult = proto_012_Psithaca.ConsumedGasResult
+type ConsumedGasResultContents = proto_012_Psithaca.ConsumedGasResultContents
 type RevealResultContents = proto_012_Psithaca.RevealResultContents
 type DelegationResultContents = proto_012_Psithaca.DelegationResultContents
 type SetDepositsLimitResultContents = proto_012_Psithaca.SetDepositsLimitResultContents
@@ -123,7 +123,7 @@ func (op *PreendorsementContentsAndResult) OperationContents() core.OperationCon
 
 type RevealContentsAndResult struct {
 	Reveal
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*RevealContentsAndResult) OperationContentsAndResult() {}
@@ -133,7 +133,7 @@ func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
 
 type DelegationContentsAndResult struct {
 	Delegation
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
@@ -145,7 +145,7 @@ type DelegationInternalOperationResult struct {
 	Source   TransactionDestination
 	Nonce    uint16
 	Delegate tz.Option[tz.PublicKeyHash]
-	Result   EventResult
+	Result   ConsumedGasResult
 }
 
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
@@ -161,11 +161,6 @@ type RegisterGlobalConstantResultContents struct {
 	ConsumedMilligas tz.BigUint
 	StorageSize      tz.BigInt
 	GlobalAddress    *tz.ScriptExprHash
-}
-
-func (RegisterGlobalConstantResultContents) SuccessfulManagerOperationResult() {}
-func (RegisterGlobalConstantResultContents) OperationKind() string {
-	return "register_global_constant"
 }
 
 type RegisterGlobalConstantResultApplied struct {
@@ -211,7 +206,7 @@ func (op *RegisterGlobalConstantContentsAndResult) OperationContents() core.Oper
 
 type SetDepositsLimitContentsAndResult struct {
 	SetDepositsLimit
-	Metadata ManagerMetadata[EventResult]
+	Metadata ManagerMetadata[ConsumedGasResult]
 }
 
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
@@ -263,7 +258,7 @@ func (*TransferTicketResultSkipped) TransferTicketResult() {}
 
 type TransferTicketResult interface {
 	TransferTicketResult()
-	core.OperationResult
+	core.ManagerOperationResult
 }
 
 func init() {
@@ -346,7 +341,7 @@ func init() {
 	})
 }
 
-type ManagerMetadata[T core.OperationResult] struct {
+type ManagerMetadata[T core.ManagerOperationResult] struct {
 	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`

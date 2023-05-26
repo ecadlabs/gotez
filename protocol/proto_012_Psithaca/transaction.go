@@ -104,7 +104,7 @@ func (*TransactionResultSkipped) TransactionResult() {}
 
 type TransactionResult interface {
 	TransactionResult()
-	core.OperationResult
+	core.ManagerOperationResult
 }
 
 func init() {
