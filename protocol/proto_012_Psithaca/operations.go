@@ -39,51 +39,6 @@ func (op *Ballot) OperationContents() core.OperationContents {
 	return op
 }
 
-type Transaction struct {
-	ManagerOperation
-	Amount      tz.BigUint
-	Destination core.ContractID
-	Parameters  tz.Option[Parameters]
-}
-
-type Parameters struct {
-	Entrypoint Entrypoint
-	Value      expression.Expression `tz:"dyn"`
-}
-
-type Entrypoint interface {
-	Entrypoint()
-}
-
-type EpDefault struct{}
-type EpRoot struct{}
-type EpDo struct{}
-type EpSetDelegate struct{}
-type EpRemoveDelegate struct{}
-type EpNamed struct {
-	tz.String
-}
-
-func (EpDefault) Entrypoint()        {}
-func (EpRoot) Entrypoint()           {}
-func (EpDo) Entrypoint()             {}
-func (EpSetDelegate) Entrypoint()    {}
-func (EpRemoveDelegate) Entrypoint() {}
-func (EpNamed) Entrypoint()          {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[Entrypoint]{
-		Variants: encoding.Variants[Entrypoint]{
-			0:   EpDefault{},
-			1:   EpRoot{},
-			2:   EpDo{},
-			3:   EpSetDelegate{},
-			4:   EpRemoveDelegate{},
-			255: EpNamed{},
-		},
-	})
-}
-
 type ManagerOperation struct {
 	Source       tz.PublicKeyHash
 	Fee          tz.BigUint
@@ -92,25 +47,9 @@ type ManagerOperation struct {
 	StorageLimit tz.BigUint
 }
 
-func (*Transaction) OperationKind() string { return "transaction" }
-
 type Script struct {
 	Code    expression.Expression `tz:"dyn"`
 	Storage expression.Expression `tz:"dyn"`
-}
-
-type Origination struct {
-	ManagerOperation
-	Balance  tz.BigUint
-	Delegate tz.Option[tz.PublicKeyHash]
-	Script   Script
-}
-
-func (*Origination) OperationKind() string { return "origination" }
-
-type OriginationResult interface {
-	OriginationResult()
-	core.OperationResult
 }
 
 type Delegation struct {
@@ -146,11 +85,6 @@ type RegisterGlobalConstant struct {
 }
 
 func (*RegisterGlobalConstant) OperationKind() string { return "register_global_constant" }
-
-type RegisterGlobalConstantResult interface {
-	RegisterGlobalConstantResult()
-	core.OperationResult
-}
 
 type SetDepositsLimit struct {
 	ManagerOperation
@@ -235,3 +169,365 @@ type DoubleBakingEvidence struct {
 }
 
 func (*DoubleBakingEvidence) OperationKind() string { return "double_baking_evidence" }
+
+type OperationContents interface {
+	core.OperationContents
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[OperationContents]{
+		Variants: encoding.Variants[OperationContents]{
+			1:   (*SeedNonceRevelation)(nil),
+			2:   (*DoubleEndorsementEvidence)(nil),
+			3:   (*DoubleBakingEvidence)(nil),
+			4:   (*ActivateAccount)(nil),
+			5:   (*Proposals)(nil),
+			6:   (*Ballot)(nil),
+			7:   (*DoublePreendorsementEvidence)(nil),
+			17:  (*FailingNoop)(nil),
+			20:  (*Preendorsement)(nil),
+			21:  (*Endorsement)(nil),
+			107: (*Reveal)(nil),
+			108: (*Transaction)(nil),
+			109: (*Origination)(nil),
+			110: (*Delegation)(nil),
+			111: (*RegisterGlobalConstant)(nil),
+			112: (*SetDepositsLimit)(nil),
+		},
+	})
+}
+
+type SeedNonceRevelationContentsAndResult struct {
+	SeedNonceRevelation
+	Metadata []*BalanceUpdate `tz:"dyn"`
+}
+
+func (*SeedNonceRevelationContentsAndResult) OperationContentsAndResult() {}
+func (op *SeedNonceRevelationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SeedNonceRevelation
+}
+
+type DoubleEndorsementEvidenceContentsAndResult struct {
+	DoubleEndorsementEvidence
+	Metadata []*BalanceUpdate `tz:"dyn"`
+}
+
+func (*DoubleEndorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
+func (op *DoubleEndorsementEvidenceContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DoubleEndorsementEvidence
+}
+
+type DoubleBakingEvidenceContentsAndResult struct {
+	DoubleBakingEvidence
+	Metadata []*BalanceUpdate `tz:"dyn"`
+}
+
+func (*DoubleBakingEvidenceContentsAndResult) OperationContentsAndResult() {}
+func (op *DoubleBakingEvidenceContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DoubleBakingEvidence
+}
+
+type ActivateAccountContentsAndResult struct {
+	ActivateAccount
+	Metadata []*BalanceUpdate `tz:"dyn"`
+}
+
+func (*ActivateAccountContentsAndResult) OperationContentsAndResult() {}
+func (op *ActivateAccountContentsAndResult) OperationContents() core.OperationContents {
+	return &op.ActivateAccount
+}
+
+type DoublePreendorsementEvidenceContentsAndResult struct {
+	DoublePreendorsementEvidence
+	Metadata []*BalanceUpdate `tz:"dyn"`
+}
+
+func (*DoublePreendorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
+func (op *DoublePreendorsementEvidenceContentsAndResult) OperationContents() core.OperationContents {
+	return &op.DoublePreendorsementEvidence
+}
+
+type EndorsementMetadata struct {
+	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+	Delegate         tz.PublicKeyHash
+	EndorsementPower int32
+}
+
+type EndorsementContentsAndResult struct {
+	Endorsement
+	Metadata EndorsementMetadata
+}
+
+func (*EndorsementContentsAndResult) OperationContentsAndResult() {}
+func (op *EndorsementContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Endorsement
+}
+
+type PreendorsementMetadata = EndorsementMetadata
+type PreendorsementContentsAndResult struct {
+	Preendorsement
+	Metadata PreendorsementMetadata
+}
+
+func (*PreendorsementContentsAndResult) OperationContentsAndResult() {}
+func (op *PreendorsementContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Preendorsement
+}
+
+type OperationContentsAndResult interface {
+	core.OperationContentsAndResult
+}
+
+type EventResultContents struct {
+	ConsumedGas      tz.BigUint
+	ConsumedMilligas tz.BigUint
+}
+
+func (EventResultContents) SuccessfulManagerOperationResult() {}
+func (EventResultContents) OperationKind() string             { return "event" }
+
+type EventResult interface {
+	EventResult()
+	core.OperationResult
+}
+
+type EventResultApplied struct {
+	core.OperationResultApplied[EventResultContents]
+}
+
+func (*EventResultApplied) EventResult() {}
+
+type EventResultBacktracked struct {
+	core.OperationResultBacktracked[EventResultContents]
+}
+
+func (*EventResultBacktracked) EventResult() {}
+
+type EventResultFailed struct{ core.OperationResultFailed }
+
+func (*EventResultFailed) EventResult() {}
+
+type EventResultSkipped struct{ core.OperationResultSkipped }
+
+func (*EventResultSkipped) EventResult() {}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[EventResult]{
+		Variants: encoding.Variants[EventResult]{
+			0: (*EventResultApplied)(nil),
+			1: (*EventResultFailed)(nil),
+			2: (*EventResultSkipped)(nil),
+			3: (*EventResultBacktracked)(nil),
+		},
+	})
+}
+
+type RevealResultContents EventResultContents
+
+func (*RevealResultContents) SuccessfulManagerOperationResult() {}
+func (*RevealResultContents) OperationKind() string             { return "reveal" }
+
+type RevealContentsAndResult struct {
+	Reveal
+	Metadata ManagerMetadata[EventResult]
+}
+
+func (*RevealContentsAndResult) OperationContentsAndResult() {}
+func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Reveal
+}
+
+type DelegationContentsAndResult struct {
+	Delegation
+	Metadata ManagerMetadata[EventResult]
+}
+
+func (*DelegationContentsAndResult) OperationContentsAndResult() {}
+func (op *DelegationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Delegation
+}
+
+type DelegationResultContents EventResultContents
+
+func (*DelegationResultContents) SuccessfulManagerOperationResult() {}
+func (*DelegationResultContents) OperationKind() string             { return "delegation" }
+
+type SetDepositsLimitResultContents EventResultContents
+
+func (*SetDepositsLimitResultContents) SuccessfulManagerOperationResult() {}
+func (*SetDepositsLimitResultContents) OperationKind() string {
+	return "set_deposits_limit"
+}
+
+type RegisterGlobalConstantResultContents struct {
+	BalanceUpdates []*BalanceUpdate `tz:"dyn"`
+	ConsumedGas    tz.BigUint
+	StorageSize    tz.BigInt
+	GlobalAddress  *tz.ScriptExprHash
+}
+
+func (RegisterGlobalConstantResultContents) SuccessfulManagerOperationResult() {}
+func (RegisterGlobalConstantResultContents) OperationKind() string {
+	return "register_global_constant"
+}
+
+type RegisterGlobalConstantResultApplied struct {
+	core.OperationResultApplied[RegisterGlobalConstantResultContents]
+}
+
+func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
+
+type RegisterGlobalConstantResultBacktracked struct {
+	core.OperationResultBacktracked[RegisterGlobalConstantResultContents]
+}
+
+func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
+
+type RegisterGlobalConstantResultFailed struct{ core.OperationResultFailed }
+
+func (*RegisterGlobalConstantResultFailed) RegisterGlobalConstantResult() {}
+
+type RegisterGlobalConstantResultSkipped struct{ core.OperationResultSkipped }
+
+func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
+
+type RegisterGlobalConstantResult interface {
+	RegisterGlobalConstantResult()
+	core.OperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[RegisterGlobalConstantResult]{
+		Variants: encoding.Variants[RegisterGlobalConstantResult]{
+			0: (*RegisterGlobalConstantResultApplied)(nil),
+			1: (*RegisterGlobalConstantResultFailed)(nil),
+			2: (*RegisterGlobalConstantResultSkipped)(nil),
+			3: (*RegisterGlobalConstantResultBacktracked)(nil),
+		},
+	})
+}
+
+type RegisterGlobalConstantContentsAndResult struct {
+	RegisterGlobalConstant
+	Metadata ManagerMetadata[RegisterGlobalConstantResult]
+}
+
+func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
+func (op *RegisterGlobalConstantContentsAndResult) OperationContents() core.OperationContents {
+	return &op.RegisterGlobalConstant
+}
+
+type SetDepositsLimitContentsAndResult struct {
+	SetDepositsLimit
+	Metadata ManagerMetadata[EventResult]
+}
+
+func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
+func (op *SetDepositsLimitContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SetDepositsLimit
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[OperationContentsAndResult]{
+		Variants: encoding.Variants[OperationContentsAndResult]{
+			1:   (*SeedNonceRevelationContentsAndResult)(nil),
+			2:   (*DoubleEndorsementEvidenceContentsAndResult)(nil),
+			3:   (*DoubleBakingEvidenceContentsAndResult)(nil),
+			4:   (*ActivateAccountContentsAndResult)(nil),
+			5:   (*Proposals)(nil),
+			6:   (*Ballot)(nil),
+			7:   (*DoublePreendorsementEvidenceContentsAndResult)(nil),
+			20:  (*PreendorsementContentsAndResult)(nil),
+			21:  (*EndorsementContentsAndResult)(nil),
+			107: (*RevealContentsAndResult)(nil),
+			108: (*TransactionContentsAndResult)(nil),
+			109: (*OriginationContentsAndResult)(nil),
+			110: (*DelegationContentsAndResult)(nil),
+			111: (*RegisterGlobalConstantContentsAndResult)(nil),
+			112: (*SetDepositsLimitContentsAndResult)(nil),
+		},
+	})
+}
+
+type ManagerMetadata[T core.OperationResult] struct {
+	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
+	OperationResult          T
+	InternalOperationResults []InternalOperationResult `tz:"dyn"`
+}
+
+type DelegationInternalOperationResult struct {
+	Source   core.ContractID
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   EventResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
+
+type RevealInternalOperationResult struct {
+	Source    core.ContractID
+	Nonce     uint16
+	PublicKey tz.PublicKey
+	Result    EventResult
+}
+
+func (*RevealInternalOperationResult) InternalOperationResult() {}
+func (*RevealInternalOperationResult) OperationKind() string    { return "reveal" }
+
+type RegisterGlobalConstantInternalOperationResult struct {
+	Source core.ContractID
+	Nonce  uint16
+	Value  expression.Expression `tz:"dyn"`
+	Result RegisterGlobalConstantResult
+}
+
+func (*RegisterGlobalConstantInternalOperationResult) InternalOperationResult() {}
+func (*RegisterGlobalConstantInternalOperationResult) OperationKind() string {
+	return "register_global_constant"
+}
+
+type SetDepositsLimitInternalOperationResult struct {
+	Source core.ContractID
+	Nonce  uint16
+	Limit  tz.Option[tz.BigUint]
+	Result EventResult
+}
+
+func (*SetDepositsLimitInternalOperationResult) InternalOperationResult() {}
+func (*SetDepositsLimitInternalOperationResult) OperationKind() string {
+	return "set_deposits_limit"
+}
+
+type InternalOperationResult interface {
+	core.InternalOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[InternalOperationResult]{
+		Variants: encoding.Variants[InternalOperationResult]{
+			0: (*RevealInternalOperationResult)(nil),
+			1: (*TransactionInternalOperationResult)(nil),
+			2: (*OriginationInternalOperationResult)(nil),
+			3: (*DelegationInternalOperationResult)(nil),
+			4: (*RegisterGlobalConstantInternalOperationResult)(nil),
+			5: (*SetDepositsLimitInternalOperationResult)(nil),
+		},
+	})
+}
+
+type SuccessfulManagerOperationResult interface {
+	core.SuccessfulManagerOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[SuccessfulManagerOperationResult]{
+		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
+			0: (*RevealResultContents)(nil),
+			1: (*TransactionResultContents)(nil),
+			2: (*OriginationResultContents)(nil),
+			3: (*DelegationResultContents)(nil),
+			5: (*SetDepositsLimitResultContents)(nil),
+		},
+	})
+}

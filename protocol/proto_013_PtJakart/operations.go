@@ -24,9 +24,13 @@ type ActivateAccount = proto_012_Psithaca.ActivateAccount
 type Proposals = proto_012_Psithaca.Proposals
 type Ballot = proto_012_Psithaca.Ballot
 type FailingNoop = proto_012_Psithaca.FailingNoop
-type LazyStorageDiff = proto_012_Psithaca.LazyStorageDiff
 type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
+type EventResult = proto_012_Psithaca.EventResult
+type EventResultContents = proto_012_Psithaca.EventResultContents
+type RevealResultContents = proto_012_Psithaca.RevealResultContents
+type DelegationResultContents = proto_012_Psithaca.DelegationResultContents
+type SetDepositsLimitResultContents = proto_012_Psithaca.SetDepositsLimitResultContents
 
 type TransferTicket struct {
 	ManagerOperation
@@ -117,28 +121,6 @@ func (op *PreendorsementContentsAndResult) OperationContents() core.OperationCon
 	return &op.Preendorsement
 }
 
-type EventResult interface {
-	EventResult()
-	core.OperationResult
-}
-
-type EventResultContents struct {
-	ConsumedGas      tz.BigUint
-	ConsumedMilligas tz.BigUint
-}
-
-type EventInternalOperationResult struct {
-	Source  TransactionDestination
-	Nonce   uint16
-	Type    expression.Expression
-	Tag     tz.Option[Entrypoint]
-	Payload tz.Option[expression.Expression]
-	Result  EventResult
-}
-
-func (*EventInternalOperationResult) InternalOperationResult() {}
-func (*EventInternalOperationResult) OperationKind() string    { return "event" }
-
 type RevealContentsAndResult struct {
 	Reveal
 	Metadata ManagerMetadata[EventResult]
@@ -148,11 +130,6 @@ func (*RevealContentsAndResult) OperationContentsAndResult() {}
 func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
 	return &op.Reveal
 }
-
-type RevealResultContents EventResultContents
-
-func (*RevealResultContents) SuccessfulManagerOperationResult() {}
-func (*RevealResultContents) OperationKind() string             { return "reveal" }
 
 type DelegationContentsAndResult struct {
 	Delegation
@@ -164,11 +141,6 @@ func (op *DelegationContentsAndResult) OperationContents() core.OperationContent
 	return &op.Delegation
 }
 
-type DelegationResultContents EventResultContents
-
-func (*DelegationResultContents) SuccessfulManagerOperationResult() {}
-func (*DelegationResultContents) OperationKind() string             { return "delegation" }
-
 type DelegationInternalOperationResult struct {
 	Source   TransactionDestination
 	Nonce    uint16
@@ -178,13 +150,6 @@ type DelegationInternalOperationResult struct {
 
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
 func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
-
-type SetDepositsLimitResultContents EventResultContents
-
-func (*SetDepositsLimitResultContents) SuccessfulManagerOperationResult() {}
-func (*SetDepositsLimitResultContents) OperationKind() string {
-	return "set_deposits_limit"
-}
 
 type RegisterGlobalConstantResult interface {
 	proto_012_Psithaca.RegisterGlobalConstantResult
@@ -397,7 +362,6 @@ func init() {
 			1: (*TransactionInternalOperationResult)(nil),
 			2: (*OriginationInternalOperationResult)(nil),
 			3: (*DelegationInternalOperationResult)(nil),
-			4: (*EventInternalOperationResult)(nil),
 		},
 	})
 }

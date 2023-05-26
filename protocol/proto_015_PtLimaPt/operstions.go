@@ -28,7 +28,6 @@ type Proposals = proto_012_Psithaca.Proposals
 type Ballot = proto_012_Psithaca.Ballot
 type VDFRevelation = proto_014_PtKathma.VDFRevelation
 type FailingNoop = proto_012_Psithaca.FailingNoop
-type LazyStorageDiff = proto_012_Psithaca.LazyStorageDiff
 type TransferTicket = proto_013_PtJakart.TransferTicket
 type DALSlotAvailability = proto_014_PtKathma.DALSlotAvailability
 type DALSlotAvailabilityContentsAndResult = proto_014_PtKathma.DALSlotAvailabilityContentsAndResult
@@ -39,9 +38,6 @@ type EventResultContents = proto_014_PtKathma.EventResultContents
 type RevealResultContents = proto_014_PtKathma.RevealResultContents
 type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
 type SetDepositsLimitResultContents = proto_014_PtKathma.SetDepositsLimitResultContents
-type RevealContentsAndResult = proto_014_PtKathma.RevealContentsAndResult
-type DelegationContentsAndResult = proto_014_PtKathma.DelegationContentsAndResult
-type SetDepositsLimitContentsAndResult = proto_014_PtKathma.SetDepositsLimitContentsAndResult
 
 type EventInternalOperationResult struct {
 	Source  TransactionDestination
@@ -55,6 +51,16 @@ type EventInternalOperationResult struct {
 func (*EventInternalOperationResult) InternalOperationResult() {}
 func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
+type DelegationContentsAndResult struct {
+	Delegation
+	Metadata ManagerMetadata[EventResult]
+}
+
+func (*DelegationContentsAndResult) OperationContentsAndResult() {}
+func (op *DelegationContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Delegation
+}
+
 type DelegationInternalOperationResult struct {
 	Source   TransactionDestination
 	Nonce    uint16
@@ -64,6 +70,26 @@ type DelegationInternalOperationResult struct {
 
 func (*DelegationInternalOperationResult) InternalOperationResult() {}
 func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
+
+type RevealContentsAndResult struct {
+	Reveal
+	Metadata ManagerMetadata[EventResult]
+}
+
+func (*RevealContentsAndResult) OperationContentsAndResult() {}
+func (op *RevealContentsAndResult) OperationContents() core.OperationContents {
+	return &op.Reveal
+}
+
+type SetDepositsLimitContentsAndResult struct {
+	SetDepositsLimit
+	Metadata ManagerMetadata[EventResult]
+}
+
+func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
+func (op *SetDepositsLimitContentsAndResult) OperationContents() core.OperationContents {
+	return &op.SetDepositsLimit
+}
 
 type UpdateConsensusKey struct {
 	ManagerOperation

@@ -56,6 +56,10 @@ type OriginatedContractID interface {
 	OriginatedContractID()
 }
 
+type TransactionDestination interface {
+	TransactionDestination()
+}
+
 func (*OriginatedContract) ContractID()             {}
 func (*OriginatedContract) OriginatedContractID()   {}
 func (*OriginatedContract) TransactionDestination() {}

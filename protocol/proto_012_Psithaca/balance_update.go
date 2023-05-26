@@ -2,6 +2,7 @@ package proto_012_Psithaca
 
 import (
 	tz "github.com/ecadlabs/gotez"
+	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
 )
 
@@ -13,6 +14,12 @@ const (
 	BalanceUpdateOriginSubsidy
 	BalanceUpdateOriginSimulation
 )
+
+type BalanceUpdate struct {
+	Kind   BalanceUpdateKind
+	Change int64
+	Origin BalanceUpdateOrigin
+}
 
 type BalanceUpdateContract struct {
 	Contract core.ContractID
@@ -121,3 +128,50 @@ type BalanceUpdateCommitments struct {
 }
 
 func (*BalanceUpdateCommitments) BalanceUpdateKind() string { return "commitments" }
+
+type LegacyRewards struct {
+	Delegate tz.PublicKeyHash
+	Cycle    int32
+}
+
+func (*LegacyRewards) BalanceUpdateKind() string { return "legacy_rewards" }
+
+type LegacyDeposits LegacyRewards
+
+func (*LegacyDeposits) BalanceUpdateKind() string { return "legacy_deposits" }
+
+type LegacyFees LegacyRewards
+
+func (*LegacyFees) BalanceUpdateKind() string { return "legacy_fees" }
+
+type BalanceUpdateKind interface {
+	core.BalanceUpdateKind
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[BalanceUpdateKind]{
+		Variants: encoding.Variants[BalanceUpdateKind]{
+			0:  (*BalanceUpdateContract)(nil),
+			1:  (*LegacyRewards)(nil),
+			2:  BalanceUpdateBlockFees{},
+			3:  (*LegacyDeposits)(nil),
+			4:  (*BalanceUpdateDeposits)(nil),
+			5:  BalanceUpdateNonceRevelationRewards{},
+			6:  BalanceUpdateDoubleSigningEvidenceRewards{},
+			7:  BalanceUpdateEndorsingRewards{},
+			8:  BalanceUpdateBakingRewards{},
+			9:  BalanceUpdateBakingBonuses{},
+			10: (*LegacyFees)(nil),
+			11: BalanceUpdateStorageFees{},
+			12: BalanceUpdateDoubleSigningPunishments{},
+			13: (*BalanceUpdateLostEndorsingRewards)(nil),
+			14: BalanceUpdateLiquidityBakingSubsidies{},
+			15: BalanceUpdateBurned{},
+			16: (*BalanceUpdateCommitments)(nil),
+			17: BalanceUpdateBootstrap{},
+			18: BalanceUpdateInvoice{},
+			19: BalanceUpdateInitialCommitments{},
+			20: BalanceUpdateMinted{},
+		},
+	})
+}

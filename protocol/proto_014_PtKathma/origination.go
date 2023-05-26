@@ -5,6 +5,7 @@ import (
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca/lazy"
 )
 
 type Origination = proto_012_Psithaca.Origination
@@ -20,7 +21,7 @@ type OriginationResultContents struct {
 	ConsumedMilligas    tz.BigUint
 	StorageSize         tz.BigInt
 	PaidStorageSizeDiff tz.BigInt
-	LazyStorageDiff     tz.Option[LazyStorageDiff]
+	LazyStorageDiff     tz.Option[lazy.StorageDiff]
 }
 
 func (OriginationResultContents) SuccessfulManagerOperationResult() {}

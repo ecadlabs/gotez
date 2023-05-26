@@ -25,14 +25,12 @@ type ActivateAccount = proto_012_Psithaca.ActivateAccount
 type Proposals = proto_012_Psithaca.Proposals
 type Ballot = proto_012_Psithaca.Ballot
 type FailingNoop = proto_012_Psithaca.FailingNoop
-type LazyStorageDiff = proto_012_Psithaca.LazyStorageDiff
 type TransferTicket = proto_013_PtJakart.TransferTicket
 type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
 
 type EventResult interface {
-	EventResult()
-	core.OperationResult
+	proto_012_Psithaca.EventResult
 }
 
 type EventResultContents struct {

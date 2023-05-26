@@ -6,6 +6,7 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
+	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca/lazy"
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
 )
 
@@ -58,7 +59,7 @@ type ToContract struct {
 	StorageSize                  tz.BigInt
 	PaidStorageSizeDiff          tz.BigInt
 	AllocatedDestinationContract bool
-	LazyStorageDiff              tz.Option[LazyStorageDiff]
+	LazyStorageDiff              tz.Option[lazy.StorageDiff]
 }
 
 func (*ToContract) TransactionResultDestination() {}
@@ -80,7 +81,7 @@ type ScRollupDestination struct {
 func (*ScRollupDestination) TransactionDestination() {}
 
 type TransactionDestination interface {
-	proto_013_PtJakart.TransactionDestination
+	core.TransactionDestination
 }
 
 func init() {
@@ -132,8 +133,7 @@ type TransactionResultSkipped struct{ core.OperationResultSkipped }
 func (*TransactionResultSkipped) TransactionResult() {}
 
 type TransactionResult interface {
-	TransactionResult()
-	core.OperationResult
+	proto_012_Psithaca.TransactionResult
 }
 
 func init() {
