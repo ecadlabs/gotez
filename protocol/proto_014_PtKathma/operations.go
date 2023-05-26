@@ -42,16 +42,6 @@ type RevealResultContents ConsumedGasResultContents
 func (*RevealResultContents) SuccessfulManagerOperationResult() {}
 func (*RevealResultContents) OperationKind() string             { return "reveal" }
 
-type DelegationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Delegate tz.Option[tz.PublicKeyHash]
-	Result   ConsumedGasResult
-}
-
-func (*DelegationInternalOperationResult) InternalOperationResult() {}
-func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
-
 type DelegationResultContents ConsumedGasResultContents
 
 func (*DelegationResultContents) SuccessfulManagerOperationResult() {}
@@ -94,18 +84,6 @@ func init() {
 		},
 	})
 }
-
-type EventInternalOperationResult struct {
-	Source  TransactionDestination
-	Nonce   uint16
-	Type    expression.Expression
-	Tag     tz.Option[Entrypoint]
-	Payload tz.Option[expression.Expression]
-	Result  ConsumedGasResult
-}
-
-func (*EventInternalOperationResult) InternalOperationResult() {}
-func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
 type IncreasePaidStorage struct {
 	ManagerOperation
@@ -530,6 +508,28 @@ type ManagerMetadata[T core.ManagerOperationResult] struct {
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`
 }
+
+type DelegationInternalOperationResult struct {
+	Source   TransactionDestination
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   ConsumedGasResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
+
+type EventInternalOperationResult struct {
+	Source  TransactionDestination
+	Nonce   uint16
+	Type    expression.Expression
+	Tag     tz.Option[Entrypoint]
+	Payload tz.Option[expression.Expression]
+	Result  ConsumedGasResult
+}
+
+func (*EventInternalOperationResult) InternalOperationResult() {}
+func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
 type InternalOperationResult interface {
 	core.InternalOperationResult

@@ -141,16 +141,6 @@ func (op *DelegationContentsAndResult) OperationContents() core.OperationContent
 	return &op.Delegation
 }
 
-type DelegationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Delegate tz.Option[tz.PublicKeyHash]
-	Result   ConsumedGasResult
-}
-
-func (*DelegationInternalOperationResult) InternalOperationResult() {}
-func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
-
 type RegisterGlobalConstantResult interface {
 	proto_012_Psithaca.RegisterGlobalConstantResult
 }
@@ -346,6 +336,15 @@ type ManagerMetadata[T core.ManagerOperationResult] struct {
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`
 }
+type DelegationInternalOperationResult struct {
+	Source   TransactionDestination
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   ConsumedGasResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
 
 type InternalOperationResult interface {
 	core.InternalOperationResult

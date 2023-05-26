@@ -55,6 +55,41 @@ var testData = []protoTestData{
 			{"2981892", false},
 		},
 	},
+	{
+		proto: core.Proto014PtKathma,
+		blocks: []blockTestData{
+			{"2736129", false},
+			{"2736130", false},
+			{"2736131", false},
+			{"2736132", false},
+		},
+	},
+	{
+		proto: core.Proto013PtJakart,
+		blocks: []blockTestData{
+			{"2490369", false},
+			{"2490370", false},
+			{"2490371", false},
+			{"2490372", false},
+			{"2490373", false},
+			{"2490374", false},
+			{"2490375", false},
+			{"2490376", false},
+		},
+	},
+	{
+		proto: core.Proto012Psithaca,
+		blocks: []blockTestData{
+			{"2244609", false},
+			{"2244610", false},
+			{"2244611", false},
+			{"2244612", false},
+			{"2244613", false},
+			{"2244614", false},
+			{"2244615", false},
+			{"2244616", false},
+		},
+	},
 }
 
 func TestBlock(t *testing.T) {

@@ -39,18 +39,6 @@ type RevealResultContents = proto_014_PtKathma.RevealResultContents
 type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
 type SetDepositsLimitResultContents = proto_014_PtKathma.SetDepositsLimitResultContents
 
-type EventInternalOperationResult struct {
-	Source  TransactionDestination
-	Nonce   uint16
-	Type    expression.Expression
-	Tag     tz.Option[Entrypoint]
-	Payload tz.Option[expression.Expression]
-	Result  ConsumedGasResult
-}
-
-func (*EventInternalOperationResult) InternalOperationResult() {}
-func (*EventInternalOperationResult) OperationKind() string    { return "event" }
-
 type DelegationContentsAndResult struct {
 	Delegation
 	Metadata ManagerMetadata[ConsumedGasResult]
@@ -60,16 +48,6 @@ func (*DelegationContentsAndResult) OperationContentsAndResult() {}
 func (op *DelegationContentsAndResult) OperationContents() core.OperationContents {
 	return &op.Delegation
 }
-
-type DelegationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Delegate tz.Option[tz.PublicKeyHash]
-	Result   ConsumedGasResult
-}
-
-func (*DelegationInternalOperationResult) InternalOperationResult() {}
-func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
 
 type RevealContentsAndResult struct {
 	Reveal
@@ -567,6 +545,28 @@ type ManagerMetadata[T core.ManagerOperationResult] struct {
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`
 }
+
+type DelegationInternalOperationResult struct {
+	Source   TransactionDestination
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   ConsumedGasResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
+
+type EventInternalOperationResult struct {
+	Source  TransactionDestination
+	Nonce   uint16
+	Type    expression.Expression
+	Tag     tz.Option[Entrypoint]
+	Payload tz.Option[expression.Expression]
+	Result  ConsumedGasResult
+}
+
+func (*EventInternalOperationResult) InternalOperationResult() {}
+func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
 type InternalOperationResult interface {
 	core.InternalOperationResult

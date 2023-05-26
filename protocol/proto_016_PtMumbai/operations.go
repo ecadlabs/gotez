@@ -11,10 +11,6 @@ import (
 	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
-type OperationContents interface {
-	core.OperationContents
-}
-
 type ManagerOperation = proto_012_Psithaca.ManagerOperation
 type SeedNonceRevelation = proto_012_Psithaca.SeedNonceRevelation
 type Preendorsement = proto_012_Psithaca.Preendorsement
@@ -43,22 +39,6 @@ type ConsumedGasResultContents = proto_014_PtKathma.ConsumedGasResultContents
 type RevealResultContents = proto_014_PtKathma.RevealResultContents
 type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
 
-type OperationContentsAndResult interface {
-	core.OperationContentsAndResult
-}
-
-type EventInternalOperationResult struct {
-	Source  TransactionDestination
-	Nonce   uint16
-	Type    expression.Expression
-	Tag     tz.Option[Entrypoint]
-	Payload tz.Option[expression.Expression]
-	Result  ConsumedGasResult
-}
-
-func (*EventInternalOperationResult) InternalOperationResult() {}
-func (*EventInternalOperationResult) OperationKind() string    { return "event" }
-
 type DelegationContentsAndResult struct {
 	Delegation
 	Metadata ManagerMetadata[ConsumedGasResult]
@@ -68,16 +48,6 @@ func (*DelegationContentsAndResult) OperationContentsAndResult() {}
 func (op *DelegationContentsAndResult) OperationContents() core.OperationContents {
 	return &op.Delegation
 }
-
-type DelegationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Delegate tz.Option[tz.PublicKeyHash]
-	Result   ConsumedGasResult
-}
-
-func (*DelegationInternalOperationResult) InternalOperationResult() {}
-func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
 
 type RevealContentsAndResult struct {
 	Reveal
@@ -455,6 +425,10 @@ type BLSSignaturePrefix [32]byte
 
 func (*BLSSignaturePrefix) SignaturePrefixPayload() {}
 
+type OperationContents interface {
+	core.OperationContents
+}
+
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[OperationContents]{
 		Variants: encoding.Variants[OperationContents]{
@@ -503,7 +477,13 @@ func init() {
 			255: (*SignaturePrefix)(nil),
 		},
 	})
+}
 
+type OperationContentsAndResult interface {
+	core.OperationContentsAndResult
+}
+
+func init() {
 	encoding.RegisterEnum(&encoding.Enum[OperationContentsAndResult]{
 		Variants: encoding.Variants[OperationContentsAndResult]{
 			1:   (*SeedNonceRevelationContentsAndResult)(nil),
@@ -544,15 +524,33 @@ func init() {
 	})
 }
 
-type SuccessfulManagerOperationResult interface {
-	core.SuccessfulManagerOperationResult
-}
-
 type ManagerMetadata[T core.ManagerOperationResult] struct {
 	BalanceUpdates           []*BalanceUpdate `tz:"dyn"`
 	OperationResult          T
 	InternalOperationResults []InternalOperationResult `tz:"dyn"`
 }
+
+type DelegationInternalOperationResult struct {
+	Source   TransactionDestination
+	Nonce    uint16
+	Delegate tz.Option[tz.PublicKeyHash]
+	Result   ConsumedGasResult
+}
+
+func (*DelegationInternalOperationResult) InternalOperationResult() {}
+func (*DelegationInternalOperationResult) OperationKind() string    { return "delegation" }
+
+type EventInternalOperationResult struct {
+	Source  TransactionDestination
+	Nonce   uint16
+	Type    expression.Expression
+	Tag     tz.Option[Entrypoint]
+	Payload tz.Option[expression.Expression]
+	Result  ConsumedGasResult
+}
+
+func (*EventInternalOperationResult) InternalOperationResult() {}
+func (*EventInternalOperationResult) OperationKind() string    { return "event" }
 
 type InternalOperationResult interface {
 	core.InternalOperationResult
@@ -567,7 +565,13 @@ func init() {
 			4: (*EventInternalOperationResult)(nil),
 		},
 	})
+}
 
+type SuccessfulManagerOperationResult interface {
+	core.SuccessfulManagerOperationResult
+}
+
+func init() {
 	encoding.RegisterEnum(&encoding.Enum[SuccessfulManagerOperationResult]{
 		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
 			0:   (*RevealResultContents)(nil),
