@@ -20,6 +20,7 @@ type EpDo = proto_012_Psithaca.EpDo
 type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
 type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
 type EpNamed = proto_012_Psithaca.EpNamed
+type TicketToken = proto_015_PtLimaPt.TicketToken
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
@@ -132,7 +133,7 @@ func (*TransactionInternalOperationResult) OperationKind() string    { return "t
 type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
 
 type SmartRollupDestination struct {
-	*tz.ScRollupAddress
+	*tz.SmartRollupAddress
 	Padding uint8
 }
 
@@ -154,4 +155,14 @@ func init() {
 			4: (*ZkRollupDestination)(nil),
 		},
 	})
+}
+
+type TicketReceipt struct {
+	TicketToken TicketToken
+	Updates     []*TicketReceiptUpdate `tz:"dyn"`
+}
+
+type TicketReceiptUpdate struct {
+	Account TransactionDestination
+	Amount  tz.BigInt
 }

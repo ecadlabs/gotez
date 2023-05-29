@@ -5,7 +5,6 @@ import (
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
 	"github.com/ecadlabs/gotez/protocol/core/expression"
-	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
 )
 
 type PVMKind uint8
@@ -503,8 +502,6 @@ type SmartRollupExecuteOutboxMessage struct {
 func (*SmartRollupExecuteOutboxMessage) OperationKind() string {
 	return "smart_rollup_execute_outbox_message"
 }
-
-type TicketReceipt = proto_015_PtLimaPt.TicketReceipt
 
 type SmartRollupExecuteOutboxMessageResultContents struct {
 	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`

@@ -17,6 +17,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace (
-	github.com/ecadlabs/gotez/protocol/latest => ./protocol/proto_016_PtMumbai
-)
+replace github.com/ecadlabs/gotez/protocol/latest => ./protocol/proto_016_PtMumbai
