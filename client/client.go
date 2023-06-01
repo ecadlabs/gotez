@@ -38,7 +38,7 @@ func (c *Client) client() *http.Client {
 	return http.DefaultClient
 }
 
-func (client *Client) request(path string, method string, out any, ctx context.Context) error {
+func (client *Client) request(method string, path string, out any, ctx context.Context) error {
 	req, err := http.NewRequestWithContext(ctx, method, client.URL+path, nil)
 	if err != nil {
 		return err

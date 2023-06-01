@@ -15,8 +15,12 @@ type BlockInfoProtocolData struct {
 	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
 }
 
-func (block *BlockInfoProtocolData) BlockHeader() *core.BlockHeader {
+func (block *BlockInfoProtocolData) ShellHeader() *core.BlockHeader {
 	return &block.Header.BlockHeader
+}
+
+func (block *BlockInfoProtocolData) GetSignature() (tz.Signature, error) {
+	return block.Header.GetSignature()
 }
 
 func (block *BlockInfoProtocolData) BlockMetadata() tz.Option[*core.BlockMetadataHeader] {

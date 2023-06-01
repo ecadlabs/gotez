@@ -53,14 +53,26 @@ type BlockHeader struct {
 	Signature *tz.GenericSignature
 }
 
+func (header *BlockHeader) ShellHeader() *core.BlockHeader {
+	return &header.BlockHeader
+}
+
+func (header *BlockHeader) GetSignature() (tz.Signature, error) {
+	return header.Signature, nil
+}
+
 type BlockInfoProtocolData struct {
 	Header     BlockHeader `tz:"dyn"`
 	Metadata   tz.Option[BlockMetadata]
 	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
 }
 
-func (block *BlockInfoProtocolData) BlockHeader() *core.BlockHeader {
+func (block *BlockInfoProtocolData) ShellHeader() *core.BlockHeader {
 	return &block.Header.BlockHeader
+}
+
+func (block *BlockInfoProtocolData) GetSignature() (tz.Signature, error) {
+	return block.Header.GetSignature()
 }
 
 func (block *BlockInfoProtocolData) BlockMetadata() tz.Option[*core.BlockMetadataHeader] {

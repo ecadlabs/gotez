@@ -120,3 +120,37 @@ func TestBlock(t *testing.T) {
 		})
 	}
 }
+
+var headerTestData = []protoTestData{
+	{
+		proto: core.Proto016PtMumbai,
+		blocks: []blockTestData{
+			{"3279466", false},
+		},
+	},
+}
+
+func TestBlockHeader(t *testing.T) {
+	for _, protoData := range headerTestData {
+		t.Run(protoData.proto.Name(), func(t *testing.T) {
+			for _, block := range protoData.blocks {
+				t.Run(block.name, func(t *testing.T) {
+					fileName := filepath.Join("test_data", protoData.proto.Name(), "header_"+block.name+".bin")
+					buf, err := os.ReadFile(fileName)
+					require.NoError(t, err)
+					var out BlockHeaderInfo
+					ctx := encoding.NewContext()
+					if block.forceVersion {
+						ctx = ctx.Set(core.ProtocolVersionCtxKey, protoData.proto)
+					}
+					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx))
+					if !assert.NoError(t, err) {
+						if err, ok := err.(*encoding.Error); ok {
+							fmt.Println(err.Path)
+						}
+					}
+				})
+			}
+		})
+	}
+}

@@ -15,8 +15,12 @@ type BlockInfoProtocolData struct {
 	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
 }
 
-func (block *BlockInfoProtocolData) BlockHeader() *core.BlockHeader {
+func (block *BlockInfoProtocolData) ShellHeader() *core.BlockHeader {
 	return &block.Header.BlockHeader
+}
+
+func (block *BlockInfoProtocolData) GetSignature() (tz.Signature, error) {
+	return block.Header.GetSignature()
 }
 
 func (block *BlockInfoProtocolData) BlockMetadata() tz.Option[*core.BlockMetadataHeader] {
@@ -38,6 +42,14 @@ type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
 type BlockHeader struct {
 	UnsignedBlockHeader
 	Signature tz.AnySignature
+}
+
+func (header *BlockHeader) ShellHeader() *core.BlockHeader {
+	return &header.BlockHeader
+}
+
+func (header *BlockHeader) GetSignature() (tz.Signature, error) {
+	return header.Signature.Signature()
 }
 
 type BlockMetadataContents struct {
