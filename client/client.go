@@ -56,6 +56,6 @@ func (client *Client) request(method string, path string, out any, ctx context.C
 	if err != nil {
 		return err
 	}
-	_, err = encoding.Decode(body, out)
+	_, err = encoding.Decode(body, out, encoding.Dynamic())
 	return err
 }

@@ -24,10 +24,6 @@ type BlockInfoProtocolData interface {
 }
 
 type BlockInfo struct {
-	Contents BlockInfoContents `tz:"dyn"`
-}
-
-type BlockInfoContents struct {
 	ChainID      *tz.ChainID
 	Hash         *tz.BlockHash
 	ProtocolData BlockInfoProtocolData
@@ -38,7 +34,7 @@ type blockInfoPreamble struct {
 	Hash    *tz.BlockHash
 }
 
-func (info *BlockInfoContents) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
+func (info *BlockInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
 	var p1 blockInfoPreamble
 	data, err = encoding.Decode(data, &p1, encoding.Ctx(ctx))
 	if err != nil {
@@ -78,16 +74,12 @@ func (info *BlockInfoContents) DecodeTZ(data []byte, ctx *encoding.Context) (res
 }
 
 type BlockHeaderInfo struct {
-	Contents BlockHeaderInfoContents `tz:"dyn"`
-}
-
-type BlockHeaderInfoContents struct {
 	ChainID      *tz.ChainID
 	Hash         *tz.BlockHash
 	ProtocolData BlockHeaderProtocolData
 }
 
-func (info *BlockHeaderInfoContents) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
+func (info *BlockHeaderInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
 	var p1 blockInfoPreamble
 	data, err = encoding.Decode(data, &p1, encoding.Ctx(ctx))
 	if err != nil {

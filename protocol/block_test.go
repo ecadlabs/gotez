@@ -109,7 +109,7 @@ func TestBlock(t *testing.T) {
 					if block.forceVersion {
 						ctx = ctx.Set(core.ProtocolVersionCtxKey, protoData.proto)
 					}
-					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx))
+					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx), encoding.Dynamic())
 					if !assert.NoError(t, err) {
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)
@@ -143,7 +143,7 @@ func TestBlockHeader(t *testing.T) {
 					if block.forceVersion {
 						ctx = ctx.Set(core.ProtocolVersionCtxKey, protoData.proto)
 					}
-					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx))
+					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx), encoding.Dynamic())
 					if !assert.NoError(t, err) {
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)
