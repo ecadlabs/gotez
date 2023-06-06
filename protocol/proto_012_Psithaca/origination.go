@@ -15,8 +15,7 @@ type Origination struct {
 	Script   Script                      `json:"script"`
 }
 
-func (*Origination) OperationKind() string        { return "origination" }
-func (op *Origination) Operation() core.Operation { return op }
+func (*Origination) OperationKind() string { return "origination" }
 
 type OriginationResult interface {
 	OriginationResult()
@@ -24,8 +23,8 @@ type OriginationResult interface {
 }
 
 type OriginationResultContents struct {
-	BigMapDiff          tz.Option[big_map.Diff]     `json:"big_map_diff"`
-	BalanceUpdates      []*BalanceUpdate            `tz:"dyn" json:"balance_updates"`
+	BigMapDiff tz.Option[big_map.Diff] `json:"big_map_diff"`
+	BalanceUpdates
 	OriginatedContracts []core.OriginatedContractID `tz:"dyn" json:"originated_contracts"`
 	ConsumedGas         tz.BigUint                  `json:"consumed_gas"`
 	ConsumedMilligas    tz.BigUint                  `json:"consumed_milligas"`
@@ -74,8 +73,8 @@ type OriginationContentsAndResult struct {
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *OriginationContentsAndResult) Operation() core.Operation {
-	return &op.Origination
+func (op *OriginationContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type OriginationInternalOperationResult struct {

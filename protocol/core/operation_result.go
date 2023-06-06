@@ -4,12 +4,23 @@ import (
 	tz "github.com/ecadlabs/gotez"
 )
 
+type InternalOperationResult interface {
+	OperationContents
+	InternalOperationResult() ManagerOperationResult
+}
+
 type ManagerOperationResult interface {
-	OperationResultStatus() string
+	Status() string
+	IsApplied() bool
+}
+
+type ManagerOperationResultAppliedOrBacktracked interface {
+	ManagerOperationResult
+	GetResult() any
 }
 
 type SuccessfulManagerOperationResult interface {
-	Operation
+	OperationContents
 	SuccessfulManagerOperationResult()
 }
 
@@ -18,7 +29,9 @@ type OperationResultApplied[T any] struct {
 	Result T `json:"result"`
 }
 
-func (*OperationResultApplied[T]) OperationResultStatus() string { return "applied" }
+func (*OperationResultApplied[T]) Status() string   { return "applied" }
+func (*OperationResultApplied[T]) IsApplied() bool  { return true }
+func (r *OperationResultApplied[T]) GetResult() any { return r.Result }
 
 //json:status=backtracked
 type OperationResultBacktracked[T any] struct {
@@ -26,7 +39,9 @@ type OperationResultBacktracked[T any] struct {
 	Result T                                `json:"result"`
 }
 
-func (*OperationResultBacktracked[T]) OperationResultStatus() string { return "backtracked" }
+func (*OperationResultBacktracked[T]) Status() string   { return "backtracked" }
+func (*OperationResultBacktracked[T]) IsApplied() bool  { return false }
+func (r *OperationResultBacktracked[T]) GetResult() any { return r.Result }
 
 //json:status=failed
 type OperationResultErrors struct {
@@ -35,9 +50,11 @@ type OperationResultErrors struct {
 
 type OperationResultFailed OperationResultErrors
 
-func (*OperationResultFailed) OperationResultStatus() string { return "failed" }
+func (*OperationResultFailed) Status() string  { return "failed" }
+func (*OperationResultFailed) IsApplied() bool { return false }
 
 //json:status=skipped
 type OperationResultSkipped struct{}
 
-func (*OperationResultSkipped) OperationResultStatus() string { return "skipped" }
+func (*OperationResultSkipped) Status() string  { return "skipped" }
+func (*OperationResultSkipped) IsApplied() bool { return false }

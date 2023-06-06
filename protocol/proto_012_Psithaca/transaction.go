@@ -17,7 +17,6 @@ type Transaction struct {
 }
 
 func (*Transaction) OperationKind() string             { return "transaction" }
-func (op *Transaction) Operation() core.Operation      { return op }
 func (t *Transaction) GetAmount() tz.BigUint           { return t.Amount }
 func (t *Transaction) GetDestination() core.ContractID { return t.Destination }
 func (t *Transaction) GetParameters() tz.Option[core.Parameters] {
@@ -79,16 +78,16 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	Storage                      tz.Option[expression.Expression] `json:"storage"`
-	BigMapDiff                   tz.Option[big_map.Diff]          `json:"big_map_diff"`
-	BalanceUpdates               []*BalanceUpdate                 `tz:"dyn" json:"balance_updates"`
-	OriginatedContracts          []core.OriginatedContractID      `tz:"dyn" json:"originated_contracts"`
-	ConsumedGas                  tz.BigUint                       `json:"consumed_gas"`
-	ConsumedMilligas             tz.BigUint                       `json:"consumed_milligas"`
-	StorageSize                  tz.BigInt                        `json:"storage_size"`
-	PaidStorageSizeDiff          tz.BigInt                        `json:"paid_storage_size_diff"`
-	AllocatedDestinationContract bool                             `json:"allocated_destination_contract"`
-	LazyStorageDiff              tz.Option[lazy.StorageDiff]      `json:"lazy_storage_diff"`
+	Storage    tz.Option[expression.Expression] `json:"storage"`
+	BigMapDiff tz.Option[big_map.Diff]          `json:"big_map_diff"`
+	BalanceUpdates
+	OriginatedContracts          []core.OriginatedContractID `tz:"dyn" json:"originated_contracts"`
+	ConsumedGas                  tz.BigUint                  `json:"consumed_gas"`
+	ConsumedMilligas             tz.BigUint                  `json:"consumed_milligas"`
+	StorageSize                  tz.BigInt                   `json:"storage_size"`
+	PaidStorageSizeDiff          tz.BigInt                   `json:"paid_storage_size_diff"`
+	AllocatedDestinationContract bool                        `json:"allocated_destination_contract"`
+	LazyStorageDiff              tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
 func (TransactionResultContents) SuccessfulManagerOperationResult() {}
@@ -100,8 +99,8 @@ type TransactionContentsAndResult struct {
 }
 
 func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-func (op *TransactionContentsAndResult) Operation() core.Operation {
-	return &op.Transaction
+func (op *TransactionContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type TransactionResultApplied struct {

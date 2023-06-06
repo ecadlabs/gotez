@@ -11,27 +11,19 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 )
 
-type Operation interface {
+type OperationContents interface {
 	OperationKind() string
 }
 
-type OperationContents interface {
-	Operation() Operation
-}
-
 type OperationContentsAndResult interface {
-	OperationContentsAndResult()
 	OperationContents
-	//OperationResult()
+	GetMetadata() any
 }
 
-type InternalOperationResult interface {
-	Operation
-	InternalOperationResult() ManagerOperationResult
-}
-
-type BalanceUpdateKind interface {
-	BalanceUpdateKind() string
+type ManagerOperationMetadata interface {
+	BalanceUpdates
+	GetResult() ManagerOperationResult
+	GetInternalOperationResults() []InternalOperationResult
 }
 
 type Bytes struct {
@@ -117,16 +109,12 @@ func (c *OriginatedContract) MarshalJSON() ([]byte, error) {
 }
 func (*ImplicitContract) TransactionDestination() {}
 
-type BalanceUpdate interface {
-	BalanceUpdate()
-}
-
 type Signed interface {
 	GetSignature() (tz.Signature, error)
 }
 
 type ManagerOperation interface {
-	Operation
+	OperationContents
 	GetSource() tz.PublicKeyHash
 	GetFee() tz.BigUint
 	GetCounter() tz.BigUint
@@ -135,7 +123,7 @@ type ManagerOperation interface {
 }
 
 type Transaction interface {
-	Operation
+	OperationContents
 	ManagerOperation
 	GetAmount() tz.BigUint
 	GetDestination() ContractID

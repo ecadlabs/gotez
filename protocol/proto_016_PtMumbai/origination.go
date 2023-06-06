@@ -16,7 +16,7 @@ type OriginationResult interface {
 }
 
 type OriginationResultContents struct {
-	BalanceUpdates      []*BalanceUpdate            `tz:"dyn"`
+	BalanceUpdates
 	OriginatedContracts []core.OriginatedContractID `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	StorageSize         tz.BigInt
@@ -64,8 +64,8 @@ type OriginationContentsAndResult struct {
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *OriginationContentsAndResult) Operation() core.Operation {
-	return &op.Origination
+func (op *OriginationContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type OriginationInternalOperationResult struct {

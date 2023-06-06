@@ -16,12 +16,12 @@ type ZkRollupOriginationContentsAndResult struct {
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupOriginationContentsAndResult) Operation() core.Operation {
-	return &op.ZkRollupOrigination
+func (op *ZkRollupOriginationContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type ZkRollupPublishResultContents struct {
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+	BalanceUpdates
 	ConsumedMilligas tz.BigUint
 	Size             tz.BigInt
 }
@@ -68,8 +68,8 @@ type ZkRollupPublishContentsAndResult struct {
 }
 
 func (*ZkRollupPublishContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupPublishContentsAndResult) Operation() core.Operation {
-	return &op.ZkRollupPublish
+func (op *ZkRollupPublishContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type ZkRollupUpdate struct {
@@ -78,8 +78,7 @@ type ZkRollupUpdate struct {
 	Update   ZkRollupUpdateContents
 }
 
-func (*ZkRollupUpdate) OperationKind() string        { return "zk_rollup_update" }
-func (op *ZkRollupUpdate) Operation() core.Operation { return op }
+func (*ZkRollupUpdate) OperationKind() string { return "zk_rollup_update" }
 
 type ZkRollupUpdateContents struct {
 	PendingPis []*PendingPiElem `tz:"dyn"`
@@ -116,7 +115,7 @@ type FeePi struct {
 }
 
 type ZkRollupUpdateResultContents struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
+	BalanceUpdates
 	ConsumedMilligas    tz.BigUint
 	PaidStorageSizeDiff tz.BigInt
 }
@@ -163,6 +162,6 @@ type ZkRollupUpdateContentsAndResult struct {
 }
 
 func (*ZkRollupUpdateContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupUpdateContentsAndResult) Operation() core.Operation {
-	return &op.ZkRollupUpdate
+func (op *ZkRollupUpdateContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }

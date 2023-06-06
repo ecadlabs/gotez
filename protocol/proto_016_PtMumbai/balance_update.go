@@ -8,15 +8,27 @@ import (
 	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
 )
 
-type BalanceUpdateOrigin = proto_012_Psithaca.BalanceUpdateOrigin
+type BalanceUpdates struct {
+	BalanceUpdates []*BalanceUpdate `tz:"dyn" json:"balance_updates"`
+}
+
+func (b *BalanceUpdates) GetBalanceUpdates() []core.BalanceUpdate {
+	out := make([]core.BalanceUpdate, len(b.BalanceUpdates))
+	for i, u := range b.BalanceUpdates {
+		out[i] = u
+	}
+	return out
+}
 
 type BalanceUpdate struct {
 	Kind   BalanceUpdateKind
 	Change int64
-	Origin BalanceUpdateOrigin
+	Origin core.BalanceUpdateOrigin
 }
 
-func (*BalanceUpdate) BalanceUpdate() {}
+func (b *BalanceUpdate) GetKind() core.BalanceUpdateKind     { return b.Kind }
+func (b *BalanceUpdate) GetChange() int64                    { return b.Change }
+func (b *BalanceUpdate) GetOrigin() core.BalanceUpdateOrigin { return b.Origin }
 
 type BalanceUpdateKind interface {
 	core.BalanceUpdateKind

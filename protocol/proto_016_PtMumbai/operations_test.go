@@ -814,7 +814,7 @@ func TestDecodeOperations(t *testing.T) {
 				require.Empty(t, rest)
 				//fmt.Printf("%# v\n", pretty.Formatter(op, pretty.OptStringer(true)))
 				require.Equal(t, test.expect, op)
-				require.Equal(t, test.kind, op.Operation().OperationKind())
+				require.Equal(t, test.kind, op.OperationKind())
 			})
 
 			if !test.skipEncode {

@@ -16,7 +16,7 @@ type OriginationResult interface {
 }
 
 type OriginationResultContents struct {
-	BalanceUpdates      []*BalanceUpdate            `tz:"dyn" json:"balance_updates"`
+	BalanceUpdates
 	OriginatedContracts []core.OriginatedContractID `tz:"dyn" json:"originated_contracts"`
 	ConsumedGas         tz.BigUint                  `json:"consumed_gas"`
 	ConsumedMilligas    tz.BigUint                  `json:"consumed_milligas"`
@@ -64,10 +64,10 @@ type OriginationContentsAndResult struct {
 	Metadata ManagerMetadata[OriginationResult] `json:"metadata"`
 }
 
-func (*OriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *OriginationContentsAndResult) Operation() core.Operation {
-	return &op.Origination
+func (op *OriginationContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
+func (*OriginationContentsAndResult) OperationContentsAndResult() {}
 
 type OriginationInternalOperationResult struct {
 	Source   TransactionDestination      `json:"source"`

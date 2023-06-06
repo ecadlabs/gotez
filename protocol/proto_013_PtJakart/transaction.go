@@ -54,21 +54,21 @@ func init() {
 }
 
 type ToContract struct {
-	Storage                      tz.Option[expression.Expression] `json:"storage"`
-	BalanceUpdates               []*BalanceUpdate                 `tz:"dyn" json:"balance_updates"`
-	OriginatedContracts          []core.OriginatedContractID      `tz:"dyn" json:"originated_contracts"`
-	ConsumedGas                  tz.BigUint                       `json:"consumed_gas"`
-	ConsumedMilligas             tz.BigUint                       `json:"consumed_milligas"`
-	StorageSize                  tz.BigInt                        `json:"storage_size"`
-	PaidStorageSizeDiff          tz.BigInt                        `json:"paid_storage_size_diff"`
-	AllocatedDestinationContract bool                             `json:"allocated_destination_contract"`
-	LazyStorageDiff              tz.Option[lazy.StorageDiff]      `json:"lazy_storage_diff"`
+	Storage tz.Option[expression.Expression] `json:"storage"`
+	BalanceUpdates
+	OriginatedContracts          []core.OriginatedContractID `tz:"dyn" json:"originated_contracts"`
+	ConsumedGas                  tz.BigUint                  `json:"consumed_gas"`
+	ConsumedMilligas             tz.BigUint                  `json:"consumed_milligas"`
+	StorageSize                  tz.BigInt                   `json:"storage_size"`
+	PaidStorageSizeDiff          tz.BigInt                   `json:"paid_storage_size_diff"`
+	AllocatedDestinationContract bool                        `json:"allocated_destination_contract"`
+	LazyStorageDiff              tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
 func (*ToContract) TransactionResultDestination() {}
 
 type ToTxRollup struct {
-	BalanceUpdates      []*BalanceUpdate   `tz:"dyn" json:"balance_updates"`
+	BalanceUpdates
 	ConsumedGas         tz.BigUint         `json:"consumed_gas"`
 	ConsumedMilligas    tz.BigUint         `json:"consumed_milligas"`
 	TicketHash          *tz.ScriptExprHash `json:"ticket_hash"`
@@ -106,10 +106,11 @@ type TransactionContentsAndResult struct {
 	Metadata ManagerMetadata[TransactionResult]
 }
 
-func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-func (op *TransactionContentsAndResult) Operation() core.Operation {
-	return &op.Transaction
+func (op *TransactionContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
+
+func (*TransactionContentsAndResult) OperationContentsAndResult() {}
 
 type TransactionResultApplied struct {
 	core.OperationResultApplied[TransactionResultContents]

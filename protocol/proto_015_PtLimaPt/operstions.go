@@ -45,8 +45,8 @@ type DelegationContentsAndResult struct {
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
-func (op *DelegationContentsAndResult) Operation() core.Operation {
-	return &op.Delegation
+func (op *DelegationContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type RevealContentsAndResult struct {
@@ -55,8 +55,8 @@ type RevealContentsAndResult struct {
 }
 
 func (*RevealContentsAndResult) OperationContentsAndResult() {}
-func (op *RevealContentsAndResult) Operation() core.Operation {
-	return &op.Reveal
+func (op *RevealContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SetDepositsLimitContentsAndResult struct {
@@ -65,8 +65,8 @@ type SetDepositsLimitContentsAndResult struct {
 }
 
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
-func (op *SetDepositsLimitContentsAndResult) Operation() core.Operation {
-	return &op.SetDepositsLimit
+func (op *SetDepositsLimitContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type UpdateConsensusKey struct {
@@ -74,8 +74,7 @@ type UpdateConsensusKey struct {
 	PublicKey tz.PublicKey `json:"public_key"`
 }
 
-func (*UpdateConsensusKey) OperationKind() string        { return "update_consensus_key" }
-func (op *UpdateConsensusKey) Operation() core.Operation { return op }
+func (*UpdateConsensusKey) OperationKind() string { return "update_consensus_key" }
 
 type DrainDelegate struct {
 	ConsensusKey tz.PublicKeyHash `json:"consensus_key"`
@@ -83,8 +82,7 @@ type DrainDelegate struct {
 	Destination  tz.PublicKeyHash `json:"destination"`
 }
 
-func (*DrainDelegate) OperationKind() string        { return "drain_delegate" }
-func (op *DrainDelegate) Operation() core.Operation { return op }
+func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
 
 type UpdateConsensusKeyResultContents ConsumedGasResultContents
 
@@ -101,7 +99,6 @@ type DALPublishSlotHeader struct {
 func (*DALPublishSlotHeader) OperationKind() string {
 	return "dal_publish_slot_header"
 }
-func (op *DALPublishSlotHeader) Operation() core.Operation { return op }
 
 type DALSlot struct {
 	Level  int32     `json:"level"`
@@ -111,67 +108,67 @@ type DALSlot struct {
 
 type SeedNonceRevelationContentsAndResult struct {
 	SeedNonceRevelation
-	Metadata []*BalanceUpdate `tz:"dyn" json:"metadata"`
+	Metadata BalanceUpdates `json:"metadata"`
 }
 
 func (*SeedNonceRevelationContentsAndResult) OperationContentsAndResult() {}
-func (op *SeedNonceRevelationContentsAndResult) Operation() core.Operation {
-	return &op.SeedNonceRevelation
+func (op *SeedNonceRevelationContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type DoubleEndorsementEvidenceContentsAndResult struct {
 	DoubleEndorsementEvidence
-	Metadata []*BalanceUpdate `tz:"dyn" json:"metadata"`
+	Metadata BalanceUpdates `json:"metadata"`
 }
 
 func (*DoubleEndorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
-func (op *DoubleEndorsementEvidenceContentsAndResult) Operation() core.Operation {
-	return &op.DoubleEndorsementEvidence
+func (op *DoubleEndorsementEvidenceContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type DoubleBakingEvidenceContentsAndResult struct {
 	DoubleBakingEvidence
-	Metadata []*BalanceUpdate `tz:"dyn" json:"metadata"`
+	Metadata BalanceUpdates `json:"metadata"`
 }
 
 func (*DoubleBakingEvidenceContentsAndResult) OperationContentsAndResult() {}
-func (op *DoubleBakingEvidenceContentsAndResult) Operation() core.Operation {
-	return &op.DoubleBakingEvidence
+func (op *DoubleBakingEvidenceContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type ActivateAccountContentsAndResult struct {
 	ActivateAccount
-	Metadata []*BalanceUpdate `tz:"dyn" json:"metadata"`
+	Metadata BalanceUpdates `json:"metadata"`
 }
 
 func (*ActivateAccountContentsAndResult) OperationContentsAndResult() {}
-func (op *ActivateAccountContentsAndResult) Operation() core.Operation {
-	return &op.ActivateAccount
+func (op *ActivateAccountContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type DoublePreendorsementEvidenceContentsAndResult struct {
 	DoublePreendorsementEvidence
-	Metadata []*BalanceUpdate `tz:"dyn" json:"metadata"`
+	Metadata BalanceUpdates `json:"metadata"`
 }
 
 func (*DoublePreendorsementEvidenceContentsAndResult) OperationContentsAndResult() {}
-func (op *DoublePreendorsementEvidenceContentsAndResult) Operation() core.Operation {
-	return &op.DoublePreendorsementEvidence
+func (op *DoublePreendorsementEvidenceContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type VDFRevelationContentsAndResult struct {
 	VDFRevelation
-	Metadata []*BalanceUpdate `tz:"dyn" json:"metadata"`
+	Metadata BalanceUpdates `json:"metadata"`
 }
 
 func (*VDFRevelationContentsAndResult) OperationContentsAndResult() {}
-func (op *VDFRevelationContentsAndResult) Operation() core.Operation {
-	return &op.VDFRevelation
+func (op *VDFRevelationContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type DrainDelegateMetadata struct {
-	BalanceUpdates               []*BalanceUpdate `tz:"dyn" json:"balance_updates"`
-	AllocatedDestinationContract bool             `json:"allocated_destination_contract"`
+	BalanceUpdates
+	AllocatedDestinationContract bool `json:"allocated_destination_contract"`
 }
 
 type DrainDelegateContentsAndResult struct {
@@ -180,12 +177,12 @@ type DrainDelegateContentsAndResult struct {
 }
 
 func (*DrainDelegateContentsAndResult) OperationContentsAndResult() {}
-func (op *DrainDelegateContentsAndResult) Operation() core.Operation {
-	return &op.DrainDelegate
+func (op *DrainDelegateContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type EndorsementMetadata struct {
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn" json:"balance_updates"`
+	BalanceUpdates
 	Delegate         tz.PublicKeyHash `json:"delegate"`
 	EndorsementPower int32            `json:"endorsement_power"`
 	ConsensusKey     tz.PublicKeyHash `json:"consensus_key"`
@@ -197,8 +194,8 @@ type EndorsementContentsAndResult struct {
 }
 
 func (*EndorsementContentsAndResult) OperationContentsAndResult() {}
-func (op *EndorsementContentsAndResult) Operation() core.Operation {
-	return &op.Endorsement
+func (op *EndorsementContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type PreendorsementMetadata = EndorsementMetadata
@@ -208,8 +205,8 @@ type PreendorsementContentsAndResult struct {
 }
 
 func (*PreendorsementContentsAndResult) OperationContentsAndResult() {}
-func (op *PreendorsementContentsAndResult) Operation() core.Operation {
-	return &op.Preendorsement
+func (op *PreendorsementContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type RegisterGlobalConstantResult interface {
@@ -217,7 +214,7 @@ type RegisterGlobalConstantResult interface {
 }
 
 type RegisterGlobalConstantResultContents struct {
-	BalanceUpdates   []*BalanceUpdate   `tz:"dyn" json:"balance_updates"`
+	BalanceUpdates
 	ConsumedMilligas tz.BigUint         `json:"consumed_milligas"`
 	StorageSize      tz.BigInt          `json:"storage_size"`
 	GlobalAddress    *tz.ScriptExprHash `json:"global_address"`
@@ -260,8 +257,8 @@ type RegisterGlobalConstantContentsAndResult struct {
 }
 
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
-func (op *RegisterGlobalConstantContentsAndResult) Operation() core.Operation {
-	return &op.RegisterGlobalConstant
+func (op *RegisterGlobalConstantContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type UpdateConsensusKeyContentsAndResult struct {
@@ -270,8 +267,8 @@ type UpdateConsensusKeyContentsAndResult struct {
 }
 
 func (*UpdateConsensusKeyContentsAndResult) OperationContentsAndResult() {}
-func (op *UpdateConsensusKeyContentsAndResult) Operation() core.Operation {
-	return &op.UpdateConsensusKey
+func (op *UpdateConsensusKeyContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type IncreasePaidStorageResult interface {
@@ -279,8 +276,8 @@ type IncreasePaidStorageResult interface {
 }
 
 type IncreasePaidStorageResultContents struct {
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn" json:"balance_updates"`
-	ConsumedMilligas tz.BigUint       `json:"consumed_milligas"`
+	BalanceUpdates
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
 
 func (IncreasePaidStorageResultContents) SuccessfulManagerOperationResult() {}
@@ -325,8 +322,8 @@ type IncreasePaidStorageContentsAndResult struct {
 }
 
 func (*IncreasePaidStorageContentsAndResult) OperationContentsAndResult() {}
-func (op *IncreasePaidStorageContentsAndResult) Operation() core.Operation {
-	return &op.IncreasePaidStorage
+func (op *IncreasePaidStorageContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type TransferTicketContentsAndResult struct {
@@ -335,12 +332,12 @@ type TransferTicketContentsAndResult struct {
 }
 
 func (*TransferTicketContentsAndResult) OperationContentsAndResult() {}
-func (op *TransferTicketContentsAndResult) Operation() core.Operation {
-	return &op.TransferTicket
+func (op *TransferTicketContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type TransferTicketResultContents struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn" json:"balance_updates"`
+	BalanceUpdates
 	TicketUpdates       []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
 	ConsumedMilligas    tz.BigUint       `json:"consumed_milligas"`
 	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
@@ -387,70 +384,8 @@ type DALPublishSlotHeaderContentsAndResult struct {
 }
 
 func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
-func (op *DALPublishSlotHeaderContentsAndResult) Operation() core.Operation {
-	return &op.DALPublishSlotHeader
-}
-
-type ZkRollupOriginationContentsAndResult struct {
-	ZkRollupOrigination
-	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
-}
-
-func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupOriginationContentsAndResult) Operation() core.Operation {
-	return &op.ZkRollupOrigination
-}
-
-type ZkRollupPublishResultContents struct {
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn" json:"balance_updates"`
-	ConsumedMilligas tz.BigUint       `json:"consumed_milligas"`
-	Size             tz.BigInt        `json:"size"`
-}
-
-type ZkRollupPublishResult interface {
-	ZkRollupPublishResult()
-	core.ManagerOperationResult
-}
-
-type ZkRollupPublishResultApplied struct {
-	core.OperationResultApplied[ZkRollupPublishResultContents]
-}
-
-func (*ZkRollupPublishResultApplied) ZkRollupPublishResult() {}
-
-type ZkRollupPublishResultBacktracked struct {
-	core.OperationResultBacktracked[ZkRollupPublishResultContents]
-}
-
-func (*ZkRollupPublishResultBacktracked) ZkRollupPublishResult() {}
-
-type ZkRollupPublishResultFailed struct{ core.OperationResultFailed }
-
-func (*ZkRollupPublishResultFailed) ZkRollupPublishResult() {}
-
-type ZkRollupPublishResultSkipped struct{ core.OperationResultSkipped }
-
-func (*ZkRollupPublishResultSkipped) ZkRollupPublishResult() {}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[ZkRollupPublishResult]{
-		Variants: encoding.Variants[ZkRollupPublishResult]{
-			0: (*ZkRollupPublishResultApplied)(nil),
-			1: (*ZkRollupPublishResultFailed)(nil),
-			2: (*ZkRollupPublishResultSkipped)(nil),
-			3: (*ZkRollupPublishResultBacktracked)(nil),
-		},
-	})
-}
-
-type ZkRollupPublishContentsAndResult struct {
-	ZkRollupPublish
-	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
-}
-
-func (*ZkRollupPublishContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupPublishContentsAndResult) Operation() core.Operation {
-	return &op.ZkRollupPublish
+func (op *DALPublishSlotHeaderContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type OperationContents interface {
@@ -544,9 +479,20 @@ func init() {
 }
 
 type ManagerMetadata[T core.ManagerOperationResult] struct {
-	BalanceUpdates           []*BalanceUpdate          `tz:"dyn" json:"balance_updates"`
+	BalanceUpdates
 	OperationResult          T                         `json:"operation_result"`
 	InternalOperationResults []InternalOperationResult `tz:"dyn" json:"internal_operation_results"`
+}
+
+func (m *ManagerMetadata[T]) GetResult() core.ManagerOperationResult {
+	return m.OperationResult
+}
+func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperationResult {
+	out := make([]core.InternalOperationResult, len(m.InternalOperationResults))
+	for i, r := range m.InternalOperationResults {
+		out[i] = r
+	}
+	return out
 }
 
 type DelegationInternalOperationResult struct {

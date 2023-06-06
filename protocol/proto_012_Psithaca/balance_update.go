@@ -6,20 +6,27 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core"
 )
 
-type BalanceUpdateOrigin uint8
+type BalanceUpdates struct {
+	BalanceUpdates []*BalanceUpdate `tz:"dyn" json:"balance_updates"`
+}
 
-const (
-	BalanceUpdateOriginBlockApplication BalanceUpdateOrigin = iota
-	BalanceUpdateOriginProtocolMigration
-	BalanceUpdateOriginSubsidy
-	BalanceUpdateOriginSimulation
-)
+func (b *BalanceUpdates) GetBalanceUpdates() []core.BalanceUpdate {
+	out := make([]core.BalanceUpdate, len(b.BalanceUpdates))
+	for i, u := range b.BalanceUpdates {
+		out[i] = u
+	}
+	return out
+}
 
 type BalanceUpdate struct {
 	Kind   BalanceUpdateKind
 	Change int64
-	Origin BalanceUpdateOrigin
+	Origin core.BalanceUpdateOrigin
 }
+
+func (b *BalanceUpdate) GetKind() core.BalanceUpdateKind     { return b.Kind }
+func (b *BalanceUpdate) GetChange() int64                    { return b.Change }
+func (b *BalanceUpdate) GetOrigin() core.BalanceUpdateOrigin { return b.Origin }
 
 type BalanceUpdateContract struct {
 	Contract core.ContractID

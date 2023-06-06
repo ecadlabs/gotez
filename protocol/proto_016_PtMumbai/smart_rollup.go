@@ -22,8 +22,7 @@ type SmartRollupOriginate struct {
 	ParametersTy     expression.Expression `tz:"dyn"`
 }
 
-func (*SmartRollupOriginate) OperationKind() string        { return "smart_rollup_originate" }
-func (op *SmartRollupOriginate) Operation() core.Operation { return op }
+func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_originate" }
 
 type SmartRollupOriginateResult interface {
 	SmartRollupOriginateResult()
@@ -31,7 +30,7 @@ type SmartRollupOriginateResult interface {
 }
 
 type SmartRollupOriginateResultContents struct {
-	BalanceUpdates        []*BalanceUpdate `tz:"dyn"`
+	BalanceUpdates
 	Address               *tz.SmartRollupAddress
 	GenesisCommitmentHash *tz.SmartRollupCommitmentHash
 	ConsumedMilligas      tz.BigUint
@@ -80,8 +79,8 @@ type SmartRollupOriginateContentsAndResult struct {
 }
 
 func (*SmartRollupOriginateContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupOriginateContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupOriginate
+func (op *SmartRollupOriginateContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SmartRollupAddMessages struct {
@@ -89,8 +88,7 @@ type SmartRollupAddMessages struct {
 	Message []core.Bytes `tz:"dyn"`
 }
 
-func (*SmartRollupAddMessages) OperationKind() string        { return "smart_rollup_add_messages" }
-func (op *SmartRollupAddMessages) Operation() core.Operation { return op }
+func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add_messages" }
 
 type SmartRollupAddMessagesContentsAndResult struct {
 	SmartRollupAddMessages
@@ -98,8 +96,8 @@ type SmartRollupAddMessagesContentsAndResult struct {
 }
 
 func (*SmartRollupAddMessagesContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupAddMessagesContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupAddMessages
+func (op *SmartRollupAddMessagesContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SmartRollupCement struct {
@@ -108,8 +106,7 @@ type SmartRollupCement struct {
 	Commitment *tz.SmartRollupCommitmentHash
 }
 
-func (*SmartRollupCement) OperationKind() string        { return "smart_rollup_cement" }
-func (op *SmartRollupCement) Operation() core.Operation { return op }
+func (*SmartRollupCement) OperationKind() string { return "smart_rollup_cement" }
 
 type SmartRollupCementResultContents struct {
 	ConsumedMilligas tz.BigUint
@@ -158,8 +155,8 @@ type SmartRollupCementContentsAndResult struct {
 }
 
 func (*SmartRollupCementContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupCementContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupCement
+func (op *SmartRollupCementContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SmartRollupPublish struct {
@@ -168,8 +165,7 @@ type SmartRollupPublish struct {
 	Commitment SmartRollupCommitment
 }
 
-func (*SmartRollupRefute) OperationKind() string        { return "smart_rollup_refute" }
-func (op *SmartRollupRefute) Operation() core.Operation { return op }
+func (*SmartRollupRefute) OperationKind() string { return "smart_rollup_refute" }
 
 type SmartRollupCommitment struct {
 	CompressedState *tz.SmartRollupStateHash
@@ -182,7 +178,7 @@ type SmartRollupPublishResultContents struct {
 	ConsumedMilligas tz.BigUint
 	StakedHash       *tz.SmartRollupCommitmentHash
 	PublishedAtLevel int32
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+	BalanceUpdates
 }
 
 type SmartRollupPublishResult interface {
@@ -227,8 +223,8 @@ type SmartRollupPublishContentsAndResult struct {
 }
 
 func (*SmartRollupPublishContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupPublishContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupPublish
+func (op *SmartRollupPublishContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SmartRollupRefute struct {
@@ -238,8 +234,7 @@ type SmartRollupRefute struct {
 	Refutation SmartRollupRefutation
 }
 
-func (*SmartRollupPublish) OperationKind() string        { return "smart_rollup_publish" }
-func (op *SmartRollupPublish) Operation() core.Operation { return op }
+func (*SmartRollupPublish) OperationKind() string { return "smart_rollup_publish" }
 
 type SmartRollupRefutation interface {
 	RefutationKind() string
@@ -371,7 +366,7 @@ type DALPageID struct {
 type SmartRollupTimeoutResultContents struct {
 	ConsumedMilligas tz.BigUint
 	GameStatus       GameStatus
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+	BalanceUpdates
 }
 
 type GameStatus interface {
@@ -470,8 +465,8 @@ type SmartRollupRefuteContentsAndResult struct {
 }
 
 func (*SmartRollupRefuteContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupRefuteContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupRefute
+func (op *SmartRollupRefuteContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SmartRollupTimeout struct {
@@ -485,8 +480,7 @@ type SmartRollupStakers struct {
 	Bob   tz.PublicKeyHash
 }
 
-func (*SmartRollupTimeout) OperationKind() string        { return "smart_rollup_timeout" }
-func (op *SmartRollupTimeout) Operation() core.Operation { return op }
+func (*SmartRollupTimeout) OperationKind() string { return "smart_rollup_timeout" }
 
 type SmartRollupTimeoutContentsAndResult struct {
 	SmartRollupTimeout
@@ -494,8 +488,8 @@ type SmartRollupTimeoutContentsAndResult struct {
 }
 
 func (*SmartRollupTimeoutContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupTimeoutContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupTimeout
+func (op *SmartRollupTimeoutContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SmartRollupExecuteOutboxMessage struct {
@@ -508,10 +502,9 @@ type SmartRollupExecuteOutboxMessage struct {
 func (*SmartRollupExecuteOutboxMessage) OperationKind() string {
 	return "smart_rollup_execute_outbox_message"
 }
-func (op *SmartRollupExecuteOutboxMessage) Operation() core.Operation { return op }
 
 type SmartRollupExecuteOutboxMessageResultContents struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
+	BalanceUpdates
 	TicketUpdates       []*TicketReceipt `tz:"dyn"`
 	ConsumedMilligas    tz.BigUint
 	PaidStorageSizeDiff tz.BigInt
@@ -559,8 +552,8 @@ type SmartRollupExecuteOutboxMessageContentsAndResult struct {
 }
 
 func (*SmartRollupExecuteOutboxMessageContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupExecuteOutboxMessageContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupExecuteOutboxMessage
+func (op *SmartRollupExecuteOutboxMessageContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 type SmartRollupRecoverBond struct {
@@ -569,11 +562,10 @@ type SmartRollupRecoverBond struct {
 	Staker tz.PublicKeyHash
 }
 
-func (*SmartRollupRecoverBond) OperationKind() string        { return "smart_rollup_recover_bond" }
-func (op *SmartRollupRecoverBond) Operation() core.Operation { return op }
+func (*SmartRollupRecoverBond) OperationKind() string { return "smart_rollup_recover_bond" }
 
 type SmartRollupRecoverBondResultContents struct {
-	BalanceUpdates   []*BalanceUpdate `tz:"dyn"`
+	BalanceUpdates
 	ConsumedMilligas tz.BigUint
 }
 
@@ -619,6 +611,6 @@ type SmartRollupRecoverBondContentsAndResult struct {
 }
 
 func (*SmartRollupRecoverBondContentsAndResult) OperationContentsAndResult() {}
-func (op *SmartRollupRecoverBondContentsAndResult) Operation() core.Operation {
-	return &op.SmartRollupRecoverBond
+func (op *SmartRollupRecoverBondContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
