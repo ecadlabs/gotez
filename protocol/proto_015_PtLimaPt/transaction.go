@@ -1,6 +1,8 @@
 package proto_015_PtLimaPt
 
 import (
+	"encoding/json"
+
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
@@ -15,6 +17,7 @@ type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
 type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
 type ScRollupDestination = proto_014_PtKathma.ScRollupDestination
+type ToScRollup = proto_014_PtKathma.ToScRollup
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
@@ -31,65 +34,42 @@ func init() {
 }
 
 type ToContract struct {
-	Storage                      tz.Option[expression.Expression]
-	BalanceUpdates               []*BalanceUpdate            `tz:"dyn"`
-	TicketUpdates                []*TicketReceipt            `tz:"dyn"`
-	OriginatedContracts          []core.OriginatedContractID `tz:"dyn"`
-	ConsumedMilligas             tz.BigUint
-	StorageSize                  tz.BigInt
-	PaidStorageSizeDiff          tz.BigInt
-	AllocatedDestinationContract bool
-	LazyStorageDiff              tz.Option[lazy.StorageDiff]
+	Storage                      tz.Option[expression.Expression] `json:"storage"`
+	BalanceUpdates               []*BalanceUpdate                 `tz:"dyn" json:"balance_updates"`
+	TicketUpdates                []*TicketReceipt                 `tz:"dyn" json:"ticket_updates"`
+	OriginatedContracts          []core.OriginatedContractID      `tz:"dyn" json:"originated_contracts"`
+	ConsumedMilligas             tz.BigUint                       `json:"consumed_milligas"`
+	StorageSize                  tz.BigInt                        `json:"storage_size"`
+	PaidStorageSizeDiff          tz.BigInt                        `json:"paid_storage_size_diff"`
+	AllocatedDestinationContract bool                             `json:"allocated_destination_contract"`
+	LazyStorageDiff              tz.Option[lazy.StorageDiff]      `json:"lazy_storage_diff"`
 }
 
 func (*ToContract) TransactionResultDestination() {}
 
 type ToTxRollup struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
-	ConsumedMilligas    tz.BigUint
-	TicketHash          *tz.ScriptExprHash
-	PaidStorageSizeDiff tz.BigUint
+	BalanceUpdates      []*BalanceUpdate   `tz:"dyn" json:"balance_updates"`
+	ConsumedMilligas    tz.BigUint         `json:"consumed_milligas"`
+	TicketHash          *tz.ScriptExprHash `json:"ticket_hash"`
+	PaidStorageSizeDiff tz.BigUint         `json:"paid_storage_size_diff"`
 }
 
 func (*ToTxRollup) TransactionResultDestination() {}
 
-type ToScRollup struct {
-	ConsumedMilligas tz.BigUint
-	InboxAfter       ScRollupInbox
-}
-
-type ScRollupInbox struct {
-	Rollup                                 *tz.ScRollupAddress `tz:"dyn"`
-	MessageCounter                         tz.BigInt
-	NbMessagesInCommitmentPeriod           int64
-	StartingLevelOfCurrentCommitmentPeriod int32
-	Level                                  int32
-	CurrentLevelHash                       *[32]byte
-	OldLevelsMessages                      OldLevelsMessages
-}
-
-type OldLevelsMessages struct {
-	Index        int32
-	Content      *[32]byte
-	BackPointers []byte `tz:"dyn"`
-}
-
-func (*ToScRollup) TransactionResultDestination() {}
-
 type TicketReceipt struct {
-	TicketToken TicketToken
-	Updates     []*TicketReceiptUpdate `tz:"dyn"`
+	TicketToken TicketToken            `json:"ticket_token"`
+	Updates     []*TicketReceiptUpdate `tz:"dyn" json:"updates"`
 }
 
 type TicketToken struct {
-	Ticketer    core.ContractID
-	ContentType expression.Expression
-	Content     expression.Expression
+	Ticketer    core.ContractID       `json:"ticketer"`
+	ContentType expression.Expression `json:"content_type"`
+	Content     expression.Expression `json:"content"`
 }
 
 type TicketReceiptUpdate struct {
-	Account TransactionDestination
-	Amount  tz.BigInt
+	Account TransactionDestination `json:"account"`
+	Amount  tz.BigInt              `json:"amount"`
 }
 
 type TransactionDestination interface {
@@ -102,6 +82,9 @@ type ZkRollupDestination struct {
 }
 
 func (*ZkRollupDestination) TransactionDestination() {}
+func (z *ZkRollupDestination) MarshalJSON() ([]byte, error) {
+	return json.Marshal(z.ZkRollupAddress)
+}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
@@ -116,19 +99,22 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	Result TransactionResultDestination
+	TransactionResultDestination
 }
 
 func (TransactionResultContents) SuccessfulManagerOperationResult() {}
 func (TransactionResultContents) OperationKind() string             { return "transaction" }
+func (c TransactionResultContents) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.TransactionResultDestination)
+}
 
 type TransactionContentsAndResult struct {
 	Transaction
-	Metadata ManagerMetadata[TransactionResult]
+	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`
 }
 
 func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-func (op *TransactionContentsAndResult) OperationContents() core.OperationContents {
+func (op *TransactionContentsAndResult) Operation() core.Operation {
 	return &op.Transaction
 }
 
@@ -168,13 +154,15 @@ func init() {
 }
 
 type TransactionInternalOperationResult struct {
-	Source      core.ContractID
-	Nonce       uint16
-	Amount      tz.BigUint
-	Destination TransactionDestination
-	Parameters  tz.Option[Parameters]
-	Result      TransactionResult
+	Source      core.ContractID        `json:"source"`
+	Nonce       uint16                 `json:"nonce"`
+	Amount      tz.BigUint             `json:"amount"`
+	Destination TransactionDestination `json:"destination"`
+	Parameters  tz.Option[Parameters]  `json:"parameters"`
+	Result      TransactionResult      `json:"result"`
 }
 
-func (*TransactionInternalOperationResult) InternalOperationResult() {}
-func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
+func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+	return r.Result
+}
+func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }

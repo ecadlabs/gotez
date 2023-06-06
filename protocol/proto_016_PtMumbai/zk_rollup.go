@@ -16,7 +16,7 @@ type ZkRollupOriginationContentsAndResult struct {
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupOriginationContentsAndResult) OperationContents() core.OperationContents {
+func (op *ZkRollupOriginationContentsAndResult) Operation() core.Operation {
 	return &op.ZkRollupOrigination
 }
 
@@ -68,7 +68,7 @@ type ZkRollupPublishContentsAndResult struct {
 }
 
 func (*ZkRollupPublishContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupPublishContentsAndResult) OperationContents() core.OperationContents {
+func (op *ZkRollupPublishContentsAndResult) Operation() core.Operation {
 	return &op.ZkRollupPublish
 }
 
@@ -78,7 +78,8 @@ type ZkRollupUpdate struct {
 	Update   ZkRollupUpdateContents
 }
 
-func (*ZkRollupUpdate) OperationKind() string { return "zk_rollup_update" }
+func (*ZkRollupUpdate) OperationKind() string        { return "zk_rollup_update" }
+func (op *ZkRollupUpdate) Operation() core.Operation { return op }
 
 type ZkRollupUpdateContents struct {
 	PendingPis []*PendingPiElem `tz:"dyn"`
@@ -162,6 +163,6 @@ type ZkRollupUpdateContentsAndResult struct {
 }
 
 func (*ZkRollupUpdateContentsAndResult) OperationContentsAndResult() {}
-func (op *ZkRollupUpdateContentsAndResult) OperationContents() core.OperationContents {
+func (op *ZkRollupUpdateContentsAndResult) Operation() core.Operation {
 	return &op.ZkRollupUpdate
 }

@@ -46,7 +46,7 @@ import (
 {{range .}}
 var path_{{.Func}} = template.Must(template.New("path").Parse("{{.Path}}"))
 
-func (client *Client) {{.Func}}(r *{{.RequestType}}, ctx context.Context) (*{{.ResponseType}}, error) {
+func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) (*{{.ResponseType}}, error) {
 	tmp := *r
 	if tmp.Chain == "" {
 		tmp.Chain = client.Chain

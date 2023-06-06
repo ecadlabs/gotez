@@ -2,6 +2,8 @@ package encoding
 
 import (
 	"bytes"
+	"reflect"
+	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -502,15 +504,14 @@ func TestEnumForEach(t *testing.T) {
 		Default: variant3(0),
 	})
 
-	expect := map[uint8]testEnum{
-		0: variant1(0),
-		1: (*variant2)(nil),
+	expect := []testEnum{
+		variant1(0),
+		(*variant2)(nil),
 	}
+	sort.Slice(expect, func(i, j int) bool { return reflect.TypeOf(expect[i]).Name() < reflect.TypeOf(expect[j]).Name() })
 
-	result := make(map[uint8]testEnum)
-	ForEachInEnum(func(tag uint8, v testEnum) {
-		result[tag] = v
-	})
+	result := ListVariants[testEnum]()
+	sort.Slice(result, func(i, j int) bool { return reflect.TypeOf(result[i]).Name() < reflect.TypeOf(result[j]).Name() })
 
 	require.Equal(t, expect, result)
 }

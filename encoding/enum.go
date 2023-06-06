@@ -102,7 +102,7 @@ func (e *EnumRegistry) tryEncode(out io.Writer, v reflect.Value, ctx *Context, p
 	return true, encodeValue(out, el, ctx, nil, path)
 }
 
-func (e *EnumRegistry) ForEach(typ any, cb func(tag uint8, v any)) {
+func (e *EnumRegistry) ListVariants(typ any) []any {
 	t := reflect.TypeOf(typ)
 	if t.Kind() != reflect.Pointer || t.Elem().Kind() != reflect.Interface {
 		panic("gotez: pointer to an interface expected")
@@ -112,12 +112,14 @@ func (e *EnumRegistry) ForEach(typ any, cb func(tag uint8, v any)) {
 	enum, ok := e.types[t]
 	e.mtx.RUnlock()
 	if !ok {
-		return
+		return nil
 	}
-	for tag, typ := range enum.variants {
+	out := make([]any, 0, len(enum.variants))
+	for _, typ := range enum.variants {
 		v := reflect.New(typ).Elem().Interface()
-		cb(tag, v)
+		out = append(out, v)
 	}
+	return out
 }
 
 type Variants[T any] map[uint8]T
@@ -132,9 +134,14 @@ func RegisterEnum[T any](enum *Enum[T]) {
 	defaultEnumRegistry.RegisterEnum(enum.Variants, enum.Default)
 }
 
-func ForEachInEnum[T any](cb func(tag uint8, v T)) {
+func ListVariants[T any]() []T {
 	var typ T
-	defaultEnumRegistry.ForEach(&typ, func(tag uint8, v any) { cb(tag, v.(T)) })
+	variants := defaultEnumRegistry.ListVariants(&typ)
+	out := make([]T, len(variants))
+	for i, v := range variants {
+		out[i] = v.(T)
+	}
+	return out
 }
 
 // NewEnumRegistry returns new empty EnumRegistry

@@ -35,11 +35,26 @@ func (op Option[T]) Unwrap() T {
 	return op.value
 }
 
-func (op Option[T]) UnwrapRef() *T {
+func (op *Option[T]) UnwrapPtr() *T {
 	if !op.some {
 		panic(fmt.Sprintf("called `Unwrap()` on a `None` value of type %T", op))
 	}
 	return &op.value
+}
+
+func (op Option[T]) CheckUnwrap() (T, bool) {
+	if !op.some {
+		var null T
+		return null, false
+	}
+	return op.value, true
+}
+
+func (op *Option[T]) CheckUnwrapPtr() (*T, bool) {
+	if !op.some {
+		return nil, false
+	}
+	return &op.value, true
 }
 
 func (op Option[T]) UnwrapUnchecked() T {

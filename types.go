@@ -4,6 +4,7 @@ package gotez
 
 import (
 	"bytes"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"time"
@@ -71,4 +72,18 @@ func (t Timestamp) Time() time.Time {
 
 func (t Timestamp) String() string {
 	return t.Time().String()
+}
+
+type Bytes []byte
+
+func (b Bytes) MarshalText() (text []byte, err error) {
+	dst := make([]byte, hex.EncodedLen(len(b)))
+	hex.Encode(dst, b)
+	return dst, nil
+}
+
+func (b *Bytes) UnmarshalText(text []byte) error {
+	*b = make(Bytes, hex.DecodedLen(len(text)))
+	_, err := hex.Decode(*b, text)
+	return err
 }

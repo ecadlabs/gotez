@@ -64,7 +64,7 @@ type OriginationContentsAndResult struct {
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *OriginationContentsAndResult) OperationContents() core.OperationContents {
+func (op *OriginationContentsAndResult) Operation() core.Operation {
 	return &op.Origination
 }
 
@@ -77,5 +77,7 @@ type OriginationInternalOperationResult struct {
 	Result   OriginationResult
 }
 
-func (*OriginationInternalOperationResult) InternalOperationResult() {}
-func (*OriginationInternalOperationResult) OperationKind() string    { return "origination" }
+func (r *OriginationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+	return r.Result
+}
+func (*OriginationInternalOperationResult) OperationKind() string { return "origination" }

@@ -1,6 +1,8 @@
 package proto_016_PtMumbai
 
 import (
+	"encoding/json"
+
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
@@ -21,6 +23,7 @@ type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
 type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
 type EpNamed = proto_012_Psithaca.EpNamed
 type TicketToken = proto_015_PtLimaPt.TicketToken
+type ZkRollupDestination = proto_015_PtLimaPt.ZkRollupDestination
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
@@ -37,49 +40,52 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	Result TransactionResultDestination
+	TransactionResultDestination
 }
 
 func (TransactionResultContents) SuccessfulManagerOperationResult() {}
 func (TransactionResultContents) OperationKind() string             { return "transaction" }
+func (c TransactionResultContents) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.TransactionResultDestination)
+}
 
 type ToContract struct {
-	Storage                      tz.Option[expression.Expression]
-	BalanceUpdates               []*BalanceUpdate            `tz:"dyn"`
-	TicketUpdates                []*TicketReceipt            `tz:"dyn"`
-	OriginatedContracts          []core.OriginatedContractID `tz:"dyn"`
-	ConsumedMilligas             tz.BigUint
-	StorageSize                  tz.BigInt
-	PaidStorageSizeDiff          tz.BigInt
-	AllocatedDestinationContract bool
-	LazyStorageDiff              tz.Option[lazy.StorageDiff]
+	Storage                      tz.Option[expression.Expression] `json:"storage"`
+	BalanceUpdates               []*BalanceUpdate                 `tz:"dyn" json:"balance_updates"`
+	TicketUpdates                []*TicketReceipt                 `tz:"dyn" json:"ticket_updates"`
+	OriginatedContracts          []core.OriginatedContractID      `tz:"dyn" json:"originated_contracts"`
+	ConsumedMilligas             tz.BigUint                       `json:"consumed_milligas"`
+	StorageSize                  tz.BigInt                        `json:"storage_size"`
+	PaidStorageSizeDiff          tz.BigInt                        `json:"paid_storage_size_diff"`
+	AllocatedDestinationContract bool                             `json:"allocated_destination_contract"`
+	LazyStorageDiff              tz.Option[lazy.StorageDiff]      `json:"lazy_storage_diff"`
 }
 
 func (*ToContract) TransactionResultDestination() {}
 
 type ToTxRollup struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
-	ConsumedMilligas    tz.BigUint
-	TicketHash          *tz.ScriptExprHash
-	PaidStorageSizeDiff tz.BigUint
+	BalanceUpdates      []*BalanceUpdate   `tz:"dyn" json:"balance_updates"`
+	ConsumedMilligas    tz.BigUint         `json:"consumed_milligas"`
+	TicketHash          *tz.ScriptExprHash `json:"ticket_hash"`
+	PaidStorageSizeDiff tz.BigUint         `json:"paid_storage_size_diff"`
 }
 
 func (*ToTxRollup) TransactionResultDestination() {}
 
 type ToSmartRollup struct {
-	ConsumedMilligas tz.BigUint
-	TicketUpdates    []*TicketReceipt `tz:"dyn"`
+	ConsumedMilligas tz.BigUint       `json:"consumed_milligas"`
+	TicketUpdates    []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
 }
 
 func (*ToSmartRollup) TransactionResultDestination() {}
 
 type TransactionContentsAndResult struct {
 	Transaction
-	Metadata ManagerMetadata[TransactionResult]
+	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`
 }
 
 func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-func (op *TransactionContentsAndResult) OperationContents() core.OperationContents {
+func (op *TransactionContentsAndResult) Operation() core.Operation {
 	return &op.Transaction
 }
 
@@ -119,16 +125,18 @@ func init() {
 }
 
 type TransactionInternalOperationResult struct {
-	Source      TransactionDestination
-	Nonce       uint16
-	Amount      tz.BigUint
-	Destination TransactionDestination
-	Parameters  tz.Option[Parameters]
-	Result      TransactionResult
+	Source      TransactionDestination `json:"source"`
+	Nonce       uint16                 `json:"nonce"`
+	Amount      tz.BigUint             `json:"amount"`
+	Destination TransactionDestination `json:"destination"`
+	Parameters  tz.Option[Parameters]  `json:"parameters"`
+	Result      TransactionResult      `json:"result"`
 }
 
-func (*TransactionInternalOperationResult) InternalOperationResult() {}
-func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
+func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+	return r.Result
+}
+func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }
 
 type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
 
@@ -137,9 +145,10 @@ type SmartRollupDestination struct {
 	Padding uint8
 }
 
-type ZkRollupDestination = proto_015_PtLimaPt.ZkRollupDestination
-
 func (*SmartRollupDestination) TransactionDestination() {}
+func (s *SmartRollupDestination) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.SmartRollupAddress)
+}
 
 type TransactionDestination interface {
 	core.TransactionDestination
@@ -158,11 +167,11 @@ func init() {
 }
 
 type TicketReceipt struct {
-	TicketToken TicketToken
-	Updates     []*TicketReceiptUpdate `tz:"dyn"`
+	TicketToken TicketToken            `json:"ticket_token"`
+	Updates     []*TicketReceiptUpdate `tz:"dyn" json:"updates"`
 }
 
 type TicketReceiptUpdate struct {
-	Account TransactionDestination
-	Amount  tz.BigInt
+	Account TransactionDestination `json:"account"`
+	Amount  tz.BigInt              `json:"amount"`
 }

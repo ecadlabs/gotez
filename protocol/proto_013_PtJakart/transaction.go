@@ -1,6 +1,8 @@
 package proto_013_PtJakart
 
 import (
+	"encoding/json"
+
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 	"github.com/ecadlabs/gotez/protocol/core"
@@ -13,19 +15,19 @@ type Transaction = proto_012_Psithaca.Transaction
 type Parameters = proto_012_Psithaca.Parameters
 
 type ScRollupInbox struct {
-	Rollup                                 *tz.ScRollupAddress `tz:"dyn"`
-	MessageCounter                         tz.BigInt
-	NbMessagesInCommitmentPeriod           int64
-	StartingLevelOfCurrentCommitmentPeriod int32
-	Level                                  int32
-	CurrentLevelHash                       *[32]byte
-	OldLevelsMessages                      OldLevelsMessages
+	Rollup                                 *tz.ScRollupAddress `tz:"dyn" json:"rollup"`
+	MessageCounter                         tz.BigInt           `json:"message_counter"`
+	NbMessagesInCommitmentPeriod           int64               `json:"nb_messages_in_commitment_period"`
+	StartingLevelOfCurrentCommitmentPeriod int32               `json:"starting_level_of_current_commitment_period"`
+	Level                                  int32               `json:"level"`
+	CurrentLevelHash                       *tz.Bytes32         `json:"current_level_hash"`
+	OldLevelsMessages                      OldLevelsMessages   `json:"old_levels_messages"`
 }
 
 type OldLevelsMessages struct {
-	Index        int32
-	Content      *[32]byte
-	BackPointers []byte `tz:"dyn"`
+	Index        int32       `json:"index"`
+	Content      *tz.Bytes32 `json:"content"`
+	BackPointers tz.Bytes    `tz:"dyn" json:"back_pointers"`
 }
 
 type TxRollupDestination struct {
@@ -34,6 +36,9 @@ type TxRollupDestination struct {
 }
 
 func (*TxRollupDestination) TransactionDestination() {}
+func (t *TxRollupDestination) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.TXRollupAddress)
+}
 
 type TransactionResultDestination interface {
 	TransactionResultDestination()
@@ -49,25 +54,25 @@ func init() {
 }
 
 type ToContract struct {
-	Storage                      tz.Option[expression.Expression]
-	BalanceUpdates               []*BalanceUpdate            `tz:"dyn"`
-	OriginatedContracts          []core.OriginatedContractID `tz:"dyn"`
-	ConsumedGas                  tz.BigUint
-	ConsumedMilligas             tz.BigUint
-	StorageSize                  tz.BigInt
-	PaidStorageSizeDiff          tz.BigInt
-	AllocatedDestinationContract bool
-	LazyStorageDiff              tz.Option[lazy.StorageDiff]
+	Storage                      tz.Option[expression.Expression] `json:"storage"`
+	BalanceUpdates               []*BalanceUpdate                 `tz:"dyn" json:"balance_updates"`
+	OriginatedContracts          []core.OriginatedContractID      `tz:"dyn" json:"originated_contracts"`
+	ConsumedGas                  tz.BigUint                       `json:"consumed_gas"`
+	ConsumedMilligas             tz.BigUint                       `json:"consumed_milligas"`
+	StorageSize                  tz.BigInt                        `json:"storage_size"`
+	PaidStorageSizeDiff          tz.BigInt                        `json:"paid_storage_size_diff"`
+	AllocatedDestinationContract bool                             `json:"allocated_destination_contract"`
+	LazyStorageDiff              tz.Option[lazy.StorageDiff]      `json:"lazy_storage_diff"`
 }
 
 func (*ToContract) TransactionResultDestination() {}
 
 type ToTxRollup struct {
-	BalanceUpdates      []*BalanceUpdate `tz:"dyn"`
-	ConsumedGas         tz.BigUint
-	ConsumedMilligas    tz.BigUint
-	TicketHash          *tz.ScriptExprHash
-	PaidStorageSizeDiff tz.BigUint
+	BalanceUpdates      []*BalanceUpdate   `tz:"dyn" json:"balance_updates"`
+	ConsumedGas         tz.BigUint         `json:"consumed_gas"`
+	ConsumedMilligas    tz.BigUint         `json:"consumed_milligas"`
+	TicketHash          *tz.ScriptExprHash `json:"ticket_hash"`
+	PaidStorageSizeDiff tz.BigUint         `json:"paid_storage_size_diff"`
 }
 
 func (*ToTxRollup) TransactionResultDestination() {}
@@ -87,11 +92,14 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	Result TransactionResultDestination
+	TransactionResultDestination
 }
 
 func (TransactionResultContents) SuccessfulManagerOperationResult() {}
 func (TransactionResultContents) OperationKind() string             { return "transaction" }
+func (c TransactionResultContents) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.TransactionResultDestination)
+}
 
 type TransactionContentsAndResult struct {
 	Transaction
@@ -99,7 +107,7 @@ type TransactionContentsAndResult struct {
 }
 
 func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-func (op *TransactionContentsAndResult) OperationContents() core.OperationContents {
+func (op *TransactionContentsAndResult) Operation() core.Operation {
 	return &op.Transaction
 }
 
@@ -147,5 +155,7 @@ type TransactionInternalOperationResult struct {
 	Result      TransactionResult
 }
 
-func (*TransactionInternalOperationResult) InternalOperationResult() {}
-func (*TransactionInternalOperationResult) OperationKind() string    { return "transaction" }
+func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+	return r.Result
+}
+func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }

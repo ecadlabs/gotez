@@ -1,6 +1,8 @@
 package expression
 
 import (
+	"encoding/json"
+
 	tz "github.com/ecadlabs/gotez"
 	"github.com/ecadlabs/gotez/encoding"
 )
@@ -10,13 +12,13 @@ type Expression interface {
 }
 
 type Int struct {
-	Value tz.BigInt
+	Int tz.BigInt `json:"int"`
 }
 
 func (Int) Expression() {}
 
 type String struct {
-	Value string `tz:"dyn"`
+	String string `tz:"dyn" json:"string"`
 }
 
 func (String) Expression() {}
@@ -25,13 +27,25 @@ type Seq struct {
 	Value []Expression `tz:"dyn"`
 }
 
+func (s Seq) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Value)
+}
+
 func (Seq) Expression() {}
 
-type Prim00 = Prim
+type Prim00 Prim
+
+func (Prim00) Expression() {}
+
+func (p Prim00) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&PrimXX{
+		Prim: Prim(p),
+	})
+}
 
 type Prim0X struct {
-	Prim   Prim
-	Annots string `tz:"dyn"`
+	Prim   Prim   `json:"prim"`
+	Annots string `tz:"dyn" json:"annots"`
 }
 
 func (*Prim0X) Expression() {}
@@ -43,6 +57,13 @@ type Prim10 struct {
 
 func (*Prim10) Expression() {}
 
+func (p *Prim10) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&PrimXX{
+		Prim: p.Prim,
+		Args: []Expression{p.Arg},
+	})
+}
+
 type Prim1X struct {
 	Prim   Prim
 	Arg    Expression
@@ -51,31 +72,39 @@ type Prim1X struct {
 
 func (*Prim1X) Expression() {}
 
+func (p *Prim1X) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&PrimXX{
+		Prim:   p.Prim,
+		Args:   []Expression{p.Arg},
+		Annots: p.Annots,
+	})
+}
+
 type Prim20 struct {
-	Prim Prim
-	Args [2]Expression
+	Prim Prim          `json:"prim"`
+	Args [2]Expression `json:"args"`
 }
 
 func (*Prim20) Expression() {}
 
 type Prim2X struct {
-	Prim   Prim
-	Args   [2]Expression
-	Annots string `tz:"dyn"`
+	Prim   Prim          `json:"prim"`
+	Args   [2]Expression `json:"args"`
+	Annots string        `tz:"dyn" json:"annots,omitempty"`
 }
 
 func (*Prim2X) Expression() {}
 
 type PrimXX struct {
-	Prim   Prim
-	Args   []Expression `tz:"dyn"`
-	Annots string       `tz:"dyn"`
+	Prim   Prim         `json:"prim"`
+	Args   []Expression `tz:"dyn" json:"args,omitempty"`
+	Annots string       `tz:"dyn" json:"annots,omitempty"`
 }
 
 func (*PrimXX) Expression() {}
 
 type Bytes struct {
-	Value []byte `tz:"dyn"`
+	Bytes tz.Bytes `tz:"dyn" json:"bytes"`
 }
 
 func (Bytes) Expression() {}

@@ -6,8 +6,6 @@ import (
 	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
 )
 
-type VotingPeriodInfo = proto_012_Psithaca.VotingPeriodInfo
-type LevelInfo = proto_012_Psithaca.LevelInfo
 type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
 type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
 type BlockHeader = proto_012_Psithaca.BlockHeader
@@ -18,22 +16,21 @@ type BlockInfoProtocolData struct {
 	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
 }
 
-func (block *BlockInfoProtocolData) ShellHeader() *core.BlockHeader {
-	return &block.Header.BlockHeader
-}
-
-func (block *BlockInfoProtocolData) GetSignature() (tz.Signature, error) {
-	return block.Header.GetSignature()
-}
-
-func (block *BlockInfoProtocolData) BlockMetadata() tz.Option[*core.BlockMetadataHeader] {
-	if block.Metadata.IsSome() {
-		return tz.Some(&block.Metadata.UnwrapRef().BlockMetadataHeader)
+func (block *BlockInfoProtocolData) GetHeader() core.BlockHeader { return &block.Header }
+func (block *BlockInfoProtocolData) GetMetadata() tz.Option[core.BlockMetadata] {
+	if m, ok := block.Metadata.CheckUnwrapPtr(); ok {
+		return tz.Some[core.BlockMetadata](m)
 	}
-	return tz.None[*core.BlockMetadataHeader]()
+	return tz.None[core.BlockMetadata]()
 }
 
-func (*BlockInfoProtocolData) BlockInfoProtocolData() {}
+func (block *BlockInfoProtocolData) GetOperations() [][]core.OperationsGroup {
+	out := make([][]core.OperationsGroup, len(block.Operations))
+	for i, list := range block.Operations {
+		out[i] = list.GetGroups()
+	}
+	return out
+}
 
 type BlockMetadata struct {
 	BlockMetadataContents `tz:"dyn"`
@@ -43,8 +40,8 @@ type BlockMetadataContents struct {
 	core.BlockMetadataHeader
 	Proposer                  tz.PublicKeyHash
 	Baker                     tz.PublicKeyHash
-	LevelInfo                 LevelInfo
-	VotingPeriodInfo          VotingPeriodInfo
+	LevelInfo                 core.LevelInfo
+	VotingPeriodInfo          core.VotingPeriodInfo
 	NonceHash                 tz.Option1[*tz.CycleNonceHash]
 	Deactivated               []tz.PublicKeyHash `tz:"dyn"`
 	BalanceUpdates            []*BalanceUpdate   `tz:"dyn"`
@@ -52,4 +49,29 @@ type BlockMetadataContents struct {
 	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn"`
 	ConsumedMilligas          tz.BigUint
 	DALSlotAvailability       tz.Option[tz.BigInt]
+}
+
+func (m *BlockMetadata) GetMetadataHeader() *core.BlockMetadataHeader { return &m.BlockMetadataHeader }
+func (m *BlockMetadata) GetProposer() tz.PublicKeyHash                { return m.Proposer }
+func (m *BlockMetadata) GetBaker() tz.PublicKeyHash                   { return m.Baker }
+func (m *BlockMetadata) GetLevelInfo() *core.LevelInfo                { return &m.LevelInfo }
+func (m *BlockMetadata) GetVotingPeriodInfo() *core.VotingPeriodInfo  { return &m.VotingPeriodInfo }
+func (m *BlockMetadata) GetNonceHash() tz.Option[*tz.CycleNonceHash]  { return m.NonceHash.Option }
+func (m *BlockMetadata) GetConsumedGas() tz.Option[tz.BigUint]        { return tz.None[tz.BigUint]() }
+func (m *BlockMetadata) GetConsumedMilligas() tz.Option[tz.BigUint] {
+	return tz.Some(m.ConsumedMilligas)
+}
+func (m *BlockMetadata) GetDeactivated() []tz.PublicKeyHash { return m.Deactivated }
+func (m *BlockMetadata) GetImplicitOperationsResults() []core.SuccessfulManagerOperationResult {
+	out := make([]core.SuccessfulManagerOperationResult, len(m.ImplicitOperationsResults))
+	for i, v := range m.ImplicitOperationsResults {
+		out[i] = v
+	}
+	return out
+}
+func (m *BlockMetadata) GetProposerConsensusKey() tz.Option[tz.PublicKeyHash] {
+	return tz.None[tz.PublicKeyHash]()
+}
+func (m *BlockMetadata) GetBakerConsensusKey() tz.Option[tz.PublicKeyHash] {
+	return tz.None[tz.PublicKeyHash]()
 }

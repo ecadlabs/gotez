@@ -1,6 +1,7 @@
 package gotez
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/ecadlabs/gotez/b58/base58"
 	"github.com/ecadlabs/gotez/b58/prefix"
@@ -1205,6 +1206,61 @@ func (self *ScRollupCommitmentHash) UnmarshalText(src []byte) error {
 		return fmt.Errorf("gotez: invalid ScRollupCommitmentHash encoding")
 	}
 	copy(self[:], payload)
+	return nil
+}
+
+
+type SeedNonce [SeedNonceBytesLen]byte
+
+func (self SeedNonce) String() string {
+	out, _ := self.MarshalText()
+	return string(out)
+}
+
+func (self SeedNonce) MarshalText() ([]byte, error) {
+	dst := make([]byte, hex.EncodedLen(len(self)))
+	hex.Encode(dst, self[:])
+	return dst, nil
+}
+
+func (self *SeedNonce) UnmarshalText(src []byte) error {
+	hex.Decode(self[:], src)
+	return nil
+}
+
+type CycleNonce [CycleNonceBytesLen]byte
+
+func (self CycleNonce) String() string {
+	out, _ := self.MarshalText()
+	return string(out)
+}
+
+func (self CycleNonce) MarshalText() ([]byte, error) {
+	dst := make([]byte, hex.EncodedLen(len(self)))
+	hex.Encode(dst, self[:])
+	return dst, nil
+}
+
+func (self *CycleNonce) UnmarshalText(src []byte) error {
+	hex.Decode(self[:], src)
+	return nil
+}
+
+type Bytes32 [32]byte
+
+func (self Bytes32) String() string {
+	out, _ := self.MarshalText()
+	return string(out)
+}
+
+func (self Bytes32) MarshalText() ([]byte, error) {
+	dst := make([]byte, hex.EncodedLen(len(self)))
+	hex.Encode(dst, self[:])
+	return dst, nil
+}
+
+func (self *Bytes32) UnmarshalText(src []byte) error {
+	hex.Decode(self[:], src)
 	return nil
 }
 

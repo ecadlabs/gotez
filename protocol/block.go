@@ -13,14 +13,10 @@ import (
 	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
 )
 
-type BlockHeaderProtocolData interface {
-	core.Signed
-	ShellHeader() *core.BlockHeader
-}
-
 type BlockInfoProtocolData interface {
-	BlockHeaderProtocolData
-	BlockMetadata() tz.Option[*core.BlockMetadataHeader]
+	GetHeader() core.BlockHeader
+	GetMetadata() tz.Option[core.BlockMetadata]
+	GetOperations() [][]core.OperationsGroup
 }
 
 type BlockInfo struct {
@@ -44,7 +40,7 @@ func (info *BlockInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte
 	info.ChainID = p1.ChainID
 	info.Hash = p1.Hash
 
-	var p2 core.BlockHeader
+	var p2 core.ShellHeader
 	if _, err = encoding.Decode(data, &p2, encoding.Ctx(ctx), encoding.Dynamic()); err != nil {
 		return nil, err
 	}
@@ -76,7 +72,7 @@ func (info *BlockInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte
 type BlockHeaderInfo struct {
 	ChainID      *tz.ChainID
 	Hash         *tz.BlockHash
-	ProtocolData BlockHeaderProtocolData
+	ProtocolData core.BlockHeader
 }
 
 func (info *BlockHeaderInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
@@ -89,7 +85,7 @@ func (info *BlockHeaderInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest 
 	info.ChainID = p1.ChainID
 	info.Hash = p1.Hash
 
-	var p2 core.BlockHeader
+	var p2 core.ShellHeader
 	if _, err = encoding.Decode(data, &p2, encoding.Ctx(ctx)); err != nil {
 		return nil, err
 	}

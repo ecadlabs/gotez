@@ -37,7 +37,7 @@ func TestDecodeOperations(t *testing.T) {
 			kind:  "seed_nonce_revelation",
 			expect: &SeedNonceRevelation{
 				Level: 1234,
-				Nonce: &[tz.SeedNonceBytesLen]byte{
+				Nonce: &tz.SeedNonce{
 					0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
 					0x0e, 0x0f, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
 					0x0c, 0x0d, 0x0e, 0x0f,
@@ -147,7 +147,7 @@ func TestDecodeOperations(t *testing.T) {
 			expect: &DoubleBakingEvidence{
 				Block1: BlockHeader{
 					UnsignedBlockHeader: UnsignedBlockHeader{
-						BlockHeader: core.BlockHeader{
+						ShellHeader: core.ShellHeader{
 							Level:          3365599,
 							Proto:          0x10,
 							Predecessor:    &tz.BlockHash{0x13, 0x51, 0x16, 0xe4, 0x5c, 0xe4, 0xfb, 0xe, 0xfe, 0x9e, 0x22, 0x65, 0x14, 0x43, 0x42, 0xf6, 0x55, 0xaa, 0xe0, 0xe3, 0x69, 0x2c, 0x55, 0xe0, 0xcd, 0x1f, 0x18, 0x2f, 0x7a, 0xba, 0xb4, 0x1b},
@@ -169,7 +169,7 @@ func TestDecodeOperations(t *testing.T) {
 				},
 				Block2: BlockHeader{
 					UnsignedBlockHeader: UnsignedBlockHeader{
-						BlockHeader: core.BlockHeader{
+						ShellHeader: core.ShellHeader{
 							Level:          3365599,
 							Proto:          0x10,
 							Predecessor:    &tz.BlockHash{0x13, 0x51, 0x16, 0xe4, 0x5c, 0xe4, 0xfb, 0xe, 0xfe, 0x9e, 0x22, 0x65, 0x14, 0x43, 0x42, 0xf6, 0x55, 0xaa, 0xe0, 0xe3, 0x69, 0x2c, 0x55, 0xe0, 0xcd, 0x1f, 0x18, 0x2f, 0x7a, 0xba, 0xb4, 0x1b},
@@ -349,7 +349,7 @@ func TestDecodeOperations(t *testing.T) {
 					Value: &expr.Prim20{
 						Prim: 7,
 						Args: [2]expr.Expression{
-							expr.Int{Value: tz.BigInt{0x88, 0xf0, 0xf6, 0x01}},
+							expr.Int{Int: tz.BigInt{0x88, 0xf0, 0xf6, 0x01}},
 							expr.Prim00(6),
 						},
 					},
@@ -389,15 +389,15 @@ func TestDecodeOperations(t *testing.T) {
 													&expr.Prim20{
 														Prim: expr.Prim_pair,
 														Args: [2]expr.Expression{
-															expr.Prim_string,
-															expr.Prim_bytes,
+															expr.Prim00(expr.Prim_string),
+															expr.Prim00(expr.Prim_bytes),
 														},
 													},
-													expr.Prim_string,
+													expr.Prim00(expr.Prim_string),
 												},
 											},
 										},
-										expr.Prim_bool,
+										expr.Prim00(expr.Prim_bool),
 									},
 								},
 							},
@@ -417,11 +417,11 @@ func TestDecodeOperations(t *testing.T) {
 															&expr.Prim20{
 																Prim: expr.Prim_pair,
 																Args: [2]expr.Expression{
-																	expr.Prim_string,
-																	expr.Prim_bytes,
+																	expr.Prim00(expr.Prim_string),
+																	expr.Prim00(expr.Prim_bytes),
 																},
 															},
-															expr.Prim_string,
+															expr.Prim00(expr.Prim_string),
 														},
 													},
 													Annots: "%claims",
@@ -438,8 +438,8 @@ func TestDecodeOperations(t *testing.T) {
 												&expr.Prim2X{
 													Prim: expr.Prim_big_map,
 													Args: [2]expr.Expression{
-														expr.Prim_string,
-														expr.Prim_bytes,
+														expr.Prim00(expr.Prim_string),
+														expr.Prim00(expr.Prim_bytes),
 													},
 													Annots: "%metadata",
 												},
@@ -456,20 +456,20 @@ func TestDecodeOperations(t *testing.T) {
 								Prim: expr.Prim_code,
 								Arg: expr.Seq{
 									Value: []expr.Expression{
-										expr.Prim_UNPAIR,
-										expr.Prim_SWAP,
-										expr.Prim_DUP,
+										expr.Prim00(expr.Prim_UNPAIR),
+										expr.Prim00(expr.Prim_SWAP),
+										expr.Prim00(expr.Prim_DUP),
 										&expr.Prim10{
 											Prim: expr.Prim_DUG,
 											Arg: expr.Int{
-												Value: tz.BigInt{2},
+												Int: tz.BigInt{2},
 											},
 										},
-										expr.Prim_CDR,
-										expr.Prim_CDR,
-										expr.Prim_SENDER,
-										expr.Prim_COMPARE,
-										expr.Prim_NEQ,
+										expr.Prim00(expr.Prim_CDR),
+										expr.Prim00(expr.Prim_CDR),
+										expr.Prim00(expr.Prim_SENDER),
+										expr.Prim00(expr.Prim_COMPARE),
+										expr.Prim00(expr.Prim_NEQ),
 										&expr.Prim20{
 											Prim: expr.Prim_IF,
 											Args: [2]expr.Expression{
@@ -478,13 +478,13 @@ func TestDecodeOperations(t *testing.T) {
 														&expr.Prim20{
 															Prim: expr.Prim_PUSH,
 															Args: [2]expr.Expression{
-																expr.Prim_string,
+																expr.Prim00(expr.Prim_string),
 																expr.String{
-																	Value: "Unauthorized.",
+																	String: "Unauthorized.",
 																},
 															},
 														},
-														expr.Prim_FAILWITH,
+														expr.Prim00(expr.Prim_FAILWITH),
 													},
 												},
 												expr.Seq{
@@ -495,15 +495,15 @@ func TestDecodeOperations(t *testing.T) {
 										&expr.Prim20{
 											Prim: expr.Prim_PUSH,
 											Args: [2]expr.Expression{
-												expr.Prim_mutez,
+												expr.Prim00(expr.Prim_mutez),
 												expr.Int{
-													Value: tz.BigInt{0},
+													Int: tz.BigInt{0},
 												},
 											},
 										},
-										expr.Prim_AMOUNT,
-										expr.Prim_COMPARE,
-										expr.Prim_GT,
+										expr.Prim00(expr.Prim_AMOUNT),
+										expr.Prim00(expr.Prim_COMPARE),
+										expr.Prim00(expr.Prim_GT),
 										&expr.Prim20{
 											Prim: expr.Prim_IF,
 											Args: [2]expr.Expression{
@@ -512,13 +512,13 @@ func TestDecodeOperations(t *testing.T) {
 														&expr.Prim20{
 															Prim: expr.Prim_PUSH,
 															Args: [2]expr.Expression{
-																expr.Prim_string,
+																expr.Prim00(expr.Prim_string),
 																expr.String{
-																	Value: "Tez not accepted.",
+																	String: "Tez not accepted.",
 																},
 															},
 														},
-														expr.Prim_FAILWITH,
+														expr.Prim00(expr.Prim_FAILWITH),
 													},
 												},
 												expr.Seq{
@@ -526,81 +526,81 @@ func TestDecodeOperations(t *testing.T) {
 												},
 											},
 										},
-										expr.Prim_UNPAIR,
+										expr.Prim00(expr.Prim_UNPAIR),
 										&expr.Prim10{
 											Prim: expr.Prim_DUP,
 											Arg: expr.Int{
-												Value: tz.BigInt{3},
+												Int: tz.BigInt{3},
 											},
 										},
-										expr.Prim_CDR,
-										expr.Prim_CDR,
+										expr.Prim00(expr.Prim_CDR),
+										expr.Prim00(expr.Prim_CDR),
 										&expr.Prim10{
 											Prim: expr.Prim_DUP,
 											Arg: expr.Int{
-												Value: tz.BigInt{4},
+												Int: tz.BigInt{4},
 											},
 										},
-										expr.Prim_CDR,
-										expr.Prim_CAR,
-										expr.Prim_PAIR,
+										expr.Prim00(expr.Prim_CDR),
+										expr.Prim00(expr.Prim_CAR),
+										expr.Prim00(expr.Prim_PAIR),
 										&expr.Prim10{
 											Prim: expr.Prim_DUP,
 											Arg: expr.Int{
-												Value: tz.BigInt{4},
+												Int: tz.BigInt{4},
 											},
 										},
-										expr.Prim_CAR,
-										expr.Prim_CDR,
+										expr.Prim00(expr.Prim_CAR),
+										expr.Prim00(expr.Prim_CDR),
 										&expr.Prim10{
 											Prim: expr.Prim_DIG,
 											Arg: expr.Int{
-												Value: tz.BigInt{4},
+												Int: tz.BigInt{4},
 											},
 										},
-										expr.Prim_CAR,
-										expr.Prim_CAR,
+										expr.Prim00(expr.Prim_CAR),
+										expr.Prim00(expr.Prim_CAR),
 										&expr.Prim10{
 											Prim: expr.Prim_DIG,
 											Arg: expr.Int{
-												Value: tz.BigInt{3},
+												Int: tz.BigInt{3},
 											},
 										},
 										&expr.Prim10{
 											Prim: expr.Prim_ITER,
 											Arg: expr.Seq{
 												Value: []expr.Expression{
-													expr.Prim_SWAP,
+													expr.Prim00(expr.Prim_SWAP),
 													&expr.Prim10{
 														Prim: expr.Prim_DUP,
 														Arg: expr.Int{
-															Value: tz.BigInt{5},
+															Int: tz.BigInt{5},
 														},
 													},
 													&expr.Prim10{
 														Prim: expr.Prim_DIG,
 														Arg: expr.Int{
-															Value: tz.BigInt{2},
+															Int: tz.BigInt{2},
 														},
 													},
-													expr.Prim_UPDATE,
+													expr.Prim00(expr.Prim_UPDATE),
 												},
 											},
 										},
 										&expr.Prim10{
 											Prim: expr.Prim_DIG,
 											Arg: expr.Int{
-												Value: tz.BigInt{3},
+												Int: tz.BigInt{3},
 											},
 										},
-										expr.Prim_DROP,
-										expr.Prim_PAIR,
-										expr.Prim_PAIR,
+										expr.Prim00(expr.Prim_DROP),
+										expr.Prim00(expr.Prim_PAIR),
+										expr.Prim00(expr.Prim_PAIR),
 										&expr.Prim10{
 											Prim: expr.Prim_NIL,
-											Arg:  expr.Prim_operation,
+											Arg:  expr.Prim00(expr.Prim_operation),
 										},
-										expr.Prim_PAIR,
+										expr.Prim00(expr.Prim_PAIR),
 									},
 								},
 							},
@@ -621,10 +621,10 @@ func TestDecodeOperations(t *testing.T) {
 														Prim: expr.Prim_Pair,
 														Args: [2]expr.Expression{
 															expr.String{
-																Value: "kepler://zCT5htkeDrdLzLJQmfzfLexxDLemYdqYumFEs7P76dcGozUPQxgh/zb38SBwkBTcg1ZAQeLQKkLAEwbD7q1FcmtJweCX4SsXFQ3Sxe",
+																String: "kepler://zCT5htkeDrdLzLJQmfzfLexxDLemYdqYumFEs7P76dcGozUPQxgh/zb38SBwkBTcg1ZAQeLQKkLAEwbD7q1FcmtJweCX4SsXFQ3Sxe",
 															},
 															expr.Bytes{
-																Value: []uint8{
+																Bytes: []uint8{
 																	0xc7, 0xea, 0xdb, 0xb0, 0xe9, 0x14, 0x98, 0xfb, 0xc4, 0xe6, 0x39, 0x2f, 0xd9, 0x51, 0xeb, 0x01,
 																	0x27, 0xfb, 0xca, 0xf8, 0xd6, 0xbe, 0xa5, 0xd2, 0x97, 0xae, 0x2f, 0x58, 0x60, 0x41, 0x97, 0xbe,
 																},
@@ -632,7 +632,7 @@ func TestDecodeOperations(t *testing.T) {
 														},
 													},
 													expr.String{
-														Value: "VerifiableCredential",
+														String: "VerifiableCredential",
 													},
 												},
 											},
@@ -643,10 +643,10 @@ func TestDecodeOperations(t *testing.T) {
 														Prim: expr.Prim_Pair,
 														Args: [2]expr.Expression{
 															expr.String{
-																Value: "kepler://zCT5htkeDrdLzLJQmfzfLexxDLemYdqYumFEs7P76dcGozUPQxgh/zb38SCqYPnyU6zt4vS79GnrcpPBNL5y7RVFFideRTbJir6JHC",
+																String: "kepler://zCT5htkeDrdLzLJQmfzfLexxDLemYdqYumFEs7P76dcGozUPQxgh/zb38SCqYPnyU6zt4vS79GnrcpPBNL5y7RVFFideRTbJir6JHC",
 															},
 															expr.Bytes{
-																Value: []uint8{
+																Bytes: []uint8{
 																	0xb5, 0xf8, 0x50, 0x22, 0x6a, 0xdd, 0x36, 0xa3, 0x3a, 0x9a, 0xc6, 0x36, 0x5f, 0x2e, 0xed, 0xc8,
 																	0x9a, 0x99, 0xd3, 0xac, 0xe7, 0xb3, 0x5a, 0xfa, 0x3a, 0x15, 0xe6, 0x7c, 0x68, 0x7f, 0xbf, 0x05,
 																},
@@ -654,7 +654,7 @@ func TestDecodeOperations(t *testing.T) {
 														},
 													},
 													expr.String{
-														Value: "VerifiableCredential",
+														String: "VerifiableCredential",
 													},
 												},
 											},
@@ -665,10 +665,10 @@ func TestDecodeOperations(t *testing.T) {
 														Prim: expr.Prim_Pair,
 														Args: [2]expr.Expression{
 															expr.String{
-																Value: "kepler://zCT5htkeDrdLzLJQmfzfLexxDLemYdqYumFEs7P76dcGozUPQxgh/zb38SESwTGCicEcyBmuXGvFiChRdrhA75js55ei4AMyicNNQf",
+																String: "kepler://zCT5htkeDrdLzLJQmfzfLexxDLemYdqYumFEs7P76dcGozUPQxgh/zb38SESwTGCicEcyBmuXGvFiChRdrhA75js55ei4AMyicNNQf",
 															},
 															expr.Bytes{
-																Value: []uint8{
+																Bytes: []uint8{
 																	0xe7, 0x6f, 0xd1, 0xce, 0xe0, 0x9b, 0x5d, 0x79, 0xa8, 0xbd, 0x99, 0xdb, 0x25, 0x2c, 0x86, 0x41,
 																	0x94, 0xcc, 0xcb, 0xc9, 0x8f, 0xcf, 0x7a, 0xfe, 0xbc, 0x9f, 0x9c, 0x2b, 0xaa, 0x4d, 0xe2, 0x92,
 																},
@@ -676,14 +676,14 @@ func TestDecodeOperations(t *testing.T) {
 														},
 													},
 													expr.String{
-														Value: "VerifiableCredential",
+														String: "VerifiableCredential",
 													},
 												},
 											},
 										},
 									},
 									expr.String{
-										Value: "tzprofiles",
+										String: "tzprofiles",
 									},
 								},
 							},
@@ -697,14 +697,14 @@ func TestDecodeOperations(t *testing.T) {
 												Args: [2]expr.Expression{
 													expr.String{},
 													expr.Bytes{
-														Value: []uint8("https://tzprofiles.com/tzip016_metadata.json"),
+														Bytes: []uint8("https://tzprofiles.com/tzip016_metadata.json"),
 													},
 												},
 											},
 										},
 									},
 									expr.String{
-										Value: "tz1QGHcp9kiCE2riJYuFcaDRDzxR2wfsdxcy",
+										String: "tz1QGHcp9kiCE2riJYuFcaDRDzxR2wfsdxcy",
 									},
 								},
 							},
@@ -730,7 +730,7 @@ func TestDecodeOperations(t *testing.T) {
 				},
 				Value: &expr.Prim1X{
 					Prim:   expr.Prim_list,
-					Arg:    expr.Prim_nat,
+					Arg:    expr.Prim00(expr.Prim_nat),
 					Annots: "%c3c7f9",
 				},
 			},
@@ -814,7 +814,7 @@ func TestDecodeOperations(t *testing.T) {
 				require.Empty(t, rest)
 				//fmt.Printf("%# v\n", pretty.Formatter(op, pretty.OptStringer(true)))
 				require.Equal(t, test.expect, op)
-				require.Equal(t, test.kind, op.OperationKind())
+				require.Equal(t, test.kind, op.Operation().OperationKind())
 			})
 
 			if !test.skipEncode {

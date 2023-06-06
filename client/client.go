@@ -13,6 +13,7 @@ type Client struct {
 	Client *http.Client
 	URL    string
 	Chain  string
+	APIKey string
 }
 
 type Error struct {
@@ -44,6 +45,9 @@ func (client *Client) request(method string, path string, out any, ctx context.C
 		return err
 	}
 	req.Header.Set("Accept", "application/octet-stream")
+	if client.APIKey != "" {
+		req.Header.Add("X-Api-Key", client.APIKey)
+	}
 	res, err := client.client().Do(req)
 	if err != nil {
 		return err

@@ -89,3 +89,5 @@ func (p Protocol) Hash() (*tz.ProtocolHash, error) {
 	}
 	return nil, errors.New("gotez: unknown protocol version")
 }
+
+const LatestProtocol = Proto016PtMumbai

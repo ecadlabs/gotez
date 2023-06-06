@@ -6,8 +6,10 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 )
 
+//go:generate go run ../../../cmd/genmarshaller.go
+
 type Diff struct {
-	Contents []Op `tz:"dyn"`
+	Contents []Op `tz:"dyn" json:"contents"`
 }
 
 type Op interface {
@@ -25,32 +27,36 @@ func init() {
 	})
 }
 
+//json:action=update
 type Update struct {
-	BigMap  tz.BigInt
-	KeyHash *tz.ScriptExprHash
-	Key     expression.Expression
-	Value   tz.Option[expression.Expression]
+	BigMap  tz.BigInt                        `json:"big_map"`
+	KeyHash *tz.ScriptExprHash               `json:"key_hash"`
+	Key     expression.Expression            `json:"key"`
+	Value   tz.Option[expression.Expression] `json:"value"`
 }
 
 func (*Update) BigMapDiffOp() string { return "update" }
 
+//json:action=remove
 type Remove struct {
-	BigMap tz.BigInt
+	BigMap tz.BigInt `json:"big_map"`
 }
 
 func (*Remove) BigMapDiffOp() string { return "remove" }
 
+//json:action=copy
 type Copy struct {
-	SourceBigMap      tz.BigInt
-	DestinationBigMap tz.BigInt
+	SourceBigMap      tz.BigInt `json:"source_big_map"`
+	DestinationBigMap tz.BigInt `json:"destination_big_map"`
 }
 
 func (*Copy) BigMapDiffOp() string { return "copy" }
 
+//json:action=alloc
 type Alloc struct {
-	BigMap    tz.BigInt
-	KeyType   expression.Expression
-	ValueType expression.Expression
+	BigMap    tz.BigInt             `json:"big_map"`
+	KeyType   expression.Expression `json:"key_type"`
+	ValueType expression.Expression `json:"value_type"`
 }
 
 func (*Alloc) BigMapDiffOp() string { return "alloc" }

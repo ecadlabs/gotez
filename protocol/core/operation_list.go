@@ -5,16 +5,48 @@ import (
 	"github.com/ecadlabs/gotez/encoding"
 )
 
-type OperationsList[T GroupContents] struct {
-	Operations []*OperationsGroup[T] `tz:"dyn,dyn"` // yes, twice
+type GroupContents interface {
+	Signed
+	GroupContents()
+	Operations() []OperationContents
 }
 
-type OperationsGroup[T GroupContents] struct {
+type OperationWithOptionalMetadataContents interface {
+	Signed
+	OperationWithOptionalMetadataContents()
+	Operations() []OperationContents
+}
+
+type OperationsList[T GroupContents] struct {
+	Operations []*OperationsGroupImpl[T] `tz:"dyn,dyn"` // yes, twice
+}
+
+func (l *OperationsList[T]) GetGroups() []OperationsGroup {
+	out := make([]OperationsGroup, len(l.Operations))
+	for i, grp := range l.Operations {
+		out[i] = grp
+	}
+	return out
+}
+
+type OperationsGroup interface {
+	GetChainID() *tz.ChainID
+	GetHash() *tz.OperationsHash
+	GetBranch() *tz.BlockHash
+	GetContents() GroupContents
+}
+
+type OperationsGroupImpl[T GroupContents] struct {
 	ChainID  *tz.ChainID
-	Hash     *tz.BlockHash
+	Hash     *tz.OperationsHash
 	Branch   *tz.BlockHash `tz:"dyn"`
 	Contents T             `tz:"dyn"`
 }
+
+func (g *OperationsGroupImpl[T]) GetChainID() *tz.ChainID     { return g.ChainID }
+func (g *OperationsGroupImpl[T]) GetHash() *tz.OperationsHash { return g.Hash }
+func (g *OperationsGroupImpl[T]) GetBranch() *tz.BlockHash    { return g.Branch }
+func (g *OperationsGroupImpl[T]) GetContents() GroupContents  { return g.Contents }
 
 type OperationWithTooLargeMetadata[T OperationContents] struct {
 	OperationWithoutMetadata[T]
@@ -72,7 +104,7 @@ type OperationWithOptionalMetadataWithMetadata[T OperationContentsAndResult] str
 func (ops *OperationWithOptionalMetadataWithMetadata[T]) Operations() []OperationContents {
 	out := make([]OperationContents, len(ops.Contents))
 	for i, op := range ops.Contents {
-		out[i] = op.OperationContents()
+		out[i] = op
 	}
 	return out
 }

@@ -9,7 +9,7 @@ type protocolVersionType int
 
 var ProtocolVersionCtxKey protocolVersionType = 0
 
-type BlockHeader struct {
+type ShellHeader struct {
 	Level          int32
 	Proto          Protocol
 	Predecessor    *tz.BlockHash
@@ -38,18 +38,24 @@ type TestChainStatusNotRunning struct{}
 
 func (TestChainStatusNotRunning) TestChainStatus() string { return "not_running" }
 
+func (t TestChainStatusNotRunning) MarshalText() (text []byte, err error) {
+	return []byte(t.TestChainStatus()), nil
+}
+
+//json:status=forking
 type TestChainStatusForking struct {
-	Protocol   *tz.ProtocolHash
-	Expiration int64
+	Protocol   *tz.ProtocolHash `json:"protocol"`
+	Expiration int64            `json:"expiration"`
 }
 
 func (TestChainStatusForking) TestChainStatus() string { return "forking" }
 
+//json:status=running
 type TestChainStatusRunning struct {
-	ChainID    *tz.ChainID
-	Genesis    *tz.BlockHash
-	Protocol   *tz.ProtocolHash
-	Expiration int64
+	ChainID    *tz.ChainID      `json:"chain_id,omitempty"`
+	Genesis    *tz.BlockHash    `json:"genesis,omitempty"`
+	Protocol   *tz.ProtocolHash `json:"protocol"`
+	Expiration int64            `json:"expiration"`
 }
 
 func (TestChainStatusRunning) TestChainStatus() string { return "running" }

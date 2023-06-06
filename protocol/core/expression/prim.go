@@ -4,13 +4,15 @@ import "strconv"
 
 type Prim uint8
 
-func (Prim) Expression() {}
-
 func (prim Prim) String() string {
 	if s, ok := primStr[prim]; ok {
 		return s
 	}
 	return strconv.FormatInt(int64(prim), 10)
+}
+
+func (prim Prim) MarshalText() (text []byte, err error) {
+	return []byte(prim.String()), nil
 }
 
 const (

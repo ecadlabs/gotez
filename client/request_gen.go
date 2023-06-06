@@ -11,7 +11,7 @@ import (
 
 var path_BlockHeader = template.Must(template.New("path").Parse("/chains/{{.Chain}}/blocks/{{.Block}}/header{{if .Metadata}}?metadata={{.}}{{end}}"))
 
-func (client *Client) BlockHeader(r *BlockRequest, ctx context.Context) (*protocol.BlockHeaderInfo, error) {
+func (client *Client) BlockHeader(ctx context.Context, r *BlockRequest) (*protocol.BlockHeaderInfo, error) {
 	tmp := *r
 	if tmp.Chain == "" {
 		tmp.Chain = client.Chain
@@ -31,7 +31,7 @@ func (client *Client) BlockHeader(r *BlockRequest, ctx context.Context) (*protoc
 
 var path_Block = template.Must(template.New("path").Parse("/chains/{{.Chain}}/blocks/{{.Block}}{{if .Metadata}}?metadata={{.}}{{end}}"))
 
-func (client *Client) Block(r *BlockRequest, ctx context.Context) (*protocol.BlockInfo, error) {
+func (client *Client) Block(ctx context.Context, r *BlockRequest) (*protocol.BlockInfo, error) {
 	tmp := *r
 	if tmp.Chain == "" {
 		tmp.Chain = client.Chain

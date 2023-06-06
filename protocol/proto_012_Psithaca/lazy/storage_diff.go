@@ -6,8 +6,10 @@ import (
 	"github.com/ecadlabs/gotez/protocol/core/expression"
 )
 
+//go:generate go run ../../../cmd/genmarshaller.go
+
 type StorageDiff struct {
-	Contents []DiffKind `tz:"dyn"`
+	Contents []DiffKind `tz:"dyn" json:"contents"`
 }
 
 type DiffKind interface {
@@ -23,9 +25,10 @@ func init() {
 	})
 }
 
+//json:kind=big_map
 type BigMap struct {
-	ID   tz.BigInt
-	Diff BigMapOp
+	ID   tz.BigInt `json:"id"`
+	Diff BigMapOp  `json:"diff"`
 }
 
 func (*BigMap) LazyStorageDiffKind() string { return "big_map" }
@@ -45,40 +48,45 @@ func init() {
 	})
 }
 
+//json:action=update
 type BigMapUpdate struct {
-	Updates []*KeyValue `tz:"dyn"`
+	Updates []*KeyValue `tz:"dyn" json:"updates"`
 }
 
 func (*BigMapUpdate) LazyStorageBigMapOp() string { return "update" }
 
+//json:action=remove
 type BigMapRemove struct{}
 
 func (*BigMapRemove) LazyStorageBigMapOp() string { return "remove" }
 
+//json:action=copy
 type BigMapCopy struct {
-	Source  tz.BigInt
-	Updates []*KeyValue `tz:"dyn"`
+	Source  tz.BigInt   `json:"source"`
+	Updates []*KeyValue `tz:"dyn" json:"updates"`
 }
 
 func (*BigMapCopy) LazyStorageBigMapOp() string { return "copy" }
 
+//json:action=alloc
 type BigMapAlloc struct {
-	Updates   []*KeyValue `tz:"dyn"`
-	KeyType   expression.Expression
-	ValueType expression.Expression
+	Updates   []*KeyValue           `tz:"dyn" json:"updates"`
+	KeyType   expression.Expression `json:"key_type"`
+	ValueType expression.Expression `json:"value_type"`
 }
 
 func (*BigMapAlloc) LazyStorageBigMapOp() string { return "alloc" }
 
 type KeyValue struct {
-	KeyHash *tz.ScriptExprHash
-	Key     expression.Expression
-	Value   tz.Option[expression.Expression]
+	KeyHash *tz.ScriptExprHash               `json:"key_hash"`
+	Key     expression.Expression            `json:"key"`
+	Value   tz.Option[expression.Expression] `json:"value"`
 }
 
+//json:kind=sapling_state
 type SaplingState struct {
-	ID   tz.BigInt
-	Diff SaplingStateOp
+	ID   tz.BigInt      `json:"id"`
+	Diff SaplingStateOp `json:"diff"`
 }
 
 func (*SaplingState) LazyStorageDiffKind() string { return "sapling_state" }
@@ -98,45 +106,49 @@ func init() {
 	})
 }
 
+//json:action=update
 type SaplingStateUpdate struct {
-	Updates SaplingStateUpdates
+	Updates SaplingStateUpdates `json:"updates"`
 }
 
 func (*SaplingStateUpdate) LazyStorageSaplingStateOp() string { return "update" }
 
+//json:action=remove
 type SaplingStateRemove struct{}
 
 func (*SaplingStateRemove) LazyStorageSaplingStateOp() string { return "remove" }
 
+//json:action=copy
 type SaplingStateCopy struct {
-	Source  tz.BigInt
-	Updates SaplingStateUpdates
+	Source  tz.BigInt           `json:"source"`
+	Updates SaplingStateUpdates `json:"updates"`
 }
 
 func (*SaplingStateCopy) LazyStorageSaplingStateOp() string { return "copy" }
 
+//json:action=alloc
 type SaplingStateAlloc struct {
-	Updates  SaplingStateUpdates
-	MemoSize uint16
+	Updates  SaplingStateUpdates `json:"updates"`
+	MemoSize uint16              `json:"memo_size"`
 }
 
 func (*SaplingStateAlloc) LazyStorageSaplingStateOp() string { return "alloc" }
 
 type SaplingStateUpdates struct {
-	CommitmentsAndCiphertexts []*CommitmentAndCiphertext `tz:"dyn"`
-	Nullifiers                []byte                     `tz:"dyn"`
+	CommitmentsAndCiphertexts []*CommitmentAndCiphertext `tz:"dyn" json:"commitments_and_ciphertexts"`
+	Nullifiers                tz.Bytes                   `tz:"dyn" json:"nullifiers"`
 }
 
 type CommitmentAndCiphertext struct {
-	Commitment *[32]byte
-	Ciphertext SaplingCiphertext
+	Commitment *[32]byte         `json:"commitment"`
+	Ciphertext SaplingCiphertext `json:"ciphertext"`
 }
 
 type SaplingCiphertext struct {
-	Cv         *[32]byte
-	Epk        *[32]byte
-	PayloadEnc []byte `tz:"dyn"`
-	NonceEnc   *[24]byte
-	PayloadOut *[80]byte
-	NonceOut   *[24]byte
+	Cv         *[32]byte `json:"cv"`
+	Epk        *[32]byte `json:"epk"`
+	PayloadEnc []byte    `tz:"dyn" json:"payload_enc"`
+	NonceEnc   *[24]byte `json:"nonce_enc"`
+	PayloadOut *[80]byte `json:"payload_out"`
+	NonceOut   *[24]byte `json:"nonce_out"`
 }

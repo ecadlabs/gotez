@@ -16,12 +16,12 @@ type OriginationResult interface {
 }
 
 type OriginationResultContents struct {
-	BalanceUpdates      []*BalanceUpdate            `tz:"dyn"`
-	OriginatedContracts []core.OriginatedContractID `tz:"dyn"`
-	ConsumedMilligas    tz.BigUint
-	StorageSize         tz.BigInt
-	PaidStorageSizeDiff tz.BigInt
-	LazyStorageDiff     tz.Option[lazy.StorageDiff]
+	BalanceUpdates      []*BalanceUpdate            `tz:"dyn" json:"balance_updates"`
+	OriginatedContracts []core.OriginatedContractID `tz:"dyn" json:"originated_contracts"`
+	ConsumedMilligas    tz.BigUint                  `json:"consumed_milligas"`
+	StorageSize         tz.BigInt                   `json:"storage_size"`
+	PaidStorageSizeDiff tz.BigInt                   `json:"paid_storage_size_diff"`
+	LazyStorageDiff     tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
 func (OriginationResultContents) SuccessfulManagerOperationResult() {}
@@ -60,22 +60,24 @@ func init() {
 
 type OriginationContentsAndResult struct {
 	Origination
-	Metadata ManagerMetadata[OriginationResult]
+	Metadata ManagerMetadata[OriginationResult] `json:"metadata"`
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}
-func (op *OriginationContentsAndResult) OperationContents() core.OperationContents {
+func (op *OriginationContentsAndResult) Operation() core.Operation {
 	return &op.Origination
 }
 
 type OriginationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Balance  tz.BigUint
-	Delegate tz.Option[tz.PublicKeyHash]
-	Script   Script
-	Result   OriginationResult
+	Source   TransactionDestination      `json:"source"`
+	Nonce    uint16                      `json:"nonce"`
+	Balance  tz.BigUint                  `json:"balance"`
+	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`
+	Script   Script                      `json:"script"`
+	Result   OriginationResult           `json:"result"`
 }
 
-func (*OriginationInternalOperationResult) InternalOperationResult() {}
-func (*OriginationInternalOperationResult) OperationKind() string    { return "origination" }
+func (r *OriginationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+	return r.Result
+}
+func (*OriginationInternalOperationResult) OperationKind() string { return "origination" }

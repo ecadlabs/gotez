@@ -5,35 +5,39 @@ import (
 )
 
 type ManagerOperationResult interface {
-	OperationResultKind() string
+	OperationResultStatus() string
 }
 
 type SuccessfulManagerOperationResult interface {
-	OperationContents
+	Operation
 	SuccessfulManagerOperationResult()
 }
 
+//json:status=applied
 type OperationResultApplied[T any] struct {
-	Result T
+	Result T `json:"result"`
 }
 
-func (*OperationResultApplied[T]) OperationResultKind() string { return "applied" }
+func (*OperationResultApplied[T]) OperationResultStatus() string { return "applied" }
 
+//json:status=backtracked
 type OperationResultBacktracked[T any] struct {
-	Errors tz.Option[OperationResultErrors]
-	Result T
+	Errors tz.Option[OperationResultErrors] `json:"errors"`
+	Result T                                `json:"result"`
 }
 
-func (*OperationResultBacktracked[T]) OperationResultKind() string { return "backtracked" }
+func (*OperationResultBacktracked[T]) OperationResultStatus() string { return "backtracked" }
 
+//json:status=failed
 type OperationResultErrors struct {
-	Errors []Bytes `tz:"dyn"`
+	Errors []Bytes `tz:"dyn" json:"errors"`
 }
 
 type OperationResultFailed OperationResultErrors
 
-func (*OperationResultFailed) OperationResultKind() string { return "failed" }
+func (*OperationResultFailed) OperationResultStatus() string { return "failed" }
 
+//json:status=skipped
 type OperationResultSkipped struct{}
 
-func (*OperationResultSkipped) OperationResultKind() string { return "skipped" }
+func (*OperationResultSkipped) OperationResultStatus() string { return "skipped" }
