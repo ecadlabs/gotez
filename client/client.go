@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
 type Client struct {

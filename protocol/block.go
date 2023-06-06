@@ -3,14 +3,14 @@ package protocol
 import (
 	"fmt"
 
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
-	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
-	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
-	"github.com/ecadlabs/gotez/protocol/proto_015_PtLimaPt"
-	"github.com/ecadlabs/gotez/protocol/proto_016_PtMumbai"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/encoding"
+	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 )
 
 type BlockInfoProtocolData interface {

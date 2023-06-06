@@ -4,9 +4,9 @@ package b58
 import (
 	"errors"
 
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/b58/base58"
-	"github.com/ecadlabs/gotez/b58/prefix"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/b58/base58"
+	"github.com/ecadlabs/gotez/v2/b58/prefix"
 )
 
 //go:generate go run generate.go

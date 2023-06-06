@@ -3,13 +3,13 @@ package proto_014_PtKathma
 import (
 	"encoding/json"
 
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/core/expression"
-	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
-	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca/lazy"
-	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/encoding"
+	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/core/expression"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca/lazy"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
 )
 
 type Transaction = proto_012_Psithaca.Transaction

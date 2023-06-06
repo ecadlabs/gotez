@@ -3,8 +3,8 @@ package expression
 import (
 	"encoding/json"
 
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/encoding"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
 type Expression interface {

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/ecadlabs/gotez/b58/base58"
-	"github.com/ecadlabs/gotez/b58/prefix"
-	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/v2/b58/base58"
+	"github.com/ecadlabs/gotez/v2/b58/prefix"
+	"github.com/ecadlabs/gotez/v2/encoding"
 	"golang.org/x/crypto/blake2b"
 )
 

@@ -1,7 +1,7 @@
 package core
 
 import (
-	tz "github.com/ecadlabs/gotez"
+	tz "github.com/ecadlabs/gotez/v2"
 )
 
 type InternalOperationResult interface {

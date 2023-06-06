@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
 type BigInt []byte

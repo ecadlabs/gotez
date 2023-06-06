@@ -1,4 +1,4 @@
-module github.com/ecadlabs/gotez
+module github.com/ecadlabs/gotez/v2
 
 go 1.19
 

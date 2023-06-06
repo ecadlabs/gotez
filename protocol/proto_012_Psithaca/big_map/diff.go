@@ -1,9 +1,9 @@
 package big_map
 
 import (
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/core/expression"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/encoding"
+	"github.com/ecadlabs/gotez/v2/protocol/core/expression"
 )
 
 //go:generate go run ../../../cmd/genmarshaller.go

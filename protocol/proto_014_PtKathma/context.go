@@ -1,8 +1,8 @@
 package proto_014_PtKathma
 
 import (
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/protocol/core"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/protocol/core"
 )
 
 type DelegateInfoContents struct {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strconv"
 
-	tz "github.com/ecadlabs/gotez"
+	tz "github.com/ecadlabs/gotez/v2"
 )
 
 type Protocol uint8

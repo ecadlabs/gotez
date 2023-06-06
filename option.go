@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/pretty"
 )
 

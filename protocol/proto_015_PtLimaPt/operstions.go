@@ -1,13 +1,13 @@
 package proto_015_PtLimaPt
 
 import (
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/encoding"
-	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/core/expression"
-	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
-	"github.com/ecadlabs/gotez/protocol/proto_013_PtJakart"
-	"github.com/ecadlabs/gotez/protocol/proto_014_PtKathma"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/encoding"
+	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/core/expression"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 )
 
 type ManagerOperation = proto_012_Psithaca.ManagerOperation

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/stretchr/testify/require"
 )
 

@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ecadlabs/gotez/b58/prefix"
+	"github.com/ecadlabs/gotez/v2/b58/prefix"
 )
 
 const alphabetStart = 49

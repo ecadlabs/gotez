@@ -1,9 +1,9 @@
 package proto_013_PtJakart
 
 import (
-	tz "github.com/ecadlabs/gotez"
-	"github.com/ecadlabs/gotez/protocol/core"
-	"github.com/ecadlabs/gotez/protocol/proto_012_Psithaca"
+	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 )
 
 type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader

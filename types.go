@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ecadlabs/gotez/encoding"
+	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
 const (
