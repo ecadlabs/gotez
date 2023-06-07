@@ -9,6 +9,7 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca/lazy"
 )
 
+//json:kind=OperationKind()
 type Transaction struct {
 	ManagerOperation
 	Amount      tz.BigUint            `json:"amount"`
@@ -90,8 +91,11 @@ type TransactionResultContents struct {
 	LazyStorageDiff              tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
-func (TransactionResultContents) SuccessfulManagerOperationResult() {}
-func (TransactionResultContents) OperationKind() string             { return "transaction" }
+//json:kind=OperationKind()
+type TransactionSuccessfulManagerResult TransactionResultContents
+
+func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
 
 type TransactionContentsAndResult struct {
 	Transaction
@@ -139,6 +143,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
 	Source      core.ContractID       `json:"source"`
 	Nonce       uint16                `json:"nonce"`
@@ -148,6 +153,7 @@ type TransactionInternalOperationResult struct {
 	Result      TransactionResult     `json:"result"`
 }
 
+func (r *TransactionInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }

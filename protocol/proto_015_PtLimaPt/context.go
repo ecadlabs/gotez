@@ -6,26 +6,26 @@ import (
 )
 
 type DelegateInfoContents struct {
-	FullBalance           tz.BigUint
-	CurrentFrozenDeposits tz.BigUint
-	FrozenDeposits        tz.BigUint
-	StakingBalance        tz.BigUint
-	FrozenDepositsLimit   tz.Option[tz.BigUint]
-	DelegatedContracts    []core.ContractID `tz:"dyn"`
-	DelegatedBalance      tz.BigUint
-	Deactivated           bool
-	GracePeriod           int32
-	VotingPower           tz.Option[int64]
-	CurrentBallot         tz.Option[core.BallotKind]
-	CurrentProposals      []*tz.ProtocolHash `tz:"dyn"`
-	RemainingProposals    int32
-	ActiveConsensusKey    tz.PublicKeyHash
-	PendingConsensusKeys  []*PendingConsensusKey `tz:"dyn"`
+	FullBalance           tz.BigUint                 `json:"full_balance"`
+	CurrentFrozenDeposits tz.BigUint                 `json:"current_frozen_deposits"`
+	FrozenDeposits        tz.BigUint                 `json:"frozen_deposits"`
+	StakingBalance        tz.BigUint                 `json:"staking_balance"`
+	FrozenDepositsLimit   tz.Option[tz.BigUint]      `json:"frozen_deposits_limit"`
+	DelegatedContracts    []core.ContractID          `tz:"dyn" json:"delegated_contracts"`
+	DelegatedBalance      tz.BigUint                 `json:"delegated_balance"`
+	Deactivated           bool                       `json:"deactivated"`
+	GracePeriod           int32                      `json:"grace_period"`
+	VotingPower           tz.Option[int64]           `json:"voting_power"`
+	CurrentBallot         tz.Option[core.BallotKind] `json:"current_ballot"`
+	CurrentProposals      []*tz.ProtocolHash         `tz:"dyn" json:"current_proposals"`
+	RemainingProposals    int32                      `json:"remaining_proposals"`
+	ActiveConsensusKey    tz.PublicKeyHash           `json:"active_consensus_key"`
+	PendingConsensusKeys  []*PendingConsensusKey     `tz:"dyn" json:"pending_consensus_keys"`
 }
 
 type PendingConsensusKey struct {
-	Cycle int32
-	PKH   tz.PublicKeyHash
+	Cycle int32            `json:"cycle"`
+	PKH   tz.PublicKeyHash `json:"pkh"`
 }
 
 type DelegateInfo struct {

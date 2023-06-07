@@ -1,6 +1,8 @@
 package core
 
 import (
+	"encoding/json"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 )
@@ -18,7 +20,7 @@ type OperationWithOptionalMetadataContents interface {
 }
 
 type OperationsList[T GroupContents] struct {
-	Operations []*OperationsGroupImpl[T] `tz:"dyn,dyn"` // yes, twice
+	Operations []*OperationsGroupImpl[T] `tz:"dyn,dyn" json:"operations"` // yes, twice
 }
 
 func (l *OperationsList[T]) GetGroups() []OperationsGroup {
@@ -37,10 +39,10 @@ type OperationsGroup interface {
 }
 
 type OperationsGroupImpl[T GroupContents] struct {
-	ChainID  *tz.ChainID
-	Hash     *tz.OperationsHash
-	Branch   *tz.BlockHash `tz:"dyn"`
-	Contents T             `tz:"dyn"`
+	ChainID  *tz.ChainID        `json:"chain_id"`
+	Hash     *tz.OperationsHash `json:"hash"`
+	Branch   *tz.BlockHash      `tz:"dyn" json:"branch"`
+	Contents T                  `tz:"dyn" json:"contents"`
 }
 
 func (g *OperationsGroupImpl[T]) GetChainID() *tz.ChainID     { return g.ChainID }
@@ -53,8 +55,8 @@ type OperationWithTooLargeMetadata[T OperationContents] struct {
 }
 
 type OperationWithoutMetadata[T OperationContents] struct {
-	Contents  []T
-	Signature *tz.GenericSignature // takes the rest, see below
+	Contents  []T                  `json:"contents"`
+	Signature *tz.GenericSignature `json:"signature"` // takes the rest, see below
 }
 
 func (op *OperationWithoutMetadata[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
@@ -83,22 +85,26 @@ func (op *OperationWithoutMetadata[T]) GetSignature() (tz.Signature, error) {
 }
 
 type OperationWithOptionalMetadata[T OperationWithOptionalMetadataContents] struct {
-	Contents T
+	Contents T `json:"contents"`
 }
 
-func (ops *OperationWithOptionalMetadata[T]) Operations() []OperationContents {
+func (ops *OperationWithOptionalMetadata[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ops.Contents)
+}
+
+func (ops OperationWithOptionalMetadata[T]) Operations() []OperationContents {
 	return ops.Contents.Operations()
 }
 
-func (op *OperationWithOptionalMetadata[T]) GetSignature() (tz.Signature, error) {
+func (op OperationWithOptionalMetadata[T]) GetSignature() (tz.Signature, error) {
 	return op.Contents.GetSignature()
 }
 
-func (*OperationWithOptionalMetadata[T]) GroupContents() {}
+func (OperationWithOptionalMetadata[T]) GroupContents() {}
 
 type OperationWithOptionalMetadataWithMetadata[T OperationContentsAndResult] struct {
-	Contents  []T `tz:"dyn"`
-	Signature tz.AnySignature
+	Contents  []T             `tz:"dyn" json:"contents"`
+	Signature tz.AnySignature `json:"signature"`
 }
 
 func (ops *OperationWithOptionalMetadataWithMetadata[T]) Operations() []OperationContents {
@@ -115,8 +121,8 @@ func (op *OperationWithOptionalMetadataWithMetadata[T]) GetSignature() (tz.Signa
 }
 
 type OperationWithOptionalMetadataWithoutMetadata[T OperationContents] struct {
-	Contents  []T `tz:"dyn"`
-	Signature tz.AnySignature
+	Contents  []T             `tz:"dyn" json:"contents"`
+	Signature tz.AnySignature `json:"signature"`
 }
 
 func (ops *OperationWithOptionalMetadataWithoutMetadata[T]) Operations() []OperationContents {

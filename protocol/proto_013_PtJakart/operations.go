@@ -1,5 +1,7 @@
 package proto_013_PtJakart
 
+//go:generate go run ../../cmd/genmarshaller.go
+
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
@@ -28,9 +30,9 @@ type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
 type ConsumedGasResult = proto_012_Psithaca.ConsumedGasResult
 type ConsumedGasResultContents = proto_012_Psithaca.ConsumedGasResultContents
-type RevealResultContents = proto_012_Psithaca.RevealResultContents
-type DelegationResultContents = proto_012_Psithaca.DelegationResultContents
-type SetDepositsLimitResultContents = proto_012_Psithaca.SetDepositsLimitResultContents
+type RevealRevealSuccessfulManagerResult = proto_012_Psithaca.RevealSuccessfulManagerResult
+type DelegationSuccessfulManagerResult = proto_012_Psithaca.DelegationSuccessfulManagerResult
+type SetDepositsLimitSuccessfulManagerResult = proto_012_Psithaca.SetDepositsLimitSuccessfulManagerResult
 
 type Ticket struct {
 	Contents expression.Expression `tz:"dyn" json:"contents"`
@@ -39,6 +41,7 @@ type Ticket struct {
 	Amount   tz.BigUint            `json:"amount"`
 }
 
+//json:kind=OperationKind()
 type TransferTicket struct {
 	ManagerOperation
 	Ticket      Ticket          `json:"ticket"`
@@ -225,8 +228,11 @@ type TransferTicketResultContents struct {
 	PaidStorageSizeDiff tz.BigInt  `json:"paid_storage_size_diff"`
 }
 
-func (TransferTicketResultContents) SuccessfulManagerOperationResult() {}
-func (TransferTicketResultContents) OperationKind() string {
+//json:kind=OperationKind()
+type TransferTicketSuccessfulManagerResult TransferTicketResultContents
+
+func (TransferTicketSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (TransferTicketSuccessfulManagerResult) OperationKind() string {
 	return "transfer_ticket"
 }
 
@@ -352,6 +358,7 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 	return out
 }
 
+//json:kind=OperationKind()
 type DelegationInternalOperationResult struct {
 	Source   TransactionDestination      `json:"source"`
 	Nonce    uint16                      `json:"nonce"`
@@ -359,10 +366,11 @@ type DelegationInternalOperationResult struct {
 	Result   ConsumedGasResult           `json:"result"`
 }
 
+func (*DelegationInternalOperationResult) OperationKind() string     { return "delegation" }
+func (r *DelegationInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *DelegationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }
-func (*DelegationInternalOperationResult) OperationKind() string { return "delegation" }
 
 type InternalOperationResult interface {
 	core.InternalOperationResult
@@ -385,11 +393,11 @@ type SuccessfulManagerOperationResult interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SuccessfulManagerOperationResult]{
 		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
-			0: (*RevealResultContents)(nil),
-			1: (*TransactionResultContents)(nil),
-			2: (*OriginationResultContents)(nil),
-			3: (*DelegationResultContents)(nil),
-			5: (*SetDepositsLimitResultContents)(nil),
+			0: (*RevealRevealSuccessfulManagerResult)(nil),
+			1: (*TransactionSuccessfulManagerResult)(nil),
+			2: (*OriginationSuccessfulManagerResult)(nil),
+			3: (*DelegationSuccessfulManagerResult)(nil),
+			5: (*SetDepositsLimitSuccessfulManagerResult)(nil),
 			// 200: (*ScRollupOriginateResultContents)(nil),
 		},
 	})

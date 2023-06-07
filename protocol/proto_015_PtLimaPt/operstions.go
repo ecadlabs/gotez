@@ -1,5 +1,7 @@
 package proto_015_PtLimaPt
 
+//go:generate go run ../../cmd/genmarshaller.go
+
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
@@ -35,9 +37,9 @@ type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type ConsumedGasResultContents = proto_014_PtKathma.ConsumedGasResultContents
-type RevealResultContents = proto_014_PtKathma.RevealResultContents
-type DelegationResultContents = proto_014_PtKathma.DelegationResultContents
-type SetDepositsLimitResultContents = proto_014_PtKathma.SetDepositsLimitResultContents
+type RevealSuccessfulManagerResult = proto_014_PtKathma.RevealSuccessfulManagerResult
+type DelegationSuccessfulManagerResult = proto_014_PtKathma.DelegationSuccessfulManagerResult
+type SetDepositsLimitSuccessfulManagerResult = proto_014_PtKathma.SetDepositsLimitSuccessfulManagerResult
 
 type DelegationContentsAndResult struct {
 	Delegation
@@ -69,6 +71,7 @@ func (op *SetDepositsLimitContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type UpdateConsensusKey struct {
 	ManagerOperation
 	PublicKey tz.PublicKey `json:"public_key"`
@@ -76,6 +79,7 @@ type UpdateConsensusKey struct {
 
 func (*UpdateConsensusKey) OperationKind() string { return "update_consensus_key" }
 
+//json:kind=OperationKind()
 type DrainDelegate struct {
 	ConsensusKey tz.PublicKeyHash `json:"consensus_key"`
 	Delegate     tz.PublicKeyHash `json:"delegate"`
@@ -86,11 +90,15 @@ func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
 
 type UpdateConsensusKeyResultContents ConsumedGasResultContents
 
-func (*UpdateConsensusKeyResultContents) SuccessfulManagerOperationResult() {}
-func (*UpdateConsensusKeyResultContents) OperationKind() string {
+//json:kind=OperationKind()
+type UpdateConsensusKeySuccessfulManagerResult UpdateConsensusKeyResultContents
+
+func (*UpdateConsensusKeySuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (*UpdateConsensusKeySuccessfulManagerResult) OperationKind() string {
 	return "update_consensus_key"
 }
 
+//json:kind=OperationKind()
 type DALPublishSlotHeader struct {
 	ManagerOperation
 	Slot DALSlot `json:"slot"`
@@ -280,8 +288,11 @@ type IncreasePaidStorageResultContents struct {
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
 
-func (IncreasePaidStorageResultContents) SuccessfulManagerOperationResult() {}
-func (IncreasePaidStorageResultContents) OperationKind() string {
+//json:kind=OperationKind()
+type IncreasePaidStorageSuccessfulManagerResult IncreasePaidStorageResultContents
+
+func (IncreasePaidStorageSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
 	return "increase_paid_storage"
 }
 
@@ -495,6 +506,7 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 	return out
 }
 
+//json:kind=OperationKind()
 type DelegationInternalOperationResult struct {
 	Source   TransactionDestination      `json:"source"`
 	Nonce    uint16                      `json:"nonce"`
@@ -502,11 +514,13 @@ type DelegationInternalOperationResult struct {
 	Result   ConsumedGasResult           `json:"result"`
 }
 
+func (r *DelegationInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *DelegationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*DelegationInternalOperationResult) OperationKind() string { return "delegation" }
 
+//json:kind=OperationKind()
 type EventInternalOperationResult struct {
 	Source  TransactionDestination           `json:"source"`
 	Nonce   uint16                           `json:"nonce"`
@@ -516,6 +530,7 @@ type EventInternalOperationResult struct {
 	Result  ConsumedGasResult                `json:"result"`
 }
 
+func (r *EventInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *EventInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }
@@ -543,13 +558,13 @@ type SuccessfulManagerOperationResult interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SuccessfulManagerOperationResult]{
 		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
-			0: (*RevealResultContents)(nil),
-			1: (*TransactionResultContents)(nil),
-			2: (*OriginationResultContents)(nil),
-			3: (*DelegationResultContents)(nil),
-			5: (*SetDepositsLimitResultContents)(nil),
-			6: (*UpdateConsensusKeyResultContents)(nil),
-			9: (*IncreasePaidStorageResultContents)(nil),
+			0: (*RevealSuccessfulManagerResult)(nil),
+			1: (*TransactionSuccessfulManagerResult)(nil),
+			2: (*OriginationSuccessfulManagerResult)(nil),
+			3: (*DelegationSuccessfulManagerResult)(nil),
+			5: (*SetDepositsLimitSuccessfulManagerResult)(nil),
+			6: (*UpdateConsensusKeySuccessfulManagerResult)(nil),
+			9: (*IncreasePaidStorageSuccessfulManagerResult)(nil),
 			// 200: (*ScRollupOriginateResultContents)(nil),
 		},
 	})

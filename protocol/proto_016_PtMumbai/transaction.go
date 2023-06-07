@@ -1,8 +1,6 @@
 package proto_016_PtMumbai
 
 import (
-	"encoding/json"
-
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -40,14 +38,14 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	TransactionResultDestination
+	TransactionResultDestination `json:"contents"`
 }
 
-func (TransactionResultContents) SuccessfulManagerOperationResult() {}
-func (TransactionResultContents) OperationKind() string             { return "transaction" }
-func (c TransactionResultContents) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.TransactionResultDestination)
-}
+//json:kind=OperationKind()
+type TransactionSuccessfulManagerResult TransactionResultContents
+
+func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
 
 type ToContract struct {
 	Storage tz.Option[expression.Expression] `json:"storage"`
@@ -124,6 +122,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
 	Source      TransactionDestination `json:"source"`
 	Nonce       uint16                 `json:"nonce"`
@@ -133,6 +132,7 @@ type TransactionInternalOperationResult struct {
 	Result      TransactionResult      `json:"result"`
 }
 
+func (r *TransactionInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }
@@ -146,9 +146,7 @@ type SmartRollupDestination struct {
 }
 
 func (*SmartRollupDestination) TransactionDestination() {}
-func (s *SmartRollupDestination) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.SmartRollupAddress)
-}
+func (*SmartRollupDestination) Address()                {}
 
 type TransactionDestination interface {
 	core.TransactionDestination

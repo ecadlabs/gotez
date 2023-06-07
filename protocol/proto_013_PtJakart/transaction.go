@@ -1,8 +1,6 @@
 package proto_013_PtJakart
 
 import (
-	"encoding/json"
-
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -36,9 +34,7 @@ type TxRollupDestination struct {
 }
 
 func (*TxRollupDestination) TransactionDestination() {}
-func (t *TxRollupDestination) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.TXRollupAddress)
-}
+func (*TxRollupDestination) Address()                {}
 
 type TransactionResultDestination interface {
 	TransactionResultDestination()
@@ -92,18 +88,18 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	TransactionResultDestination
+	TransactionResultDestination `json:"contents"`
 }
 
-func (TransactionResultContents) SuccessfulManagerOperationResult() {}
-func (TransactionResultContents) OperationKind() string             { return "transaction" }
-func (c TransactionResultContents) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.TransactionResultDestination)
-}
+//json:kind=OperationKind()
+type TransactionSuccessfulManagerResult TransactionResultContents
+
+func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
 
 type TransactionContentsAndResult struct {
 	Transaction
-	Metadata ManagerMetadata[TransactionResult]
+	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`
 }
 
 func (op *TransactionContentsAndResult) GetMetadata() any {
@@ -147,15 +143,17 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
-	Source      core.ContractID
-	Nonce       uint16
-	Amount      tz.BigUint
-	Destination TransactionDestination
-	Parameters  tz.Option[Parameters]
-	Result      TransactionResult
+	Source      core.ContractID        `json:"source"`
+	Nonce       uint16                 `json:"nonce"`
+	Amount      tz.BigUint             `json:"amount"`
+	Destination TransactionDestination `json:"destination"`
+	Parameters  tz.Option[Parameters]  `json:"parameters"`
+	Result      TransactionResult      `json:"result"`
 }
 
+func (r *TransactionInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }

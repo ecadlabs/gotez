@@ -3,7 +3,6 @@ package core
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
-	"encoding/json"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -58,6 +57,7 @@ func (b BallotKind) MarshalText() (text []byte, err error) {
 type ContractID interface {
 	tz.Base58Encoder
 	ContractID()
+	Address()
 }
 
 func init() {
@@ -78,10 +78,6 @@ type ImplicitContract struct {
 	tz.PublicKeyHash
 }
 
-func (c *ImplicitContract) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.PublicKeyHash)
-}
-
 func (*ImplicitContract) ContractID() {}
 
 type OriginatedContractID interface {
@@ -98,25 +94,31 @@ func init() {
 }
 
 type TransactionDestination interface {
-	tz.Base58Encoder
+	Address
 	TransactionDestination()
+}
+
+type Address interface {
+	tz.Base58Encoder
+	Address()
 }
 
 func (*OriginatedContract) ContractID()             {}
 func (*OriginatedContract) OriginatedContractID()   {}
 func (*OriginatedContract) TransactionDestination() {}
-func (c *OriginatedContract) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.ContractHash)
-}
-func (*ImplicitContract) TransactionDestination() {}
+func (*ImplicitContract) TransactionDestination()   {}
 
 type Signed interface {
 	GetSignature() (tz.Signature, error)
 }
 
+type OperationWithSource interface {
+	GetSource() Address
+}
+
 type ManagerOperation interface {
 	OperationContents
-	GetSource() tz.PublicKeyHash
+	OperationWithSource
 	GetFee() tz.BigUint
 	GetCounter() tz.BigUint
 	GetGasLimit() tz.BigUint

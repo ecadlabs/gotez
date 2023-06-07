@@ -20,9 +20,9 @@ type BlockInfoProtocolData interface {
 }
 
 type BlockInfo struct {
-	ChainID      *tz.ChainID
-	Hash         *tz.BlockHash
-	ProtocolData BlockInfoProtocolData
+	ChainID      *tz.ChainID           `json:"chain_id"`
+	Hash         *tz.BlockHash         `json:"hash"`
+	ProtocolData BlockInfoProtocolData `json:"protocol_data"`
 }
 
 type blockInfoPreamble struct {
@@ -70,9 +70,9 @@ func (info *BlockInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte
 }
 
 type BlockHeaderInfo struct {
-	ChainID      *tz.ChainID
-	Hash         *tz.BlockHash
-	ProtocolData core.BlockHeader
+	ChainID      *tz.ChainID      `json:"chain_id"`
+	Hash         *tz.BlockHash    `json:"hash"`
+	ProtocolData core.BlockHeader `json:"protocol_data"`
 }
 
 func (info *BlockHeaderInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {

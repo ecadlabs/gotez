@@ -17,15 +17,18 @@ type OriginationResult interface {
 
 type OriginationResultContents struct {
 	BalanceUpdates
-	OriginatedContracts []core.OriginatedContractID `tz:"dyn"`
-	ConsumedMilligas    tz.BigUint
-	StorageSize         tz.BigInt
-	PaidStorageSizeDiff tz.BigInt
-	LazyStorageDiff     tz.Option[lazy.StorageDiff]
+	OriginatedContracts []core.OriginatedContractID `tz:"dyn" json:"originated_contracts"`
+	ConsumedMilligas    tz.BigUint                  `json:"consumed_milligas"`
+	StorageSize         tz.BigInt                   `json:"storage_size"`
+	PaidStorageSizeDiff tz.BigInt                   `json:"paid_storage_size_diff"`
+	LazyStorageDiff     tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
-func (OriginationResultContents) SuccessfulManagerOperationResult() {}
-func (OriginationResultContents) OperationKind() string             { return "origination" }
+//json:kind=OperationKind()
+type OriginationSuccessfulManagerResult OriginationResultContents
+
+func (OriginationSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (OriginationSuccessfulManagerResult) OperationKind() string             { return "origination" }
 
 type OriginationResultApplied struct {
 	core.OperationResultApplied[OriginationResultContents]
@@ -60,7 +63,7 @@ func init() {
 
 type OriginationContentsAndResult struct {
 	Origination
-	Metadata ManagerMetadata[OriginationResult]
+	Metadata ManagerMetadata[OriginationResult] `json:"metadata"`
 }
 
 func (*OriginationContentsAndResult) OperationContentsAndResult() {}
@@ -68,15 +71,17 @@ func (op *OriginationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type OriginationInternalOperationResult struct {
-	Source   TransactionDestination
-	Nonce    uint16
-	Balance  tz.BigUint
-	Delegate tz.Option[tz.PublicKeyHash]
-	Script   Script
-	Result   OriginationResult
+	Source   TransactionDestination      `json:"source"`
+	Nonce    uint16                      `json:"nonce"`
+	Balance  tz.BigUint                  `json:"balance"`
+	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`
+	Script   Script                      `json:"script"`
+	Result   OriginationResult           `json:"result"`
 }
 
+func (r *OriginationInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *OriginationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }

@@ -1,6 +1,8 @@
 package proto_016_PtMumbai
 
 import (
+	"strconv"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -14,12 +16,28 @@ const (
 	PVM_WASM_2_0_0
 )
 
+func (k PVMKind) String() string {
+	switch k {
+	case PVMArith:
+		return "arith"
+	case PVM_WASM_2_0_0:
+		return "wasm_2_0_0"
+	default:
+		return strconv.FormatInt(int64(k), 10)
+	}
+}
+
+func (k PVMKind) MarshalText() (text []byte, err error) {
+	return []byte(k.String()), nil
+}
+
+//json:kind=OperationKind()
 type SmartRollupOriginate struct {
 	ManagerOperation
-	PVMKind          PVMKind
-	Kernel           []byte                `tz:"dyn"`
-	OriginationProof []byte                `tz:"dyn"`
-	ParametersTy     expression.Expression `tz:"dyn"`
+	PVMKind          PVMKind               `json:"pvm_kind"`
+	Kernel           tz.Bytes              `tz:"dyn" json:"kernel"`
+	OriginationProof tz.Bytes              `tz:"dyn" json:"origination_proof"`
+	ParametersTy     expression.Expression `tz:"dyn" json:"parameters_ty"`
 }
 
 func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_originate" }
@@ -31,14 +49,17 @@ type SmartRollupOriginateResult interface {
 
 type SmartRollupOriginateResultContents struct {
 	BalanceUpdates
-	Address               *tz.SmartRollupAddress
-	GenesisCommitmentHash *tz.SmartRollupCommitmentHash
-	ConsumedMilligas      tz.BigUint
-	Size                  tz.BigInt
+	Address               *tz.SmartRollupAddress        `json:"address"`
+	GenesisCommitmentHash *tz.SmartRollupCommitmentHash `json:"genesis_commitment_hash"`
+	ConsumedMilligas      tz.BigUint                    `json:"consumed_milligas"`
+	Size                  tz.BigInt                     `json:"size"`
 }
 
-func (SmartRollupOriginateResultContents) SuccessfulManagerOperationResult() {}
-func (SmartRollupOriginateResultContents) OperationKind() string {
+//json:kind=OperationKind()
+type SmartRollupOriginateSuccessfulManagerResult SmartRollupOriginateResultContents
+
+func (SmartRollupOriginateSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (SmartRollupOriginateSuccessfulManagerResult) OperationKind() string {
 	return "smart_rollup_originate"
 }
 
@@ -75,7 +96,7 @@ func init() {
 
 type SmartRollupOriginateContentsAndResult struct {
 	SmartRollupOriginate
-	Metadata ManagerMetadata[SmartRollupOriginateResult]
+	Metadata ManagerMetadata[SmartRollupOriginateResult] `json:"metadata"`
 }
 
 func (*SmartRollupOriginateContentsAndResult) OperationContentsAndResult() {}
@@ -83,16 +104,17 @@ func (op *SmartRollupOriginateContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type SmartRollupAddMessages struct {
 	ManagerOperation
-	Message []core.Bytes `tz:"dyn"`
+	Message []core.Bytes `tz:"dyn" json:"message"`
 }
 
 func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add_messages" }
 
 type SmartRollupAddMessagesContentsAndResult struct {
 	SmartRollupAddMessages
-	Metadata ManagerMetadata[ConsumedGasResult]
+	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
 }
 
 func (*SmartRollupAddMessagesContentsAndResult) OperationContentsAndResult() {}
@@ -100,17 +122,18 @@ func (op *SmartRollupAddMessagesContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type SmartRollupCement struct {
 	ManagerOperation
-	Rollup     *tz.SmartRollupAddress
-	Commitment *tz.SmartRollupCommitmentHash
+	Rollup     *tz.SmartRollupAddress        `json:"rollup"`
+	Commitment *tz.SmartRollupCommitmentHash `json:"commitment"`
 }
 
 func (*SmartRollupCement) OperationKind() string { return "smart_rollup_cement" }
 
 type SmartRollupCementResultContents struct {
-	ConsumedMilligas tz.BigUint
-	InboxLevel       int32
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
+	InboxLevel       int32      `json:"inbox_level"`
 }
 
 type SmartRollupCementResult interface {
@@ -151,7 +174,7 @@ func init() {
 
 type SmartRollupCementContentsAndResult struct {
 	SmartRollupCement
-	Metadata ManagerMetadata[SmartRollupCementResult]
+	Metadata ManagerMetadata[SmartRollupCementResult] `json:"metadata"`
 }
 
 func (*SmartRollupCementContentsAndResult) OperationContentsAndResult() {}
@@ -159,25 +182,26 @@ func (op *SmartRollupCementContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type SmartRollupPublish struct {
 	ManagerOperation
-	Rollup     *tz.SmartRollupAddress
-	Commitment SmartRollupCommitment
+	Rollup     *tz.SmartRollupAddress `json:"rollup"`
+	Commitment SmartRollupCommitment  `json:"commitment"`
 }
 
 func (*SmartRollupRefute) OperationKind() string { return "smart_rollup_refute" }
 
 type SmartRollupCommitment struct {
-	CompressedState *tz.SmartRollupStateHash
-	InboxLevel      int32
-	Predecessor     *tz.SmartRollupCommitmentHash
-	NumberOfTicks   int64
+	CompressedState *tz.SmartRollupStateHash      `json:"compressed_state"`
+	InboxLevel      int32                         `json:"inbox_level"`
+	Predecessor     *tz.SmartRollupCommitmentHash `json:"predecessor"`
+	NumberOfTicks   int64                         `json:"number_of_ticks"`
 }
 
 type SmartRollupPublishResultContents struct {
-	ConsumedMilligas tz.BigUint
-	StakedHash       *tz.SmartRollupCommitmentHash
-	PublishedAtLevel int32
+	ConsumedMilligas tz.BigUint                    `json:"consumed_milligas"`
+	StakedHash       *tz.SmartRollupCommitmentHash `json:"staked_hash"`
+	PublishedAtLevel int32                         `json:"published_at_level"`
 	BalanceUpdates
 }
 
@@ -219,7 +243,7 @@ func init() {
 
 type SmartRollupPublishContentsAndResult struct {
 	SmartRollupPublish
-	Metadata ManagerMetadata[SmartRollupPublishResult]
+	Metadata ManagerMetadata[SmartRollupPublishResult] `json:"metadata"`
 }
 
 func (*SmartRollupPublishContentsAndResult) OperationContentsAndResult() {}
@@ -227,11 +251,12 @@ func (op *SmartRollupPublishContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type SmartRollupRefute struct {
 	ManagerOperation
-	Rollup     *tz.SmartRollupAddress
-	Opponent   tz.PublicKeyHash
-	Refutation SmartRollupRefutation
+	Rollup     *tz.SmartRollupAddress `json:"rollup"`
+	Opponent   tz.PublicKeyHash       `json:"opponent"`
+	Refutation SmartRollupRefutation  `json:"refutation"`
 }
 
 func (*SmartRollupPublish) OperationKind() string { return "smart_rollup_publish" }
@@ -241,15 +266,15 @@ type SmartRollupRefutation interface {
 }
 
 type RefutationStart struct {
-	PlayerCommitmentHash   *tz.SmartRollupCommitmentHash
-	OpponentCommitmentHash *tz.SmartRollupCommitmentHash
+	PlayerCommitmentHash   *tz.SmartRollupCommitmentHash `json:"player_commitment_hash"`
+	OpponentCommitmentHash *tz.SmartRollupCommitmentHash `json:"opponent_commitment_hash"`
 }
 
 func (*RefutationStart) RefutationKind() string { return "start" }
 
 type RefutationMove struct {
-	Choice tz.BigUint
-	Step   RefutationStep
+	Choice tz.BigUint     `json:"choice"`
+	Step   RefutationStep `json:"step"`
 }
 
 func (*RefutationMove) RefutationKind() string { return "move" }
@@ -268,19 +293,19 @@ type RefutationStep interface {
 }
 
 type RefutationStepDissection struct {
-	Contents []RefutationStepDissectionElem `tz:"dyn"`
+	Contents []RefutationStepDissectionElem `tz:"dyn" json:"contents"`
 }
 
 func (*RefutationStepDissection) RefutationStepKind() string { return "dissection" }
 
 type RefutationStepDissectionElem struct {
-	State tz.Option[*tz.SmartRollupStateHash]
-	Tick  tz.BigUint
+	State tz.Option[*tz.SmartRollupStateHash] `json:"state"`
+	Tick  tz.BigUint                          `json:"tick"`
 }
 
 type RefutationStepProof struct {
-	PVMStep    []byte `tz:"dyn"`
-	InputProof tz.Option[RefutationProof]
+	PVMStep    tz.Bytes                   `tz:"dyn" json:"pvm_step"`
+	InputProof tz.Option[RefutationProof] `json:"input_proof"`
 }
 
 func (*RefutationStepProof) RefutationStepKind() string { return "proof" }
@@ -299,15 +324,15 @@ type RefutationProof interface {
 }
 
 type RefutationProofInbox struct {
-	Level           int32
-	MessageCounter  tz.BigUint
-	SerializedProof []byte `tz:"dyn"`
+	Level           int32      `json:"level"`
+	MessageCounter  tz.BigUint `json:"message_counter"`
+	SerializedProof tz.Bytes   `tz:"dyn" json:"serialized_proof"`
 }
 
 func (*RefutationProofInbox) RefutationProof() {}
 
 type RefutationProofReveal struct {
-	RevealProof RevealProof
+	RevealProof RevealProof `json:"reveal_proof"`
 }
 
 func (*RefutationProofReveal) RefutationProof() {}
@@ -331,7 +356,7 @@ type RevealProof interface {
 }
 
 type RevealProofRawData struct {
-	RawData []byte `tz:"dyn"`
+	RawData tz.Bytes `tz:"dyn" json:"raw_data"`
 }
 
 func (RevealProofRawData) RevealProof() {}
@@ -341,8 +366,8 @@ type RevealProofMetadata struct{}
 func (RevealProofMetadata) RevealProof() {}
 
 type RevealProofDALPage struct {
-	DALPageID
-	DALProof []byte `tz:"dyn"`
+	DALPageID `json:"dal_page_id"`
+	DALProof  tz.Bytes `tz:"dyn" json:"dal_proof"`
 }
 
 func (*RevealProofDALPage) RevealProof() {}
@@ -358,14 +383,14 @@ func init() {
 }
 
 type DALPageID struct {
-	PublishedLevel int32
-	SlotIndex      uint8
-	PageIndex      int16
+	PublishedLevel int32 `json:"published_level"`
+	SlotIndex      uint8 `json:"slot_index"`
+	PageIndex      int16 `json:"page_index"`
 }
 
 type SmartRollupTimeoutResultContents struct {
-	ConsumedMilligas tz.BigUint
-	GameStatus       GameStatus
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
+	GameStatus       GameStatus `json:"game_status"`
 	BalanceUpdates
 }
 
@@ -378,7 +403,7 @@ type GameStatusOngoing struct{}
 func (GameStatusOngoing) GameStatusKind() string { return "ongoing" }
 
 type GameStatusEnded struct {
-	Result GameStatusResult
+	Result GameStatusResult `json:"result"`
 }
 
 func (GameStatusEnded) GameStatusKind() string { return "ended" }
@@ -397,8 +422,8 @@ type GameStatusResult interface {
 }
 
 type GameStatusResultLoser struct {
-	Reason LooseReason
-	Player tz.PublicKeyHash
+	Reason LooseReason      `json:"reason"`
+	Player tz.PublicKeyHash `json:"player"`
 }
 
 func (*GameStatusResultLoser) GameStatusResultKind() string { return "loser" }
@@ -461,7 +486,7 @@ func init() {
 
 type SmartRollupRefuteContentsAndResult struct {
 	SmartRollupRefute
-	Metadata ManagerMetadata[SmartRollupTimeoutResult]
+	Metadata ManagerMetadata[SmartRollupTimeoutResult] `json:"metadata"`
 }
 
 func (*SmartRollupRefuteContentsAndResult) OperationContentsAndResult() {}
@@ -469,22 +494,23 @@ func (op *SmartRollupRefuteContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type SmartRollupTimeout struct {
 	ManagerOperation
-	Rollup  *tz.SmartRollupAddress
-	Stakers SmartRollupStakers
+	Rollup  *tz.SmartRollupAddress `json:"rollup"`
+	Stakers SmartRollupStakers     `json:"stakers"`
 }
 
 type SmartRollupStakers struct {
-	Alice tz.PublicKeyHash
-	Bob   tz.PublicKeyHash
+	Alice tz.PublicKeyHash `json:"alice"`
+	Bob   tz.PublicKeyHash `json:"bob"`
 }
 
 func (*SmartRollupTimeout) OperationKind() string { return "smart_rollup_timeout" }
 
 type SmartRollupTimeoutContentsAndResult struct {
 	SmartRollupTimeout
-	Metadata ManagerMetadata[SmartRollupTimeoutResult]
+	Metadata ManagerMetadata[SmartRollupTimeoutResult] `json:"metadata"`
 }
 
 func (*SmartRollupTimeoutContentsAndResult) OperationContentsAndResult() {}
@@ -492,11 +518,12 @@ func (op *SmartRollupTimeoutContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type SmartRollupExecuteOutboxMessage struct {
 	ManagerOperation
-	Rollup             *tz.SmartRollupAddress
-	CementedCommitment *tz.SmartRollupCommitmentHash
-	OutputProof        []byte `tz:"dyn"`
+	Rollup             *tz.SmartRollupAddress        `json:"rollup"`
+	CementedCommitment *tz.SmartRollupCommitmentHash `json:"cemented_commitment"`
+	OutputProof        tz.Bytes                      `tz:"dyn" json:"output_proof"`
 }
 
 func (*SmartRollupExecuteOutboxMessage) OperationKind() string {
@@ -505,9 +532,9 @@ func (*SmartRollupExecuteOutboxMessage) OperationKind() string {
 
 type SmartRollupExecuteOutboxMessageResultContents struct {
 	BalanceUpdates
-	TicketUpdates       []*TicketReceipt `tz:"dyn"`
-	ConsumedMilligas    tz.BigUint
-	PaidStorageSizeDiff tz.BigInt
+	TicketUpdates       []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
+	ConsumedMilligas    tz.BigUint       `json:"consumed_milligas"`
+	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
 }
 
 type SmartRollupExecuteOutboxMessageResult interface {
@@ -548,7 +575,7 @@ func init() {
 
 type SmartRollupExecuteOutboxMessageContentsAndResult struct {
 	SmartRollupExecuteOutboxMessage
-	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult]
+	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult] `json:"metadata"`
 }
 
 func (*SmartRollupExecuteOutboxMessageContentsAndResult) OperationContentsAndResult() {}
@@ -556,17 +583,18 @@ func (op *SmartRollupExecuteOutboxMessageContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type SmartRollupRecoverBond struct {
 	ManagerOperation
-	Rollup *tz.SmartRollupAddress
-	Staker tz.PublicKeyHash
+	Rollup *tz.SmartRollupAddress `json:"rollup"`
+	Staker tz.PublicKeyHash       `json:"staker"`
 }
 
 func (*SmartRollupRecoverBond) OperationKind() string { return "smart_rollup_recover_bond" }
 
 type SmartRollupRecoverBondResultContents struct {
 	BalanceUpdates
-	ConsumedMilligas tz.BigUint
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
 
 type SmartRollupRecoverBondResult interface {
@@ -607,7 +635,7 @@ func init() {
 
 type SmartRollupRecoverBondContentsAndResult struct {
 	SmartRollupRecoverBond
-	Metadata ManagerMetadata[SmartRollupRecoverBondResult]
+	Metadata ManagerMetadata[SmartRollupRecoverBondResult] `json:"metadata"`
 }
 
 func (*SmartRollupRecoverBondContentsAndResult) OperationContentsAndResult() {}

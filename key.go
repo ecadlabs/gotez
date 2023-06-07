@@ -2,6 +2,7 @@ package gotez
 
 import (
 	"bytes"
+	stdenc "encoding"
 	"errors"
 	"math/big"
 
@@ -32,14 +33,38 @@ var (
 
 type PublicKeyHash interface {
 	Base58Encoder
+	stdenc.TextMarshaler
 	PublicKeyHash() []byte
 	ToComparable[EncodedPublicKeyHash, PublicKeyHash]
+	Address()
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[PublicKeyHash]{
+		Variants: encoding.Variants[PublicKeyHash]{
+			0: (*Ed25519PublicKeyHash)(nil),
+			1: (*Secp256k1PublicKeyHash)(nil),
+			2: (*P256PublicKeyHash)(nil),
+			3: (*BLSPublicKeyHash)(nil),
+		},
+	})
 }
 
 type PublicKey interface {
 	Base58Encoder
 	PublicKey()
 	Hash() PublicKeyHash
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[PublicKey]{
+		Variants: encoding.Variants[PublicKey]{
+			0: (*Ed25519PublicKey)(nil),
+			1: (*Secp256k1PublicKey)(nil),
+			2: (*P256PublicKey)(nil),
+			3: (*BLSPublicKey)(nil),
+		},
+	})
 }
 
 type PrivateKey interface {
@@ -53,9 +78,13 @@ type EncryptedPrivateKey interface {
 }
 
 func (pkh *Ed25519PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
+func (pkh *Ed25519PublicKeyHash) Address()                {}
 func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
+func (pkh *Secp256k1PublicKeyHash) Address()              {}
 func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
+func (pkh *P256PublicKeyHash) Address()                   {}
 func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
+func (pkh *BLSPublicKeyHash) Address()                    {}
 
 func (priv *Ed25519PrivateKey) PrivateKey()   {}
 func (priv *Secp256k1PrivateKey) PrivateKey() {}
@@ -381,23 +410,4 @@ func (pk *BLSEncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (Privat
 	}
 	copy(out[:], decrypted)
 	return &out, nil
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[PublicKeyHash]{
-		Variants: encoding.Variants[PublicKeyHash]{
-			0: (*Ed25519PublicKeyHash)(nil),
-			1: (*Secp256k1PublicKeyHash)(nil),
-			2: (*P256PublicKeyHash)(nil),
-			3: (*BLSPublicKeyHash)(nil),
-		},
-	})
-	encoding.RegisterEnum(&encoding.Enum[PublicKey]{
-		Variants: encoding.Variants[PublicKey]{
-			0: (*Ed25519PublicKey)(nil),
-			1: (*Secp256k1PublicKey)(nil),
-			2: (*P256PublicKey)(nil),
-			3: (*BLSPublicKey)(nil),
-		},
-	})
 }

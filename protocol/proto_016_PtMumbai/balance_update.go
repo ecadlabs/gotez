@@ -21,17 +21,17 @@ func (b *BalanceUpdates) GetBalanceUpdates() []core.BalanceUpdate {
 }
 
 type BalanceUpdate struct {
-	Kind   BalanceUpdateKind
-	Change int64
-	Origin core.BalanceUpdateOrigin
+	Contents BalanceUpdateContents    `json:"contents"`
+	Change   int64                    `json:"change"`
+	Origin   core.BalanceUpdateOrigin `json:"origin"`
 }
 
-func (b *BalanceUpdate) GetKind() core.BalanceUpdateKind     { return b.Kind }
-func (b *BalanceUpdate) GetChange() int64                    { return b.Change }
-func (b *BalanceUpdate) GetOrigin() core.BalanceUpdateOrigin { return b.Origin }
+func (b *BalanceUpdate) GetContents() core.BalanceUpdateContents { return b.Contents }
+func (b *BalanceUpdate) GetChange() int64                        { return b.Change }
+func (b *BalanceUpdate) GetOrigin() core.BalanceUpdateOrigin     { return b.Origin }
 
-type BalanceUpdateKind interface {
-	core.BalanceUpdateKind
+type BalanceUpdateContents interface {
+	core.BalanceUpdateContents
 }
 
 type BalanceUpdateContract = proto_012_Psithaca.BalanceUpdateContract
@@ -60,13 +60,13 @@ type BondID interface {
 }
 
 type TxRollupBondID struct {
-	Address *tz.TXRollupAddress
+	Address *tz.TXRollupAddress `json:"address"`
 }
 
 func (TxRollupBondID) BondID() {}
 
 type SmartRollupBondID struct {
-	Address *tz.SmartRollupAddress
+	Address *tz.SmartRollupAddress `json:"address"`
 }
 
 func (SmartRollupBondID) BondID() {}
@@ -80,28 +80,40 @@ func init() {
 	})
 }
 
+//json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
 type BalanceUpdateFrozenBonds struct {
-	Contract core.ContractID
-	BondID   BondID
+	Contract core.ContractID `json:"contract"`
+	BondID   BondID          `json:"bond_id"`
 }
 
-func (*BalanceUpdateFrozenBonds) BalanceUpdateKind() string { return "frozen_bonds" }
+func (*BalanceUpdateFrozenBonds) BalanceUpdateCategory() string { return "frozen_bonds" }
+func (*BalanceUpdateFrozenBonds) BalanceUpdateKind() core.BalanceUpdateKind {
+	return core.BalanceUpdateFreezer
+}
 
+//json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
 type BalanceUpdateSmartRollupRefutationPunishments struct{}
 
-func (BalanceUpdateSmartRollupRefutationPunishments) BalanceUpdateKind() string {
+func (BalanceUpdateSmartRollupRefutationPunishments) BalanceUpdateCategory() string {
 	return "smart_rollup_refutation_punishments"
 }
+func (BalanceUpdateSmartRollupRefutationPunishments) BalanceUpdateKind() core.BalanceUpdateKind {
+	return core.BalanceUpdateBurned
+}
 
+//json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
 type BalanceUpdateSmartRollupRefutationRewards struct{}
 
-func (BalanceUpdateSmartRollupRefutationRewards) BalanceUpdateKind() string {
+func (BalanceUpdateSmartRollupRefutationRewards) BalanceUpdateCategory() string {
 	return "smart_rollup_refutation_rewards"
+}
+func (BalanceUpdateSmartRollupRefutationRewards) BalanceUpdateKind() core.BalanceUpdateKind {
+	return core.BalanceUpdateMinted
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[BalanceUpdateKind]{
-		Variants: encoding.Variants[BalanceUpdateKind]{
+	encoding.RegisterEnum(&encoding.Enum[BalanceUpdateContents]{
+		Variants: encoding.Variants[BalanceUpdateContents]{
 			0:  (*BalanceUpdateContract)(nil),
 			2:  BalanceUpdateBlockFees{},
 			4:  (*BalanceUpdateDeposits)(nil),

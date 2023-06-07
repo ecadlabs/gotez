@@ -6,16 +6,16 @@ import (
 )
 
 type UnsignedProtocolBlockHeader struct {
-	PayloadHash               *tz.BlockPayloadHash
-	PayloadRound              int32
-	ProofOfWorkNonce          *[tz.ProofOfWorkNonceBytesLen]byte
-	SeedNonceHash             tz.Option[*tz.CycleNonceHash]
-	LiquidityBakingEscapeVote bool
+	PayloadHash               *tz.BlockPayloadHash          `json:"payload_hash"`
+	PayloadRound              int32                         `json:"payload_round"`
+	ProofOfWorkNonce          *tz.Bytes8                    `json:"proof_of_work_nonce"`
+	SeedNonceHash             tz.Option[*tz.CycleNonceHash] `json:"seed_nonce_hash"`
+	LiquidityBakingEscapeVote bool                          `json:"liquidity_baking_escape_vote"`
 }
 
 func (h *UnsignedProtocolBlockHeader) GetPayloadHash() *tz.BlockPayloadHash { return h.PayloadHash }
 func (h *UnsignedProtocolBlockHeader) GetPayloadRound() int32               { return h.PayloadRound }
-func (h *UnsignedProtocolBlockHeader) GetProofOfWorkNonce() *[tz.ProofOfWorkNonceBytesLen]byte {
+func (h *UnsignedProtocolBlockHeader) GetProofOfWorkNonce() *tz.Bytes8 {
 	return h.ProofOfWorkNonce
 }
 func (h *UnsignedProtocolBlockHeader) GetSeedNonceHash() tz.Option[*tz.CycleNonceHash] {
@@ -36,7 +36,7 @@ func (header *UnsignedBlockHeader) GetShellHeader() *core.ShellHeader {
 
 type BlockHeader struct {
 	UnsignedBlockHeader
-	Signature *tz.GenericSignature
+	Signature *tz.GenericSignature `json:"signature"`
 }
 
 func (header *BlockHeader) GetSignature() (tz.Signature, error) {
@@ -44,9 +44,9 @@ func (header *BlockHeader) GetSignature() (tz.Signature, error) {
 }
 
 type BlockInfoProtocolData struct {
-	Header     BlockHeader `tz:"dyn"`
-	Metadata   tz.Option[BlockMetadata]
-	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
+	Header     BlockHeader                          `tz:"dyn" json:"header"`
+	Metadata   tz.Option[BlockMetadata]             `json:"metadata"`
+	Operations []core.OperationsList[GroupContents] `tz:"dyn" json:"operations"`
 }
 
 func (block *BlockInfoProtocolData) GetHeader() core.BlockHeader { return &block.Header }
@@ -71,16 +71,16 @@ type BlockMetadata struct {
 
 type BlockMetadataContents struct {
 	core.BlockMetadataHeader
-	Proposer                  tz.PublicKeyHash
-	Baker                     tz.PublicKeyHash
-	LevelInfo                 core.LevelInfo
-	VotingPeriodInfo          core.VotingPeriodInfo
-	NonceHash                 tz.Option1[*tz.CycleNonceHash]
-	ConsumedGas               tz.BigUint
-	Deactivated               []tz.PublicKeyHash `tz:"dyn"`
-	BalanceUpdates            []*BalanceUpdate   `tz:"dyn"`
-	LiquidityBakingEscapeEMA  int32
-	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn"`
+	Proposer                  tz.PublicKeyHash                   `json:"proposer"`
+	Baker                     tz.PublicKeyHash                   `json:"baker"`
+	LevelInfo                 core.LevelInfo                     `json:"level_info"`
+	VotingPeriodInfo          core.VotingPeriodInfo              `json:"voting_period_info"`
+	NonceHash                 tz.Option1[*tz.CycleNonceHash]     `json:"nonce_hash"`
+	ConsumedGas               tz.BigUint                         `json:"consumed_gas"`
+	Deactivated               []tz.PublicKeyHash                 `tz:"dyn" json:"deactivated"`
+	BalanceUpdates            []*BalanceUpdate                   `tz:"dyn" json:"balance_updates"`
+	LiquidityBakingEscapeEMA  int32                              `json:"liquidity_baking_escape_ema"`
+	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn" json:"implicit_operations_results"`
 }
 
 func (m *BlockMetadata) GetMetadataHeader() *core.BlockMetadataHeader { return &m.BlockMetadataHeader }

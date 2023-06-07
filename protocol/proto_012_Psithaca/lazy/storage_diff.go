@@ -25,7 +25,7 @@ func init() {
 	})
 }
 
-//json:kind=big_map
+//json:kind=LazyStorageDiffKind()
 type BigMap struct {
 	ID   tz.BigInt `json:"id"`
 	Diff BigMapOp  `json:"diff"`
@@ -48,19 +48,19 @@ func init() {
 	})
 }
 
-//json:action=update
+//json:action=LazyStorageBigMapOp()
 type BigMapUpdate struct {
 	Updates []*KeyValue `tz:"dyn" json:"updates"`
 }
 
 func (*BigMapUpdate) LazyStorageBigMapOp() string { return "update" }
 
-//json:action=remove
+//json:action=LazyStorageBigMapOp()
 type BigMapRemove struct{}
 
 func (*BigMapRemove) LazyStorageBigMapOp() string { return "remove" }
 
-//json:action=copy
+//json:action=LazyStorageBigMapOp()
 type BigMapCopy struct {
 	Source  tz.BigInt   `json:"source"`
 	Updates []*KeyValue `tz:"dyn" json:"updates"`
@@ -68,7 +68,7 @@ type BigMapCopy struct {
 
 func (*BigMapCopy) LazyStorageBigMapOp() string { return "copy" }
 
-//json:action=alloc
+//json:action=LazyStorageBigMapOp()
 type BigMapAlloc struct {
 	Updates   []*KeyValue           `tz:"dyn" json:"updates"`
 	KeyType   expression.Expression `json:"key_type"`
@@ -83,7 +83,7 @@ type KeyValue struct {
 	Value   tz.Option[expression.Expression] `json:"value"`
 }
 
-//json:kind=sapling_state
+//json:kind=LazyStorageDiffKind()
 type SaplingState struct {
 	ID   tz.BigInt      `json:"id"`
 	Diff SaplingStateOp `json:"diff"`
@@ -106,19 +106,19 @@ func init() {
 	})
 }
 
-//json:action=update
+//json:action=LazyStorageSaplingStateOp()
 type SaplingStateUpdate struct {
 	Updates SaplingStateUpdates `json:"updates"`
 }
 
 func (*SaplingStateUpdate) LazyStorageSaplingStateOp() string { return "update" }
 
-//json:action=remove
+//json:action=LazyStorageSaplingStateOp()
 type SaplingStateRemove struct{}
 
 func (*SaplingStateRemove) LazyStorageSaplingStateOp() string { return "remove" }
 
-//json:action=copy
+//json:action=LazyStorageSaplingStateOp()
 type SaplingStateCopy struct {
 	Source  tz.BigInt           `json:"source"`
 	Updates SaplingStateUpdates `json:"updates"`
@@ -126,7 +126,7 @@ type SaplingStateCopy struct {
 
 func (*SaplingStateCopy) LazyStorageSaplingStateOp() string { return "copy" }
 
-//json:action=alloc
+//json:action=LazyStorageSaplingStateOp()
 type SaplingStateAlloc struct {
 	Updates  SaplingStateUpdates `json:"updates"`
 	MemoSize uint16              `json:"memo_size"`

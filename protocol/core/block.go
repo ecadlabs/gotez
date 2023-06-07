@@ -77,7 +77,7 @@ type BlockHeader interface {
 	GetShellHeader() *ShellHeader
 	GetPayloadHash() *tz.BlockPayloadHash
 	GetPayloadRound() int32
-	GetProofOfWorkNonce() *[tz.ProofOfWorkNonceBytesLen]byte
+	GetProofOfWorkNonce() *tz.Bytes8
 	GetSeedNonceHash() tz.Option[*tz.CycleNonceHash]
 	GetLiquidityBakingEscapeVote() bool
 }

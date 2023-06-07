@@ -27,7 +27,7 @@ func init() {
 	})
 }
 
-//json:action=update
+//json:action=BigMapDiffOp()
 type Update struct {
 	BigMap  tz.BigInt                        `json:"big_map"`
 	KeyHash *tz.ScriptExprHash               `json:"key_hash"`
@@ -37,14 +37,14 @@ type Update struct {
 
 func (*Update) BigMapDiffOp() string { return "update" }
 
-//json:action=remove
+//json:action=BigMapDiffOp()
 type Remove struct {
 	BigMap tz.BigInt `json:"big_map"`
 }
 
 func (*Remove) BigMapDiffOp() string { return "remove" }
 
-//json:action=copy
+//json:action=BigMapDiffOp()
 type Copy struct {
 	SourceBigMap      tz.BigInt `json:"source_big_map"`
 	DestinationBigMap tz.BigInt `json:"destination_big_map"`
@@ -52,7 +52,7 @@ type Copy struct {
 
 func (*Copy) BigMapDiffOp() string { return "copy" }
 
-//json:action=alloc
+//json:action=BigMapDiffOp()
 type Alloc struct {
 	BigMap    tz.BigInt             `json:"big_map"`
 	KeyType   expression.Expression `json:"key_type"`

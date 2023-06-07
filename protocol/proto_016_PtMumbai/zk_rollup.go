@@ -12,7 +12,7 @@ type ZkRollupPublish = proto_015_PtLimaPt.ZkRollupPublish
 
 type ZkRollupOriginationContentsAndResult struct {
 	ZkRollupOrigination
-	Metadata ManagerMetadata[ZkRollupPublishResult]
+	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
@@ -22,8 +22,8 @@ func (op *ZkRollupOriginationContentsAndResult) GetMetadata() any {
 
 type ZkRollupPublishResultContents struct {
 	BalanceUpdates
-	ConsumedMilligas tz.BigUint
-	Size             tz.BigInt
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
+	Size             tz.BigInt  `json:"size"`
 }
 
 type ZkRollupPublishResult interface {
@@ -64,7 +64,7 @@ func init() {
 
 type ZkRollupPublishContentsAndResult struct {
 	ZkRollupPublish
-	Metadata ManagerMetadata[ZkRollupPublishResult]
+	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
 }
 
 func (*ZkRollupPublishContentsAndResult) OperationContentsAndResult() {}
@@ -72,52 +72,53 @@ func (op *ZkRollupPublishContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type ZkRollupUpdate struct {
 	ManagerOperation
-	ZkRollup *tz.ZkRollupAddress
-	Update   ZkRollupUpdateContents
+	ZkRollup *tz.ZkRollupAddress    `json:"zk_rollup"`
+	Update   ZkRollupUpdateContents `json:"update"`
 }
 
 func (*ZkRollupUpdate) OperationKind() string { return "zk_rollup_update" }
 
 type ZkRollupUpdateContents struct {
-	PendingPis []*PendingPiElem `tz:"dyn"`
-	PrivatePis []*PrivatePiElem `tz:"dyn"`
-	FeePi      FeePi
-	Proof      []byte `tz:"dyn"`
+	PendingPis []*PendingPiElem `tz:"dyn" json:"pending_pis"`
+	PrivatePis []*PrivatePiElem `tz:"dyn" json:"private_pis"`
+	FeePi      FeePi            `json:"fee_pi"`
+	Proof      tz.Bytes         `tz:"dyn" json:"proof"`
 }
 
 type PendingPiElem struct {
-	Key string `tz:"dyn"`
-	Pi  PendingPi
+	Key string    `tz:"dyn" json:"key"`
+	Pi  PendingPi `json:"pi"`
 }
 
-type ZkRollupScalar [32]byte
+type ZkRollupScalar = tz.Bytes32
 
 type PendingPi struct {
-	NewState     []byte `tz:"dyn"`
-	Fee          ZkRollupScalar
-	ExitValidity bool
+	NewState     tz.Bytes       `tz:"dyn" json:"new_state"`
+	Fee          ZkRollupScalar `json:"fee"`
+	ExitValidity bool           `json:"exit_validity"`
 }
 
 type PrivatePiElem struct {
-	Key string `tz:"dyn"`
-	Pi  PrivatePi
+	Key string    `tz:"dyn" json:"key"`
+	Pi  PrivatePi `json:"pi"`
 }
 
 type PrivatePi struct {
-	NewState []byte `tz:"dyn"`
-	Fee      ZkRollupScalar
+	NewState tz.Bytes       `tz:"dyn" json:"new_state"`
+	Fee      ZkRollupScalar `json:"fee"`
 }
 
 type FeePi struct {
-	NewState []byte `tz:"dyn"`
+	NewState tz.Bytes `tz:"dyn" json:"new_state"`
 }
 
 type ZkRollupUpdateResultContents struct {
 	BalanceUpdates
-	ConsumedMilligas    tz.BigUint
-	PaidStorageSizeDiff tz.BigInt
+	ConsumedMilligas    tz.BigUint `json:"consumed_milligas"`
+	PaidStorageSizeDiff tz.BigInt  `json:"paid_storage_size_diff"`
 }
 
 type ZkRollupUpdateResult interface {
@@ -158,7 +159,7 @@ func init() {
 
 type ZkRollupUpdateContentsAndResult struct {
 	ZkRollupUpdate
-	Metadata ManagerMetadata[ZkRollupUpdateResult]
+	Metadata ManagerMetadata[ZkRollupUpdateResult] `json:"metadata"`
 }
 
 func (*ZkRollupUpdateContentsAndResult) OperationContentsAndResult() {}

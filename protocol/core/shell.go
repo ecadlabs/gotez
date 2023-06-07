@@ -10,22 +10,22 @@ type protocolVersionType int
 var ProtocolVersionCtxKey protocolVersionType = 0
 
 type ShellHeader struct {
-	Level          int32
-	Proto          Protocol
-	Predecessor    *tz.BlockHash
-	Timestamp      tz.Timestamp
-	ValidationPass uint8
-	OperationsHash *tz.OperationsHash
-	Fitness        []byte `tz:"dyn"`
-	Context        *tz.ContextHash
+	Level          int32              `json:"level"`
+	Proto          Protocol           `json:"proto"`
+	Predecessor    *tz.BlockHash      `json:"predecessor"`
+	Timestamp      tz.Timestamp       `json:"timestamp"`
+	ValidationPass uint8              `json:"validation_pass"`
+	OperationsHash *tz.OperationsHash `json:"operations_hash"`
+	Fitness        tz.Bytes           `tz:"dyn" json:"fitness"`
+	Context        *tz.ContextHash    `json:"context"`
 }
 
 type BlockMetadataHeader struct {
-	TestChainStatus        TestChainStatus
-	MaxOperationsTTL       int32
-	MaxOperationDataLength int32
-	MaxBlockHeaderLength   int32
-	MaxOperationListLength []*MaxOperationListLength `tz:"dyn,dyn"`
+	TestChainStatus        TestChainStatus           `json:"test_chain_status"`
+	MaxOperationsTTL       int32                     `json:"max_operations_ttl"`
+	MaxOperationDataLength int32                     `json:"max_operation_data_length"`
+	MaxBlockHeaderLength   int32                     `json:"max_block_header_length"`
+	MaxOperationListLength []*MaxOperationListLength `tz:"dyn,dyn" json:"max_operation_list_length"`
 }
 
 func (*BlockMetadataHeader) BlockMetadataContents() {}
@@ -42,7 +42,7 @@ func (t TestChainStatusNotRunning) MarshalText() (text []byte, err error) {
 	return []byte(t.TestChainStatus()), nil
 }
 
-//json:status=forking
+//json:status=TestChainStatus()
 type TestChainStatusForking struct {
 	Protocol   *tz.ProtocolHash `json:"protocol"`
 	Expiration int64            `json:"expiration"`
@@ -50,7 +50,7 @@ type TestChainStatusForking struct {
 
 func (TestChainStatusForking) TestChainStatus() string { return "forking" }
 
-//json:status=running
+//json:status=TestChainStatus()
 type TestChainStatusRunning struct {
 	ChainID    *tz.ChainID      `json:"chain_id,omitempty"`
 	Genesis    *tz.BlockHash    `json:"genesis,omitempty"`
@@ -71,6 +71,6 @@ func init() {
 }
 
 type MaxOperationListLength struct {
-	MaxSize int32
-	MaxOp   tz.Option[int32]
+	MaxSize int32            `json:"max_size"`
+	MaxOp   tz.Option[int32] `json:"max_op"`
 }

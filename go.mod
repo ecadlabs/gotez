@@ -1,6 +1,6 @@
 module github.com/ecadlabs/gotez/v2
 
-go 1.19
+go 1.20
 
 require (
 	github.com/ecadlabs/pretty v0.0.0-20230412124801-f948fc689a04

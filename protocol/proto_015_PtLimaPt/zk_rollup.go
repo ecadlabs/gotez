@@ -9,6 +9,7 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/core/expression"
 )
 
+//json:kind=OperationKind()
 type ZkRollupOrigination struct {
 	ManagerOperation
 	PublicParameters tz.Bytes            `tz:"dyn" json:"public_parameters"`
@@ -47,36 +48,37 @@ const (
 	CircuitsInfoFee
 )
 
+//json:kind=OperationKind()
 type ZkRollupPublish struct {
 	ManagerOperation
-	ZkRollup *tz.ZkRollupAddress
-	Op       []*ZkRollupOpElem `tz:"dyn"`
+	ZkRollup *tz.ZkRollupAddress `json:"zk_rollup"`
+	Op       []*ZkRollupOpElem   `tz:"dyn" json:"op"`
 }
 
 func (*ZkRollupPublish) OperationKind() string { return "zk_rollup_publish" }
 
 type ZkRollupOpElem struct {
-	Op     ZkRollupOp
-	Ticket tz.Option1[ZkRollupTicket]
+	Op     ZkRollupOp                 `json:"op"`
+	Ticket tz.Option1[ZkRollupTicket] `json:"ticket"`
 }
 
 type ZkRollupOp struct {
-	OpCode   int32
-	Price    ZkRollupPrice
-	L1Dst    tz.PublicKeyHash
-	RollupID *tz.ZkRollupAddress
-	Payload  []byte `tz:"dyn"`
+	OpCode   int32               `json:"op_code"`
+	Price    ZkRollupPrice       `json:"price"`
+	L1Dst    tz.PublicKeyHash    `json:"l1_dst"`
+	RollupID *tz.ZkRollupAddress `json:"rollup_id"`
+	Payload  tz.Bytes            `tz:"dyn" json:"payload"`
 }
 
 type ZkRollupPrice struct {
-	ID     *tz.ScriptExprHash
-	Amount tz.BigInt
+	ID     *tz.ScriptExprHash `json:"id"`
+	Amount tz.BigInt          `json:"amount"`
 }
 
 type ZkRollupTicket struct {
-	Contents expression.Expression
-	Ty       expression.Expression
-	Ticketer core.ContractID
+	Contents expression.Expression `json:"contents"`
+	Ty       expression.Expression `json:"ty"`
+	Ticketer core.ContractID       `json:"ticketer"`
 }
 
 type ZkRollupOriginationContentsAndResult struct {

@@ -11,9 +11,9 @@ type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
 type BlockHeader = proto_012_Psithaca.BlockHeader
 
 type BlockInfoProtocolData struct {
-	Header     BlockHeader `tz:"dyn"`
-	Metadata   tz.Option[BlockMetadata]
-	Operations []core.OperationsList[GroupContents] `tz:"dyn"`
+	Header     BlockHeader                          `tz:"dyn" json:"header"`
+	Metadata   tz.Option[BlockMetadata]             `json:"metadata"`
+	Operations []core.OperationsList[GroupContents] `tz:"dyn" json:"operations"`
 }
 
 func (block *BlockInfoProtocolData) GetHeader() core.BlockHeader { return &block.Header }
@@ -38,17 +38,17 @@ type BlockMetadata struct {
 
 type BlockMetadataContents struct {
 	core.BlockMetadataHeader
-	Proposer                  tz.PublicKeyHash
-	Baker                     tz.PublicKeyHash
-	LevelInfo                 core.LevelInfo
-	VotingPeriodInfo          core.VotingPeriodInfo
-	NonceHash                 tz.Option1[*tz.CycleNonceHash]
-	Deactivated               []tz.PublicKeyHash `tz:"dyn"`
-	BalanceUpdates            []*BalanceUpdate   `tz:"dyn"`
-	LiquidityBakingToggleEMA  int32
-	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn"`
-	ConsumedMilligas          tz.BigUint
-	DALSlotAvailability       tz.Option[tz.BigInt]
+	Proposer                  tz.PublicKeyHash                   `json:"proposer"`
+	Baker                     tz.PublicKeyHash                   `json:"baker"`
+	LevelInfo                 core.LevelInfo                     `json:"level_info"`
+	VotingPeriodInfo          core.VotingPeriodInfo              `json:"voting_period_info"`
+	NonceHash                 tz.Option1[*tz.CycleNonceHash]     `json:"nonce_hash"`
+	Deactivated               []tz.PublicKeyHash                 `tz:"dyn" json:"deactivated"`
+	BalanceUpdates            []*BalanceUpdate                   `tz:"dyn" json:"balance_updates"`
+	LiquidityBakingToggleEMA  int32                              `json:"liquidity_baking_toggle_ema"`
+	ImplicitOperationsResults []SuccessfulManagerOperationResult `tz:"dyn" json:"implicit_operations_results"`
+	ConsumedMilligas          tz.BigUint                         `json:"consumed_milligas"`
+	DALSlotAvailability       tz.Option[tz.BigInt]               `json:"dal_slot_availability"`
 }
 
 func (m *BlockMetadata) GetMetadataHeader() *core.BlockMetadataHeader { return &m.BlockMetadataHeader }

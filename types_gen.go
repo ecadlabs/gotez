@@ -1264,3 +1264,21 @@ func (self *Bytes32) UnmarshalText(src []byte) error {
 	return nil
 }
 
+type Bytes8 [8]byte
+
+func (self Bytes8) String() string {
+	out, _ := self.MarshalText()
+	return string(out)
+}
+
+func (self Bytes8) MarshalText() ([]byte, error) {
+	dst := make([]byte, hex.EncodedLen(len(self)))
+	hex.Encode(dst, self[:])
+	return dst, nil
+}
+
+func (self *Bytes8) UnmarshalText(src []byte) error {
+	hex.Decode(self[:], src)
+	return nil
+}
+

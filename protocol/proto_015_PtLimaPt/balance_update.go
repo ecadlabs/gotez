@@ -21,17 +21,17 @@ func (b *BalanceUpdates) GetBalanceUpdates() []core.BalanceUpdate {
 }
 
 type BalanceUpdate struct {
-	Kind   BalanceUpdateKind
-	Change int64
-	Origin core.BalanceUpdateOrigin
+	Contents BalanceUpdateContents    `json:"contents"`
+	Change   int64                    `json:"change"`
+	Origin   core.BalanceUpdateOrigin `json:"origin"`
 }
 
-func (b *BalanceUpdate) GetKind() core.BalanceUpdateKind     { return b.Kind }
-func (b *BalanceUpdate) GetChange() int64                    { return b.Change }
-func (b *BalanceUpdate) GetOrigin() core.BalanceUpdateOrigin { return b.Origin }
+func (b *BalanceUpdate) GetContents() core.BalanceUpdateContents { return b.Contents }
+func (b *BalanceUpdate) GetChange() int64                        { return b.Change }
+func (b *BalanceUpdate) GetOrigin() core.BalanceUpdateOrigin     { return b.Origin }
 
-type BalanceUpdateKind interface {
-	core.BalanceUpdateKind
+type BalanceUpdateContents interface {
+	core.BalanceUpdateContents
 }
 
 type BalanceUpdateContract = proto_012_Psithaca.BalanceUpdateContract
@@ -57,15 +57,19 @@ type BalanceUpdateTxRollupRejectionPunishments = proto_013_PtJakart.BalanceUpdat
 type BalanceUpdateScRollupRefutationPunishments = proto_014_PtKathma.BalanceUpdateScRollupRefutationPunishments
 type BalanceUpdateFrozenBonds = proto_014_PtKathma.BalanceUpdateFrozenBonds
 
+//json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
 type BalanceUpdateScRollupRefutationRewards struct{}
 
-func (BalanceUpdateScRollupRefutationRewards) BalanceUpdateKind() string {
+func (BalanceUpdateScRollupRefutationRewards) BalanceUpdateCategory() string {
 	return "smart_rollup_refutation_rewards"
+}
+func (BalanceUpdateScRollupRefutationRewards) BalanceUpdateKind() core.BalanceUpdateKind {
+	return core.BalanceUpdateMinted
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[BalanceUpdateKind]{
-		Variants: encoding.Variants[BalanceUpdateKind]{
+	encoding.RegisterEnum(&encoding.Enum[BalanceUpdateContents]{
+		Variants: encoding.Variants[BalanceUpdateContents]{
 			0:  (*BalanceUpdateContract)(nil),
 			2:  BalanceUpdateBlockFees{},
 			4:  (*BalanceUpdateDeposits)(nil),

@@ -8,6 +8,7 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca/lazy"
 )
 
+//json:kind=OperationKind()
 type Origination struct {
 	ManagerOperation
 	Balance  tz.BigUint                  `json:"balance"`
@@ -33,8 +34,11 @@ type OriginationResultContents struct {
 	LazyStorageDiff     tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
-func (OriginationResultContents) SuccessfulManagerOperationResult() {}
-func (OriginationResultContents) OperationKind() string             { return "origination" }
+//json:kind=OperationKind()
+type OriginationSuccessfulManagerResult OriginationResultContents
+
+func (OriginationSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (OriginationSuccessfulManagerResult) OperationKind() string             { return "origination" }
 
 type OriginationResultApplied struct {
 	core.OperationResultApplied[OriginationResultContents]
@@ -77,6 +81,7 @@ func (op *OriginationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type OriginationInternalOperationResult struct {
 	Source   core.ContractID             `json:"source"`
 	Nonce    uint16                      `json:"nonce"`
@@ -86,6 +91,7 @@ type OriginationInternalOperationResult struct {
 	Result   OriginationResult           `json:"result"`
 }
 
+func (o *OriginationInternalOperationResult) GetSource() core.Address { return o.Source }
 func (r *OriginationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }

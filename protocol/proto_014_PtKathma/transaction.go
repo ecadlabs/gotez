@@ -1,8 +1,6 @@
 package proto_014_PtKathma
 
 import (
-	"encoding/json"
-
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -27,7 +25,7 @@ type ScRollupInbox struct {
 	NbMessagesInCommitmentPeriod           int64               `json:"nb_messages_in_commitment_period"`
 	StartingLevelOfCurrentCommitmentPeriod int32               `json:"starting_level_of_current_commitment_period"`
 	Level                                  int32               `json:"level"`
-	CurrentLevelHash                       *[32]byte           `json:"current_level_hash"`
+	CurrentLevelHash                       *tz.Bytes32         `json:"current_level_hash"`
 	OldLevelsMessages                      OldLevelsMessages   `json:"old_levels_messages"`
 }
 
@@ -81,9 +79,7 @@ type ScRollupDestination struct {
 }
 
 func (*ScRollupDestination) TransactionDestination() {}
-func (s *ScRollupDestination) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.ScRollupAddress)
-}
+func (*ScRollupDestination) Address()                {}
 
 type TransactionDestination interface {
 	core.TransactionDestination
@@ -101,14 +97,14 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	TransactionResultDestination
+	TransactionResultDestination `json:"contents"`
 }
 
-func (TransactionResultContents) SuccessfulManagerOperationResult() {}
-func (TransactionResultContents) OperationKind() string             { return "transaction" }
-func (c TransactionResultContents) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.TransactionResultDestination)
-}
+//json:kind=OperationKind()
+type TransactionSuccessfulManagerResult TransactionResultContents
+
+func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
 
 type TransactionContentsAndResult struct {
 	Transaction
@@ -155,6 +151,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
 	Source      core.ContractID        `json:"source"`
 	Nonce       uint16                 `json:"nonce"`
@@ -164,6 +161,7 @@ type TransactionInternalOperationResult struct {
 	Result      TransactionResult      `json:"result"`
 }
 
+func (r *TransactionInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }

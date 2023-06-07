@@ -1,5 +1,7 @@
 package proto_014_PtKathma
 
+//go:generate go run ../../cmd/genmarshaller.go
+
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
@@ -34,23 +36,32 @@ type ConsumedGasResult interface {
 }
 
 type ConsumedGasResultContents struct {
-	ConsumedMilligas tz.BigUint
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
 
 type RevealResultContents ConsumedGasResultContents
 
-func (*RevealResultContents) SuccessfulManagerOperationResult() {}
-func (*RevealResultContents) OperationKind() string             { return "reveal" }
+//json:kind=OperationKind()
+type RevealSuccessfulManagerResult RevealResultContents
+
+func (*RevealSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (*RevealSuccessfulManagerResult) OperationKind() string             { return "reveal" }
 
 type DelegationResultContents ConsumedGasResultContents
 
-func (*DelegationResultContents) SuccessfulManagerOperationResult() {}
-func (*DelegationResultContents) OperationKind() string             { return "delegation" }
+//json:kind=OperationKind()
+type DelegationSuccessfulManagerResult DelegationResultContents
+
+func (*DelegationSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (*DelegationSuccessfulManagerResult) OperationKind() string             { return "delegation" }
 
 type SetDepositsLimitResultContents ConsumedGasResultContents
 
-func (*SetDepositsLimitResultContents) SuccessfulManagerOperationResult() {}
-func (*SetDepositsLimitResultContents) OperationKind() string {
+//json:kind=OperationKind()
+type SetDepositsLimitSuccessfulManagerResult SetDepositsLimitResultContents
+
+func (*SetDepositsLimitSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (*SetDepositsLimitSuccessfulManagerResult) OperationKind() string {
 	return "set_deposits_limit"
 }
 
@@ -85,6 +96,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type IncreasePaidStorage struct {
 	ManagerOperation
 	Amount      tz.BigInt                 `json:"amount"`
@@ -103,8 +115,11 @@ type IncreasePaidStorageResultContents struct {
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
 
-func (IncreasePaidStorageResultContents) SuccessfulManagerOperationResult() {}
-func (IncreasePaidStorageResultContents) OperationKind() string {
+//json:kind=OperationKind()
+type IncreasePaidStorageSuccessfulManagerResult IncreasePaidStorageResultContents
+
+func (IncreasePaidStorageSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
 	return "increase_paid_storage"
 }
 
@@ -149,12 +164,14 @@ func (op *IncreasePaidStorageContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type VDFRevelation struct {
-	Solution [2]*[100]byte
+	Solution [2]*[100]byte `json:"solution"`
 }
 
 func (*VDFRevelation) OperationKind() string { return "vdf_revelation" }
 
+//json:kind=OperationKind()
 type DALSlotAvailability struct {
 	Endorser    tz.PublicKeyHash `json:"endorser"`
 	Endorsement tz.BigUint       `json:"endorsement"`
@@ -176,6 +193,7 @@ type DALSlotAvailabilityMetadata struct {
 	Delegate tz.PublicKeyHash `json:"delegate"`
 }
 
+//json:kind=OperationKind()
 type DALPublishSlotHeader struct {
 	ManagerOperation
 	Slot DALSlot `json:"slot"`
@@ -342,7 +360,7 @@ func init() {
 
 type RegisterGlobalConstantContentsAndResult struct {
 	RegisterGlobalConstant
-	Metadata ManagerMetadata[RegisterGlobalConstantResult]
+	Metadata ManagerMetadata[RegisterGlobalConstantResult] `json:"metadata"`
 }
 
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
@@ -520,6 +538,7 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 	return out
 }
 
+//json:kind=OperationKind()
 type DelegationInternalOperationResult struct {
 	Source   TransactionDestination      `json:"source"`
 	Nonce    uint16                      `json:"nonce"`
@@ -527,11 +546,13 @@ type DelegationInternalOperationResult struct {
 	Result   ConsumedGasResult           `json:"result"`
 }
 
+func (r *DelegationInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *DelegationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*DelegationInternalOperationResult) OperationKind() string { return "delegation" }
 
+//json:kind=OperationKind()
 type EventInternalOperationResult struct {
 	Source  TransactionDestination           `json:"source"`
 	Nonce   uint16                           `json:"nonce"`
@@ -541,6 +562,7 @@ type EventInternalOperationResult struct {
 	Result  ConsumedGasResult                `json:"result"`
 }
 
+func (r *EventInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *EventInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }
@@ -568,12 +590,12 @@ type SuccessfulManagerOperationResult interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SuccessfulManagerOperationResult]{
 		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
-			0: (*RevealResultContents)(nil),
-			1: (*TransactionResultContents)(nil),
-			2: (*OriginationResultContents)(nil),
-			3: (*DelegationResultContents)(nil),
-			5: (*SetDepositsLimitResultContents)(nil),
-			9: (*IncreasePaidStorageResultContents)(nil),
+			0: (*RevealSuccessfulManagerResult)(nil),
+			1: (*TransactionSuccessfulManagerResult)(nil),
+			2: (*OriginationSuccessfulManagerResult)(nil),
+			3: (*DelegationSuccessfulManagerResult)(nil),
+			5: (*SetDepositsLimitSuccessfulManagerResult)(nil),
+			9: (*IncreasePaidStorageSuccessfulManagerResult)(nil),
 			// 200: (*ScRollupOriginateResultContents)(nil),
 		},
 	})

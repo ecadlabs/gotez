@@ -87,3 +87,5 @@ func (b *Bytes) UnmarshalText(text []byte) error {
 	_, err := hex.Decode(*b, text)
 	return err
 }
+
+func (*ContractHash) Address() {}

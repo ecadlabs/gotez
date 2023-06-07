@@ -1,8 +1,6 @@
 package proto_015_PtLimaPt
 
 import (
-	"encoding/json"
-
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -82,9 +80,7 @@ type ZkRollupDestination struct {
 }
 
 func (*ZkRollupDestination) TransactionDestination() {}
-func (z *ZkRollupDestination) MarshalJSON() ([]byte, error) {
-	return json.Marshal(z.ZkRollupAddress)
-}
+func (*ZkRollupDestination) Address()                {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
@@ -99,14 +95,14 @@ func init() {
 }
 
 type TransactionResultContents struct {
-	TransactionResultDestination
+	TransactionResultDestination `json:"contents"`
 }
 
-func (TransactionResultContents) SuccessfulManagerOperationResult() {}
-func (TransactionResultContents) OperationKind() string             { return "transaction" }
-func (c TransactionResultContents) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.TransactionResultDestination)
-}
+//json:kind=OperationKind()
+type TransactionSuccessfulManagerResult TransactionResultContents
+
+func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
+func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
 
 type TransactionContentsAndResult struct {
 	Transaction
@@ -153,6 +149,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
 	Source      core.ContractID        `json:"source"`
 	Nonce       uint16                 `json:"nonce"`
@@ -162,6 +159,7 @@ type TransactionInternalOperationResult struct {
 	Result      TransactionResult      `json:"result"`
 }
 
+func (r *TransactionInternalOperationResult) GetSource() core.Address { return r.Source }
 func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
 	return r.Result
 }
