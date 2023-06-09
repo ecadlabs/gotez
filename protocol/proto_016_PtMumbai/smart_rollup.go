@@ -42,11 +42,6 @@ type SmartRollupOriginate struct {
 
 func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_originate" }
 
-type SmartRollupOriginateResult interface {
-	SmartRollupOriginateResult()
-	core.ManagerOperationResult
-}
-
 type SmartRollupOriginateResultContents struct {
 	BalanceUpdates
 	Address               *tz.SmartRollupAddress        `json:"address"`
@@ -57,40 +52,24 @@ type SmartRollupOriginateResultContents struct {
 
 //json:kind=OperationKind()
 type SmartRollupOriginateSuccessfulManagerResult struct {
-	SmartRollupOriginateResultApplied
+	core.OperationResultApplied[*SmartRollupOriginateResultContents]
 }
 
 func (*SmartRollupOriginateSuccessfulManagerResult) OperationKind() string {
 	return "smart_rollup_originate"
 }
 
-type SmartRollupOriginateResultApplied struct {
-	core.OperationResultApplied[SmartRollupOriginateResultContents]
+type SmartRollupOriginateResult interface {
+	core.ManagerOperationResult
 }
-
-func (*SmartRollupOriginateResultApplied) SmartRollupOriginateResult() {}
-
-type SmartRollupOriginateResultBacktracked struct {
-	core.OperationResultBacktracked[SmartRollupOriginateResultContents]
-}
-
-func (*SmartRollupOriginateResultBacktracked) SmartRollupOriginateResult() {}
-
-type SmartRollupOriginateResultFailed struct{ core.OperationResultFailed }
-
-func (*SmartRollupOriginateResultFailed) SmartRollupOriginateResult() {}
-
-type SmartRollupOriginateResultSkipped struct{ core.OperationResultSkipped }
-
-func (*SmartRollupOriginateResultSkipped) SmartRollupOriginateResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupOriginateResult]{
 		Variants: encoding.Variants[SmartRollupOriginateResult]{
-			0: (*SmartRollupOriginateResultApplied)(nil),
-			1: (*SmartRollupOriginateResultFailed)(nil),
-			2: (*SmartRollupOriginateResultSkipped)(nil),
-			3: (*SmartRollupOriginateResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*SmartRollupOriginateResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*SmartRollupOriginateResultContents])(nil),
 		},
 	})
 }
@@ -138,37 +117,16 @@ type SmartRollupCementResultContents struct {
 }
 
 type SmartRollupCementResult interface {
-	SmartRollupCementResult()
 	core.ManagerOperationResult
 }
-
-type SmartRollupCementResultApplied struct {
-	core.OperationResultApplied[SmartRollupCementResultContents]
-}
-
-func (*SmartRollupCementResultApplied) SmartRollupCementResult() {}
-
-type SmartRollupCementResultBacktracked struct {
-	core.OperationResultBacktracked[SmartRollupCementResultContents]
-}
-
-func (*SmartRollupCementResultBacktracked) SmartRollupCementResult() {}
-
-type SmartRollupCementResultFailed struct{ core.OperationResultFailed }
-
-func (*SmartRollupCementResultFailed) SmartRollupCementResult() {}
-
-type SmartRollupCementResultSkipped struct{ core.OperationResultSkipped }
-
-func (*SmartRollupCementResultSkipped) SmartRollupCementResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupCementResult]{
 		Variants: encoding.Variants[SmartRollupCementResult]{
-			0: (*SmartRollupCementResultApplied)(nil),
-			1: (*SmartRollupCementResultFailed)(nil),
-			2: (*SmartRollupCementResultSkipped)(nil),
-			3: (*SmartRollupCementResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*SmartRollupCementResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*SmartRollupCementResultContents])(nil),
 		},
 	})
 }
@@ -207,37 +165,16 @@ type SmartRollupPublishResultContents struct {
 }
 
 type SmartRollupPublishResult interface {
-	SmartRollupPublishResult()
 	core.ManagerOperationResult
 }
-
-type SmartRollupPublishResultApplied struct {
-	core.OperationResultApplied[SmartRollupPublishResultContents]
-}
-
-func (*SmartRollupPublishResultApplied) SmartRollupPublishResult() {}
-
-type SmartRollupPublishResultBacktracked struct {
-	core.OperationResultBacktracked[SmartRollupPublishResultContents]
-}
-
-func (*SmartRollupPublishResultBacktracked) SmartRollupPublishResult() {}
-
-type SmartRollupPublishResultFailed struct{ core.OperationResultFailed }
-
-func (*SmartRollupPublishResultFailed) SmartRollupPublishResult() {}
-
-type SmartRollupPublishResultSkipped struct{ core.OperationResultSkipped }
-
-func (*SmartRollupPublishResultSkipped) SmartRollupPublishResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupPublishResult]{
 		Variants: encoding.Variants[SmartRollupPublishResult]{
-			0: (*SmartRollupPublishResultApplied)(nil),
-			1: (*SmartRollupPublishResultFailed)(nil),
-			2: (*SmartRollupPublishResultSkipped)(nil),
-			3: (*SmartRollupPublishResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*SmartRollupPublishResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*SmartRollupPublishResultContents])(nil),
 		},
 	})
 }
@@ -450,37 +387,16 @@ const (
 )
 
 type SmartRollupTimeoutResult interface {
-	SmartRollupTimeoutResult()
 	core.ManagerOperationResult
 }
-
-type SmartRollupTimeoutResultApplied struct {
-	core.OperationResultApplied[SmartRollupTimeoutResultContents]
-}
-
-func (*SmartRollupTimeoutResultApplied) SmartRollupTimeoutResult() {}
-
-type SmartRollupTimeoutResultBacktracked struct {
-	core.OperationResultBacktracked[SmartRollupTimeoutResultContents]
-}
-
-func (*SmartRollupTimeoutResultBacktracked) SmartRollupTimeoutResult() {}
-
-type SmartRollupTimeoutResultFailed struct{ core.OperationResultFailed }
-
-func (*SmartRollupTimeoutResultFailed) SmartRollupTimeoutResult() {}
-
-type SmartRollupTimeoutResultSkipped struct{ core.OperationResultSkipped }
-
-func (*SmartRollupTimeoutResultSkipped) SmartRollupTimeoutResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupTimeoutResult]{
 		Variants: encoding.Variants[SmartRollupTimeoutResult]{
-			0: (*SmartRollupTimeoutResultApplied)(nil),
-			1: (*SmartRollupTimeoutResultFailed)(nil),
-			2: (*SmartRollupTimeoutResultSkipped)(nil),
-			3: (*SmartRollupTimeoutResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*SmartRollupTimeoutResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*SmartRollupTimeoutResultContents])(nil),
 		},
 	})
 }
@@ -539,37 +455,16 @@ type SmartRollupExecuteOutboxMessageResultContents struct {
 }
 
 type SmartRollupExecuteOutboxMessageResult interface {
-	SmartRollupExecuteOutboxMessageResult()
 	core.ManagerOperationResult
 }
-
-type SmartRollupExecuteOutboxMessageResultApplied struct {
-	core.OperationResultApplied[SmartRollupExecuteOutboxMessageResultContents]
-}
-
-func (*SmartRollupExecuteOutboxMessageResultApplied) SmartRollupExecuteOutboxMessageResult() {}
-
-type SmartRollupExecuteOutboxMessageResultBacktracked struct {
-	core.OperationResultBacktracked[SmartRollupExecuteOutboxMessageResultContents]
-}
-
-func (*SmartRollupExecuteOutboxMessageResultBacktracked) SmartRollupExecuteOutboxMessageResult() {}
-
-type SmartRollupExecuteOutboxMessageResultFailed struct{ core.OperationResultFailed }
-
-func (*SmartRollupExecuteOutboxMessageResultFailed) SmartRollupExecuteOutboxMessageResult() {}
-
-type SmartRollupExecuteOutboxMessageResultSkipped struct{ core.OperationResultSkipped }
-
-func (*SmartRollupExecuteOutboxMessageResultSkipped) SmartRollupExecuteOutboxMessageResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupExecuteOutboxMessageResult]{
 		Variants: encoding.Variants[SmartRollupExecuteOutboxMessageResult]{
-			0: (*SmartRollupExecuteOutboxMessageResultApplied)(nil),
-			1: (*SmartRollupExecuteOutboxMessageResultFailed)(nil),
-			2: (*SmartRollupExecuteOutboxMessageResultSkipped)(nil),
-			3: (*SmartRollupExecuteOutboxMessageResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*SmartRollupExecuteOutboxMessageResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*SmartRollupExecuteOutboxMessageResultContents])(nil),
 		},
 	})
 }
@@ -599,37 +494,16 @@ type SmartRollupRecoverBondResultContents struct {
 }
 
 type SmartRollupRecoverBondResult interface {
-	SmartRollupRecoverBondResult()
 	core.ManagerOperationResult
 }
-
-type SmartRollupRecoverBondResultApplied struct {
-	core.OperationResultApplied[SmartRollupRecoverBondResultContents]
-}
-
-func (*SmartRollupRecoverBondResultApplied) SmartRollupRecoverBondResult() {}
-
-type SmartRollupRecoverBondResultBacktracked struct {
-	core.OperationResultBacktracked[SmartRollupRecoverBondResultContents]
-}
-
-func (*SmartRollupRecoverBondResultBacktracked) SmartRollupRecoverBondResult() {}
-
-type SmartRollupRecoverBondResultFailed struct{ core.OperationResultFailed }
-
-func (*SmartRollupRecoverBondResultFailed) SmartRollupRecoverBondResult() {}
-
-type SmartRollupRecoverBondResultSkipped struct{ core.OperationResultSkipped }
-
-func (*SmartRollupRecoverBondResultSkipped) SmartRollupRecoverBondResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupRecoverBondResult]{
 		Variants: encoding.Variants[SmartRollupRecoverBondResult]{
-			0: (*SmartRollupRecoverBondResultApplied)(nil),
-			1: (*SmartRollupRecoverBondResultFailed)(nil),
-			2: (*SmartRollupRecoverBondResultSkipped)(nil),
-			3: (*SmartRollupRecoverBondResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*SmartRollupRecoverBondResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*SmartRollupRecoverBondResultContents])(nil),
 		},
 	})
 }

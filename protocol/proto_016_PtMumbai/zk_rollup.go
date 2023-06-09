@@ -27,37 +27,16 @@ type ZkRollupPublishResultContents struct {
 }
 
 type ZkRollupPublishResult interface {
-	ZkRollupPublishResult()
 	core.ManagerOperationResult
 }
-
-type ZkRollupPublishResultApplied struct {
-	core.OperationResultApplied[ZkRollupPublishResultContents]
-}
-
-func (*ZkRollupPublishResultApplied) ZkRollupPublishResult() {}
-
-type ZkRollupPublishResultBacktracked struct {
-	core.OperationResultBacktracked[ZkRollupPublishResultContents]
-}
-
-func (*ZkRollupPublishResultBacktracked) ZkRollupPublishResult() {}
-
-type ZkRollupPublishResultFailed struct{ core.OperationResultFailed }
-
-func (*ZkRollupPublishResultFailed) ZkRollupPublishResult() {}
-
-type ZkRollupPublishResultSkipped struct{ core.OperationResultSkipped }
-
-func (*ZkRollupPublishResultSkipped) ZkRollupPublishResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[ZkRollupPublishResult]{
 		Variants: encoding.Variants[ZkRollupPublishResult]{
-			0: (*ZkRollupPublishResultApplied)(nil),
-			1: (*ZkRollupPublishResultFailed)(nil),
-			2: (*ZkRollupPublishResultSkipped)(nil),
-			3: (*ZkRollupPublishResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*ZkRollupPublishResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*ZkRollupPublishResultContents])(nil),
 		},
 	})
 }
@@ -122,37 +101,16 @@ type ZkRollupUpdateResultContents struct {
 }
 
 type ZkRollupUpdateResult interface {
-	ZkRollupUpdateResult()
 	core.ManagerOperationResult
 }
-
-type ZkRollupUpdateResultApplied struct {
-	core.OperationResultApplied[ZkRollupUpdateResultContents]
-}
-
-func (*ZkRollupUpdateResultApplied) ZkRollupUpdateResult() {}
-
-type ZkRollupUpdateResultBacktracked struct {
-	core.OperationResultBacktracked[ZkRollupUpdateResultContents]
-}
-
-func (*ZkRollupUpdateResultBacktracked) ZkRollupUpdateResult() {}
-
-type ZkRollupUpdateResultFailed struct{ core.OperationResultFailed }
-
-func (*ZkRollupUpdateResultFailed) ZkRollupUpdateResult() {}
-
-type ZkRollupUpdateResultSkipped struct{ core.OperationResultSkipped }
-
-func (*ZkRollupUpdateResultSkipped) ZkRollupUpdateResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[ZkRollupUpdateResult]{
 		Variants: encoding.Variants[ZkRollupUpdateResult]{
-			0: (*ZkRollupUpdateResultApplied)(nil),
-			1: (*ZkRollupUpdateResultFailed)(nil),
-			2: (*ZkRollupUpdateResultSkipped)(nil),
-			3: (*ZkRollupUpdateResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*ZkRollupUpdateResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*ZkRollupUpdateResultContents])(nil),
 		},
 	})
 }

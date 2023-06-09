@@ -131,10 +131,6 @@ type DALAttestationMetadata struct {
 	Delegate tz.PublicKeyHash `json:"delegate"`
 }
 
-type RegisterGlobalConstantResult interface {
-	proto_012_Psithaca.RegisterGlobalConstantResult
-}
-
 type RegisterGlobalConstantResultContents struct {
 	BalanceUpdates
 	ConsumedMilligas tz.BigUint         `json:"consumed_milligas"`
@@ -142,33 +138,17 @@ type RegisterGlobalConstantResultContents struct {
 	GlobalAddress    *tz.ScriptExprHash `json:"global_address"`
 }
 
-type RegisterGlobalConstantResultApplied struct {
-	core.OperationResultApplied[RegisterGlobalConstantResultContents]
+type RegisterGlobalConstantResult interface {
+	core.ManagerOperationResult
 }
-
-func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultBacktracked struct {
-	core.OperationResultBacktracked[RegisterGlobalConstantResultContents]
-}
-
-func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultFailed struct{ core.OperationResultFailed }
-
-func (*RegisterGlobalConstantResultFailed) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultSkipped struct{ core.OperationResultSkipped }
-
-func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[RegisterGlobalConstantResult]{
 		Variants: encoding.Variants[RegisterGlobalConstantResult]{
-			0: (*RegisterGlobalConstantResultApplied)(nil),
-			1: (*RegisterGlobalConstantResultFailed)(nil),
-			2: (*RegisterGlobalConstantResultSkipped)(nil),
-			3: (*RegisterGlobalConstantResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*RegisterGlobalConstantResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*RegisterGlobalConstantResultContents])(nil),
 		},
 	})
 }
@@ -211,42 +191,18 @@ type TransferTicketResultContents struct {
 }
 
 type TransferTicketResult interface {
-	proto_013_PtJakart.TransferTicketResult
+	core.ManagerOperationResult
 }
-
-type TransferTicketResultApplied struct {
-	core.OperationResultApplied[TransferTicketResultContents]
-}
-
-func (*TransferTicketResultApplied) TransferTicketResult() {}
-
-type TransferTicketResultBacktracked struct {
-	core.OperationResultBacktracked[TransferTicketResultContents]
-}
-
-func (*TransferTicketResultBacktracked) TransferTicketResult() {}
-
-type TransferTicketResultFailed struct{ core.OperationResultFailed }
-
-func (*TransferTicketResultFailed) TransferTicketResult() {}
-
-type TransferTicketResultSkipped struct{ core.OperationResultSkipped }
-
-func (*TransferTicketResultSkipped) TransferTicketResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransferTicketResult]{
 		Variants: encoding.Variants[TransferTicketResult]{
-			0: (*TransferTicketResultApplied)(nil),
-			1: (*TransferTicketResultFailed)(nil),
-			2: (*TransferTicketResultSkipped)(nil),
-			3: (*TransferTicketResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*TransferTicketResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*TransferTicketResultContents])(nil),
 		},
 	})
-}
-
-type IncreasePaidStorageResult interface {
-	proto_014_PtKathma.IncreasePaidStorageResult
 }
 
 type IncreasePaidStorageResultContents struct {
@@ -256,40 +212,24 @@ type IncreasePaidStorageResultContents struct {
 
 //json:kind=OperationKind()
 type IncreasePaidStorageSuccessfulManagerResult struct {
-	IncreasePaidStorageResultApplied
+	core.OperationResultApplied[*IncreasePaidStorageResultContents]
 }
 
 func (*IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
 	return "increase_paid_storage"
 }
 
-type IncreasePaidStorageResultApplied struct {
-	core.OperationResultApplied[IncreasePaidStorageResultContents]
+type IncreasePaidStorageResult interface {
+	core.ManagerOperationResult
 }
-
-func (*IncreasePaidStorageResultApplied) IncreasePaidStorageResult() {}
-
-type IncreasePaidStorageResultBacktracked struct {
-	core.OperationResultBacktracked[IncreasePaidStorageResultContents]
-}
-
-func (*IncreasePaidStorageResultBacktracked) IncreasePaidStorageResult() {}
-
-type IncreasePaidStorageResultFailed struct{ core.OperationResultFailed }
-
-func (*IncreasePaidStorageResultFailed) IncreasePaidStorageResult() {}
-
-type IncreasePaidStorageResultSkipped struct{ core.OperationResultSkipped }
-
-func (*IncreasePaidStorageResultSkipped) IncreasePaidStorageResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[IncreasePaidStorageResult]{
 		Variants: encoding.Variants[IncreasePaidStorageResult]{
-			0: (*IncreasePaidStorageResultApplied)(nil),
-			1: (*IncreasePaidStorageResultFailed)(nil),
-			2: (*IncreasePaidStorageResultSkipped)(nil),
-			3: (*IncreasePaidStorageResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*IncreasePaidStorageResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*IncreasePaidStorageResultContents])(nil),
 		},
 	})
 }

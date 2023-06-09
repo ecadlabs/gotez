@@ -11,10 +11,6 @@ import (
 type Origination = proto_012_Psithaca.Origination
 type Script = proto_012_Psithaca.Script
 
-type OriginationResult interface {
-	proto_012_Psithaca.OriginationResult
-}
-
 type OriginationResultContents struct {
 	BalanceUpdates
 	OriginatedContracts []core.OriginatedContractID `tz:"dyn" json:"originated_contracts"`
@@ -26,37 +22,23 @@ type OriginationResultContents struct {
 }
 
 //json:kind=OperationKind()
-type OriginationSuccessfulManagerResult struct{ OriginationResultApplied }
+type OriginationSuccessfulManagerResult struct {
+	core.OperationResultApplied[*OriginationResultContents]
+}
 
 func (*OriginationSuccessfulManagerResult) OperationKind() string { return "origination" }
 
-type OriginationResultApplied struct {
-	core.OperationResultApplied[OriginationResultContents]
+type OriginationResult interface {
+	core.ManagerOperationResult
 }
-
-func (*OriginationResultApplied) OriginationResult() {}
-
-type OriginationResultBacktracked struct {
-	core.OperationResultBacktracked[OriginationResultContents]
-}
-
-func (*OriginationResultBacktracked) OriginationResult() {}
-
-type OriginationResultFailed struct{ core.OperationResultFailed }
-
-func (*OriginationResultFailed) OriginationResult() {}
-
-type OriginationResultSkipped struct{ core.OperationResultSkipped }
-
-func (*OriginationResultSkipped) OriginationResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[OriginationResult]{
 		Variants: encoding.Variants[OriginationResult]{
-			0: (*OriginationResultApplied)(nil),
-			1: (*OriginationResultFailed)(nil),
-			2: (*OriginationResultSkipped)(nil),
-			3: (*OriginationResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*OriginationResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*OriginationResultContents])(nil),
 		},
 	})
 }

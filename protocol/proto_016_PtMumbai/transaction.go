@@ -37,12 +37,12 @@ func init() {
 	})
 }
 
-type TransactionResultContents struct {
-	TransactionResultDestination `json:"contents"`
-}
+type TransactionResultContents = TransactionResultDestination
 
 //json:kind=OperationKind()
-type TransactionSuccessfulManagerResult struct{ TransactionResultApplied }
+type TransactionSuccessfulManagerResult struct {
+	core.OperationResultApplied[TransactionResultContents]
+}
 
 func (TransactionSuccessfulManagerResult) OperationKind() string { return "transaction" }
 
@@ -86,37 +86,17 @@ func (op *TransactionContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
-type TransactionResultApplied struct {
-	core.OperationResultApplied[TransactionResultContents]
-}
-
-func (*TransactionResultApplied) TransactionResult() {}
-
-type TransactionResultBacktracked struct {
-	core.OperationResultBacktracked[TransactionResultContents]
-}
-
-func (*TransactionResultBacktracked) TransactionResult() {}
-
-type TransactionResultFailed struct{ core.OperationResultFailed }
-
-func (*TransactionResultFailed) TransactionResult() {}
-
-type TransactionResultSkipped struct{ core.OperationResultSkipped }
-
-func (*TransactionResultSkipped) TransactionResult() {}
-
 type TransactionResult interface {
-	proto_012_Psithaca.TransactionResult
+	core.ManagerOperationResult
 }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionResult]{
 		Variants: encoding.Variants[TransactionResult]{
-			0: (*TransactionResultApplied)(nil),
-			1: (*TransactionResultFailed)(nil),
-			2: (*TransactionResultSkipped)(nil),
-			3: (*TransactionResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[TransactionResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[TransactionResultContents])(nil),
 		},
 	})
 }

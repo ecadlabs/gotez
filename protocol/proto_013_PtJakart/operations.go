@@ -148,10 +148,6 @@ func (op *DelegationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
-type RegisterGlobalConstantResult interface {
-	proto_012_Psithaca.RegisterGlobalConstantResult
-}
-
 type RegisterGlobalConstantResultContents struct {
 	BalanceUpdates
 	ConsumedGas      tz.BigUint         `json:"consumed_gas"`
@@ -160,33 +156,17 @@ type RegisterGlobalConstantResultContents struct {
 	GlobalAddress    *tz.ScriptExprHash `json:"global_address"`
 }
 
-type RegisterGlobalConstantResultApplied struct {
-	core.OperationResultApplied[RegisterGlobalConstantResultContents]
+type RegisterGlobalConstantResult interface {
+	core.ManagerOperationResult
 }
-
-func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultBacktracked struct {
-	core.OperationResultBacktracked[RegisterGlobalConstantResultContents]
-}
-
-func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultFailed struct{ core.OperationResultFailed }
-
-func (*RegisterGlobalConstantResultFailed) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultSkipped struct{ core.OperationResultSkipped }
-
-func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[RegisterGlobalConstantResult]{
 		Variants: encoding.Variants[RegisterGlobalConstantResult]{
-			0: (*RegisterGlobalConstantResultApplied)(nil),
-			1: (*RegisterGlobalConstantResultFailed)(nil),
-			2: (*RegisterGlobalConstantResultSkipped)(nil),
-			3: (*RegisterGlobalConstantResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*RegisterGlobalConstantResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*RegisterGlobalConstantResultContents])(nil),
 		},
 	})
 }
@@ -228,38 +208,17 @@ type TransferTicketResultContents struct {
 	PaidStorageSizeDiff tz.BigInt  `json:"paid_storage_size_diff"`
 }
 
-type TransferTicketResultApplied struct {
-	core.OperationResultApplied[TransferTicketResultContents]
-}
-
-func (*TransferTicketResultApplied) TransferTicketResult() {}
-
-type TransferTicketResultBacktracked struct {
-	core.OperationResultBacktracked[TransferTicketResultContents]
-}
-
-func (*TransferTicketResultBacktracked) TransferTicketResult() {}
-
-type TransferTicketResultFailed struct{ core.OperationResultFailed }
-
-func (*TransferTicketResultFailed) TransferTicketResult() {}
-
-type TransferTicketResultSkipped struct{ core.OperationResultSkipped }
-
-func (*TransferTicketResultSkipped) TransferTicketResult() {}
-
 type TransferTicketResult interface {
-	TransferTicketResult()
 	core.ManagerOperationResult
 }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransferTicketResult]{
 		Variants: encoding.Variants[TransferTicketResult]{
-			0: (*TransferTicketResultApplied)(nil),
-			1: (*TransferTicketResultFailed)(nil),
-			2: (*TransferTicketResultSkipped)(nil),
-			3: (*TransferTicketResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*TransferTicketResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*TransferTicketResultContents])(nil),
 		},
 	})
 }

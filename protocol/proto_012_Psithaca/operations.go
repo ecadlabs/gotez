@@ -303,37 +303,16 @@ type ConsumedGasResultContents struct {
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
 type ConsumedGasResult interface {
-	ConsumedGasResult()
 	core.ManagerOperationResult
 }
-
-type ConsumedGasResultApplied struct {
-	core.OperationResultApplied[ConsumedGasResultContents]
-}
-
-func (*ConsumedGasResultApplied) ConsumedGasResult() {}
-
-type ConsumedGasResultBacktracked struct {
-	core.OperationResultBacktracked[ConsumedGasResultContents]
-}
-
-func (*ConsumedGasResultBacktracked) ConsumedGasResult() {}
-
-type ConsumedGasResultFailed struct{ core.OperationResultFailed }
-
-func (*ConsumedGasResultFailed) ConsumedGasResult() {}
-
-type ConsumedGasResultSkipped struct{ core.OperationResultSkipped }
-
-func (*ConsumedGasResultSkipped) ConsumedGasResult() {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[ConsumedGasResult]{
 		Variants: encoding.Variants[ConsumedGasResult]{
-			0: (*ConsumedGasResultApplied)(nil),
-			1: (*ConsumedGasResultFailed)(nil),
-			2: (*ConsumedGasResultSkipped)(nil),
-			3: (*ConsumedGasResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*ConsumedGasResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*ConsumedGasResultContents])(nil),
 		},
 	})
 }
@@ -341,7 +320,9 @@ func init() {
 type RevealResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type RevealSuccessfulManagerResult struct{ ConsumedGasResultApplied }
+type RevealSuccessfulManagerResult struct {
+	core.OperationResultApplied[*ConsumedGasResultContents]
+}
 
 func (*RevealSuccessfulManagerResult) OperationKind() string { return "reveal" }
 
@@ -368,14 +349,18 @@ func (op *DelegationContentsAndResult) GetMetadata() any {
 type DelegationResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type DelegationSuccessfulManagerResult struct{ ConsumedGasResultApplied }
+type DelegationSuccessfulManagerResult struct {
+	core.OperationResultApplied[*ConsumedGasResultContents]
+}
 
 func (*DelegationSuccessfulManagerResult) OperationKind() string { return "delegation" }
 
 type SetDepositsLimitResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type SetDepositsLimitSuccessfulManagerResult struct{ ConsumedGasResultApplied }
+type SetDepositsLimitSuccessfulManagerResult struct {
+	core.OperationResultApplied[*ConsumedGasResultContents]
+}
 
 func (*SetDepositsLimitSuccessfulManagerResult) OperationKind() string { return "set_deposits_limit" }
 
@@ -385,39 +370,17 @@ type RegisterGlobalConstantResultContents struct {
 	StorageSize   tz.BigInt          `json:"storage_size"`
 	GlobalAddress *tz.ScriptExprHash `json:"global_address"`
 }
-
-type RegisterGlobalConstantResultApplied struct {
-	core.OperationResultApplied[RegisterGlobalConstantResultContents]
-}
-
-func (*RegisterGlobalConstantResultApplied) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultBacktracked struct {
-	core.OperationResultBacktracked[RegisterGlobalConstantResultContents]
-}
-
-func (*RegisterGlobalConstantResultBacktracked) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultFailed struct{ core.OperationResultFailed }
-
-func (*RegisterGlobalConstantResultFailed) RegisterGlobalConstantResult() {}
-
-type RegisterGlobalConstantResultSkipped struct{ core.OperationResultSkipped }
-
-func (*RegisterGlobalConstantResultSkipped) RegisterGlobalConstantResult() {}
-
 type RegisterGlobalConstantResult interface {
-	RegisterGlobalConstantResult()
 	core.ManagerOperationResult
 }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[RegisterGlobalConstantResult]{
 		Variants: encoding.Variants[RegisterGlobalConstantResult]{
-			0: (*RegisterGlobalConstantResultApplied)(nil),
-			1: (*RegisterGlobalConstantResultFailed)(nil),
-			2: (*RegisterGlobalConstantResultSkipped)(nil),
-			3: (*RegisterGlobalConstantResultBacktracked)(nil),
+			0: (*core.OperationResultApplied[*RegisterGlobalConstantResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*RegisterGlobalConstantResultContents])(nil),
 		},
 	})
 }
