@@ -35,15 +35,16 @@ type BalanceUpdateContract struct {
 
 func (BalanceUpdateContract) BalanceUpdateCategory() string { return "contract" }
 func (BalanceUpdateContract) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateContract
+	return core.BalanceUpdateKindContract
 }
+func (c BalanceUpdateContract) GetContract() core.ContractID { return c.Contract }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
 type BalanceUpdateBlockFees struct{}
 
 func (BalanceUpdateBlockFees) BalanceUpdateCategory() string { return "block_fees" }
 func (BalanceUpdateBlockFees) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateAccumulator
+	return core.BalanceUpdateKindAccumulator
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -51,9 +52,10 @@ type BalanceUpdateDeposits struct {
 	Delegate tz.PublicKeyHash `json:"delegate"`
 }
 
-func (BalanceUpdateDeposits) BalanceUpdateCategory() string { return "deposits" }
+func (b *BalanceUpdateDeposits) GetDelegate() tz.PublicKeyHash { return b.Delegate }
+func (BalanceUpdateDeposits) BalanceUpdateCategory() string    { return "deposits" }
 func (BalanceUpdateDeposits) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateFreezer
+	return core.BalanceUpdateKindFreezer
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -63,7 +65,7 @@ func (BalanceUpdateNonceRevelationRewards) BalanceUpdateCategory() string {
 	return "nonce_revelation_rewards"
 }
 func (BalanceUpdateNonceRevelationRewards) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -73,7 +75,7 @@ func (BalanceUpdateDoubleSigningEvidenceRewards) BalanceUpdateCategory() string 
 	return "double_signing_evidence_rewards"
 }
 func (BalanceUpdateDoubleSigningEvidenceRewards) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -83,7 +85,7 @@ func (BalanceUpdateEndorsingRewards) BalanceUpdateCategory() string {
 	return "endorsing_rewards"
 }
 func (BalanceUpdateEndorsingRewards) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -93,7 +95,7 @@ func (BalanceUpdateBakingRewards) BalanceUpdateCategory() string {
 	return "baking_rewards"
 }
 func (BalanceUpdateBakingRewards) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -103,7 +105,7 @@ func (BalanceUpdateBakingBonuses) BalanceUpdateCategory() string {
 	return "baking_bonuses"
 }
 func (BalanceUpdateBakingBonuses) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -113,7 +115,7 @@ func (BalanceUpdateStorageFees) BalanceUpdateCategory() string {
 	return "storage_fees"
 }
 func (BalanceUpdateStorageFees) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateBurned
+	return core.BalanceUpdateKindBurned
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -123,7 +125,7 @@ func (BalanceUpdateDoubleSigningPunishments) BalanceUpdateCategory() string {
 	return "double_signing_punishments"
 }
 func (BalanceUpdateDoubleSigningPunishments) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateBurned
+	return core.BalanceUpdateKindBurned
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -133,7 +135,7 @@ func (BalanceUpdateLiquidityBakingSubsidies) BalanceUpdateCategory() string {
 	return "liquidity_baking_subsidies"
 }
 func (BalanceUpdateLiquidityBakingSubsidies) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -143,7 +145,7 @@ func (BalanceUpdateBurned) BalanceUpdateCategory() string {
 	return "burned"
 }
 func (BalanceUpdateBurned) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateBurned
+	return core.BalanceUpdateKindBurned
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -153,7 +155,7 @@ func (BalanceUpdateBootstrap) BalanceUpdateCategory() string {
 	return "bootstrap"
 }
 func (BalanceUpdateBootstrap) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -163,7 +165,7 @@ func (BalanceUpdateInvoice) BalanceUpdateCategory() string {
 	return "invoice"
 }
 func (BalanceUpdateInvoice) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -173,7 +175,7 @@ func (BalanceUpdateInitialCommitments) BalanceUpdateCategory() string {
 	return "initial_commitments"
 }
 func (BalanceUpdateInitialCommitments) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -183,7 +185,7 @@ func (BalanceUpdateMinted) BalanceUpdateCategory() string {
 	return "minted"
 }
 func (BalanceUpdateMinted) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -193,11 +195,12 @@ type BalanceUpdateLostEndorsingRewards struct {
 	Revelation    bool             `json:"revelation"`
 }
 
+func (b *BalanceUpdateLostEndorsingRewards) GetDelegate() tz.PublicKeyHash { return b.Delegate }
 func (*BalanceUpdateLostEndorsingRewards) BalanceUpdateCategory() string {
 	return "lost_endorsing_rewards"
 }
 func (*BalanceUpdateLostEndorsingRewards) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateBurned
+	return core.BalanceUpdateKindBurned
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -207,7 +210,7 @@ type BalanceUpdateCommitments struct {
 
 func (BalanceUpdateCommitments) BalanceUpdateCategory() string { return "commitments" }
 func (BalanceUpdateCommitments) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateCommitment
+	return core.BalanceUpdateKindCommitment
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -216,9 +219,10 @@ type BalanceUpdateLegacyRewards struct {
 	Cycle    int32            `json:"cycle"`
 }
 
-func (*BalanceUpdateLegacyRewards) BalanceUpdateCategory() string { return "legacy_rewards" }
+func (b *BalanceUpdateLegacyRewards) GetDelegate() tz.PublicKeyHash { return b.Delegate }
+func (*BalanceUpdateLegacyRewards) BalanceUpdateCategory() string   { return "legacy_rewards" }
 func (*BalanceUpdateLegacyRewards) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateFreezer
+	return core.BalanceUpdateKindFreezer
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -226,7 +230,7 @@ type BalanceUpdateLegacyDeposits BalanceUpdateLegacyRewards
 
 func (*BalanceUpdateLegacyDeposits) BalanceUpdateCategory() string { return "legacy_deposits" }
 func (*BalanceUpdateLegacyDeposits) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateFreezer
+	return core.BalanceUpdateKindFreezer
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -234,7 +238,7 @@ type BalanceUpdateLegacyFees BalanceUpdateLegacyRewards
 
 func (*BalanceUpdateLegacyFees) BalanceUpdateCategory() string { return "legacy_fees" }
 func (*BalanceUpdateLegacyFees) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateFreezer
+	return core.BalanceUpdateKindFreezer
 }
 
 type BalanceUpdateContents interface {

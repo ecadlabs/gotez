@@ -64,7 +64,7 @@ func (BalanceUpdateScRollupRefutationRewards) BalanceUpdateCategory() string {
 	return "smart_rollup_refutation_rewards"
 }
 func (BalanceUpdateScRollupRefutationRewards) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateMinted
+	return core.BalanceUpdateKindMinted
 }
 
 func init() {

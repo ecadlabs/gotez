@@ -92,10 +92,9 @@ type TransactionResultContents struct {
 }
 
 //json:kind=OperationKind()
-type TransactionSuccessfulManagerResult TransactionResultContents
+type TransactionSuccessfulManagerResult struct{ TransactionResultApplied }
 
-func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
+func (*TransactionSuccessfulManagerResult) OperationKind() string { return "transaction" }
 
 type TransactionContentsAndResult struct {
 	Transaction

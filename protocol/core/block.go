@@ -58,6 +58,7 @@ func (k VotingPeriodKind) String() string {
 }
 
 type BlockMetadata interface {
+	BalanceUpdates
 	GetMetadataHeader() *BlockMetadataHeader
 	GetProposer() tz.PublicKeyHash
 	GetBaker() tz.PublicKeyHash

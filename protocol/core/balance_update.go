@@ -1,6 +1,10 @@
 package core
 
-import "strconv"
+import (
+	"strconv"
+
+	tz "github.com/ecadlabs/gotez/v2"
+)
 
 type BalanceUpdateOrigin uint8
 
@@ -9,6 +13,7 @@ const (
 	BalanceUpdateOriginProtocolMigration
 	BalanceUpdateOriginSubsidy
 	BalanceUpdateOriginSimulation
+	BalanceUpdateOrigin_Num
 )
 
 func (o BalanceUpdateOrigin) String() string {
@@ -35,17 +40,17 @@ type BalanceUpdateKind int
 
 func (k BalanceUpdateKind) String() string {
 	switch k {
-	case BalanceUpdateContract:
+	case BalanceUpdateKindContract:
 		return "contract"
-	case BalanceUpdateAccumulator:
+	case BalanceUpdateKindAccumulator:
 		return "accumulator"
-	case BalanceUpdateFreezer:
+	case BalanceUpdateKindFreezer:
 		return "freezer"
-	case BalanceUpdateMinted:
+	case BalanceUpdateKindMinted:
 		return "minted"
-	case BalanceUpdateBurned:
+	case BalanceUpdateKindBurned:
 		return "burned"
-	case BalanceUpdateCommitment:
+	case BalanceUpdateKindCommitment:
 		return "commitment"
 	default:
 		return "<unknown>"
@@ -57,12 +62,13 @@ func (k BalanceUpdateKind) MarshalText() (text []byte, err error) {
 }
 
 const (
-	BalanceUpdateContract BalanceUpdateKind = iota
-	BalanceUpdateAccumulator
-	BalanceUpdateFreezer
-	BalanceUpdateMinted
-	BalanceUpdateBurned
-	BalanceUpdateCommitment
+	BalanceUpdateKindContract BalanceUpdateKind = iota
+	BalanceUpdateKindAccumulator
+	BalanceUpdateKindFreezer
+	BalanceUpdateKindMinted
+	BalanceUpdateKindBurned
+	BalanceUpdateKindCommitment
+	BalanceUpdateKind_Num
 )
 
 type BalanceUpdate interface {
@@ -78,4 +84,14 @@ type BalanceUpdateContents interface {
 
 type BalanceUpdates interface {
 	GetBalanceUpdates() []BalanceUpdate
+}
+
+type BalanceUpdateContract interface {
+	BalanceUpdateContents
+	GetContract() ContractID
+}
+
+type BalanceUpdateDelegate interface {
+	BalanceUpdateContents
+	GetDelegate() tz.PublicKeyHash
 }

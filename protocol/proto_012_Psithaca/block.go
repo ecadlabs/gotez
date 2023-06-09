@@ -92,6 +92,13 @@ func (m *BlockMetadata) GetNonceHash() tz.Option[*tz.CycleNonceHash]  { return m
 func (m *BlockMetadata) GetConsumedGas() tz.Option[tz.BigUint]        { return tz.Some(m.ConsumedGas) }
 func (m *BlockMetadata) GetConsumedMilligas() tz.Option[tz.BigUint]   { return tz.None[tz.BigUint]() }
 func (m *BlockMetadata) GetDeactivated() []tz.PublicKeyHash           { return m.Deactivated }
+func (m *BlockMetadata) GetBalanceUpdates() (updates []core.BalanceUpdate) {
+	updates = make([]core.BalanceUpdate, len(m.BalanceUpdates))
+	for i, u := range m.BalanceUpdates {
+		updates[i] = u
+	}
+	return
+}
 func (m *BlockMetadata) GetImplicitOperationsResults() []core.SuccessfulManagerOperationResult {
 	out := make([]core.SuccessfulManagerOperationResult, len(m.ImplicitOperationsResults))
 	for i, v := range m.ImplicitOperationsResults {

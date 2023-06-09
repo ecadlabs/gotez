@@ -9,11 +9,16 @@ import (
 	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
+type Logger interface {
+	Printf(format string, a ...any)
+}
+
 type Client struct {
 	Client *http.Client
 	URL    string
 	Chain  string
 	APIKey string
+	Logger Logger
 }
 
 type Error struct {
@@ -40,9 +45,13 @@ func (c *Client) client() *http.Client {
 }
 
 func (client *Client) request(method string, path string, out any, ctx context.Context) error {
-	req, err := http.NewRequestWithContext(ctx, method, client.URL+path, nil)
+	url := client.URL + path
+	req, err := http.NewRequestWithContext(ctx, method, url, nil)
 	if err != nil {
 		return err
+	}
+	if client.Logger != nil {
+		client.Logger.Printf("%s %s", method, url)
 	}
 	req.Header.Set("Accept", "application/octet-stream")
 	if client.APIKey != "" {

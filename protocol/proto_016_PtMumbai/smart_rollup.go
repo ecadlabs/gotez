@@ -56,10 +56,11 @@ type SmartRollupOriginateResultContents struct {
 }
 
 //json:kind=OperationKind()
-type SmartRollupOriginateSuccessfulManagerResult SmartRollupOriginateResultContents
+type SmartRollupOriginateSuccessfulManagerResult struct {
+	SmartRollupOriginateResultApplied
+}
 
-func (SmartRollupOriginateSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (SmartRollupOriginateSuccessfulManagerResult) OperationKind() string {
+func (*SmartRollupOriginateSuccessfulManagerResult) OperationKind() string {
 	return "smart_rollup_originate"
 }
 

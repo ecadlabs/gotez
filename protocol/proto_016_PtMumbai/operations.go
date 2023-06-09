@@ -210,14 +210,6 @@ type TransferTicketResultContents struct {
 	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
 }
 
-//json:kind=OperationKind()
-type TransferTicketSuccessfulManagerResult TransferTicketResultContents
-
-func (TransferTicketSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (TransferTicketSuccessfulManagerResult) OperationKind() string {
-	return "transfer_ticket"
-}
-
 type TransferTicketResult interface {
 	proto_013_PtJakart.TransferTicketResult
 }
@@ -263,10 +255,11 @@ type IncreasePaidStorageResultContents struct {
 }
 
 //json:kind=OperationKind()
-type IncreasePaidStorageSuccessfulManagerResult IncreasePaidStorageResultContents
+type IncreasePaidStorageSuccessfulManagerResult struct {
+	IncreasePaidStorageResultApplied
+}
 
-func (IncreasePaidStorageSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
+func (*IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
 	return "increase_paid_storage"
 }
 

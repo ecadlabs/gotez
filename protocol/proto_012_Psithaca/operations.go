@@ -338,13 +338,12 @@ func init() {
 	})
 }
 
-type RevealResultContents ConsumedGasResultContents
+type RevealResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type RevealSuccessfulManagerResult RevealResultContents
+type RevealSuccessfulManagerResult struct{ ConsumedGasResultApplied }
 
-func (*RevealSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (*RevealSuccessfulManagerResult) OperationKind() string             { return "reveal" }
+func (*RevealSuccessfulManagerResult) OperationKind() string { return "reveal" }
 
 type RevealContentsAndResult struct {
 	Reveal
@@ -366,23 +365,19 @@ func (op *DelegationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
-type DelegationResultContents ConsumedGasResultContents
+type DelegationResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type DelegationSuccessfulManagerResult DelegationResultContents
+type DelegationSuccessfulManagerResult struct{ ConsumedGasResultApplied }
 
-func (*DelegationSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (*DelegationSuccessfulManagerResult) OperationKind() string             { return "delegation" }
+func (*DelegationSuccessfulManagerResult) OperationKind() string { return "delegation" }
 
-type SetDepositsLimitResultContents ConsumedGasResultContents
+type SetDepositsLimitResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type SetDepositsLimitSuccessfulManagerResult ConsumedGasResultContents
+type SetDepositsLimitSuccessfulManagerResult struct{ ConsumedGasResultApplied }
 
-func (*SetDepositsLimitSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (*SetDepositsLimitSuccessfulManagerResult) OperationKind() string {
-	return "set_deposits_limit"
-}
+func (*SetDepositsLimitSuccessfulManagerResult) OperationKind() string { return "set_deposits_limit" }
 
 type RegisterGlobalConstantResultContents struct {
 	BalanceUpdates

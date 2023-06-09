@@ -228,14 +228,6 @@ type TransferTicketResultContents struct {
 	PaidStorageSizeDiff tz.BigInt  `json:"paid_storage_size_diff"`
 }
 
-//json:kind=OperationKind()
-type TransferTicketSuccessfulManagerResult TransferTicketResultContents
-
-func (TransferTicketSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (TransferTicketSuccessfulManagerResult) OperationKind() string {
-	return "transfer_ticket"
-}
-
 type TransferTicketResultApplied struct {
 	core.OperationResultApplied[TransferTicketResultContents]
 }

@@ -80,7 +80,6 @@ type ZkRollupDestination struct {
 }
 
 func (*ZkRollupDestination) TransactionDestination() {}
-func (*ZkRollupDestination) Address()                {}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
@@ -99,10 +98,9 @@ type TransactionResultContents struct {
 }
 
 //json:kind=OperationKind()
-type TransactionSuccessfulManagerResult TransactionResultContents
+type TransactionSuccessfulManagerResult struct{ TransactionResultApplied }
 
-func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
+func (TransactionSuccessfulManagerResult) OperationKind() string { return "transaction" }
 
 type TransactionContentsAndResult struct {
 	Transaction

@@ -86,9 +86,10 @@ type BalanceUpdateFrozenBonds struct {
 	BondID   BondID          `json:"bond_id"`
 }
 
-func (*BalanceUpdateFrozenBonds) BalanceUpdateCategory() string { return "frozen_bonds" }
+func (b *BalanceUpdateFrozenBonds) GetContract() core.ContractID { return b.Contract }
+func (*BalanceUpdateFrozenBonds) BalanceUpdateCategory() string  { return "frozen_bonds" }
 func (*BalanceUpdateFrozenBonds) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateFreezer
+	return core.BalanceUpdateKindFreezer
 }
 
 //json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
@@ -98,7 +99,7 @@ func (BalanceUpdateScRollupRefutationPunishments) BalanceUpdateCategory() string
 	return "smart_rollup_refutation_punishments"
 }
 func (BalanceUpdateScRollupRefutationPunishments) BalanceUpdateKind() core.BalanceUpdateKind {
-	return core.BalanceUpdateBurned
+	return core.BalanceUpdateKindBurned
 }
 
 func init() {

@@ -37,6 +37,7 @@ type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type ConsumedGasResultContents = proto_014_PtKathma.ConsumedGasResultContents
+type ConsumedGasResultApplied = proto_014_PtKathma.ConsumedGasResultApplied
 type RevealSuccessfulManagerResult = proto_014_PtKathma.RevealSuccessfulManagerResult
 type DelegationSuccessfulManagerResult = proto_014_PtKathma.DelegationSuccessfulManagerResult
 type SetDepositsLimitSuccessfulManagerResult = proto_014_PtKathma.SetDepositsLimitSuccessfulManagerResult
@@ -88,12 +89,11 @@ type DrainDelegate struct {
 
 func (*DrainDelegate) OperationKind() string { return "drain_delegate" }
 
-type UpdateConsensusKeyResultContents ConsumedGasResultContents
+type UpdateConsensusKeyResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type UpdateConsensusKeySuccessfulManagerResult UpdateConsensusKeyResultContents
+type UpdateConsensusKeySuccessfulManagerResult struct{ ConsumedGasResultApplied }
 
-func (*UpdateConsensusKeySuccessfulManagerResult) SuccessfulManagerOperationResult() {}
 func (*UpdateConsensusKeySuccessfulManagerResult) OperationKind() string {
 	return "update_consensus_key"
 }
@@ -289,10 +289,11 @@ type IncreasePaidStorageResultContents struct {
 }
 
 //json:kind=OperationKind()
-type IncreasePaidStorageSuccessfulManagerResult IncreasePaidStorageResultContents
+type IncreasePaidStorageSuccessfulManagerResult struct {
+	IncreasePaidStorageResultApplied
+}
 
-func (IncreasePaidStorageSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
+func (*IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
 	return "increase_paid_storage"
 }
 

@@ -39,31 +39,26 @@ type ConsumedGasResultContents struct {
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
 
-type RevealResultContents ConsumedGasResultContents
+type RevealResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type RevealSuccessfulManagerResult RevealResultContents
+type RevealSuccessfulManagerResult struct{ ConsumedGasResultApplied }
 
-func (*RevealSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (*RevealSuccessfulManagerResult) OperationKind() string             { return "reveal" }
+func (*RevealSuccessfulManagerResult) OperationKind() string { return "reveal" }
 
-type DelegationResultContents ConsumedGasResultContents
-
-//json:kind=OperationKind()
-type DelegationSuccessfulManagerResult DelegationResultContents
-
-func (*DelegationSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (*DelegationSuccessfulManagerResult) OperationKind() string             { return "delegation" }
-
-type SetDepositsLimitResultContents ConsumedGasResultContents
+type DelegationResultContents = ConsumedGasResultContents
 
 //json:kind=OperationKind()
-type SetDepositsLimitSuccessfulManagerResult SetDepositsLimitResultContents
+type DelegationSuccessfulManagerResult struct{ ConsumedGasResultApplied }
 
-func (*SetDepositsLimitSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (*SetDepositsLimitSuccessfulManagerResult) OperationKind() string {
-	return "set_deposits_limit"
-}
+func (*DelegationSuccessfulManagerResult) OperationKind() string { return "delegation" }
+
+type SetDepositsLimitResultContents = ConsumedGasResultContents
+
+//json:kind=OperationKind()
+type SetDepositsLimitSuccessfulManagerResult struct{ ConsumedGasResultApplied }
+
+func (*SetDepositsLimitSuccessfulManagerResult) OperationKind() string { return "set_deposits_limit" }
 
 type ConsumedGasResultApplied struct {
 	core.OperationResultApplied[ConsumedGasResultContents]
@@ -116,10 +111,11 @@ type IncreasePaidStorageResultContents struct {
 }
 
 //json:kind=OperationKind()
-type IncreasePaidStorageSuccessfulManagerResult IncreasePaidStorageResultContents
+type IncreasePaidStorageSuccessfulManagerResult struct {
+	IncreasePaidStorageResultApplied
+}
 
-func (IncreasePaidStorageSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
+func (*IncreasePaidStorageSuccessfulManagerResult) OperationKind() string {
 	return "increase_paid_storage"
 }
 

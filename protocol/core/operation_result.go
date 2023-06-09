@@ -16,12 +16,13 @@ type ManagerOperationResult interface {
 
 type ManagerOperationResultAppliedOrBacktracked interface {
 	ManagerOperationResult
-	GetResult() any
+	GetResultContents() any
 }
 
+// SuccessfulManagerOperationResult is used to represent implicit operations results
 type SuccessfulManagerOperationResult interface {
 	OperationContents
-	SuccessfulManagerOperationResult()
+	ManagerOperationResultAppliedOrBacktracked
 }
 
 //json:status=Status()
@@ -29,9 +30,11 @@ type OperationResultApplied[T any] struct {
 	Result T `json:"result"`
 }
 
-func (*OperationResultApplied[T]) Status() string   { return "applied" }
-func (*OperationResultApplied[T]) IsApplied() bool  { return true }
-func (r *OperationResultApplied[T]) GetResult() any { return r.Result }
+func (*OperationResultApplied[T]) Status() string           { return "applied" }
+func (*OperationResultApplied[T]) IsApplied() bool          { return true }
+func (r *OperationResultApplied[T]) GetResultContents() any { return r.Result }
+
+var _ ManagerOperationResultAppliedOrBacktracked = (*OperationResultApplied[struct{}])(nil)
 
 //json:status=Status()
 type OperationResultBacktracked[T any] struct {
@@ -39,9 +42,11 @@ type OperationResultBacktracked[T any] struct {
 	Result T                                `json:"result"`
 }
 
-func (*OperationResultBacktracked[T]) Status() string   { return "backtracked" }
-func (*OperationResultBacktracked[T]) IsApplied() bool  { return false }
-func (r *OperationResultBacktracked[T]) GetResult() any { return r.Result }
+func (*OperationResultBacktracked[T]) Status() string           { return "backtracked" }
+func (*OperationResultBacktracked[T]) IsApplied() bool          { return false }
+func (r *OperationResultBacktracked[T]) GetResultContents() any { return r.Result }
+
+var _ ManagerOperationResultAppliedOrBacktracked = (*OperationResultBacktracked[struct{}])(nil)
 
 type OperationResultErrors struct {
 	Errors []Bytes `tz:"dyn" json:"errors"`

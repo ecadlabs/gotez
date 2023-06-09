@@ -20,14 +20,14 @@ var types = []*typeDef{
 	{
 		RequestType:  "BlockRequest",
 		Method:       "GET",
-		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header{{if .Metadata}}?metadata={{.}}{{end}}",
+		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header{{with .Metadata}}?metadata={{.}}{{end}}",
 		Func:         "BlockHeader",
 		ResponseType: "protocol.BlockHeaderInfo",
 	},
 	{
 		RequestType:  "BlockRequest",
 		Method:       "GET",
-		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}{{if .Metadata}}?metadata={{.}}{{end}}",
+		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}{{with .Metadata}}?metadata={{.}}{{end}}",
 		Func:         "Block",
 		ResponseType: "protocol.BlockInfo",
 	},
@@ -53,7 +53,7 @@ func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) (*{{.R
 	}
 
 	var path strings.Builder
-	if err := path_{{.Func}}.Execute(&path, r); err != nil {
+	if err := path_{{.Func}}.Execute(&path, &tmp); err != nil {
 		return nil, err
 	}
 

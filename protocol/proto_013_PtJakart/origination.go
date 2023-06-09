@@ -26,10 +26,9 @@ type OriginationResultContents struct {
 }
 
 //json:kind=OperationKind()
-type OriginationSuccessfulManagerResult OriginationResultContents
+type OriginationSuccessfulManagerResult struct{ OriginationResultApplied }
 
-func (OriginationSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (OriginationSuccessfulManagerResult) OperationKind() string             { return "origination" }
+func (*OriginationSuccessfulManagerResult) OperationKind() string { return "origination" }
 
 type OriginationResultApplied struct {
 	core.OperationResultApplied[OriginationResultContents]

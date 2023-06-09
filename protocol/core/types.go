@@ -57,7 +57,6 @@ func (b BallotKind) MarshalText() (text []byte, err error) {
 type ContractID interface {
 	tz.Base58Encoder
 	ContractID()
-	Address()
 }
 
 func init() {
@@ -98,10 +97,7 @@ type TransactionDestination interface {
 	TransactionDestination()
 }
 
-type Address interface {
-	tz.Base58Encoder
-	Address()
-}
+type Address = tz.Base58Encoder
 
 func (*OriginatedContract) ContractID()             {}
 func (*OriginatedContract) OriginatedContractID()   {}

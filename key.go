@@ -36,7 +36,6 @@ type PublicKeyHash interface {
 	stdenc.TextMarshaler
 	PublicKeyHash() []byte
 	ToComparable[EncodedPublicKeyHash, PublicKeyHash]
-	Address()
 }
 
 func init() {
@@ -78,13 +77,9 @@ type EncryptedPrivateKey interface {
 }
 
 func (pkh *Ed25519PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
-func (pkh *Ed25519PublicKeyHash) Address()                {}
 func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
-func (pkh *Secp256k1PublicKeyHash) Address()              {}
 func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
-func (pkh *P256PublicKeyHash) Address()                   {}
 func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
-func (pkh *BLSPublicKeyHash) Address()                    {}
 
 func (priv *Ed25519PrivateKey) PrivateKey()   {}
 func (priv *Secp256k1PrivateKey) PrivateKey() {}

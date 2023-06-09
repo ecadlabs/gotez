@@ -42,10 +42,9 @@ type TransactionResultContents struct {
 }
 
 //json:kind=OperationKind()
-type TransactionSuccessfulManagerResult TransactionResultContents
+type TransactionSuccessfulManagerResult struct{ TransactionResultApplied }
 
-func (TransactionSuccessfulManagerResult) SuccessfulManagerOperationResult() {}
-func (TransactionSuccessfulManagerResult) OperationKind() string             { return "transaction" }
+func (TransactionSuccessfulManagerResult) OperationKind() string { return "transaction" }
 
 type ToContract struct {
 	Storage tz.Option[expression.Expression] `json:"storage"`
@@ -146,7 +145,6 @@ type SmartRollupDestination struct {
 }
 
 func (*SmartRollupDestination) TransactionDestination() {}
-func (*SmartRollupDestination) Address()                {}
 
 type TransactionDestination interface {
 	core.TransactionDestination
