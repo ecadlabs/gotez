@@ -27,24 +27,24 @@ type SuccessfulManagerOperationResult interface {
 
 //json:status=Status()
 type OperationResultApplied[T any] struct {
-	Result T `json:"result"`
+	Contents T `json:"contents"`
 }
 
 func (*OperationResultApplied[T]) Status() string           { return "applied" }
 func (*OperationResultApplied[T]) IsApplied() bool          { return true }
-func (r *OperationResultApplied[T]) GetResultContents() any { return r.Result }
+func (r *OperationResultApplied[T]) GetResultContents() any { return r.Contents }
 
 var _ ManagerOperationResultAppliedOrBacktracked = (*OperationResultApplied[struct{}])(nil)
 
 //json:status=Status()
 type OperationResultBacktracked[T any] struct {
-	Errors tz.Option[OperationResultErrors] `json:"errors"`
-	Result T                                `json:"result"`
+	Errors   tz.Option[OperationResultErrors] `json:"errors"`
+	Contents T                                `json:"contents"`
 }
 
 func (*OperationResultBacktracked[T]) Status() string           { return "backtracked" }
 func (*OperationResultBacktracked[T]) IsApplied() bool          { return false }
-func (r *OperationResultBacktracked[T]) GetResultContents() any { return r.Result }
+func (r *OperationResultBacktracked[T]) GetResultContents() any { return r.Contents }
 
 var _ ManagerOperationResultAppliedOrBacktracked = (*OperationResultBacktracked[struct{}])(nil)
 

@@ -52,8 +52,7 @@ type BalanceUpdateDeposits struct {
 	Delegate tz.PublicKeyHash `json:"delegate"`
 }
 
-func (b *BalanceUpdateDeposits) GetDelegate() tz.PublicKeyHash { return b.Delegate }
-func (BalanceUpdateDeposits) BalanceUpdateCategory() string    { return "deposits" }
+func (BalanceUpdateDeposits) BalanceUpdateCategory() string { return "deposits" }
 func (BalanceUpdateDeposits) BalanceUpdateKind() core.BalanceUpdateKind {
 	return core.BalanceUpdateKindFreezer
 }
@@ -195,7 +194,6 @@ type BalanceUpdateLostEndorsingRewards struct {
 	Revelation    bool             `json:"revelation"`
 }
 
-func (b *BalanceUpdateLostEndorsingRewards) GetDelegate() tz.PublicKeyHash { return b.Delegate }
 func (*BalanceUpdateLostEndorsingRewards) BalanceUpdateCategory() string {
 	return "lost_endorsing_rewards"
 }
@@ -219,8 +217,7 @@ type BalanceUpdateLegacyRewards struct {
 	Cycle    int32            `json:"cycle"`
 }
 
-func (b *BalanceUpdateLegacyRewards) GetDelegate() tz.PublicKeyHash { return b.Delegate }
-func (*BalanceUpdateLegacyRewards) BalanceUpdateCategory() string   { return "legacy_rewards" }
+func (*BalanceUpdateLegacyRewards) BalanceUpdateCategory() string { return "legacy_rewards" }
 func (*BalanceUpdateLegacyRewards) BalanceUpdateKind() core.BalanceUpdateKind {
 	return core.BalanceUpdateKindFreezer
 }

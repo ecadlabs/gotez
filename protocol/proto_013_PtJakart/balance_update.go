@@ -72,8 +72,7 @@ type BalanceUpdateFrozenBonds struct {
 	BondID   BondID          `json:"bond_id"`
 }
 
-func (b *BalanceUpdateFrozenBonds) GetContract() core.ContractID { return b.Contract }
-func (*BalanceUpdateFrozenBonds) BalanceUpdateCategory() string  { return "frozen_bonds" }
+func (*BalanceUpdateFrozenBonds) BalanceUpdateCategory() string { return "frozen_bonds" }
 func (*BalanceUpdateFrozenBonds) BalanceUpdateKind() core.BalanceUpdateKind {
 	return core.BalanceUpdateKindFreezer
 }

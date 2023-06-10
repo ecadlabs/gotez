@@ -28,6 +28,11 @@ var base58Data = []base58Type{
 		Prefix: "BlockHash",
 	},
 	{
+		Type:   "OperationHash",
+		Length: "HashBytesLen",
+		Prefix: "OperationHash",
+	},
+	{
 		Type:   "OperationsHash",
 		Length: "HashBytesLen",
 		Prefix: "OperationListListHash",

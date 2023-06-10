@@ -39,6 +39,36 @@ func (self *BlockHash) UnmarshalText(src []byte) error {
 	return nil
 }
 
+type OperationHash [HashBytesLen]byte
+
+func (self *OperationHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.OperationHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self OperationHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self OperationHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.OperationHash, self[:])
+}
+
+func (self *OperationHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.OperationHash {
+		return fmt.Errorf("gotez: invalid OperationHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
 type OperationsHash [HashBytesLen]byte
 
 func (self *OperationsHash) ToBase58() []byte {

@@ -2,8 +2,6 @@ package core
 
 import (
 	"strconv"
-
-	tz "github.com/ecadlabs/gotez/v2"
 )
 
 type BalanceUpdateOrigin uint8
@@ -89,9 +87,4 @@ type BalanceUpdates interface {
 type BalanceUpdateContract interface {
 	BalanceUpdateContents
 	GetContract() ContractID
-}
-
-type BalanceUpdateDelegate interface {
-	BalanceUpdateContents
-	GetDelegate() tz.PublicKeyHash
 }

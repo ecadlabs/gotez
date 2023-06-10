@@ -33,22 +33,22 @@ func (l *OperationsList[T]) GetGroups() []OperationsGroup {
 
 type OperationsGroup interface {
 	GetChainID() *tz.ChainID
-	GetHash() *tz.OperationsHash
+	GetHash() *tz.OperationHash
 	GetBranch() *tz.BlockHash
 	GetContents() GroupContents
 }
 
 type OperationsGroupImpl[T GroupContents] struct {
-	ChainID  *tz.ChainID        `json:"chain_id"`
-	Hash     *tz.OperationsHash `json:"hash"`
-	Branch   *tz.BlockHash      `tz:"dyn" json:"branch"`
-	Contents T                  `tz:"dyn" json:"contents"`
+	ChainID  *tz.ChainID       `json:"chain_id"`
+	Hash     *tz.OperationHash `json:"hash"`
+	Branch   *tz.BlockHash     `tz:"dyn" json:"branch"`
+	Contents T                 `tz:"dyn" json:"contents"`
 }
 
-func (g *OperationsGroupImpl[T]) GetChainID() *tz.ChainID     { return g.ChainID }
-func (g *OperationsGroupImpl[T]) GetHash() *tz.OperationsHash { return g.Hash }
-func (g *OperationsGroupImpl[T]) GetBranch() *tz.BlockHash    { return g.Branch }
-func (g *OperationsGroupImpl[T]) GetContents() GroupContents  { return g.Contents }
+func (g *OperationsGroupImpl[T]) GetChainID() *tz.ChainID    { return g.ChainID }
+func (g *OperationsGroupImpl[T]) GetHash() *tz.OperationHash { return g.Hash }
+func (g *OperationsGroupImpl[T]) GetBranch() *tz.BlockHash   { return g.Branch }
+func (g *OperationsGroupImpl[T]) GetContents() GroupContents { return g.Contents }
 
 type OperationWithTooLargeMetadata[T OperationContents] struct {
 	OperationWithoutMetadata[T]
