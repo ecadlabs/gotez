@@ -80,7 +80,7 @@ type BalanceUpdateContents interface {
 	BalanceUpdateKind() BalanceUpdateKind
 }
 
-type BalanceUpdates interface {
+type WithBalanceUpdates interface {
 	GetBalanceUpdates() []BalanceUpdate
 }
 

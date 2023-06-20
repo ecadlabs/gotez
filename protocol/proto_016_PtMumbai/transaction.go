@@ -1,6 +1,8 @@
 package proto_016_PtMumbai
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -58,7 +60,17 @@ type ToContract struct {
 	LazyStorageDiff              tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
-func (*ToContract) TransactionResultDestination() {}
+func (*ToContract) TransactionResultDestination()       {}
+func (r *ToContract) GetConsumedMilligas() tz.BigUint   { return r.ConsumedMilligas }
+func (r *ToContract) GetStorageSize() tz.BigInt         { return r.StorageSize }
+func (r *ToContract) GetPaidStorageSizeDiff() tz.BigInt { return r.PaidStorageSizeDiff }
+func (r *ToContract) EstimateStorageSize(constants core.Constants) *big.Int {
+	x := r.PaidStorageSizeDiff.Int()
+	if r.AllocatedDestinationContract {
+		x.Add(x, big.NewInt(int64(constants.GetOriginationSize())))
+	}
+	return x
+}
 
 type ToTxRollup struct {
 	BalanceUpdates
@@ -67,14 +79,19 @@ type ToTxRollup struct {
 	PaidStorageSizeDiff tz.BigUint         `json:"paid_storage_size_diff"`
 }
 
-func (*ToTxRollup) TransactionResultDestination() {}
+func (*ToTxRollup) TransactionResultDestination()     {}
+func (r *ToTxRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+func (r *ToTxRollup) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.PaidStorageSizeDiff.Int()
+}
 
 type ToSmartRollup struct {
 	ConsumedMilligas tz.BigUint       `json:"consumed_milligas"`
 	TicketUpdates    []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
 }
 
-func (*ToSmartRollup) TransactionResultDestination() {}
+func (*ToSmartRollup) TransactionResultDestination()     {}
+func (r *ToSmartRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
 
 type TransactionContentsAndResult struct {
 	Transaction

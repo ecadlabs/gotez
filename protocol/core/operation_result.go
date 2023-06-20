@@ -1,6 +1,8 @@
 package core
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 )
 
@@ -63,3 +65,21 @@ type OperationResultSkipped struct{}
 
 func (*OperationResultSkipped) Status() string  { return "skipped" }
 func (*OperationResultSkipped) IsApplied() bool { return false }
+
+type ResultWithConsumedMilligas interface {
+	GetConsumedMilligas() tz.BigUint
+}
+
+type ResultWithStorageSize interface {
+	StorageSizeEstimator
+	GetStorageSize() tz.BigInt
+}
+
+type ResultWithPaidStorageSizeDiff interface {
+	StorageSizeEstimator
+	GetPaidStorageSizeDiff() tz.BigInt
+}
+
+type StorageSizeEstimator interface {
+	EstimateStorageSize(constants Constants) *big.Int
+}

@@ -3,6 +3,8 @@ package proto_015_PtLimaPt
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -223,6 +225,14 @@ type RegisterGlobalConstantResultContents struct {
 	GlobalAddress    *tz.ScriptExprHash `json:"global_address"`
 }
 
+func (r *RegisterGlobalConstantResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
+}
+func (r *RegisterGlobalConstantResultContents) GetStorageSize() tz.BigInt { return r.StorageSize }
+func (r *RegisterGlobalConstantResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.StorageSize.Int()
+}
+
 type RegisterGlobalConstantResult interface {
 	core.ManagerOperationResult
 }
@@ -261,6 +271,10 @@ func (op *UpdateConsensusKeyContentsAndResult) GetMetadata() any {
 type IncreasePaidStorageResultContents struct {
 	BalanceUpdates
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
+}
+
+func (r *IncreasePaidStorageResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
 }
 
 //json:kind=OperationKind()
@@ -312,6 +326,14 @@ type TransferTicketResultContents struct {
 	TicketUpdates       []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
 	ConsumedMilligas    tz.BigUint       `json:"consumed_milligas"`
 	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
+}
+
+func (r *TransferTicketResultContents) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+func (r *TransferTicketResultContents) GetPaidStorageSizeDiff() tz.BigInt {
+	return r.PaidStorageSizeDiff
+}
+func (r *TransferTicketResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.PaidStorageSizeDiff.Int()
 }
 
 type TransferTicketResult interface {

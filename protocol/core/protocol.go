@@ -90,4 +90,18 @@ func (p Protocol) Hash() (*tz.ProtocolHash, error) {
 	return nil, errors.New("gotez: unknown protocol version")
 }
 
+func (p Protocol) MarshalText() (text []byte, err error) {
+	return []byte(p.String()), nil
+}
+
+func (p *Protocol) UnmarshalText(text []byte) error {
+	for proto, id := range protoNames {
+		if id == string(text) {
+			*p = proto
+			return nil
+		}
+	}
+	return errors.New("gotez: unknown protocol version")
+}
+
 const LatestProtocol = Proto016PtMumbai

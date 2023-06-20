@@ -23,7 +23,7 @@ type OperationContentsAndResult interface {
 }
 
 type ManagerOperationMetadata interface {
-	BalanceUpdates
+	WithBalanceUpdates
 	GetResult() ManagerOperationResult
 	GetInternalOperationResults() []InternalOperationResult
 }
@@ -172,3 +172,5 @@ type Parameters interface {
 	GetEntrypoint() string
 	GetValue() expression.Expression
 }
+
+type Rat [2]uint16

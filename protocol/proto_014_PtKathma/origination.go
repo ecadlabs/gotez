@@ -1,6 +1,8 @@
 package proto_014_PtKathma
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -18,6 +20,15 @@ type OriginationResultContents struct {
 	StorageSize         tz.BigInt                   `json:"storage_size"`
 	PaidStorageSizeDiff tz.BigInt                   `json:"paid_storage_size_diff"`
 	LazyStorageDiff     tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
+}
+
+func (r *OriginationResultContents) GetConsumedMilligas() tz.BigUint   { return r.ConsumedMilligas }
+func (r *OriginationResultContents) GetStorageSize() tz.BigInt         { return r.StorageSize }
+func (r *OriginationResultContents) GetPaidStorageSizeDiff() tz.BigInt { return r.PaidStorageSizeDiff }
+func (r *OriginationResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	x := r.PaidStorageSizeDiff.Int()
+	x.Add(x, big.NewInt(int64(constants.GetOriginationSize())))
+	return x
 }
 
 //json:kind=OperationKind()

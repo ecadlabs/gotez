@@ -1,6 +1,7 @@
 package proto_015_PtLimaPt
 
 import (
+	"math/big"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -95,6 +96,11 @@ type ZkRollupPublishResultContents struct {
 	BalanceUpdates
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 	Size             tz.BigInt  `json:"size"`
+}
+
+func (r *ZkRollupPublishResultContents) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+func (r *ZkRollupPublishResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.Size.Int()
 }
 
 type ZkRollupPublishResult interface {

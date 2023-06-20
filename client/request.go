@@ -6,12 +6,16 @@ import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/latest"
 )
 
 type BlockInfo = protocol.BlockInfo
 type BlockHeaderInfo = protocol.BlockHeaderInfo
 type DelegateInfo = core.DelegateInfo
 type BigUint = tz.BigUint
+type OperationWithOptionalMetadata = core.OperationWithOptionalMetadata[latest.OperationWithOptionalMetadataContents]
+type Constants = core.Constants
+type BlockShellHeader = core.ShellHeader
 
 type MetadataMode int
 
@@ -36,22 +40,25 @@ type BlockRequest struct {
 	Chain    string
 	Block    string
 	Metadata MetadataMode
-}
-
-type DelegateRequest struct {
-	Chain    string
-	Block    string
-	PKH      tz.PublicKeyHash
-	Protocol core.Protocol
-}
-
-func newDelegateInfo(proto core.Protocol) (DelegateInfo, error) {
-	return protocol.NewDelegateInfo(proto)
+	Protocol tz.Option[core.Protocol]
 }
 
 type ContractRequest struct {
+	Chain string
+	Block string
+	ID    core.ContractID
+}
+
+type ContextRequest struct {
 	Chain    string
 	Block    string
-	ID       core.ContractID
 	Protocol core.Protocol
 }
+
+type RunOperationRequest struct {
+	Chain   string
+	Block   string
+	Payload *latest.RunOperationRequest
+}
+
+func newConstants(p core.Protocol) (Constants, error) { return protocol.NewConstants(p) }

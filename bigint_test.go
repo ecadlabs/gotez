@@ -21,6 +21,7 @@ func TestBigInt(t *testing.T) {
 		wantRest   []byte
 		wantErr    bool
 		wantResult *big.Int
+		skipNew    bool
 	}
 
 	tests := []testCase{
@@ -41,6 +42,7 @@ func TestBigInt(t *testing.T) {
 			},
 			wantRest:   []byte{},
 			wantResult: big.NewInt(0),
+			skipNew:    true,
 		},
 		{
 			name: "positive",
@@ -71,6 +73,9 @@ func TestBigInt(t *testing.T) {
 				require.NoError(t, err)
 				require.Equal(t, tt.wantResult, tt.args.v.Int())
 				require.Equal(t, tt.wantRest, gotRest)
+				if !tt.skipNew {
+					require.Equal(t, *tt.args.v, NewBigInt(tt.wantResult))
+				}
 			}
 		})
 	}
@@ -89,6 +94,7 @@ func TestBigUint(t *testing.T) {
 		wantRest   []byte
 		wantErr    bool
 		wantResult *big.Int
+		skipNew    bool
 	}
 
 	tests := []testCase{
@@ -109,6 +115,7 @@ func TestBigUint(t *testing.T) {
 			},
 			wantRest:   []byte{},
 			wantResult: big.NewInt(0),
+			skipNew:    true,
 		},
 		{
 			name: "one",
@@ -148,6 +155,11 @@ func TestBigUint(t *testing.T) {
 				require.NoError(t, err)
 				require.Equal(t, tt.wantResult, tt.args.v.Int())
 				require.Equal(t, tt.wantRest, gotRest)
+				if !tt.skipNew {
+					x, err := NewBigUint(tt.wantResult)
+					require.NoError(t, err)
+					require.Equal(t, *tt.args.v, x)
+				}
 			}
 		})
 	}

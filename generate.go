@@ -246,6 +246,10 @@ var hexData = []hexType{
 		Type:   "Bytes8",
 		Length: "8",
 	},
+	{
+		Type:   "Bytes20",
+		Length: "20",
+	},
 }
 
 const tplSrc = `package gotez

@@ -3,6 +3,8 @@ package proto_012_Psithaca
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -12,7 +14,7 @@ import (
 //json:kind=OperationKind()
 type ActivateAccount struct {
 	PKH    *tz.Ed25519PublicKeyHash `json:"pkh"`
-	Secret *[tz.SecretBytesLen]byte `json:"secret"`
+	Secret *tz.Bytes20              `json:"secret"`
 }
 
 func (*ActivateAccount) OperationKind() string { return "activate_account" }
@@ -302,6 +304,9 @@ type ConsumedGasResultContents struct {
 	ConsumedGas      tz.BigUint `json:"consumed_gas"`
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 }
+
+func (r *ConsumedGasResultContents) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+
 type ConsumedGasResult interface {
 	core.ManagerOperationResult
 }
@@ -370,6 +375,19 @@ type RegisterGlobalConstantResultContents struct {
 	StorageSize   tz.BigInt          `json:"storage_size"`
 	GlobalAddress *tz.ScriptExprHash `json:"global_address"`
 }
+
+func (r *RegisterGlobalConstantResultContents) GetConsumedMilligas() tz.BigUint {
+	x := r.ConsumedGas.Int()
+	x.Mul(x, big.NewInt(1000))
+	v, _ := tz.NewBigUint(x)
+	return v
+}
+
+func (r *RegisterGlobalConstantResultContents) GetStorageSize() tz.BigInt { return r.StorageSize }
+func (r *RegisterGlobalConstantResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.StorageSize.Int()
+}
+
 type RegisterGlobalConstantResult interface {
 	core.ManagerOperationResult
 }

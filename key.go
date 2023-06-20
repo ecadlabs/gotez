@@ -29,6 +29,7 @@ const (
 
 var (
 	ErrInvalidDecryptedLen = errors.New("gotez: invalid decrypted key length")
+	ErrInvalidKeyLen       = errors.New("gotez: invalid key length")
 )
 
 type PublicKeyHash interface {
@@ -221,40 +222,40 @@ func (pkh *BLSPublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	return
 }
 
-func NewEd25519PublicKey(key []byte) *Ed25519PublicKey {
+func NewEd25519PublicKey(key []byte) (*Ed25519PublicKey, error) {
 	var out Ed25519PublicKey
 	if len(key) != len(out) {
-		panic("gotez: invalid Ed25519 public key length")
+		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], key)
-	return &out
+	return &out, nil
 }
 
-func NewSecp256k1PublicKey(compressedPoint []byte) *Secp256k1PublicKey {
+func NewSecp256k1PublicKey(compressedPoint []byte) (*Secp256k1PublicKey, error) {
 	var out Secp256k1PublicKey
 	if len(compressedPoint) != len(out) {
-		panic("gotez: invalid Secp256k1 public key length")
+		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], compressedPoint)
-	return &out
+	return &out, nil
 }
 
-func NewP256PublicKey(compressedPoint []byte) *P256PublicKey {
+func NewP256PublicKey(compressedPoint []byte) (*P256PublicKey, error) {
 	var out P256PublicKey
 	if len(compressedPoint) != len(out) {
-		panic("gotez: invalid P256 public key length")
+		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], compressedPoint)
-	return &out
+	return &out, nil
 }
 
-func NewBLSPublicKey(compressedPoint []byte) *BLSPublicKey {
+func NewBLSPublicKey(compressedPoint []byte) (*BLSPublicKey, error) {
 	var out BLSPublicKey
 	if len(compressedPoint) != len(out) {
-		panic("gotez: invalid BLS public key length")
+		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], compressedPoint)
-	return &out
+	return &out, nil
 }
 
 func (pk *Ed25519PublicKey) Hash() PublicKeyHash {

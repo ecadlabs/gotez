@@ -56,7 +56,7 @@ type OperationWithTooLargeMetadata[T OperationContents] struct {
 
 type OperationWithoutMetadata[T OperationContents] struct {
 	Contents  []T                  `json:"contents"`
-	Signature *tz.GenericSignature `json:"signature"` // takes the rest, see below
+	Signature *tz.GenericSignature `json:"signature"`
 }
 
 func (op *OperationWithoutMetadata[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {

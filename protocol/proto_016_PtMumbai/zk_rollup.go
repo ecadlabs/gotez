@@ -1,6 +1,8 @@
 package proto_016_PtMumbai
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -24,6 +26,11 @@ type ZkRollupPublishResultContents struct {
 	BalanceUpdates
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
 	Size             tz.BigInt  `json:"size"`
+}
+
+func (r *ZkRollupPublishResultContents) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+func (r *ZkRollupPublishResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.Size.Int()
 }
 
 type ZkRollupPublishResult interface {
@@ -98,6 +105,14 @@ type ZkRollupUpdateResultContents struct {
 	BalanceUpdates
 	ConsumedMilligas    tz.BigUint `json:"consumed_milligas"`
 	PaidStorageSizeDiff tz.BigInt  `json:"paid_storage_size_diff"`
+}
+
+func (r *ZkRollupUpdateResultContents) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+func (r *ZkRollupUpdateResultContents) GetPaidStorageSizeDiff() tz.BigInt {
+	return r.PaidStorageSizeDiff
+}
+func (r *ZkRollupUpdateResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.PaidStorageSizeDiff.Int()
 }
 
 type ZkRollupUpdateResult interface {

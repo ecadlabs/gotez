@@ -1,6 +1,7 @@
 package proto_016_PtMumbai
 
 import (
+	"math/big"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -48,6 +49,13 @@ type SmartRollupOriginateResultContents struct {
 	GenesisCommitmentHash *tz.SmartRollupCommitmentHash `json:"genesis_commitment_hash"`
 	ConsumedMilligas      tz.BigUint                    `json:"consumed_milligas"`
 	Size                  tz.BigInt                     `json:"size"`
+}
+
+func (r *SmartRollupOriginateResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
+}
+func (r *SmartRollupOriginateResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.Size.Int()
 }
 
 //json:kind=OperationKind()
@@ -116,6 +124,8 @@ type SmartRollupCementResultContents struct {
 	InboxLevel       int32      `json:"inbox_level"`
 }
 
+func (r *SmartRollupCementResultContents) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+
 type SmartRollupCementResult interface {
 	core.ManagerOperationResult
 }
@@ -162,6 +172,10 @@ type SmartRollupPublishResultContents struct {
 	StakedHash       *tz.SmartRollupCommitmentHash `json:"staked_hash"`
 	PublishedAtLevel int32                         `json:"published_at_level"`
 	BalanceUpdates
+}
+
+func (r *SmartRollupPublishResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
 }
 
 type SmartRollupPublishResult interface {
@@ -332,6 +346,10 @@ type SmartRollupTimeoutResultContents struct {
 	BalanceUpdates
 }
 
+func (r *SmartRollupTimeoutResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
+}
+
 type GameStatus interface {
 	GameStatusKind() string
 }
@@ -454,6 +472,18 @@ type SmartRollupExecuteOutboxMessageResultContents struct {
 	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
 }
 
+func (r *SmartRollupExecuteOutboxMessageResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
+}
+
+func (r *SmartRollupExecuteOutboxMessageResultContents) GetPaidStorageSizeDiff() tz.BigInt {
+	return r.PaidStorageSizeDiff
+}
+
+func (r *SmartRollupExecuteOutboxMessageResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.PaidStorageSizeDiff.Int()
+}
+
 type SmartRollupExecuteOutboxMessageResult interface {
 	core.ManagerOperationResult
 }
@@ -491,6 +521,10 @@ func (*SmartRollupRecoverBond) OperationKind() string { return "smart_rollup_rec
 type SmartRollupRecoverBondResultContents struct {
 	BalanceUpdates
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
+}
+
+func (r *SmartRollupRecoverBondResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
 }
 
 type SmartRollupRecoverBondResult interface {

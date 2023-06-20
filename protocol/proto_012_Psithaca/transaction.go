@@ -1,6 +1,8 @@
 package proto_012_Psithaca
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -89,6 +91,17 @@ type TransactionResultContents struct {
 	PaidStorageSizeDiff          tz.BigInt                   `json:"paid_storage_size_diff"`
 	AllocatedDestinationContract bool                        `json:"allocated_destination_contract"`
 	LazyStorageDiff              tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
+}
+
+func (r *TransactionResultContents) GetConsumedMilligas() tz.BigUint   { return r.ConsumedMilligas }
+func (r *TransactionResultContents) GetStorageSize() tz.BigInt         { return r.StorageSize }
+func (r *TransactionResultContents) GetPaidStorageSizeDiff() tz.BigInt { return r.PaidStorageSizeDiff }
+func (r *TransactionResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	x := r.PaidStorageSizeDiff.Int()
+	if r.AllocatedDestinationContract {
+		x.Add(x, big.NewInt(int64(constants.GetOriginationSize())))
+	}
+	return x
 }
 
 //json:kind=OperationKind()

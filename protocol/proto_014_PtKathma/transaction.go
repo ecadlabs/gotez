@@ -1,6 +1,8 @@
 package proto_014_PtKathma
 
 import (
+	"math/big"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -18,6 +20,8 @@ type ToScRollup struct {
 	ConsumedMilligas tz.BigUint    `json:"consumed_milligas"`
 	InboxAfter       ScRollupInbox `json:"inbox_after"`
 }
+
+func (r *ToScRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
 
 type ScRollupInbox struct {
 	Rollup                                 *tz.ScRollupAddress `tz:"dyn" json:"rollup"`
@@ -62,7 +66,17 @@ type ToContract struct {
 	LazyStorageDiff              tz.Option[lazy.StorageDiff] `json:"lazy_storage_diff"`
 }
 
-func (*ToContract) TransactionResultDestination() {}
+func (*ToContract) TransactionResultDestination()       {}
+func (r *ToContract) GetConsumedMilligas() tz.BigUint   { return r.ConsumedMilligas }
+func (r *ToContract) GetStorageSize() tz.BigInt         { return r.StorageSize }
+func (r *ToContract) GetPaidStorageSizeDiff() tz.BigInt { return r.PaidStorageSizeDiff }
+func (r *ToContract) EstimateStorageSize(constants core.Constants) *big.Int {
+	x := r.PaidStorageSizeDiff.Int()
+	if r.AllocatedDestinationContract {
+		x.Add(x, big.NewInt(int64(constants.GetOriginationSize())))
+	}
+	return x
+}
 
 type ToTxRollup struct {
 	BalanceUpdates
@@ -71,7 +85,11 @@ type ToTxRollup struct {
 	PaidStorageSizeDiff tz.BigUint         `json:"paid_storage_size_diff"`
 }
 
-func (*ToTxRollup) TransactionResultDestination() {}
+func (*ToTxRollup) TransactionResultDestination()     {}
+func (r *ToTxRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
+func (r *ToTxRollup) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.PaidStorageSizeDiff.Int()
+}
 
 type ScRollupDestination struct {
 	*tz.ScRollupAddress
