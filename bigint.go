@@ -107,6 +107,14 @@ func NewBigInt64(val int64) BigInt {
 	return res
 }
 
+func ParseBigInt(str string, base int) (BigInt, error) {
+	v, ok := new(big.Int).SetString(str, base)
+	if !ok {
+		return nil, fmt.Errorf("(bigint) error parsing number: %s", str)
+	}
+	return NewBigInt(v), nil
+}
+
 func (b *BigInt) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
 	ln, err := getLen(data)
 	if err != nil {
@@ -203,6 +211,14 @@ func NewBigUint64(val uint64) BigUint {
 		}
 	}
 	return res
+}
+
+func ParseBigUint(str string, base int) (BigUint, error) {
+	v, ok := new(big.Int).SetString(str, base)
+	if !ok {
+		return nil, fmt.Errorf("(biguint) error parsing number: %s", str)
+	}
+	return NewBigUint(v)
 }
 
 func (b *BigUint) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
