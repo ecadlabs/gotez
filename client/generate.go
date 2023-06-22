@@ -15,10 +15,16 @@ const (
 	ModeAllocate
 )
 
+type queryParam struct {
+	Field string
+	Param string
+}
+
 type typeDef struct {
 	Func         string
 	RequestType  string
 	Path         string
+	QueryParams  map[string]string
 	Method       string
 	ResponseType string
 	Mode         int
@@ -29,7 +35,8 @@ var types = []*typeDef{
 	{
 		RequestType:  "BlockRequest",
 		Method:       "GET",
-		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header{{with .Metadata}}?metadata={{.}}{{end}}",
+		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header",
+		QueryParams:  map[string]string{"metadata": "Metadata"},
 		Func:         "BlockHeader",
 		ResponseType: "BlockHeaderInfo",
 		Mode:         ModeAllocate,
@@ -38,7 +45,8 @@ var types = []*typeDef{
 	{
 		RequestType:  "BlockRequest",
 		Method:       "GET",
-		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}{{with .Metadata}}?metadata={{.}}{{end}}",
+		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}",
+		QueryParams:  map[string]string{"metadata": "Metadata"},
 		Func:         "Block",
 		ResponseType: "BlockInfo",
 		Mode:         ModeAllocate,
@@ -92,6 +100,15 @@ var types = []*typeDef{
 		ResponseType: "Constants",
 		Mode:         ModeConstruct,
 	},
+	{
+		RequestType:  "InjectOperationRequest",
+		Method:       "POST",
+		Path:         "/injection/operation",
+		QueryParams:  map[string]string{"chain": "Chain", "async": "Async"},
+		Func:         "InjectOperation",
+		ResponseType: "OperationHash",
+		Mode:         ModeAllocate,
+	},
 }
 
 const tplSrc = `package client
@@ -109,16 +126,16 @@ import (
 var path_{{.Func}} = template.Must(template.New("path").Parse("{{.Path}}"))
 
 func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) ({{if eq .Mode 2 3}}*{{end}}{{.ResponseType}}, error) {
-	tmp := *r
-	if tmp.Chain == "" {
-		tmp.Chain = client.Chain
-	}
-
 	var path strings.Builder
-	if err := path_{{.Func}}.Execute(&path, &tmp); err != nil {
+	if err := path_{{.Func}}.Execute(&path, r); err != nil {
 		return nil, err
 	}
-
+	{{with .QueryParams -}}
+	params := map[string]any{
+		{{- range $p, $f := .}}
+		"{{$p}}": r.{{$f}},{{end}}
+	}
+	{{end -}}
 	{{if eq .Method "POST" -}}
 	payload := r.Payload
 	{{end -}}
@@ -137,8 +154,8 @@ func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) ({{if 
 	if p, ok := r.Protocol.CheckUnwrapPtr(); ok {
 		proto = p
 	}
-	{{- end}}
-	if err := client.request(ctx, "{{.Method}}", path.String(), {{if eq .Method "POST" -}}payload{{else}}nil{{end}}, {{if eq .Mode 0}}&{{end}}response, {{if .SetProtocol}}proto{{else}}nil{{end}}); err != nil {
+	{{end -}}
+	if err := client.request(ctx, "{{.Method}}", path.String(), {{if .QueryParams}}params{{else}}nil{{end}}, {{if eq .Method "POST" -}}payload{{else}}nil{{end}}, {{if eq .Mode 0}}&{{end}}response, {{if .SetProtocol}}proto{{else}}nil{{end}}); err != nil {
 		return nil, err
 	}
 	return response, nil

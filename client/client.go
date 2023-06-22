@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -18,7 +19,6 @@ type Logger interface {
 type Client struct {
 	Client *http.Client
 	URL    string
-	Chain  string
 	APIKey string
 	Logger Logger
 }
@@ -27,13 +27,6 @@ type Error struct {
 	Status int
 	Raw    *http.Response
 	Body   []byte
-}
-
-func newError(r *http.Response) *Error {
-	return &Error{
-		Status: r.StatusCode,
-		Raw:    r,
-	}
 }
 
 func (e *Error) Error() string {
@@ -47,28 +40,46 @@ func (c *Client) client() *http.Client {
 	return http.DefaultClient
 }
 
-func (client *Client) request(ctx context.Context, method string, path string, payload, out any, proto *core.Protocol) error {
-	url := client.URL + path
+func (client *Client) request(ctx context.Context, method string, path string, params map[string]any, payload, out any, proto *core.Protocol) error {
+	u, err := url.Parse(client.URL)
+	if err != nil {
+		return err
+	}
+	values := make(url.Values, len(params))
+	for k, v := range params {
+		switch x := v.(type) {
+		case string:
+			if x != "" {
+				values[k] = []string{x}
+			}
+		case Flag:
+			if x {
+				values[k] = []string{"yes"}
+			}
+		default:
+			values[k] = []string{fmt.Sprintf("%v", v)}
+		}
+	}
+	u.Path = path
+	u.RawQuery = values.Encode()
+
 	if client.Logger != nil {
-		client.Logger.Printf("%s %s", method, url)
+		client.Logger.Printf("%s %s", method, u.String())
 	}
 
-	var (
-		req *http.Request
-		err error
-	)
+	var req *http.Request
 	if method == "POST" {
 		var body bytes.Buffer
 		if err = encoding.Encode(&body, payload, encoding.Dynamic()); err != nil {
 			return err
 		}
-		req, err = http.NewRequestWithContext(ctx, method, url, &body)
+		req, err = http.NewRequestWithContext(ctx, method, u.String(), &body)
 		if err != nil {
 			return err
 		}
 		req.Header.Set("Content-Type", "application/octet-stream")
 	} else {
-		req, err = http.NewRequestWithContext(ctx, method, url, nil)
+		req, err = http.NewRequestWithContext(ctx, method, u.String(), nil)
 		if err != nil {
 			return err
 		}

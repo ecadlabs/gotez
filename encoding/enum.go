@@ -1,6 +1,7 @@
 package encoding
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"reflect"
@@ -86,6 +87,9 @@ func (e *EnumRegistry) tryEncode(out io.Writer, v reflect.Value, ctx *Context, p
 	}
 	var tag *uint8
 	el := v.Elem()
+	if !el.IsValid() {
+		return false, &Error{path, errors.New("invalid value")}
+	}
 	for t, typ := range enum.variants {
 		if typ == el.Type() {
 			tag = &t

@@ -16,6 +16,7 @@ type BigUint = tz.BigUint
 type OperationWithOptionalMetadata = core.OperationWithOptionalMetadata[latest.OperationWithOptionalMetadataContents]
 type Constants = core.Constants
 type BlockShellHeader = core.ShellHeader
+type OperationHash = tz.OperationHash
 
 type MetadataMode int
 
@@ -60,5 +61,17 @@ type RunOperationRequest struct {
 	Block   string
 	Payload *latest.RunOperationRequest
 }
+
+type InjectOperationRequest struct {
+	Chain   string
+	Async   Flag
+	Payload *InjectRequestPayload
+}
+
+type InjectRequestPayload struct {
+	Contents []byte `tz:"dyn"`
+}
+
+type Flag bool
 
 func newConstants(p core.Protocol) (Constants, error) { return protocol.NewConstants(p) }

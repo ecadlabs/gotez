@@ -1,8 +1,6 @@
 package core
 
 import (
-	"encoding/json"
-
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 )
@@ -86,10 +84,6 @@ func (op *OperationWithoutMetadata[T]) GetSignature() (tz.Signature, error) {
 
 type OperationWithOptionalMetadata[T OperationWithOptionalMetadataContents] struct {
 	Contents T `json:"contents"`
-}
-
-func (ops *OperationWithOptionalMetadata[T]) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ops.Contents)
 }
 
 func (ops OperationWithOptionalMetadata[T]) Operations() []OperationContents {
