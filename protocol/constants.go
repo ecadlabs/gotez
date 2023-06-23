@@ -3,6 +3,7 @@ package protocol
 import (
 	"fmt"
 
+	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
@@ -11,8 +12,8 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 )
 
-func NewConstants(proto core.Protocol) (constants core.Constants, err error) {
-	switch proto {
+func NewConstants(proto *tz.ProtocolHash) (constants core.Constants, err error) {
+	switch *proto {
 	case core.Proto016PtMumbai:
 		constants = new(proto_016_PtMumbai.Constants)
 	case core.Proto015PtLimaPt:

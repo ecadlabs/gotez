@@ -5,13 +5,9 @@ import (
 	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
-type protocolVersionType int
-
-var ProtocolVersionCtxKey protocolVersionType = 0
-
 type ShellHeader struct {
 	Level          int32              `json:"level"`
-	Proto          Protocol           `json:"proto"`
+	Proto          uint8              `json:"proto"`
 	Predecessor    *tz.BlockHash      `json:"predecessor"`
 	Timestamp      tz.Timestamp       `json:"timestamp"`
 	ValidationPass uint8              `json:"validation_pass"`

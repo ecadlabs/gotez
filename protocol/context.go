@@ -3,6 +3,7 @@ package protocol
 import (
 	"fmt"
 
+	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
@@ -11,8 +12,8 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 )
 
-func NewDelegateInfo(proto core.Protocol) (delegate core.DelegateInfo, err error) {
-	switch proto {
+func NewDelegateInfo(proto *tz.ProtocolHash) (delegate core.DelegateInfo, err error) {
+	switch *proto {
 	case core.Proto016PtMumbai:
 		delegate = new(proto_016_PtMumbai.DelegateInfo)
 	case core.Proto015PtLimaPt:

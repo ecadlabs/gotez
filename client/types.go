@@ -41,7 +41,7 @@ type BlockRequest struct {
 	Chain    string
 	Block    string
 	Metadata MetadataMode
-	Protocol tz.Option[core.Protocol]
+	Protocol *tz.ProtocolHash
 }
 
 type ContractRequest struct {
@@ -53,7 +53,7 @@ type ContractRequest struct {
 type ContextRequest struct {
 	Chain    string
 	Block    string
-	Protocol core.Protocol
+	Protocol *tz.ProtocolHash
 }
 
 type RunOperationRequest struct {
@@ -72,6 +72,15 @@ type InjectRequestPayload struct {
 	Contents []byte `tz:"dyn"`
 }
 
+type BlockProtocols struct {
+	Protocol     *tz.ProtocolHash
+	NextProtocol *tz.ProtocolHash
+}
+
 type Flag bool
 
-func newConstants(p core.Protocol) (Constants, error) { return protocol.NewConstants(p) }
+func newConstants(p *tz.ProtocolHash) (Constants, error) { return protocol.NewConstants(p) }
+func newBlockInfo(p *tz.ProtocolHash) (BlockInfo, error) { return protocol.NewBlockInfo(p) }
+func newBlockHeaderInfo(p *tz.ProtocolHash) (BlockHeaderInfo, error) {
+	return protocol.NewBlockHeaderInfo(p)
+}

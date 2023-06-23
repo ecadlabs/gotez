@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	tz "github.com/ecadlabs/gotez/v2"
-	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
@@ -13,103 +12,50 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 )
 
-type BlockInfoProtocolData interface {
+type BlockInfo interface {
+	GetChainID() *tz.ChainID
+	GetHash() *tz.BlockHash
 	GetHeader() core.BlockHeader
 	GetMetadata() tz.Option[core.BlockMetadata]
 	GetOperations() [][]core.OperationsGroup
 }
 
-type BlockInfo struct {
-	ChainID      *tz.ChainID           `json:"chain_id"`
-	Hash         *tz.BlockHash         `json:"hash"`
-	ProtocolData BlockInfoProtocolData `json:"protocol_data"`
+type BlockHeaderInfo interface {
+	GetChainID() *tz.ChainID
+	GetHash() *tz.BlockHash
+	core.BlockHeader
 }
 
-type blockInfoPreamble struct {
-	ChainID *tz.ChainID
-	Hash    *tz.BlockHash
-}
-
-func (info *BlockInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
-	var p1 blockInfoPreamble
-	data, err = encoding.Decode(data, &p1, encoding.Ctx(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	info.ChainID = p1.ChainID
-	info.Hash = p1.Hash
-
-	var p2 core.ShellHeader
-	if _, err = encoding.Decode(data, &p2, encoding.Ctx(ctx), encoding.Dynamic()); err != nil {
-		return nil, err
-	}
-
-	p, ok := ctx.Get(core.ProtocolVersionCtxKey).(core.Protocol)
-	if !ok {
-		p = p2.Proto
-	}
-
-	switch p {
+func NewBlockInfo(proto *tz.ProtocolHash) (BlockInfo, error) {
+	switch *proto {
 	case core.Proto016PtMumbai:
-		info.ProtocolData = new(proto_016_PtMumbai.BlockInfoProtocolData)
+		return new(proto_016_PtMumbai.BlockInfo), nil
 	case core.Proto015PtLimaPt:
-		info.ProtocolData = new(proto_015_PtLimaPt.BlockInfoProtocolData)
+		return new(proto_015_PtLimaPt.BlockInfo), nil
 	case core.Proto014PtKathma:
-		info.ProtocolData = new(proto_014_PtKathma.BlockInfoProtocolData)
+		return new(proto_014_PtKathma.BlockInfo), nil
 	case core.Proto013PtJakart:
-		info.ProtocolData = new(proto_013_PtJakart.BlockInfoProtocolData)
+		return new(proto_013_PtJakart.BlockInfo), nil
 	case core.Proto012Psithaca:
-		info.ProtocolData = new(proto_012_Psithaca.BlockInfoProtocolData)
-
+		return new(proto_012_Psithaca.BlockInfo), nil
 	default:
-		return nil, fmt.Errorf("gotez: BlockInfoContents.DecodeTZ: unknown protocol version %d", p2.Proto)
+		return nil, fmt.Errorf("gotez: NewBlockInfo: unknown protocol %v", proto)
 	}
-
-	return encoding.Decode(data, info.ProtocolData, encoding.Ctx(ctx))
 }
 
-type BlockHeaderInfo struct {
-	ChainID      *tz.ChainID      `json:"chain_id"`
-	Hash         *tz.BlockHash    `json:"hash"`
-	ProtocolData core.BlockHeader `json:"protocol_data"`
-}
-
-func (info *BlockHeaderInfo) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
-	var p1 blockInfoPreamble
-	data, err = encoding.Decode(data, &p1, encoding.Ctx(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	info.ChainID = p1.ChainID
-	info.Hash = p1.Hash
-
-	var p2 core.ShellHeader
-	if _, err = encoding.Decode(data, &p2, encoding.Ctx(ctx)); err != nil {
-		return nil, err
-	}
-
-	p, ok := ctx.Get(core.ProtocolVersionCtxKey).(core.Protocol)
-	if !ok {
-		p = p2.Proto
-	}
-
-	switch p {
+func NewBlockHeaderInfo(proto *tz.ProtocolHash) (BlockHeaderInfo, error) {
+	switch *proto {
 	case core.Proto016PtMumbai:
-		info.ProtocolData = new(proto_016_PtMumbai.BlockHeader)
+		return new(proto_016_PtMumbai.BlockHeaderInfo), nil
 	case core.Proto015PtLimaPt:
-		info.ProtocolData = new(proto_015_PtLimaPt.BlockHeader)
+		return new(proto_015_PtLimaPt.BlockHeaderInfo), nil
 	case core.Proto014PtKathma:
-		info.ProtocolData = new(proto_014_PtKathma.BlockHeader)
+		return new(proto_014_PtKathma.BlockHeaderInfo), nil
 	case core.Proto013PtJakart:
-		info.ProtocolData = new(proto_013_PtJakart.BlockHeader)
+		return new(proto_013_PtJakart.BlockHeaderInfo), nil
 	case core.Proto012Psithaca:
-		info.ProtocolData = new(proto_012_Psithaca.BlockHeader)
-
+		return new(proto_012_Psithaca.BlockHeaderInfo), nil
 	default:
-		return nil, fmt.Errorf("gotez: BlockHeaderInfoContents.DecodeTZ: unknown protocol version %d", p2.Proto)
+		return nil, fmt.Errorf("gotez: NewBlockHeaderInfo: unknown protocol %v", proto)
 	}
-
-	return encoding.Decode(data, info.ProtocolData, encoding.Ctx(ctx))
 }

@@ -1,4 +1,4 @@
-package protocol
+package protocol_test
 
 import (
 	"fmt"
@@ -6,110 +6,104 @@ import (
 	"path/filepath"
 	"testing"
 
+	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
+	"github.com/ecadlabs/gotez/v2/protocol"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-type blockTestData struct {
-	name         string
-	forceVersion bool
-}
-
 type protoTestData struct {
-	proto  core.Protocol
-	blocks []blockTestData
+	proto  *tz.ProtocolHash
+	blocks []string
 }
 
 var testData = []protoTestData{
 	{
-		proto: core.Proto016PtMumbai,
-		blocks: []blockTestData{
-			{"3279466", false},
-			{"3549429", false},
-			{"3596415", false},
-			{"3615666", false},
-			{"3514591", false},
-			{"181313", true},
-			{"298135", true},
-			{"298154", true},
-			{"327682", true},
-			{"332053", true},
-			{"332064", true},
-			{"332066", true},
-			{"332075", true},
-			{"332090", true},
-			{"332091", true},
-			{"332093", true},
-			{"332470", true},
-			{"332530", true},
-			{"332534", true},
-			{"39524", true},
-			{"41157", true},
-			{"41821", true},
+		proto: &core.Proto016PtMumbai,
+		blocks: []string{
+			"3279466",
+			"3549429",
+			"3596415",
+			"3615666",
+			"3514591",
+			"181313",
+			"298135",
+			"298154",
+			"327682",
+			"332053",
+			"332064",
+			"332066",
+			"332075",
+			"332090",
+			"332091",
+			"332093",
+			"332470",
+			"332530",
+			"332534",
+			"39524",
+			"41157",
+			"41821",
 		},
 	},
 	{
-		proto: core.Proto015PtLimaPt,
-		blocks: []blockTestData{
-			{"2981889", false},
-			{"2981890", false},
-			{"2981891", false},
-			{"2981892", false},
+		proto: &core.Proto015PtLimaPt,
+		blocks: []string{
+			"2981889",
+			"2981890",
+			"2981891",
+			"2981892",
 		},
 	},
 	{
-		proto: core.Proto014PtKathma,
-		blocks: []blockTestData{
-			{"2736129", false},
-			{"2736130", false},
-			{"2736131", false},
-			{"2736132", false},
+		proto: &core.Proto014PtKathma,
+		blocks: []string{
+			"2736129",
+			"2736130",
+			"2736131",
+			"2736132",
 		},
 	},
 	{
-		proto: core.Proto013PtJakart,
-		blocks: []blockTestData{
-			{"2490369", false},
-			{"2490370", false},
-			{"2490371", false},
-			{"2490372", false},
-			{"2490373", false},
-			{"2490374", false},
-			{"2490375", false},
-			{"2490376", false},
+		proto: &core.Proto013PtJakart,
+		blocks: []string{
+			"2490369",
+			"2490370",
+			"2490371",
+			"2490372",
+			"2490373",
+			"2490374",
+			"2490375",
+			"2490376",
 		},
 	},
 	{
-		proto: core.Proto012Psithaca,
-		blocks: []blockTestData{
-			{"2244609", false},
-			{"2244610", false},
-			{"2244611", false},
-			{"2244612", false},
-			{"2244613", false},
-			{"2244614", false},
-			{"2244615", false},
-			{"2244616", false},
+		proto: &core.Proto012Psithaca,
+		blocks: []string{
+			"2244609",
+			"2244610",
+			"2244611",
+			"2244612",
+			"2244613",
+			"2244614",
+			"2244615",
+			"2244616",
 		},
 	},
 }
 
 func TestBlock(t *testing.T) {
 	for _, protoData := range testData {
-		t.Run(protoData.proto.Name(), func(t *testing.T) {
+		t.Run(protoData.proto.String(), func(t *testing.T) {
 			for _, block := range protoData.blocks {
-				t.Run(block.name, func(t *testing.T) {
-					fileName := filepath.Join("test_data", protoData.proto.Name(), block.name+".bin")
+				t.Run(block, func(t *testing.T) {
+					fileName := filepath.Join("test_data", core.ProtocolShortName(protoData.proto), block+".bin")
 					buf, err := os.ReadFile(fileName)
 					require.NoError(t, err)
-					var out BlockInfo
-					ctx := encoding.NewContext()
-					if block.forceVersion {
-						ctx = ctx.Set(core.ProtocolVersionCtxKey, protoData.proto)
-					}
-					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx), encoding.Dynamic())
+					out, err := protocol.NewBlockInfo(protoData.proto)
+					require.NoError(t, err)
+					_, err = encoding.Decode(buf, out, encoding.Dynamic())
 					if !assert.NoError(t, err) {
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)
@@ -123,27 +117,24 @@ func TestBlock(t *testing.T) {
 
 var headerTestData = []protoTestData{
 	{
-		proto: core.Proto016PtMumbai,
-		blocks: []blockTestData{
-			{"3279466", false},
+		proto: &core.Proto016PtMumbai,
+		blocks: []string{
+			"3279466",
 		},
 	},
 }
 
 func TestBlockHeader(t *testing.T) {
 	for _, protoData := range headerTestData {
-		t.Run(protoData.proto.Name(), func(t *testing.T) {
+		t.Run(protoData.proto.String(), func(t *testing.T) {
 			for _, block := range protoData.blocks {
-				t.Run(block.name, func(t *testing.T) {
-					fileName := filepath.Join("test_data", protoData.proto.Name(), "header_"+block.name+".bin")
+				t.Run(block, func(t *testing.T) {
+					fileName := filepath.Join("test_data", core.ProtocolShortName(protoData.proto), "header_"+block+".bin")
 					buf, err := os.ReadFile(fileName)
 					require.NoError(t, err)
-					var out BlockHeaderInfo
-					ctx := encoding.NewContext()
-					if block.forceVersion {
-						ctx = ctx.Set(core.ProtocolVersionCtxKey, protoData.proto)
-					}
-					_, err = encoding.Decode(buf, &out, encoding.Ctx(ctx), encoding.Dynamic())
+					out, err := protocol.NewBlockHeaderInfo(protoData.proto)
+					require.NoError(t, err)
+					_, err = encoding.Decode(buf, out, encoding.Dynamic())
 					if !assert.NoError(t, err) {
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)

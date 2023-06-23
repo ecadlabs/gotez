@@ -6,21 +6,30 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 )
 
-type BlockInfoProtocolData struct {
+type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
+type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
+type BlockHeader = proto_012_Psithaca.BlockHeader
+type BlockHeaderInfo = proto_012_Psithaca.BlockHeaderInfo
+
+type BlockInfo struct {
+	ChainID    *tz.ChainID                          `json:"chain_id"`
+	Hash       *tz.BlockHash                        `json:"hash"`
 	Header     BlockHeader                          `tz:"dyn" json:"header"`
 	Metadata   tz.Option[BlockMetadata]             `json:"metadata"`
 	Operations []core.OperationsList[GroupContents] `tz:"dyn" json:"operations"`
 }
 
-func (block *BlockInfoProtocolData) GetHeader() core.BlockHeader { return &block.Header }
-func (block *BlockInfoProtocolData) GetMetadata() tz.Option[core.BlockMetadata] {
+func (block *BlockInfo) GetChainID() *tz.ChainID     { return block.ChainID }
+func (block *BlockInfo) GetHash() *tz.BlockHash      { return block.Hash }
+func (block *BlockInfo) GetHeader() core.BlockHeader { return &block.Header }
+func (block *BlockInfo) GetMetadata() tz.Option[core.BlockMetadata] {
 	if m, ok := block.Metadata.CheckUnwrapPtr(); ok {
 		return tz.Some[core.BlockMetadata](m)
 	}
 	return tz.None[core.BlockMetadata]()
 }
 
-func (block *BlockInfoProtocolData) GetOperations() [][]core.OperationsGroup {
+func (block *BlockInfo) GetOperations() [][]core.OperationsGroup {
 	out := make([][]core.OperationsGroup, len(block.Operations))
 	for i, list := range block.Operations {
 		out[i] = list.GetGroups()
@@ -31,10 +40,6 @@ func (block *BlockInfoProtocolData) GetOperations() [][]core.OperationsGroup {
 type BlockMetadata struct {
 	BlockMetadataContents `tz:"dyn"`
 }
-
-type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
-type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
-type BlockHeader = proto_012_Psithaca.BlockHeader
 
 type BlockMetadataContents struct {
 	core.BlockMetadataHeader

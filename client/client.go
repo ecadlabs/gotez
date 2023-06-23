@@ -9,7 +9,6 @@ import (
 	"net/url"
 
 	"github.com/ecadlabs/gotez/v2/encoding"
-	"github.com/ecadlabs/gotez/v2/protocol/core"
 )
 
 type Logger interface {
@@ -40,7 +39,7 @@ func (c *Client) client() *http.Client {
 	return http.DefaultClient
 }
 
-func (client *Client) request(ctx context.Context, method string, path string, params map[string]any, payload, out any, proto *core.Protocol) error {
+func (client *Client) request(ctx context.Context, method string, path string, params map[string]any, payload, out any) error {
 	u, err := url.Parse(client.URL)
 	if err != nil {
 		return err
@@ -108,10 +107,6 @@ func (client *Client) request(ctx context.Context, method string, path string, p
 	if err != nil {
 		return err
 	}
-	encCtx := encoding.NewContext()
-	if proto != nil {
-		encCtx = encCtx.Set(core.ProtocolVersionCtxKey, *proto)
-	}
-	_, err = encoding.Decode(body, out, encoding.Ctx(encCtx), encoding.Dynamic())
+	_, err = encoding.Decode(body, out, encoding.Dynamic())
 	return err
 }
