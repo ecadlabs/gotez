@@ -11,12 +11,13 @@ import (
 
 type BlockInfo = protocol.BlockInfo
 type BlockHeaderInfo = protocol.BlockHeaderInfo
-type DelegateInfo = core.DelegateInfo
 type BigUint = tz.BigUint
 type OperationWithOptionalMetadata = core.OperationWithOptionalMetadata[latest.OperationWithOptionalMetadataContents]
 type Constants = core.Constants
 type BlockShellHeader = core.ShellHeader
 type OperationHash = tz.OperationHash
+type BlockProtocols = core.BlockProtocols
+type BlockHash = tz.BlockHash
 
 type MetadataMode int
 
@@ -35,6 +36,11 @@ func (m MetadataMode) String() string {
 	default:
 		return "default"
 	}
+}
+
+type SimpleRequest struct {
+	Chain string
+	Block string
 }
 
 type BlockRequest struct {
@@ -72,9 +78,9 @@ type InjectRequestPayload struct {
 	Contents []byte `tz:"dyn"`
 }
 
-type BlockProtocols struct {
-	Protocol     *tz.ProtocolHash
-	NextProtocol *tz.ProtocolHash
+type BasicBlockInfo struct {
+	Hash     *tz.BlockHash
+	Protocol *tz.ProtocolHash
 }
 
 type Flag bool

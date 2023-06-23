@@ -205,3 +205,8 @@ type Parameters interface {
 }
 
 type Rat [2]uint16
+
+type BlockProtocols struct {
+	Protocol     *tz.ProtocolHash
+	NextProtocol *tz.ProtocolHash
+}

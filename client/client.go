@@ -110,3 +110,27 @@ func (client *Client) request(ctx context.Context, method string, path string, p
 	_, err = encoding.Decode(body, out, encoding.Dynamic())
 	return err
 }
+
+// BasicBlockInfo returns hash and protocol of the block (usually head) to be used for sequent requests
+func (client *Client) BasicBlockInfo(ctx context.Context, chain string, block string) (*BasicBlockInfo, error) {
+	hash, err := client.BlockHash(ctx, &SimpleRequest{
+		Chain: chain,
+		Block: block,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	proto, err := client.BlockProtocols(ctx, &SimpleRequest{
+		Chain: chain,
+		Block: hash.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &BasicBlockInfo{
+		Hash:     hash,
+		Protocol: proto.Protocol,
+	}, nil
+}

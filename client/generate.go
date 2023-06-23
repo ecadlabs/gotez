@@ -32,6 +32,30 @@ type typeDef struct {
 
 var types = []*typeDef{
 	{
+		RequestType:  "SimpleRequest",
+		Method:       "GET",
+		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/hash",
+		Func:         "BlockHash",
+		ResponseType: "BlockHash",
+		Mode:         ModeAllocate,
+	},
+	{
+		RequestType:  "SimpleRequest",
+		Method:       "GET",
+		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/protocols",
+		Func:         "BlockProtocols",
+		ResponseType: "BlockProtocols",
+		Mode:         ModeAllocate,
+	},
+	{
+		RequestType:  "SimpleRequest",
+		Method:       "GET",
+		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header/shell",
+		Func:         "BlockShellHeader",
+		ResponseType: "BlockShellHeader",
+		Mode:         ModeAllocate,
+	},
+	{
 		RequestType:  "BlockRequest",
 		Method:       "GET",
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header",
@@ -48,14 +72,6 @@ var types = []*typeDef{
 		Func:         "Block",
 		ResponseType: "BlockInfo",
 		Mode:         ModeConstruct,
-	},
-	{
-		RequestType:  "BlockRequest",
-		Method:       "GET",
-		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header/shell",
-		Func:         "BlockShellHeader",
-		ResponseType: "BlockShellHeader",
-		Mode:         ModeAllocate,
 	},
 	{
 		RequestType:  "ContractRequest",
@@ -104,14 +120,6 @@ var types = []*typeDef{
 		QueryParams:  map[string]string{"chain": "Chain", "async": "Async"},
 		Func:         "InjectOperation",
 		ResponseType: "OperationHash",
-		Mode:         ModeAllocate,
-	},
-	{
-		RequestType:  "BlockRequest",
-		Method:       "GET",
-		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/protocols",
-		Func:         "BlockProtocols",
-		ResponseType: "BlockProtocols",
 		Mode:         ModeAllocate,
 	},
 }
