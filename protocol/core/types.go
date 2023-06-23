@@ -3,6 +3,7 @@ package core
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
+	"bytes"
 	"errors"
 	"strconv"
 
@@ -22,9 +23,13 @@ type OperationContentsAndResult interface {
 	GetMetadata() any
 }
 
+type OperationWithResult interface {
+	GetResult() ManagerOperationResult
+}
+
 type ManagerOperationMetadata interface {
 	WithBalanceUpdates
-	GetResult() ManagerOperationResult
+	OperationWithResult
 	GetInternalOperationResults() []InternalOperationResult
 }
 
@@ -59,6 +64,7 @@ func (b BallotKind) MarshalText() (text []byte, err error) {
 
 type ContractID interface {
 	tz.Base58Encoder
+	TransactionDestination
 	ContractID()
 }
 
@@ -79,6 +85,12 @@ type OriginatedContract struct {
 func (OriginatedContract) ContractID()             {}
 func (OriginatedContract) OriginatedContractID()   {}
 func (OriginatedContract) TransactionDestination() {}
+func (a OriginatedContract) Eq(b TransactionDestination) bool {
+	if other, ok := b.(OriginatedContract); ok {
+		return bytes.Equal(a.ContractHash[:], other.ContractHash[:])
+	}
+	return false
+}
 
 type ImplicitContract struct {
 	tz.PublicKeyHash
@@ -86,6 +98,12 @@ type ImplicitContract struct {
 
 func (ImplicitContract) ContractID()             {}
 func (ImplicitContract) TransactionDestination() {}
+func (a ImplicitContract) Eq(b TransactionDestination) bool {
+	if other, ok := b.(ImplicitContract); ok {
+		return a.PublicKeyHash.Eq(other.PublicKeyHash)
+	}
+	return false
+}
 
 type OriginatedContractID interface {
 	tz.Base58Encoder
@@ -137,11 +155,12 @@ func ParseContractID(src []byte) (ContractID, error) {
 }
 
 type TransactionDestination interface {
-	Address
+	tz.Base58Encoder
 	TransactionDestination()
+	Eq(other TransactionDestination) bool
 }
 
-type Address = tz.Base58Encoder
+type Address = TransactionDestination
 
 type Signed interface {
 	GetSignature() (tz.Signature, error)
@@ -160,12 +179,24 @@ type ManagerOperation interface {
 	GetStorageLimit() tz.BigUint
 }
 
+type TransactionBase interface {
+	OperationContents
+	OperationWithSource
+	GetAmount() tz.BigUint
+	GetDestination() Address
+	GetParameters() tz.Option[Parameters]
+}
+
 type Transaction interface {
 	OperationContents
 	ManagerOperation
-	GetAmount() tz.BigUint
-	GetDestination() ContractID
-	GetParameters() tz.Option[Parameters]
+	TransactionBase
+}
+
+type TransactionInternalOperationResult interface {
+	InternalOperationResult
+	TransactionBase
+	GetNonce() uint16
 }
 
 type Parameters interface {

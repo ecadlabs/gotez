@@ -19,9 +19,9 @@ type Transaction struct {
 	Parameters  tz.Option[Parameters] `json:"parameters"`
 }
 
-func (*Transaction) OperationKind() string             { return "transaction" }
-func (t *Transaction) GetAmount() tz.BigUint           { return t.Amount }
-func (t *Transaction) GetDestination() core.ContractID { return t.Destination }
+func (*Transaction) OperationKind() string          { return "transaction" }
+func (t *Transaction) GetAmount() tz.BigUint        { return t.Amount }
+func (t *Transaction) GetDestination() core.Address { return t.Destination }
 func (t *Transaction) GetParameters() tz.Option[core.Parameters] {
 	if p, ok := t.Parameters.CheckUnwrapPtr(); ok {
 		return tz.Some[core.Parameters](p)
@@ -146,8 +146,37 @@ type TransactionInternalOperationResult struct {
 	Result      TransactionResult     `json:"result"`
 }
 
-func (r *TransactionInternalOperationResult) GetSource() core.Address { return r.Source }
-func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.TransactionInternalOperationResult = (*TransactionInternalOperationResult)(nil)
+
+func (r *TransactionInternalOperationResult) GetSource() core.TransactionDestination {
+	switch d := r.Source.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
+func (r *TransactionInternalOperationResult) GetNonce() uint16      { return r.Nonce }
+func (t *TransactionInternalOperationResult) GetAmount() tz.BigUint { return t.Amount }
+func (t *TransactionInternalOperationResult) GetDestination() core.TransactionDestination {
+	switch d := t.Destination.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
+func (t *TransactionInternalOperationResult) GetParameters() tz.Option[core.Parameters] {
+	if p, ok := t.Parameters.CheckUnwrapPtr(); ok {
+		return tz.Some[core.Parameters](p)
+	}
+	return tz.None[core.Parameters]()
+}
+func (r *TransactionInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }

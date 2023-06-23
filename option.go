@@ -134,9 +134,8 @@ func (op *Option[T]) EncodeTZ(ctx *encoding.Context) ([]byte, error) {
 
 func (op *Option[T]) MarshalJSON() ([]byte, error) {
 	var v *T
-	if op.IsSome() {
-		x := op.Unwrap()
-		v = &x
+	if x, ok := op.CheckUnwrapPtr(); ok {
+		v = x
 	}
 	return json.Marshal(v)
 }

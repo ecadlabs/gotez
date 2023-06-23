@@ -35,8 +35,9 @@ var (
 type PublicKeyHash interface {
 	Base58Encoder
 	stdenc.TextMarshaler
-	PublicKeyHash() []byte
 	ToComparable[EncodedPublicKeyHash, PublicKeyHash]
+	PublicKeyHash() []byte
+	Eq(other PublicKeyHash) bool
 }
 
 func init() {
@@ -174,6 +175,13 @@ func (pkh *Ed25519PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	return
 }
 
+func (pkh *Ed25519PublicKeyHash) Eq(other PublicKeyHash) bool {
+	if b, ok := other.(*Ed25519PublicKeyHash); ok {
+		return bytes.Equal(pkh[:], b[:])
+	}
+	return false
+}
+
 func (pkh *Secp256k1PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	var (
 		x   PublicKeyHash = pkh
@@ -188,6 +196,13 @@ func (pkh *Secp256k1PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	}
 	copy(out[:], b)
 	return
+}
+
+func (pkh *Secp256k1PublicKeyHash) Eq(other PublicKeyHash) bool {
+	if b, ok := other.(*Secp256k1PublicKeyHash); ok {
+		return bytes.Equal(pkh[:], b[:])
+	}
+	return false
 }
 
 func (pkh *P256PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
@@ -206,6 +221,13 @@ func (pkh *P256PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	return
 }
 
+func (pkh *P256PublicKeyHash) Eq(other PublicKeyHash) bool {
+	if b, ok := other.(*P256PublicKeyHash); ok {
+		return bytes.Equal(pkh[:], b[:])
+	}
+	return false
+}
+
 func (pkh *BLSPublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	var (
 		x   PublicKeyHash = pkh
@@ -220,6 +242,13 @@ func (pkh *BLSPublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	}
 	copy(out[:], b)
 	return
+}
+
+func (pkh *BLSPublicKeyHash) Eq(other PublicKeyHash) bool {
+	if b, ok := other.(*BLSPublicKeyHash); ok {
+		return bytes.Equal(pkh[:], b[:])
+	}
+	return false
 }
 
 func NewEd25519PublicKey(key []byte) (*Ed25519PublicKey, error) {

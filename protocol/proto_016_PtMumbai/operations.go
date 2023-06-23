@@ -517,8 +517,10 @@ type DelegationInternalOperationResult struct {
 	Result   ConsumedGasResult           `json:"result"`
 }
 
-func (r *DelegationInternalOperationResult) GetSource() core.Address { return r.Source }
-func (r *DelegationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.InternalOperationResult = (*DelegationInternalOperationResult)(nil)
+
+func (r *DelegationInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
+func (r *DelegationInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*DelegationInternalOperationResult) OperationKind() string { return "delegation" }
@@ -533,8 +535,10 @@ type EventInternalOperationResult struct {
 	Result  ConsumedGasResult                `json:"result"`
 }
 
-func (r *EventInternalOperationResult) GetSource() core.Address { return r.Source }
-func (r *EventInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.InternalOperationResult = (*OriginationInternalOperationResult)(nil)
+
+func (r *EventInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
+func (r *EventInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*EventInternalOperationResult) OperationKind() string { return "event" }

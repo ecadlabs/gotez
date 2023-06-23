@@ -73,8 +73,10 @@ type OriginationInternalOperationResult struct {
 	Result   OriginationResult           `json:"result"`
 }
 
-func (r *OriginationInternalOperationResult) GetSource() core.Address { return r.Source }
-func (r *OriginationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.InternalOperationResult = (*OriginationInternalOperationResult)(nil)
+
+func (r *OriginationInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
+func (r *OriginationInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*OriginationInternalOperationResult) OperationKind() string { return "origination" }

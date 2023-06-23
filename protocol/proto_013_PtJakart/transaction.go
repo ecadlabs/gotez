@@ -1,6 +1,7 @@
 package proto_013_PtJakart
 
 import (
+	"bytes"
 	"math/big"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -35,7 +36,13 @@ type TxRollupDestination struct {
 	Padding uint8
 }
 
-func (*TxRollupDestination) TransactionDestination() {}
+func (TxRollupDestination) TransactionDestination() {}
+func (a TxRollupDestination) Eq(b core.TransactionDestination) bool {
+	if other, ok := b.(TxRollupDestination); ok {
+		return bytes.Equal(a.TXRollupAddress[:], other.TXRollupAddress[:])
+	}
+	return false
+}
 
 type TransactionResultDestination interface {
 	TransactionResultDestination()
@@ -95,9 +102,9 @@ type TransactionDestination interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
 		Variants: encoding.Variants[TransactionDestination]{
-			0: (*core.ImplicitContract)(nil),
-			1: (*core.OriginatedContract)(nil),
-			2: (*TxRollupDestination)(nil),
+			0: core.ImplicitContract{},
+			1: core.OriginatedContract{},
+			2: TxRollupDestination{},
 		},
 	})
 }
@@ -147,8 +154,31 @@ type TransactionInternalOperationResult struct {
 	Result      TransactionResult      `json:"result"`
 }
 
-func (r *TransactionInternalOperationResult) GetSource() core.Address { return r.Source }
-func (r *TransactionInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.TransactionInternalOperationResult = (*TransactionInternalOperationResult)(nil)
+
+func (r *TransactionInternalOperationResult) GetSource() core.TransactionDestination {
+	switch d := r.Source.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
+func (r *TransactionInternalOperationResult) GetSourceAddress() core.ContractID { return r.Source }
+func (r *TransactionInternalOperationResult) GetNonce() uint16                  { return r.Nonce }
+func (t *TransactionInternalOperationResult) GetAmount() tz.BigUint             { return t.Amount }
+func (t *TransactionInternalOperationResult) GetDestination() core.TransactionDestination {
+	return t.Destination
+}
+func (t *TransactionInternalOperationResult) GetParameters() tz.Option[core.Parameters] {
+	if p, ok := t.Parameters.CheckUnwrapPtr(); ok {
+		return tz.Some[core.Parameters](p)
+	}
+	return tz.None[core.Parameters]()
+}
+func (r *TransactionInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }

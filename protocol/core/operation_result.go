@@ -8,7 +8,7 @@ import (
 
 type InternalOperationResult interface {
 	OperationContents
-	InternalOperationResult() ManagerOperationResult
+	OperationWithResult
 }
 
 type ManagerOperationResult interface {

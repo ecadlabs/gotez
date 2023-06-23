@@ -26,8 +26,12 @@ type Proposals struct {
 	Proposals []*tz.ProtocolHash `tz:"dyn" json:"proposals"`
 }
 
-func (*Proposals) OperationKind() string       { return "proposals" }
-func (p *Proposals) GetSource() core.Address   { return p.Source }
+var _ core.OperationWithSource = (*Proposals)(nil)
+
+func (*Proposals) OperationKind() string { return "proposals" }
+func (p *Proposals) GetSource() core.TransactionDestination {
+	return core.ImplicitContract{PublicKeyHash: p.Source}
+}
 func (*Proposals) OperationContentsAndResult() {}
 func (op *Proposals) GetMetadata() any         { return op }
 
@@ -39,8 +43,12 @@ type Ballot struct {
 	Ballot   core.BallotKind  `json:"ballot"`
 }
 
+var _ core.OperationWithSource = (*Ballot)(nil)
+
+func (op *Ballot) GetSource() core.TransactionDestination {
+	return core.ImplicitContract{PublicKeyHash: op.Source}
+}
 func (*Ballot) OperationKind() string       { return "ballot" }
-func (b *Ballot) GetSource() core.Address   { return b.Source }
 func (*Ballot) OperationContentsAndResult() {}
 func (op *Ballot) GetMetadata() any         { return op }
 
@@ -52,11 +60,14 @@ type ManagerOperation struct {
 	StorageLimit tz.BigUint       `json:"storage_limit"`
 }
 
-func (m *ManagerOperation) GetSource() core.Address     { return m.Source }
-func (m *ManagerOperation) GetFee() tz.BigUint          { return m.Fee }
-func (m *ManagerOperation) GetCounter() tz.BigUint      { return m.Counter }
-func (m *ManagerOperation) GetGasLimit() tz.BigUint     { return m.GasLimit }
-func (m *ManagerOperation) GetStorageLimit() tz.BigUint { return m.StorageLimit }
+func (m *ManagerOperation) GetSource() core.TransactionDestination {
+	return core.ImplicitContract{PublicKeyHash: m.Source}
+}
+func (m *ManagerOperation) GetSourceAddress() tz.PublicKeyHash { return m.Source }
+func (m *ManagerOperation) GetFee() tz.BigUint                 { return m.Fee }
+func (m *ManagerOperation) GetCounter() tz.BigUint             { return m.Counter }
+func (m *ManagerOperation) GetGasLimit() tz.BigUint            { return m.GasLimit }
+func (m *ManagerOperation) GetStorageLimit() tz.BigUint        { return m.StorageLimit }
 
 type Script struct {
 	Code    expression.Expression `tz:"dyn" json:"code"`
@@ -470,8 +481,19 @@ type DelegationInternalOperationResult struct {
 	Result   ConsumedGasResult           `json:"result"`
 }
 
-func (d *DelegationInternalOperationResult) GetSource() core.Address { return d.Source }
-func (r *DelegationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.InternalOperationResult = (*DelegationInternalOperationResult)(nil)
+
+func (r *DelegationInternalOperationResult) GetSource() core.TransactionDestination {
+	switch d := r.Source.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
+func (r *DelegationInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*DelegationInternalOperationResult) OperationKind() string { return "delegation" }
@@ -484,8 +506,19 @@ type RevealInternalOperationResult struct {
 	Result    ConsumedGasResult `json:"result"`
 }
 
-func (r *RevealInternalOperationResult) GetSource() core.Address { return r.Source }
-func (r *RevealInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.InternalOperationResult = (*RevealInternalOperationResult)(nil)
+
+func (r *RevealInternalOperationResult) GetSource() core.TransactionDestination {
+	switch d := r.Source.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
+func (r *RevealInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*RevealInternalOperationResult) OperationKind() string { return "reveal" }
@@ -498,11 +531,23 @@ type RegisterGlobalConstantInternalOperationResult struct {
 	Result RegisterGlobalConstantResult `json:"result"`
 }
 
+var _ core.InternalOperationResult = (*RegisterGlobalConstantInternalOperationResult)(nil)
+
+func (r *RegisterGlobalConstantInternalOperationResult) GetSource() core.TransactionDestination {
+	switch d := r.Source.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
+
 func (*RegisterGlobalConstantInternalOperationResult) OperationKind() string {
 	return "register_global_constant"
 }
-func (r *RegisterGlobalConstantInternalOperationResult) GetSource() core.Address { return r.Source }
-func (r *RegisterGlobalConstantInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+func (r *RegisterGlobalConstantInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 
@@ -514,11 +559,22 @@ type SetDepositsLimitInternalOperationResult struct {
 	Result ConsumedGasResult     `json:"result"`
 }
 
+var _ core.InternalOperationResult = (*SetDepositsLimitInternalOperationResult)(nil)
+
+func (r *SetDepositsLimitInternalOperationResult) GetSource() core.TransactionDestination {
+	switch d := r.Source.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
 func (*SetDepositsLimitInternalOperationResult) OperationKind() string {
 	return "set_deposits_limit"
 }
-func (s *SetDepositsLimitInternalOperationResult) GetSource() core.Address { return s.Source }
-func (r *SetDepositsLimitInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+func (r *SetDepositsLimitInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 

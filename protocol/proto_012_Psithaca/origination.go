@@ -82,8 +82,19 @@ type OriginationInternalOperationResult struct {
 	Result   OriginationResult           `json:"result"`
 }
 
-func (o *OriginationInternalOperationResult) GetSource() core.Address { return o.Source }
-func (r *OriginationInternalOperationResult) InternalOperationResult() core.ManagerOperationResult {
+var _ core.InternalOperationResult = (*OriginationInternalOperationResult)(nil)
+
+func (r *OriginationInternalOperationResult) GetSource() core.TransactionDestination {
+	switch d := r.Source.(type) {
+	case core.ImplicitContract:
+		return d
+	case core.OriginatedContract:
+		return d
+	default:
+		panic("unexpected contract id type")
+	}
+}
+func (r *OriginationInternalOperationResult) GetResult() core.ManagerOperationResult {
 	return r.Result
 }
 func (*OriginationInternalOperationResult) OperationKind() string { return "origination" }
