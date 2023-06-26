@@ -6,6 +6,14 @@ import (
 	tz "github.com/ecadlabs/gotez/v2"
 )
 
+type LiquidityBakingToggleVote int8
+
+const (
+	LiquidityBakingOn LiquidityBakingToggleVote = iota
+	LiquidityBakingOff
+	LiquidityBakingPass
+)
+
 type LevelInfo struct {
 	Level              int32 `json:"level"`
 	LevelPosition      int32 `json:"level_position"`
@@ -80,5 +88,5 @@ type BlockHeader interface {
 	GetPayloadRound() int32
 	GetProofOfWorkNonce() *tz.Bytes8
 	GetSeedNonceHash() tz.Option[*tz.CycleNonceHash]
-	GetLiquidityBakingEscapeVote() bool
+	GetLiquidityBakingToggleVote() LiquidityBakingToggleVote
 }

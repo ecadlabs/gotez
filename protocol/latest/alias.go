@@ -2,57 +2,58 @@ package latest
 
 import (
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
 )
 
-var Protocol = core.Proto016PtMumbai
+var Protocol = core.Proto017PtNairob
 
-type OperationContents = proto_016_PtMumbai.OperationContents
-type OperationContentsAndResult = proto_016_PtMumbai.OperationContentsAndResult
-type OperationWithOptionalMetadataContents = proto_016_PtMumbai.OperationWithOptionalMetadataContents
-type RunOperationRequest = proto_016_PtMumbai.RunOperationRequest
-type UnsignedOperation = proto_016_PtMumbai.UnsignedOperation
-type SignedOperation = proto_016_PtMumbai.SignedOperation
+type OperationContents = proto_017_PtNairob.OperationContents
+type OperationContentsAndResult = proto_017_PtNairob.OperationContentsAndResult
+type OperationWithOptionalMetadata = proto_017_PtNairob.OperationWithOptionalMetadata
 
-type UnsignedBlockHeader = proto_016_PtMumbai.UnsignedBlockHeader
-type BlockHeader = proto_016_PtMumbai.BlockHeader
+type RunOperationRequest = proto_017_PtNairob.RunOperationRequest
+type UnsignedOperation = proto_017_PtNairob.UnsignedOperation
+type SignedOperation = proto_017_PtNairob.SignedOperation
 
-type ManagerOperation = proto_016_PtMumbai.ManagerOperation
-type SeedNonceRevelation = proto_016_PtMumbai.SeedNonceRevelation
-type DoubleEndorsementEvidence = proto_016_PtMumbai.DoubleEndorsementEvidence
-type DoubleBakingEvidence = proto_016_PtMumbai.DoubleBakingEvidence
-type ActivateAccount = proto_016_PtMumbai.ActivateAccount
-type Proposals = proto_016_PtMumbai.Proposals
-type Ballot = proto_016_PtMumbai.Ballot
-type DoublePreendorsementEvidence = proto_016_PtMumbai.DoublePreendorsementEvidence
-type VDFRevelation = proto_016_PtMumbai.VDFRevelation
-type DrainDelegate = proto_016_PtMumbai.DrainDelegate
-type FailingNoop = proto_016_PtMumbai.FailingNoop
-type Preendorsement = proto_016_PtMumbai.Preendorsement
-type InlinedPreendorsementContents = proto_016_PtMumbai.InlinedPreendorsementContents
-type Endorsement = proto_016_PtMumbai.Endorsement
-type InlinedEndorsementContents = proto_016_PtMumbai.InlinedEndorsementContents
-type DALAttestation = proto_016_PtMumbai.DALAttestation
-type Reveal = proto_016_PtMumbai.Reveal
-type Transaction = proto_016_PtMumbai.Transaction
-type Parameters = proto_016_PtMumbai.Parameters
-type Origination = proto_016_PtMumbai.Origination
-type Delegation = proto_016_PtMumbai.Delegation
-type RegisterGlobalConstant = proto_016_PtMumbai.RegisterGlobalConstant
-type SetDepositsLimit = proto_016_PtMumbai.SetDepositsLimit
-type IncreasePaidStorage = proto_016_PtMumbai.IncreasePaidStorage
-type UpdateConsensusKey = proto_016_PtMumbai.UpdateConsensusKey
-type TransferTicket = proto_016_PtMumbai.TransferTicket
-type SmartRollupOriginate = proto_016_PtMumbai.SmartRollupOriginate
-type SmartRollupAddMessages = proto_016_PtMumbai.SmartRollupAddMessages
-type SmartRollupCement = proto_016_PtMumbai.SmartRollupCement
-type SmartRollupPublish = proto_016_PtMumbai.SmartRollupPublish
-type SmartRollupRefute = proto_016_PtMumbai.SmartRollupRefute
-type SmartRollupTimeout = proto_016_PtMumbai.SmartRollupTimeout
-type SmartRollupExecuteOutboxMessage = proto_016_PtMumbai.SmartRollupExecuteOutboxMessage
-type SmartRollupRecoverBond = proto_016_PtMumbai.SmartRollupRecoverBond
-type DALPublishSlotHeader = proto_016_PtMumbai.DALPublishSlotHeader
-type ZkRollupOrigination = proto_016_PtMumbai.ZkRollupOrigination
-type ZkRollupPublish = proto_016_PtMumbai.ZkRollupPublish
-type ZkRollupUpdate = proto_016_PtMumbai.ZkRollupUpdate
-type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
+type UnsignedBlockHeader = proto_017_PtNairob.UnsignedBlockHeader
+type BlockHeader = proto_017_PtNairob.BlockHeader
+
+type ManagerOperation = proto_017_PtNairob.ManagerOperation
+type SeedNonceRevelation = proto_017_PtNairob.SeedNonceRevelation
+type DoubleEndorsementEvidence = proto_017_PtNairob.DoubleEndorsementEvidence
+type DoubleBakingEvidence = proto_017_PtNairob.DoubleBakingEvidence
+type ActivateAccount = proto_017_PtNairob.ActivateAccount
+type Proposals = proto_017_PtNairob.Proposals
+type Ballot = proto_017_PtNairob.Ballot
+type DoublePreendorsementEvidence = proto_017_PtNairob.DoublePreendorsementEvidence
+type VDFRevelation = proto_017_PtNairob.VDFRevelation
+type DrainDelegate = proto_017_PtNairob.DrainDelegate
+type FailingNoop = proto_017_PtNairob.FailingNoop
+type Preendorsement = proto_017_PtNairob.Preendorsement
+type InlinedPreendorsementContents = proto_017_PtNairob.InlinedPreendorsementContents
+type Endorsement = proto_017_PtNairob.Endorsement
+type InlinedEndorsementContents = proto_017_PtNairob.InlinedEndorsementContents
+type DALAttestation = proto_017_PtNairob.DALAttestation
+type Reveal = proto_017_PtNairob.Reveal
+type Transaction = proto_017_PtNairob.Transaction
+type Parameters = proto_017_PtNairob.Parameters
+type Origination = proto_017_PtNairob.Origination
+type Delegation = proto_017_PtNairob.Delegation
+type RegisterGlobalConstant = proto_017_PtNairob.RegisterGlobalConstant
+type SetDepositsLimit = proto_017_PtNairob.SetDepositsLimit
+type IncreasePaidStorage = proto_017_PtNairob.IncreasePaidStorage
+type UpdateConsensusKey = proto_017_PtNairob.UpdateConsensusKey
+type TransferTicket = proto_017_PtNairob.TransferTicket
+type SmartRollupOriginate = proto_017_PtNairob.SmartRollupOriginate
+type SmartRollupAddMessages = proto_017_PtNairob.SmartRollupAddMessages
+type SmartRollupCement = proto_017_PtNairob.SmartRollupCement
+type SmartRollupPublish = proto_017_PtNairob.SmartRollupPublish
+type SmartRollupRefute = proto_017_PtNairob.SmartRollupRefute
+type SmartRollupTimeout = proto_017_PtNairob.SmartRollupTimeout
+type SmartRollupExecuteOutboxMessage = proto_017_PtNairob.SmartRollupExecuteOutboxMessage
+type SmartRollupRecoverBond = proto_017_PtNairob.SmartRollupRecoverBond
+type DALPublishSlotHeader = proto_017_PtNairob.DALPublishSlotHeader
+type ZkRollupOrigination = proto_017_PtNairob.ZkRollupOrigination
+type ZkRollupPublish = proto_017_PtNairob.ZkRollupPublish
+type ZkRollupUpdate = proto_017_PtNairob.ZkRollupUpdate
+type SignaturePrefix = proto_017_PtNairob.SignaturePrefix

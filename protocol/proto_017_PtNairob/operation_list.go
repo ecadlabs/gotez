@@ -1,12 +1,13 @@
-package proto_016_PtMumbai
+package proto_017_PtNairob
 
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 )
 
-type OperationWithOptionalMetadata = core.OperationWithOptionalMetadata[OperationWithOptionalMetadataContents]
+type OperationWithOptionalMetadata = proto_016_PtMumbai.OperationWithOptionalMetadata
 
 type GroupContents interface {
 	core.GroupContents

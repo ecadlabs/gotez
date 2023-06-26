@@ -21,8 +21,12 @@ func (h *UnsignedProtocolBlockHeader) GetProofOfWorkNonce() *tz.Bytes8 {
 func (h *UnsignedProtocolBlockHeader) GetSeedNonceHash() tz.Option[*tz.CycleNonceHash] {
 	return h.SeedNonceHash
 }
-func (h *UnsignedProtocolBlockHeader) GetLiquidityBakingEscapeVote() bool {
-	return h.LiquidityBakingEscapeVote
+func (h *UnsignedProtocolBlockHeader) GetLiquidityBakingToggleVote() core.LiquidityBakingToggleVote {
+	if h.LiquidityBakingEscapeVote {
+		return core.LiquidityBakingOff
+	} else {
+		return core.LiquidityBakingOn
+	}
 }
 
 type UnsignedBlockHeader struct {

@@ -318,8 +318,8 @@ type RevealProofMetadata struct{}
 func (RevealProofMetadata) RevealProof() {}
 
 type RevealProofDALPage struct {
-	DALPageID `json:"dal_page_id"`
-	DALProof  tz.Bytes `tz:"dyn" json:"dal_proof"`
+	DALPageID DALPageID `json:"dal_page_id"`
+	DALProof  tz.Bytes  `tz:"dyn" json:"dal_proof"`
 }
 
 func (*RevealProofDALPage) RevealProof() {}

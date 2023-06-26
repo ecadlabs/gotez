@@ -31,7 +31,7 @@ type Ballot = proto_012_Psithaca.Ballot
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type TransferTicket = proto_013_PtJakart.TransferTicket
 type Entrypoint = proto_012_Psithaca.Entrypoint
-type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
+type DoubleBakingEvidence = proto_013_PtJakart.DoubleBakingEvidence
 
 type ConsumedGasResultContents struct {
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`

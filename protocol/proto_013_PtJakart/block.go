@@ -3,13 +3,55 @@ package proto_013_PtJakart
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 )
 
-type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
-type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
-type BlockHeader = proto_012_Psithaca.BlockHeader
-type BlockHeaderInfo = proto_012_Psithaca.BlockHeaderInfo
+type UnsignedProtocolBlockHeader struct {
+	PayloadHash               *tz.BlockPayloadHash           `json:"payload_hash"`
+	PayloadRound              int32                          `json:"payload_round"`
+	ProofOfWorkNonce          *tz.Bytes8                     `json:"proof_of_work_nonce"`
+	SeedNonceHash             tz.Option[*tz.CycleNonceHash]  `json:"seed_nonce_hash"`
+	LiquidityBakingToggleVote core.LiquidityBakingToggleVote `json:"liquidity_baking_toggle_vote"`
+}
+
+func (h *UnsignedProtocolBlockHeader) GetPayloadHash() *tz.BlockPayloadHash { return h.PayloadHash }
+func (h *UnsignedProtocolBlockHeader) GetPayloadRound() int32               { return h.PayloadRound }
+func (h *UnsignedProtocolBlockHeader) GetProofOfWorkNonce() *tz.Bytes8 {
+	return h.ProofOfWorkNonce
+}
+func (h *UnsignedProtocolBlockHeader) GetSeedNonceHash() tz.Option[*tz.CycleNonceHash] {
+	return h.SeedNonceHash
+}
+
+func (h *UnsignedProtocolBlockHeader) GetLiquidityBakingToggleVote() core.LiquidityBakingToggleVote {
+	return h.LiquidityBakingToggleVote
+}
+
+type UnsignedBlockHeader struct {
+	core.ShellHeader
+	UnsignedProtocolBlockHeader
+}
+
+func (header *UnsignedBlockHeader) GetShellHeader() *core.ShellHeader {
+	return &header.ShellHeader
+}
+
+type BlockHeader struct {
+	UnsignedBlockHeader
+	Signature *tz.GenericSignature `json:"signature"`
+}
+
+func (header *BlockHeader) GetSignature() (tz.Signature, error) {
+	return header.Signature, nil
+}
+
+type BlockHeaderInfo struct {
+	ChainID *tz.ChainID   `json:"chain_id"`
+	Hash    *tz.BlockHash `json:"hash"`
+	BlockHeader
+}
+
+func (block *BlockHeaderInfo) GetChainID() *tz.ChainID { return block.ChainID }
+func (block *BlockHeaderInfo) GetHash() *tz.BlockHash  { return block.Hash }
 
 type BlockInfo struct {
 	ChainID    *tz.ChainID                          `json:"chain_id"`

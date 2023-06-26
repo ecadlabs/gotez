@@ -11,16 +11,16 @@ type DelegateInfo struct {
 	FrozenDeposits        tz.BigUint                 `json:"frozen_deposits"`
 	StakingBalance        tz.BigUint                 `json:"staking_balance"`
 	FrozenDepositsLimit   tz.Option[tz.BigUint]      `json:"frozen_deposits_limit"`
-	DelegatedContracts    []core.ContractID          `tz:"dyn" json:"delegated_contracts"`
+	DelegatedContracts    []core.ContractID          `tz:"dyn" json:"delegated_contracts,omitempty"`
 	DelegatedBalance      tz.BigUint                 `json:"delegated_balance"`
 	Deactivated           bool                       `json:"deactivated"`
 	GracePeriod           int32                      `json:"grace_period"`
 	VotingPower           tz.Option[int64]           `json:"voting_power"`
 	CurrentBallot         tz.Option[core.BallotKind] `json:"current_ballot"`
-	CurrentProposals      []*tz.ProtocolHash         `tz:"dyn" json:"current_proposals"`
+	CurrentProposals      []*tz.ProtocolHash         `tz:"dyn" json:"current_proposals,omitempty"`
 	RemainingProposals    int32                      `json:"remaining_proposals"`
 	ActiveConsensusKey    tz.PublicKeyHash           `json:"active_consensus_key"`
-	PendingConsensusKeys  []*PendingConsensusKey     `tz:"dyn" json:"pending_consensus_keys"`
+	PendingConsensusKeys  []*PendingConsensusKey     `tz:"dyn" json:"pending_consensus_keys,omitempty"`
 }
 
 func (d *DelegateInfo) GetFullBalance() tz.BigUint                    { return d.FullBalance }

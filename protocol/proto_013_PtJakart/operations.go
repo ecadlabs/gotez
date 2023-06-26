@@ -29,12 +29,18 @@ type Proposals = proto_012_Psithaca.Proposals
 type Ballot = proto_012_Psithaca.Ballot
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type Entrypoint = proto_012_Psithaca.Entrypoint
-type DoubleBakingEvidence = proto_012_Psithaca.DoubleBakingEvidence
 type ConsumedGasResult = proto_012_Psithaca.ConsumedGasResult
 type ConsumedGasResultContents = proto_012_Psithaca.ConsumedGasResultContents
 type RevealRevealSuccessfulManagerResult = proto_012_Psithaca.RevealSuccessfulManagerResult
 type DelegationSuccessfulManagerResult = proto_012_Psithaca.DelegationSuccessfulManagerResult
 type SetDepositsLimitSuccessfulManagerResult = proto_012_Psithaca.SetDepositsLimitSuccessfulManagerResult
+
+type DoubleBakingEvidence struct {
+	Block1 BlockHeader `tz:"dyn" json:"block1"`
+	Block2 BlockHeader `tz:"dyn" json:"block2"`
+}
+
+func (*DoubleBakingEvidence) OperationKind() string { return "double_baking_evidence" }
 
 type Ticket struct {
 	Contents expression.Expression `tz:"dyn" json:"contents"`

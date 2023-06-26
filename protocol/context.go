@@ -10,10 +10,13 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
 )
 
 func NewDelegateInfo(proto *tz.ProtocolHash) (delegate core.DelegateInfo, err error) {
 	switch *proto {
+	case core.Proto017PtNairob:
+		delegate = new(proto_017_PtNairob.DelegateInfo)
 	case core.Proto016PtMumbai:
 		delegate = new(proto_016_PtMumbai.DelegateInfo)
 	case core.Proto015PtLimaPt:

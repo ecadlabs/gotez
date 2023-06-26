@@ -3,13 +3,13 @@ package proto_014_PtKathma
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
 )
 
-type UnsignedProtocolBlockHeader = proto_012_Psithaca.UnsignedProtocolBlockHeader
-type UnsignedBlockHeader = proto_012_Psithaca.UnsignedBlockHeader
-type BlockHeader = proto_012_Psithaca.BlockHeader
-type BlockHeaderInfo = proto_012_Psithaca.BlockHeaderInfo
+type UnsignedProtocolBlockHeader = proto_013_PtJakart.UnsignedProtocolBlockHeader
+type UnsignedBlockHeader = proto_013_PtJakart.UnsignedBlockHeader
+type BlockHeader = proto_013_PtJakart.BlockHeader
+type BlockHeaderInfo = proto_013_PtJakart.BlockHeaderInfo
 
 type BlockInfo struct {
 	ChainID    *tz.ChainID                          `json:"chain_id"`

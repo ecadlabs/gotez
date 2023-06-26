@@ -12,7 +12,7 @@ import (
 type BlockInfo = protocol.BlockInfo
 type BlockHeaderInfo = protocol.BlockHeaderInfo
 type BigUint = tz.BigUint
-type OperationWithOptionalMetadata = core.OperationWithOptionalMetadata[latest.OperationWithOptionalMetadataContents]
+type OperationWithOptionalMetadata = latest.OperationWithOptionalMetadata
 type Constants = core.Constants
 type BlockShellHeader = core.ShellHeader
 type OperationHash = tz.OperationHash

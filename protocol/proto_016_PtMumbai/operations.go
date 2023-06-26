@@ -352,7 +352,7 @@ type SlotHeader struct {
 	Level           int32             `json:"level"`
 	Index           uint8             `json:"index"`
 	Сommitment      *tz.DALCommitment `json:"commitment"`
-	CommitmentProof [48]byte          `json:"commitment_proof"`
+	CommitmentProof *tz.Bytes48       `json:"commitment_proof"`
 }
 
 func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_header" }
