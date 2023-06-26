@@ -40,7 +40,20 @@ func (p *Parameters) GetEntrypoint() string           { return p.Entrypoint.Entr
 func (p *Parameters) GetValue() expression.Expression { return p.Value }
 
 type Entrypoint interface {
-	Entrypoint() string
+	core.Entrypoint
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[Entrypoint]{
+		Variants: encoding.Variants[Entrypoint]{
+			0:   EpDefault{},
+			1:   EpRoot{},
+			2:   EpDo{},
+			3:   EpSetDelegate{},
+			4:   EpRemoveDelegate{},
+			255: EpNamed{},
+		},
+	})
 }
 
 type EpDefault struct{}
@@ -66,19 +79,6 @@ func (ep EpRemoveDelegate) MarshalText() (text []byte, err error) {
 }
 func (e EpNamed) Entrypoint() string                     { return string(e.String) }
 func (ep EpNamed) MarshalText() (text []byte, err error) { return []byte(ep.Entrypoint()), nil }
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[Entrypoint]{
-		Variants: encoding.Variants[Entrypoint]{
-			0:   EpDefault{},
-			1:   EpRoot{},
-			2:   EpDo{},
-			3:   EpSetDelegate{},
-			4:   EpRemoveDelegate{},
-			255: EpNamed{},
-		},
-	})
-}
 
 type TransactionResultContents struct {
 	Storage    tz.Option[expression.Expression] `json:"storage"`

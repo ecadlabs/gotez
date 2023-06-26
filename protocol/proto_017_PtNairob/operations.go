@@ -1,7 +1,5 @@
 package proto_017_PtNairob
 
-//go:generate go run ../../cmd/genmarshaller.go
-
 import (
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -56,7 +54,7 @@ type DALPublishSlotHeader = proto_016_PtMumbai.DALPublishSlotHeader
 type DALPublishSlotHeaderContentsAndResult = proto_016_PtMumbai.DALPublishSlotHeaderContentsAndResult
 type Origination = proto_012_Psithaca.Origination
 type OriginationContentsAndResult = proto_016_PtMumbai.OriginationContentsAndResult
-type Transaction = proto_012_Psithaca.Transaction
+type Transaction = proto_015_PtLimaPt.Transaction
 type TransactionContentsAndResult = proto_016_PtMumbai.TransactionContentsAndResult
 type Parameters = proto_012_Psithaca.Parameters
 

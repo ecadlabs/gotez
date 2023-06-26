@@ -14,14 +14,15 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
 )
 
-type Transaction = proto_012_Psithaca.Transaction
-type Parameters = proto_012_Psithaca.Parameters
-type Entrypoint = proto_012_Psithaca.Entrypoint
+type Transaction = proto_015_PtLimaPt.Transaction
+type Parameters = proto_015_PtLimaPt.Parameters
+type Entrypoint = proto_015_PtLimaPt.Entrypoint
 type EpDefault = proto_012_Psithaca.EpDefault
 type EpRoot = proto_012_Psithaca.EpRoot
 type EpDo = proto_012_Psithaca.EpDo
 type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
 type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
+type EpDeposit = proto_015_PtLimaPt.EpDeposit
 type EpNamed = proto_012_Psithaca.EpNamed
 type TicketToken = proto_015_PtLimaPt.TicketToken
 type ZkRollupDestination = proto_015_PtLimaPt.ZkRollupDestination

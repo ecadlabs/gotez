@@ -35,7 +35,6 @@ type FailingNoop = proto_012_Psithaca.FailingNoop
 type TransferTicket = proto_013_PtJakart.TransferTicket
 type DALSlotAvailability = proto_014_PtKathma.DALSlotAvailability
 type DALSlotAvailabilityContentsAndResult = proto_014_PtKathma.DALSlotAvailabilityContentsAndResult
-type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_013_PtJakart.DoubleBakingEvidence
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type ConsumedGasResultContents = proto_014_PtKathma.ConsumedGasResultContents

@@ -14,11 +14,67 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 )
 
-type Transaction = proto_012_Psithaca.Transaction
-type Parameters = proto_012_Psithaca.Parameters
 type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
 type ScRollupDestination = proto_014_PtKathma.ScRollupDestination
 type ToScRollup = proto_014_PtKathma.ToScRollup
+
+//json:kind=OperationKind()
+type Transaction struct {
+	ManagerOperation
+	Amount      tz.BigUint            `json:"amount"`
+	Destination core.ContractID       `json:"destination"`
+	Parameters  tz.Option[Parameters] `json:"parameters"`
+}
+
+func (*Transaction) OperationKind() string          { return "transaction" }
+func (t *Transaction) GetAmount() tz.BigUint        { return t.Amount }
+func (t *Transaction) GetDestination() core.Address { return t.Destination }
+func (t *Transaction) GetParameters() tz.Option[core.Parameters] {
+	if p, ok := t.Parameters.CheckUnwrapPtr(); ok {
+		return tz.Some[core.Parameters](p)
+	}
+	return tz.None[core.Parameters]()
+}
+
+var _ core.Transaction = (*Transaction)(nil)
+
+type Parameters struct {
+	Entrypoint Entrypoint            `json:"entrypoint"`
+	Value      expression.Expression `tz:"dyn" json:"value"`
+}
+
+func (p *Parameters) GetEntrypoint() string           { return p.Entrypoint.Entrypoint() }
+func (p *Parameters) GetValue() expression.Expression { return p.Value }
+
+type Entrypoint interface {
+	core.Entrypoint
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[Entrypoint]{
+		Variants: encoding.Variants[Entrypoint]{
+			0:   EpDefault{},
+			1:   EpRoot{},
+			2:   EpDo{},
+			3:   EpSetDelegate{},
+			4:   EpRemoveDelegate{},
+			5:   EpDeposit{},
+			255: EpNamed{},
+		},
+	})
+}
+
+type EpDefault = proto_012_Psithaca.EpDefault
+type EpRoot = proto_012_Psithaca.EpRoot
+type EpDo = proto_012_Psithaca.EpDo
+type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
+type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
+type EpNamed = proto_012_Psithaca.EpNamed
+
+type EpDeposit struct{}
+
+func (EpDeposit) Entrypoint() string                       { return "deposit" }
+func (ep EpDeposit) MarshalText() (text []byte, err error) { return []byte(ep.Entrypoint()), nil }
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination

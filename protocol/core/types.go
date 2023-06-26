@@ -154,6 +154,10 @@ func ParseContractID(src []byte) (ContractID, error) {
 	}
 }
 
+type Entrypoint interface {
+	Entrypoint() string
+}
+
 type TransactionDestination interface {
 	tz.Base58Encoder
 	TransactionDestination()
