@@ -13,23 +13,23 @@ type GroupContents interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[GroupContents]{
 		Variants: encoding.Variants[GroupContents]{
-			0: (*OperationWithTooLargeMetadata)(nil),
-			1: (*OperationWithoutMetadata)(nil),
+			0: (*OperationWithTooLargeMetadata[OperationContents])(nil),
+			1: (*OperationWithoutMetadata[OperationContents])(nil),
 			2: (*core.OperationWithOptionalMetadata[OperationWithOptionalMetadataContents])(nil),
 		},
 	})
 }
 
-type OperationWithTooLargeMetadata struct {
-	OperationWithoutMetadata
+type OperationWithoutMetadata[T core.OperationContents] struct {
+	core.OperationWithoutMetadata[T]
 }
 
-type OperationWithoutMetadata struct {
-	core.OperationWithoutMetadata[OperationContents]
+func (op *OperationWithoutMetadata[T]) GetSignature() (tz.Option[tz.Signature], error) {
+	return tz.Some[tz.Signature](op.Signature), nil
 }
 
-func (op *OperationWithoutMetadata) GetSignature() (tz.Signature, error) {
-	return op.Signature, nil
+type OperationWithTooLargeMetadata[T core.OperationContents] struct {
+	OperationWithoutMetadata[T]
 }
 
 type OperationWithOptionalMetadataContents interface {
@@ -39,8 +39,50 @@ type OperationWithOptionalMetadataContents interface {
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[OperationWithOptionalMetadataContents]{
 		Variants: encoding.Variants[OperationWithOptionalMetadataContents]{
-			0: (*core.OperationWithOptionalMetadataWithMetadata[OperationContentsAndResult])(nil),
-			1: (*core.OperationWithOptionalMetadataWithoutMetadata[OperationContents])(nil),
+			0: (*OperationWithOptionalMetadataWithMetadata[OperationContentsAndResult])(nil),
+			1: (*OperationWithOptionalMetadataWithoutMetadata[OperationContents])(nil),
 		},
 	})
+}
+
+type OperationWithOptionalMetadataWithMetadata[T core.OperationContentsAndResult] struct {
+	Contents  []T                             `tz:"dyn" json:"contents"`
+	Signature tz.Option[*tz.GenericSignature] `json:"signature"`
+}
+
+func (ops *OperationWithOptionalMetadataWithMetadata[T]) Operations() []core.OperationContents {
+	out := make([]core.OperationContents, len(ops.Contents))
+	for i, op := range ops.Contents {
+		out[i] = op
+	}
+	return out
+}
+
+func (*OperationWithOptionalMetadataWithMetadata[T]) OperationWithOptionalMetadataContents() {}
+func (op *OperationWithOptionalMetadataWithMetadata[T]) GetSignature() (tz.Option[tz.Signature], error) {
+	if sig, ok := op.Signature.CheckUnwrap(); ok {
+		return tz.Some[tz.Signature](sig), nil
+	}
+	return tz.None[tz.Signature](), nil
+}
+
+type OperationWithOptionalMetadataWithoutMetadata[T core.OperationContents] struct {
+	Contents  []T                             `tz:"dyn" json:"contents"`
+	Signature tz.Option[*tz.GenericSignature] `json:"signature"`
+}
+
+func (ops *OperationWithOptionalMetadataWithoutMetadata[T]) Operations() []core.OperationContents {
+	out := make([]core.OperationContents, len(ops.Contents))
+	for i, op := range ops.Contents {
+		out[i] = op
+	}
+	return out
+}
+
+func (*OperationWithOptionalMetadataWithoutMetadata[T]) OperationWithOptionalMetadataContents() {}
+func (op *OperationWithOptionalMetadataWithoutMetadata[T]) GetSignature() (tz.Option[tz.Signature], error) {
+	if sig, ok := op.Signature.CheckUnwrap(); ok {
+		return tz.Some[tz.Signature](sig), nil
+	}
+	return tz.None[tz.Signature](), nil
 }

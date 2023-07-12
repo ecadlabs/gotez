@@ -1,7 +1,6 @@
 package gotez
 
 import (
-	"errors"
 	"fmt"
 	"math/big"
 	"math/bits"
@@ -78,7 +77,7 @@ func (sig AnySignature) Signature() (Signature, error) {
 	case BLSSignatureBytesLen:
 		return (*BLSSignature)(unsafe.Pointer(&sig[0])), nil
 	default:
-		return nil, errors.New("gotez: invalid signature length")
+		return nil, fmt.Errorf("gotez: invalid signature length: %d", len(sig))
 	}
 }
 

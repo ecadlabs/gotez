@@ -121,6 +121,15 @@ func TestBlock(t *testing.T) {
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)
 						}
+						return
+					}
+
+					// check operation group signature lengths
+					for _, list := range out.GetOperations() {
+						for _, grp := range list {
+							_, err := grp.GetContents().GetSignature()
+							assert.NoError(t, err)
+						}
 					}
 				})
 			}
