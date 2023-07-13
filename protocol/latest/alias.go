@@ -9,6 +9,7 @@ var Protocol = core.Proto017PtNairob
 
 type OperationContents = proto_017_PtNairob.OperationContents
 type OperationContentsAndResult = proto_017_PtNairob.OperationContentsAndResult
+type InternalOperationResult = proto_017_PtNairob.InternalOperationResult
 type OperationWithOptionalMetadata = proto_017_PtNairob.OperationWithOptionalMetadata
 
 type RunOperationRequest = proto_017_PtNairob.RunOperationRequest
