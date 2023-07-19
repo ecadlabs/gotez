@@ -485,7 +485,7 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 
 //json:kind=OperationKind()
 type DelegationInternalOperationResult struct {
-	Source   TransactionDestination      `json:"source"`
+	Source   core.TransactionDestination `json:"source"`
 	Nonce    uint16                      `json:"nonce"`
 	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`
 	Result   ConsumedGasResult           `json:"result"`
@@ -501,7 +501,7 @@ func (*DelegationInternalOperationResult) OperationKind() string { return "deleg
 
 //json:kind=OperationKind()
 type EventInternalOperationResult struct {
-	Source  TransactionDestination           `json:"source"`
+	Source  core.TransactionDestination      `json:"source"`
 	Nonce   uint16                           `json:"nonce"`
 	Type    expression.Expression            `json:"type"`
 	Tag     tz.Option[Entrypoint]            `json:"tag"`

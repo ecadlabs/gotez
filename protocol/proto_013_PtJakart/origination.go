@@ -66,7 +66,7 @@ func (*OriginationContentsAndResult) OperationContentsAndResult() {}
 
 //json:kind=OperationKind()
 type OriginationInternalOperationResult struct {
-	Source   TransactionDestination      `json:"source"`
+	Source   core.TransactionDestination `json:"source"`
 	Nonce    uint16                      `json:"nonce"`
 	Balance  tz.BigUint                  `json:"balance"`
 	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`

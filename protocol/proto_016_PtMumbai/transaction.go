@@ -1,7 +1,6 @@
 package proto_016_PtMumbai
 
 import (
-	"bytes"
 	"math/big"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -25,7 +24,6 @@ type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
 type EpDeposit = proto_015_PtLimaPt.EpDeposit
 type EpNamed = proto_012_Psithaca.EpNamed
 type TicketToken = proto_015_PtLimaPt.TicketToken
-type ZkRollupDestination = proto_015_PtLimaPt.ZkRollupDestination
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
@@ -122,12 +120,12 @@ func init() {
 
 //json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
-	Source      TransactionDestination `json:"source"`
-	Nonce       uint16                 `json:"nonce"`
-	Amount      tz.BigUint             `json:"amount"`
-	Destination TransactionDestination `json:"destination"`
-	Parameters  tz.Option[Parameters]  `json:"parameters"`
-	Result      TransactionResult      `json:"result"`
+	Source      core.TransactionDestination `json:"source"`
+	Nonce       uint16                      `json:"nonce"`
+	Amount      tz.BigUint                  `json:"amount"`
+	Destination core.TransactionDestination `json:"destination"`
+	Parameters  tz.Option[Parameters]       `json:"parameters"`
+	Result      TransactionResult           `json:"result"`
 }
 
 var _ core.TransactionInternalOperationResult = (*TransactionInternalOperationResult)(nil)
@@ -149,43 +147,12 @@ func (r *TransactionInternalOperationResult) GetResult() core.ManagerOperationRe
 }
 func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }
 
-type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
-
-type SmartRollupDestination struct {
-	*tz.SmartRollupAddress
-	Padding uint8
-}
-
-func (SmartRollupDestination) TransactionDestination() {}
-func (a SmartRollupDestination) Eq(b core.TransactionDestination) bool {
-	if other, ok := b.(SmartRollupDestination); ok {
-		return bytes.Equal(a.SmartRollupAddress[:], other.SmartRollupAddress[:])
-	}
-	return false
-}
-
-type TransactionDestination interface {
-	core.TransactionDestination
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
-		Variants: encoding.Variants[TransactionDestination]{
-			0: core.ImplicitContract{},
-			1: core.OriginatedContract{},
-			2: TxRollupDestination{},
-			3: SmartRollupDestination{},
-			4: ZkRollupDestination{},
-		},
-	})
-}
-
 type TicketReceipt struct {
 	TicketToken TicketToken            `json:"ticket_token"`
 	Updates     []*TicketReceiptUpdate `tz:"dyn" json:"updates"`
 }
 
 type TicketReceiptUpdate struct {
-	Account TransactionDestination `json:"account"`
-	Amount  tz.BigInt              `json:"amount"`
+	Account core.TransactionDestination `json:"account"`
+	Amount  tz.BigInt                   `json:"amount"`
 }

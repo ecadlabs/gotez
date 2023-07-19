@@ -158,14 +158,6 @@ type Entrypoint interface {
 	Entrypoint() string
 }
 
-type TransactionDestination interface {
-	tz.Base58Encoder
-	TransactionDestination()
-	Eq(other TransactionDestination) bool
-}
-
-type Address = TransactionDestination
-
 type Signed interface {
 	GetSignature() (tz.Signature, error)
 }

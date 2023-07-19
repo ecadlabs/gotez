@@ -1,7 +1,6 @@
 package proto_013_PtJakart
 
 import (
-	"bytes"
 	"math/big"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -29,19 +28,6 @@ type OldLevelsMessages struct {
 	Index        int32       `json:"index"`
 	Content      *tz.Bytes32 `json:"content"`
 	BackPointers tz.Bytes    `tz:"dyn" json:"back_pointers"`
-}
-
-type TxRollupDestination struct {
-	*tz.TXRollupAddress
-	Padding uint8
-}
-
-func (TxRollupDestination) TransactionDestination() {}
-func (a TxRollupDestination) Eq(b core.TransactionDestination) bool {
-	if other, ok := b.(TxRollupDestination); ok {
-		return bytes.Equal(a.TXRollupAddress[:], other.TXRollupAddress[:])
-	}
-	return false
 }
 
 type TransactionResultDestination interface {
@@ -95,20 +81,6 @@ func (r *ToTxRollup) EstimateStorageSize(constants core.Constants) *big.Int {
 	return r.PaidStorageSizeDiff.Int()
 }
 
-type TransactionDestination interface {
-	core.TransactionDestination
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
-		Variants: encoding.Variants[TransactionDestination]{
-			0: core.ImplicitContract{},
-			1: core.OriginatedContract{},
-			2: TxRollupDestination{},
-		},
-	})
-}
-
 type TransactionResultContents = TransactionResultDestination
 
 //json:kind=OperationKind()
@@ -146,12 +118,12 @@ func init() {
 
 //json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
-	Source      core.ContractID        `json:"source"`
-	Nonce       uint16                 `json:"nonce"`
-	Amount      tz.BigUint             `json:"amount"`
-	Destination TransactionDestination `json:"destination"`
-	Parameters  tz.Option[Parameters]  `json:"parameters"`
-	Result      TransactionResult      `json:"result"`
+	Source      core.ContractID             `json:"source"`
+	Nonce       uint16                      `json:"nonce"`
+	Amount      tz.BigUint                  `json:"amount"`
+	Destination core.TransactionDestination `json:"destination"`
+	Parameters  tz.Option[Parameters]       `json:"parameters"`
+	Result      TransactionResult           `json:"result"`
 }
 
 var _ core.TransactionInternalOperationResult = (*TransactionInternalOperationResult)(nil)

@@ -1,7 +1,6 @@
 package proto_015_PtLimaPt
 
 import (
-	"bytes"
 	"math/big"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -14,8 +13,6 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 )
 
-type TxRollupDestination = proto_013_PtJakart.TxRollupDestination
-type ScRollupDestination = proto_014_PtKathma.ScRollupDestination
 type ToScRollup = proto_014_PtKathma.ToScRollup
 
 //json:kind=OperationKind()
@@ -139,37 +136,8 @@ type TicketToken struct {
 }
 
 type TicketReceiptUpdate struct {
-	Account TransactionDestination `json:"account"`
-	Amount  tz.BigInt              `json:"amount"`
-}
-
-type TransactionDestination interface {
-	core.TransactionDestination
-}
-
-type ZkRollupDestination struct {
-	*tz.ZkRollupAddress
-	Padding uint8
-}
-
-func (ZkRollupDestination) TransactionDestination() {}
-func (a ZkRollupDestination) Eq(b core.TransactionDestination) bool {
-	if other, ok := b.(ZkRollupDestination); ok {
-		return bytes.Equal(a.ZkRollupAddress[:], other.ZkRollupAddress[:])
-	}
-	return false
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[TransactionDestination]{
-		Variants: encoding.Variants[TransactionDestination]{
-			0: core.ImplicitContract{},
-			1: core.OriginatedContract{},
-			2: TxRollupDestination{},
-			3: ScRollupDestination{},
-			4: ZkRollupDestination{},
-		},
-	})
+	Account core.TransactionDestination `json:"account"`
+	Amount  tz.BigInt                   `json:"amount"`
 }
 
 type TransactionResultContents = TransactionResultDestination
@@ -208,12 +176,12 @@ func init() {
 
 //json:kind=OperationKind()
 type TransactionInternalOperationResult struct {
-	Source      core.ContractID        `json:"source"`
-	Nonce       uint16                 `json:"nonce"`
-	Amount      tz.BigUint             `json:"amount"`
-	Destination TransactionDestination `json:"destination"`
-	Parameters  tz.Option[Parameters]  `json:"parameters"`
-	Result      TransactionResult      `json:"result"`
+	Source      core.ContractID             `json:"source"`
+	Nonce       uint16                      `json:"nonce"`
+	Amount      tz.BigUint                  `json:"amount"`
+	Destination core.TransactionDestination `json:"destination"`
+	Parameters  tz.Option[Parameters]       `json:"parameters"`
+	Result      TransactionResult           `json:"result"`
 }
 
 var _ core.TransactionInternalOperationResult = (*TransactionInternalOperationResult)(nil)
