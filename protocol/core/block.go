@@ -88,5 +88,4 @@ type BlockHeader interface {
 	GetPayloadRound() int32
 	GetProofOfWorkNonce() *tz.Bytes8
 	GetSeedNonceHash() tz.Option[*tz.CycleNonceHash]
-	GetLiquidityBakingToggleVote() LiquidityBakingToggleVote
 }

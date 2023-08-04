@@ -8,7 +8,6 @@ import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	"github.com/ecadlabs/gotez/v2/protocol/core/expression"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
@@ -509,39 +508,8 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 	return out
 }
 
-//json:kind=OperationKind()
-type DelegationInternalOperationResult struct {
-	Source   core.TransactionDestination `json:"source"`
-	Nonce    uint16                      `json:"nonce"`
-	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`
-	Result   ConsumedGasResult           `json:"result"`
-}
-
-var _ core.InternalOperationResult = (*DelegationInternalOperationResult)(nil)
-
-func (r *DelegationInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
-func (r *DelegationInternalOperationResult) GetResult() core.ManagerOperationResult {
-	return r.Result
-}
-func (*DelegationInternalOperationResult) OperationKind() string { return "delegation" }
-
-//json:kind=OperationKind()
-type EventInternalOperationResult struct {
-	Source  core.TransactionDestination      `json:"source"`
-	Nonce   uint16                           `json:"nonce"`
-	Type    expression.Expression            `json:"type"`
-	Tag     tz.Option[Entrypoint]            `json:"tag"`
-	Payload tz.Option[expression.Expression] `json:"payload"`
-	Result  ConsumedGasResult                `json:"result"`
-}
-
-var _ core.InternalOperationResult = (*OriginationInternalOperationResult)(nil)
-
-func (r *EventInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
-func (r *EventInternalOperationResult) GetResult() core.ManagerOperationResult {
-	return r.Result
-}
-func (*EventInternalOperationResult) OperationKind() string { return "event" }
+type DelegationInternalOperationResult = proto_013_PtJakart.DelegationInternalOperationResult
+type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
 
 type InternalOperationResult interface {
 	core.InternalOperationResult

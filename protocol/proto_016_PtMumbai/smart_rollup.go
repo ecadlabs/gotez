@@ -158,7 +158,7 @@ type SmartRollupPublish struct {
 	Commitment SmartRollupCommitment  `json:"commitment"`
 }
 
-func (*SmartRollupRefute) OperationKind() string { return "smart_rollup_refute" }
+func (*SmartRollupPublish) OperationKind() string { return "smart_rollup_publish" }
 
 type SmartRollupCommitment struct {
 	CompressedState *tz.SmartRollupStateHash      `json:"compressed_state"`
@@ -211,11 +211,7 @@ type SmartRollupRefute struct {
 	Refutation SmartRollupRefutation  `json:"refutation"`
 }
 
-func (*SmartRollupPublish) OperationKind() string { return "smart_rollup_publish" }
-
-type SmartRollupRefutation interface {
-	RefutationKind() string
-}
+func (*SmartRollupRefute) OperationKind() string { return "smart_rollup_refute" }
 
 type RefutationStart struct {
 	PlayerCommitmentHash   *tz.SmartRollupCommitmentHash `json:"player_commitment_hash"`
@@ -231,6 +227,10 @@ type RefutationMove struct {
 
 func (*RefutationMove) RefutationKind() string { return "move" }
 
+type SmartRollupRefutation interface {
+	RefutationKind() string
+}
+
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[SmartRollupRefutation]{
 		Variants: encoding.Variants[SmartRollupRefutation]{
@@ -238,10 +238,6 @@ func init() {
 			1: (*RefutationMove)(nil),
 		},
 	})
-}
-
-type RefutationStep interface {
-	RefutationStepKind() string
 }
 
 type RefutationStepDissection struct {
@@ -261,6 +257,10 @@ type RefutationStepProof struct {
 }
 
 func (*RefutationStepProof) RefutationStepKind() string { return "proof" }
+
+type RefutationStep interface {
+	RefutationStepKind() string
+}
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[RefutationStep]{

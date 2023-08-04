@@ -1,4 +1,4 @@
-package proto_016_PtMumbai
+package proto_018_Proxford
 
 import (
 	"math/big"
@@ -13,9 +13,58 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
 )
 
-type Transaction = proto_015_PtLimaPt.Transaction
-type Parameters = proto_015_PtLimaPt.Parameters
-type Entrypoint = proto_015_PtLimaPt.Entrypoint
+type TicketReceipt = proto_015_PtLimaPt.TicketReceipt
+
+//json:kind=OperationKind()
+type Transaction struct {
+	ManagerOperation
+	Amount      tz.BigUint            `json:"amount"`
+	Destination core.ContractID       `json:"destination"`
+	Parameters  tz.Option[Parameters] `json:"parameters"`
+}
+
+func (*Transaction) OperationKind() string          { return "transaction" }
+func (t *Transaction) GetAmount() tz.BigUint        { return t.Amount }
+func (t *Transaction) GetDestination() core.Address { return t.Destination }
+func (t *Transaction) GetParameters() tz.Option[core.Parameters] {
+	if p, ok := t.Parameters.CheckUnwrapPtr(); ok {
+		return tz.Some[core.Parameters](p)
+	}
+	return tz.None[core.Parameters]()
+}
+
+var _ core.Transaction = (*Transaction)(nil)
+
+type Parameters struct {
+	Entrypoint Entrypoint            `json:"entrypoint"`
+	Value      expression.Expression `tz:"dyn" json:"value"`
+}
+
+func (p *Parameters) GetEntrypoint() string           { return p.Entrypoint.Entrypoint() }
+func (p *Parameters) GetValue() expression.Expression { return p.Value }
+
+type Entrypoint interface {
+	core.Entrypoint
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[Entrypoint]{
+		Variants: encoding.Variants[Entrypoint]{
+			0:   EpDefault{},
+			1:   EpRoot{},
+			2:   EpDo{},
+			3:   EpSetDelegate{},
+			4:   EpRemoveDelegate{},
+			5:   EpDeposit{},
+			6:   EpStake{},
+			7:   EpUnstake{},
+			8:   EpFinalizeUnstake{},
+			9:   EpSetDelegateParameters{},
+			255: EpNamed{},
+		},
+	})
+}
+
 type EpDefault = proto_012_Psithaca.EpDefault
 type EpRoot = proto_012_Psithaca.EpRoot
 type EpDo = proto_012_Psithaca.EpDo
@@ -23,30 +72,24 @@ type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
 type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
 type EpDeposit = proto_015_PtLimaPt.EpDeposit
 type EpNamed = proto_012_Psithaca.EpNamed
-type TicketReceipt = proto_015_PtLimaPt.TicketReceipt
 
-type TransactionResultDestination interface {
-	proto_013_PtJakart.TransactionResultDestination
+type EpStake struct{}
+type EpUnstake struct{}
+type EpFinalizeUnstake struct{}
+type EpSetDelegateParameters struct{}
+
+func (EpStake) Entrypoint() string                         { return "stake" }
+func (ep EpStake) MarshalText() (text []byte, err error)   { return []byte(ep.Entrypoint()), nil }
+func (EpUnstake) Entrypoint() string                       { return "unstake" }
+func (ep EpUnstake) MarshalText() (text []byte, err error) { return []byte(ep.Entrypoint()), nil }
+func (EpFinalizeUnstake) Entrypoint() string               { return "finalize_unstake" }
+func (ep EpFinalizeUnstake) MarshalText() (text []byte, err error) {
+	return []byte(ep.Entrypoint()), nil
 }
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[TransactionResultDestination]{
-		Variants: encoding.Variants[TransactionResultDestination]{
-			0: (*ToContract)(nil),
-			1: (*ToTxRollup)(nil),
-			2: (*ToSmartRollup)(nil),
-		},
-	})
+func (EpSetDelegateParameters) Entrypoint() string { return "set_delegate_parameters" }
+func (ep EpSetDelegateParameters) MarshalText() (text []byte, err error) {
+	return []byte(ep.Entrypoint()), nil
 }
-
-type TransactionResultContents = TransactionResultDestination
-
-//json:kind=OperationKind()
-type TransactionSuccessfulManagerResult struct {
-	core.OperationResultApplied[TransactionResultContents]
-}
-
-func (TransactionSuccessfulManagerResult) OperationKind() string { return "transaction" }
 
 type ToContract struct {
 	Storage tz.Option[expression.Expression] `json:"storage"`
@@ -72,19 +115,6 @@ func (r *ToContract) EstimateStorageSize(constants core.Constants) *big.Int {
 	return x
 }
 
-type ToTxRollup struct {
-	BalanceUpdates
-	ConsumedMilligas    tz.BigUint         `json:"consumed_milligas"`
-	TicketHash          *tz.ScriptExprHash `json:"ticket_hash"`
-	PaidStorageSizeDiff tz.BigUint         `json:"paid_storage_size_diff"`
-}
-
-func (*ToTxRollup) TransactionResultDestination()     {}
-func (r *ToTxRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
-func (r *ToTxRollup) EstimateStorageSize(constants core.Constants) *big.Int {
-	return r.PaidStorageSizeDiff.Int()
-}
-
 type ToSmartRollup struct {
 	ConsumedMilligas tz.BigUint       `json:"consumed_milligas"`
 	TicketUpdates    []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
@@ -93,15 +123,27 @@ type ToSmartRollup struct {
 func (*ToSmartRollup) TransactionResultDestination()     {}
 func (r *ToSmartRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
 
-type TransactionContentsAndResult struct {
-	Transaction
-	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`
+type TransactionResultDestination interface {
+	proto_013_PtJakart.TransactionResultDestination
 }
 
-func (*TransactionContentsAndResult) OperationContentsAndResult() {}
-func (op *TransactionContentsAndResult) GetMetadata() any {
-	return &op.Metadata
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[TransactionResultDestination]{
+		Variants: encoding.Variants[TransactionResultDestination]{
+			0: (*ToContract)(nil),
+			2: (*ToSmartRollup)(nil),
+		},
+	})
 }
+
+type TransactionResultContents = TransactionResultDestination
+
+//json:kind=OperationKind()
+type TransactionSuccessfulManagerResult struct {
+	core.OperationResultApplied[TransactionResultContents]
+}
+
+func (TransactionSuccessfulManagerResult) OperationKind() string { return "transaction" }
 
 type TransactionResult interface {
 	core.ManagerOperationResult
@@ -116,6 +158,16 @@ func init() {
 			3: (*core.OperationResultBacktracked[TransactionResultContents])(nil),
 		},
 	})
+}
+
+type TransactionContentsAndResult struct {
+	Transaction
+	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`
+}
+
+func (*TransactionContentsAndResult) OperationContentsAndResult() {}
+func (op *TransactionContentsAndResult) GetMetadata() any {
+	return &op.Metadata
 }
 
 //json:kind=OperationKind()

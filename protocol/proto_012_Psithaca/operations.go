@@ -185,12 +185,7 @@ func init() {
 }
 
 //json:kind=OperationKind()
-type Preendorsement struct {
-	Slot             uint16               `json:"slot"`
-	Level            int32                `json:"level"`
-	Round            int32                `json:"round"`
-	BlockPayloadHash *tz.BlockPayloadHash `json:"block_payload_hash"`
-}
+type Preendorsement Endorsement
 
 func (*Preendorsement) InlinedPreendorsementContents() {}
 func (*Preendorsement) OperationKind() string          { return "preendorsement" }

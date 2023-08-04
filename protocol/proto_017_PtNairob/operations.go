@@ -56,7 +56,7 @@ type Origination = proto_012_Psithaca.Origination
 type OriginationContentsAndResult = proto_016_PtMumbai.OriginationContentsAndResult
 type Transaction = proto_015_PtLimaPt.Transaction
 type TransactionContentsAndResult = proto_016_PtMumbai.TransactionContentsAndResult
-type Parameters = proto_012_Psithaca.Parameters
+type Parameters = proto_015_PtLimaPt.Parameters
 
 type ZkRollupOrigination = proto_015_PtLimaPt.ZkRollupOrigination
 type ZkRollupOriginationContentsAndResult = proto_016_PtMumbai.ZkRollupOriginationContentsAndResult

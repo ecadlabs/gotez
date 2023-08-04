@@ -32,6 +32,7 @@ type FailingNoop = proto_012_Psithaca.FailingNoop
 type TransferTicket = proto_013_PtJakart.TransferTicket
 type Entrypoint = proto_012_Psithaca.Entrypoint
 type DoubleBakingEvidence = proto_013_PtJakart.DoubleBakingEvidence
+type DelegationInternalOperationResult = proto_013_PtJakart.DelegationInternalOperationResult
 
 type ConsumedGasResultContents struct {
 	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
@@ -482,22 +483,6 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 	}
 	return out
 }
-
-//json:kind=OperationKind()
-type DelegationInternalOperationResult struct {
-	Source   core.TransactionDestination `json:"source"`
-	Nonce    uint16                      `json:"nonce"`
-	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`
-	Result   ConsumedGasResult           `json:"result"`
-}
-
-var _ core.InternalOperationResult = (*DelegationInternalOperationResult)(nil)
-
-func (r *DelegationInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
-func (r *DelegationInternalOperationResult) GetResult() core.ManagerOperationResult {
-	return r.Result
-}
-func (*DelegationInternalOperationResult) OperationKind() string { return "delegation" }
 
 //json:kind=OperationKind()
 type EventInternalOperationResult struct {
