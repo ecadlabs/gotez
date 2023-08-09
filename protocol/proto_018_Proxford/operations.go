@@ -552,7 +552,7 @@ func (r *OriginationInternalOperationResult) GetResult() core.ManagerOperationRe
 }
 func (*OriginationInternalOperationResult) OperationKind() string { return "origination" }
 
-type DelegationInternalOperationResult = proto_013_PtJakart.DelegationInternalOperationResult
+type DelegationInternalOperationResult = proto_014_PtKathma.DelegationInternalOperationResult
 type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
 
 type InternalOperationResult interface {

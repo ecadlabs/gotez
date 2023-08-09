@@ -466,7 +466,7 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 	return out
 }
 
-type DelegationInternalOperationResult = proto_013_PtJakart.DelegationInternalOperationResult
+type DelegationInternalOperationResult = proto_014_PtKathma.DelegationInternalOperationResult
 type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
 
 type InternalOperationResult interface {
