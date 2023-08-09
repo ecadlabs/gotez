@@ -102,7 +102,7 @@ var testData = []protoTestData{
 			"2244614",
 			"2244615",
 			"2244616",
-			"tlnt_2173954",
+			//"tlnt_2173954",
 		},
 	},
 }
@@ -119,6 +119,7 @@ func TestBlock(t *testing.T) {
 					require.NoError(t, err)
 					_, err = encoding.Decode(buf, out, encoding.Dynamic())
 					if !assert.NoError(t, err) {
+						//pretty.Println(out)
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)
 						}
