@@ -331,42 +331,42 @@ func (pk *BLSPublicKey) Hash() PublicKeyHash {
 	return &out
 }
 
-func NewEd25519PrivateKey(key []byte) *Ed25519PrivateKey {
+func NewEd25519PrivateKey(key []byte) (*Ed25519PrivateKey, error) {
 	var out Ed25519PrivateKey
 	if len(key) != len(out) {
-		panic("gotez: invalid Ed25519 private key length")
+		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], key)
-	return &out
+	return &out, nil
 }
 
-func NewSecp256k1PrivateKey(scalar *big.Int) *Secp256k1PrivateKey {
+func NewSecp256k1PrivateKey(scalar *big.Int) (*Secp256k1PrivateKey, error) {
 	var out Secp256k1PrivateKey
 	payload := scalar.Bytes()
 	if len(payload) > len(out) {
-		panic("gotez: invalid Secp256k1 private key length")
+		return nil, ErrInvalidKeyLen
 	}
 	scalar.FillBytes(out[:])
-	return &out
+	return &out, nil
 }
 
-func NewP256PrivateKey(scalar *big.Int) *P256PrivateKey {
+func NewP256PrivateKey(scalar *big.Int) (*P256PrivateKey, error) {
 	var out P256PrivateKey
 	payload := scalar.Bytes()
 	if len(payload) > len(out) {
-		panic("gotez: invalid P256 private key length")
+		return nil, ErrInvalidKeyLen
 	}
 	scalar.FillBytes(out[:])
-	return &out
+	return &out, nil
 }
 
-func NewBLSPrivateKey(scalar []byte) *BLSPrivateKey {
+func NewBLSPrivateKey(scalar []byte) (*BLSPrivateKey, error) {
 	var out BLSPrivateKey
 	if len(scalar) != len(out) {
-		panic("gotez: invalid BLS private key length")
+		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], scalar)
-	return &out
+	return &out, nil
 }
 
 // stub
