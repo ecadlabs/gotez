@@ -136,6 +136,26 @@ func NewPublicKey(pub tz.PublicKey) (PublicKey, error) {
 	}
 }
 
+// NewPrivateKeyFrom tries to make PrivateKey from a raw one.
+// It returns ErrUnsupportedKeyType if the key is of unsupported type
+func NewPrivateKeyFrom(priv crypto.PrivateKey) (PrivateKey, error) {
+	switch priv := priv.(type) {
+	case *ecdsa.PrivateKey:
+		switch priv.Curve {
+		case secp256k1.S256(), elliptic.P256():
+			return (*ECDSAPrivateKey)(priv), nil
+		default:
+			return nil, ErrUnsupportedKeyType
+		}
+	case ed25519.PrivateKey:
+		return Ed25519PrivateKey(priv), nil
+	case *minpk.PrivateKey:
+		return (*BLSPrivateKey)(priv), nil
+	default:
+		return nil, ErrUnsupportedKeyType
+	}
+}
+
 // NewPublicKeyFrom tries to make PublicKey from a raw one.
 // It returns ErrUnsupportedKeyType if the key is of unsupported type
 func NewPublicKeyFrom(pub crypto.PublicKey) (PublicKey, error) {
