@@ -84,7 +84,7 @@ func mustBigUint(x *big.Int) tz.BigUint {
 	return v
 }
 
-func (t *TezTool) Fill(ctx context.Context, ops []core.OperationContents, attributes ...FillAttr) error {
+func (t *TezTool) Fill(ctx context.Context, ops []latest.OperationContents, attributes ...FillAttr) error {
 	var attr fillAttrs
 	for _, a := range attributes {
 		a(&attr)
@@ -159,14 +159,10 @@ func (t *TezTool) Fill(ctx context.Context, ops []core.OperationContents, attrib
 		}
 	}
 
-	contents := make([]latest.OperationContents, len(ops))
-	for i, op := range ops {
-		contents[i] = op
-	}
 	group := latest.SignedOperation{
 		UnsignedOperation: latest.UnsignedOperation{
 			Branch:   blockInfo.Hash,
-			Contents: contents,
+			Contents: ops,
 		},
 		Signature: &tz.GenericSignature{},
 	}
@@ -277,7 +273,7 @@ func collectMilligasAndStorage(op core.OperationContents, constants core.Constan
 	return
 }
 
-func (t *TezTool) SignAndInject(ctx context.Context, ops []core.OperationContents, attributes ...FillAttr) (*tz.OperationHash, error) {
+func (t *TezTool) SignAndInject(ctx context.Context, ops []latest.OperationContents, attributes ...FillAttr) (*tz.OperationHash, error) {
 	bi, err := t.Client.BasicBlockInfo(ctx, t.ChainID.String(), "head")
 	if err != nil {
 		return nil, err
@@ -286,16 +282,11 @@ func (t *TezTool) SignAndInject(ctx context.Context, ops []core.OperationContent
 		return nil, err
 	}
 
-	contents := make([]latest.OperationContents, len(ops))
-	for i, op := range ops {
-		contents[i] = op
-	}
-
 	// forge operation
 	operation := latest.SignedOperation{
 		UnsignedOperation: latest.UnsignedOperation{
 			Branch:   bi.Hash,
-			Contents: contents,
+			Contents: ops,
 		},
 	}
 
