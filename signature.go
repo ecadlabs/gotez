@@ -12,11 +12,24 @@ type Signature interface {
 	Signature()
 }
 
-func (sig *GenericSignature) Signature()   {}
-func (sig *Ed25519Signature) Signature()   {}
-func (sig *Secp256k1Signature) Signature() {}
-func (sig *P256Signature) Signature()      {}
-func (sig *BLSSignature) Signature()       {}
+type ConventionalSignature interface {
+	Signature
+	Generic() *GenericSignature
+}
+
+func (sig *GenericSignature) Signature()                 {}
+func (sig *GenericSignature) Generic() *GenericSignature { return sig }
+
+func (sig *Ed25519Signature) Signature()                 {}
+func (sig *Ed25519Signature) Generic() *GenericSignature { return (*GenericSignature)(sig) }
+
+func (sig *Secp256k1Signature) Signature()                 {}
+func (sig *Secp256k1Signature) Generic() *GenericSignature { return (*GenericSignature)(sig) }
+
+func (sig *P256Signature) Signature()                 {}
+func (sig *P256Signature) Generic() *GenericSignature { return (*GenericSignature)(sig) }
+
+func (sig *BLSSignature) Signature() {}
 
 func NewEd25519Signature(sig []byte) *Ed25519Signature {
 	var out Ed25519Signature

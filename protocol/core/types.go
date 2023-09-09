@@ -173,6 +173,10 @@ type ManagerOperation interface {
 	GetCounter() tz.BigUint
 	GetGasLimit() tz.BigUint
 	GetStorageLimit() tz.BigUint
+	SetFee(tz.BigUint)
+	SetCounter(tz.BigUint)
+	SetGasLimit(tz.BigUint)
+	SetStorageLimit(tz.BigUint)
 }
 
 type TransactionBase interface {

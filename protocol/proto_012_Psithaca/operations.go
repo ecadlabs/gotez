@@ -69,6 +69,11 @@ func (m *ManagerOperation) GetCounter() tz.BigUint             { return m.Counte
 func (m *ManagerOperation) GetGasLimit() tz.BigUint            { return m.GasLimit }
 func (m *ManagerOperation) GetStorageLimit() tz.BigUint        { return m.StorageLimit }
 
+func (m *ManagerOperation) SetFee(v tz.BigUint)          { m.Fee = v }
+func (m *ManagerOperation) SetCounter(v tz.BigUint)      { m.Counter = v }
+func (m *ManagerOperation) SetGasLimit(v tz.BigUint)     { m.GasLimit = v }
+func (m *ManagerOperation) SetStorageLimit(v tz.BigUint) { m.StorageLimit = v }
+
 type Script struct {
 	Code    expression.Expression `tz:"dyn" json:"code"`
 	Storage expression.Expression `tz:"dyn" json:"storage"`
