@@ -84,7 +84,7 @@ func incCounter(x tz.BigUint) tz.BigUint {
 var (
 	gasSafetyMargin = big.NewInt(100)
 	// https://gitlab.com/tezos/tezos/-/blob/master/src/proto_alpha/lib_delegate/baking_configuration.ml#L99
-	minimalFeesMutez         = big.NewInt(200)
+	minimalFeesMutez         = big.NewInt(100)
 	minimalMutezPerByte      = big.NewInt(1)
 	minimalNanotezPerGasUnit = big.NewInt(100)
 	storageSafetyMargin      = big.NewInt(20)
@@ -254,8 +254,15 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 			gasFee.Div(gasFee, big.NewInt(1000)) // nanotez*gas to utez*gas
 
 			for {
+				dummyGrp := latest.SignedOperation{
+					UnsignedOperation: latest.UnsignedOperation{
+						Branch:   &tz.BlockHash{},
+						Contents: []latest.OperationContents{op},
+					},
+					Signature: &tz.GenericSignature{},
+				}
 				var buf bytes.Buffer
-				if err := encoding.Encode(&buf, op); err != nil {
+				if err := encoding.Encode(&buf, &dummyGrp); err != nil {
 					return err
 				}
 				opSize := buf.Len()
