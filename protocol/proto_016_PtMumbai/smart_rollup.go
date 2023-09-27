@@ -82,6 +82,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SmartRollupOriginateContentsAndResult struct {
 	SmartRollupOriginate
 	Metadata ManagerMetadata[SmartRollupOriginateResult] `json:"metadata"`
@@ -100,6 +101,7 @@ type SmartRollupAddMessages struct {
 
 func (*SmartRollupAddMessages) OperationKind() string { return "smart_rollup_add_messages" }
 
+//json:kind=OperationKind()
 type SmartRollupAddMessagesContentsAndResult struct {
 	SmartRollupAddMessages
 	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
@@ -141,6 +143,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SmartRollupCementContentsAndResult struct {
 	SmartRollupCement
 	Metadata ManagerMetadata[SmartRollupCementResult] `json:"metadata"`
@@ -193,6 +196,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SmartRollupPublishContentsAndResult struct {
 	SmartRollupPublish
 	Metadata ManagerMetadata[SmartRollupPublishResult] `json:"metadata"`
@@ -419,6 +423,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SmartRollupRefuteContentsAndResult struct {
 	SmartRollupRefute
 	Metadata ManagerMetadata[SmartRollupTimeoutResult] `json:"metadata"`
@@ -443,6 +448,7 @@ type SmartRollupStakers struct {
 
 func (*SmartRollupTimeout) OperationKind() string { return "smart_rollup_timeout" }
 
+//json:kind=OperationKind()
 type SmartRollupTimeoutContentsAndResult struct {
 	SmartRollupTimeout
 	Metadata ManagerMetadata[SmartRollupTimeoutResult] `json:"metadata"`
@@ -499,6 +505,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SmartRollupExecuteOutboxMessageContentsAndResult struct {
 	SmartRollupExecuteOutboxMessage
 	Metadata ManagerMetadata[SmartRollupExecuteOutboxMessageResult] `json:"metadata"`
@@ -542,6 +549,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SmartRollupRecoverBondContentsAndResult struct {
 	SmartRollupRecoverBond
 	Metadata ManagerMetadata[SmartRollupRecoverBondResult] `json:"metadata"`

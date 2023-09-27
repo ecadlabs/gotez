@@ -12,6 +12,7 @@ import (
 type ZkRollupOrigination = proto_015_PtLimaPt.ZkRollupOrigination
 type ZkRollupPublish = proto_015_PtLimaPt.ZkRollupPublish
 
+//json:kind=OperationKind()
 type ZkRollupOriginationContentsAndResult struct {
 	ZkRollupOrigination
 	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
@@ -48,6 +49,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type ZkRollupPublishContentsAndResult struct {
 	ZkRollupPublish
 	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
@@ -130,6 +132,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type ZkRollupUpdateContentsAndResult struct {
 	ZkRollupUpdate
 	Metadata ManagerMetadata[ZkRollupUpdateResult] `json:"metadata"`

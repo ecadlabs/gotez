@@ -47,6 +47,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SmartRollupCementContentsAndResult struct {
 	SmartRollupCement
 	Metadata proto_016_PtMumbai.ManagerMetadata[SmartRollupCementResult] `json:"metadata"`

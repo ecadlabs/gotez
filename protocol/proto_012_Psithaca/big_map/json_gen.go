@@ -9,15 +9,15 @@ func (self *Update) MarshalJSON() ([]byte, error) {
 
 	type json_Update struct {
 		Marker0 any `json:"action"`
-		*Update_no_json_marshaller
+		Update_no_json_marshaller
 	}
 
 	tmp := json_Update {
 		Marker0: self.BigMapDiffOp(),
-		Update_no_json_marshaller: (*Update_no_json_marshaller)(self),
+		Update_no_json_marshaller: Update_no_json_marshaller(*self),
 	}
 
-	return json.Marshal(&tmp)
+	return json.Marshal(tmp)
 }
 
 func (self *Remove) MarshalJSON() ([]byte, error) {
@@ -25,15 +25,15 @@ func (self *Remove) MarshalJSON() ([]byte, error) {
 
 	type json_Remove struct {
 		Marker0 any `json:"action"`
-		*Remove_no_json_marshaller
+		Remove_no_json_marshaller
 	}
 
 	tmp := json_Remove {
 		Marker0: self.BigMapDiffOp(),
-		Remove_no_json_marshaller: (*Remove_no_json_marshaller)(self),
+		Remove_no_json_marshaller: Remove_no_json_marshaller(*self),
 	}
 
-	return json.Marshal(&tmp)
+	return json.Marshal(tmp)
 }
 
 func (self *Copy) MarshalJSON() ([]byte, error) {
@@ -41,15 +41,15 @@ func (self *Copy) MarshalJSON() ([]byte, error) {
 
 	type json_Copy struct {
 		Marker0 any `json:"action"`
-		*Copy_no_json_marshaller
+		Copy_no_json_marshaller
 	}
 
 	tmp := json_Copy {
 		Marker0: self.BigMapDiffOp(),
-		Copy_no_json_marshaller: (*Copy_no_json_marshaller)(self),
+		Copy_no_json_marshaller: Copy_no_json_marshaller(*self),
 	}
 
-	return json.Marshal(&tmp)
+	return json.Marshal(tmp)
 }
 
 func (self *Alloc) MarshalJSON() ([]byte, error) {
@@ -57,14 +57,14 @@ func (self *Alloc) MarshalJSON() ([]byte, error) {
 
 	type json_Alloc struct {
 		Marker0 any `json:"action"`
-		*Alloc_no_json_marshaller
+		Alloc_no_json_marshaller
 	}
 
 	tmp := json_Alloc {
 		Marker0: self.BigMapDiffOp(),
-		Alloc_no_json_marshaller: (*Alloc_no_json_marshaller)(self),
+		Alloc_no_json_marshaller: Alloc_no_json_marshaller(*self),
 	}
 
-	return json.Marshal(&tmp)
+	return json.Marshal(tmp)
 }
 

@@ -11,7 +11,6 @@ import (
 const (
 	ModeVar int = iota
 	ModeConstruct
-	ModeConstructPtr
 	ModeAllocate
 )
 
@@ -27,7 +26,8 @@ type typeDef struct {
 	QueryParams  map[string]string
 	Method       string
 	ResponseType string
-	Mode         int
+	AllocMode    int
+	Stream       bool
 }
 
 var types = []*typeDef{
@@ -37,7 +37,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/hash",
 		Func:         "BlockHash",
 		ResponseType: "BlockHash",
-		Mode:         ModeAllocate,
+		AllocMode:    ModeAllocate,
 	},
 	{
 		RequestType:  "SimpleRequest",
@@ -45,7 +45,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/protocols",
 		Func:         "BlockProtocols",
 		ResponseType: "BlockProtocols",
-		Mode:         ModeAllocate,
+		AllocMode:    ModeAllocate,
 	},
 	{
 		RequestType:  "SimpleRequest",
@@ -53,7 +53,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/header/shell",
 		Func:         "BlockShellHeader",
 		ResponseType: "BlockShellHeader",
-		Mode:         ModeAllocate,
+		AllocMode:    ModeAllocate,
 	},
 	{
 		RequestType:  "BlockRequest",
@@ -62,7 +62,7 @@ var types = []*typeDef{
 		QueryParams:  map[string]string{"metadata": "Metadata"},
 		Func:         "BlockHeader",
 		ResponseType: "BlockHeaderInfo",
-		Mode:         ModeConstruct,
+		AllocMode:    ModeConstruct,
 	},
 	{
 		RequestType:  "BlockRequest",
@@ -71,7 +71,7 @@ var types = []*typeDef{
 		QueryParams:  map[string]string{"metadata": "Metadata"},
 		Func:         "Block",
 		ResponseType: "BlockInfo",
-		Mode:         ModeConstruct,
+		AllocMode:    ModeConstruct,
 	},
 	{
 		RequestType:  "ContractRequest",
@@ -79,7 +79,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/context/contracts/{{.ID}}/balance",
 		Func:         "ContractBalance",
 		ResponseType: "BigUint",
-		Mode:         ModeVar,
+		AllocMode:    ModeVar,
 	},
 	{
 		RequestType:  "ContractRequest",
@@ -87,7 +87,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/context/contracts/{{.ID}}/balance_and_frozen_bonds",
 		Func:         "ContractBalanceAndFrozenBonds",
 		ResponseType: "BigUint",
-		Mode:         ModeVar,
+		AllocMode:    ModeVar,
 	},
 	{
 		RequestType:  "ContractRequest",
@@ -95,7 +95,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/context/contracts/{{.ID}}/counter",
 		Func:         "ContractCounter",
 		ResponseType: "BigUint",
-		Mode:         ModeVar,
+		AllocMode:    ModeVar,
 	},
 	{
 		RequestType:  "RunOperationRequest",
@@ -103,7 +103,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/helpers/scripts/run_operation",
 		Func:         "RunOperation",
 		ResponseType: "OperationWithOptionalMetadata",
-		Mode:         ModeAllocate,
+		AllocMode:    ModeAllocate,
 	},
 	{
 		RequestType:  "ContextRequest",
@@ -111,7 +111,7 @@ var types = []*typeDef{
 		Path:         "/chains/{{.Chain}}/blocks/{{.Block}}/context/constants",
 		Func:         "Constants",
 		ResponseType: "Constants",
-		Mode:         ModeConstruct,
+		AllocMode:    ModeConstruct,
 	},
 	{
 		RequestType:  "InjectOperationRequest",
@@ -120,7 +120,15 @@ var types = []*typeDef{
 		QueryParams:  map[string]string{"chain": "Chain", "async": "Async"},
 		Func:         "InjectOperation",
 		ResponseType: "OperationHash",
-		Mode:         ModeAllocate,
+		AllocMode:    ModeAllocate,
+	},
+	{
+		Stream:       true,
+		RequestType:  "HeadsRequest",
+		Path:         "/monitor/heads/{{.Chain}}",
+		QueryParams:  map[string]string{"protocol": "Protocol", "next_protocol": "NextProtocol"},
+		Func:         "Heads",
+		ResponseType: "Head",
 	},
 }
 
@@ -136,10 +144,10 @@ import (
 {{range .}}
 var path_{{.Func}} = template.Must(template.New("path").Parse("{{.Path}}"))
 
-func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) ({{if eq .Mode 2 3}}*{{end}}{{.ResponseType}}, error) {
+func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) ({{if .Stream}}<-chan *{{.ResponseType}}, <-chan error{{else}}{{if eq .AllocMode 2}}*{{end}}{{.ResponseType}}{{end}}, error) {
 	var path strings.Builder
 	if err := path_{{.Func}}.Execute(&path, r); err != nil {
-		return nil, err
+		return {{if .Stream}}nil, {{end}}nil, err
 	}
 	{{with .QueryParams -}}
 	params := map[string]any{
@@ -147,12 +155,15 @@ func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) ({{if 
 		"{{$p}}": r.{{$f}},{{end}}
 	}
 	{{end -}}
+	{{if .Stream -}}
+	return stream[{{.ResponseType}}](ctx, client, path.String(), {{if .QueryParams}}params{{else}}nil{{end}})
+	{{- else -}}
 	{{if eq .Method "POST" -}}
 	payload := r.Payload
 	{{end -}}
-	{{if eq .Mode 0 -}}
+	{{if eq .AllocMode 0 -}}
 	var response {{.ResponseType}}
-	{{else if eq .Mode 1 2 -}}
+	{{else if eq .AllocMode 1 -}}
 	response, err := new{{.ResponseType}}(r.Protocol)
 	if err != nil {
 		return nil, err
@@ -160,10 +171,11 @@ func (client *Client) {{.Func}}(ctx context.Context, r *{{.RequestType}}) ({{if 
 	{{else -}}
 	response := new({{.ResponseType}})
 	{{end -}}
-	if err := client.request(ctx, "{{.Method}}", path.String(), {{if .QueryParams}}params{{else}}nil{{end}}, {{if eq .Method "POST" -}}payload{{else}}nil{{end}}, {{if eq .Mode 0}}&{{end}}response); err != nil {
+	if err := client.request(ctx, "{{.Method}}", path.String(), {{if .QueryParams}}params{{else}}nil{{end}}, {{if eq .Method "POST" -}}payload{{else}}nil{{end}}, {{if eq .AllocMode 0}}&{{end}}response); err != nil {
 		return nil, err
 	}
 	return response, nil
+	{{- end}}
 }
 {{end}}
 `

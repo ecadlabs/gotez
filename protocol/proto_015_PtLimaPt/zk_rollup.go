@@ -82,6 +82,7 @@ type ZkRollupTicket struct {
 	Ticketer core.ContractID       `json:"ticketer"`
 }
 
+//json:kind=OperationKind()
 type ZkRollupOriginationContentsAndResult struct {
 	ZkRollupOrigination
 	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
@@ -118,6 +119,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type ZkRollupPublishContentsAndResult struct {
 	ZkRollupPublish
 	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`

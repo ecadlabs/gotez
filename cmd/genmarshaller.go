@@ -112,17 +112,17 @@ func (self *{{.Name}}{{with .TypeParamNames}}[{{.}}]{{end}}) MarshalJSON() ([]by
 		{{range $i, $m := .Markers -}}
 		Marker{{$i}} any {{tag $m.Field}}
 		{{end -}}
-		*{{.Name}}_no_json_marshaller
+		{{.Name}}_no_json_marshaller
 	}
 
 	tmp := json_{{.Name}} {
 		{{range $i, $m := .Markers -}}
 		Marker{{$i}}: {{if not $m.Const}}self.{{end}}{{$m.Value}},
 		{{end -}}
-		{{.Name}}_no_json_marshaller: (*{{.Name}}_no_json_marshaller)(self),
+		{{.Name}}_no_json_marshaller: {{.Name}}_no_json_marshaller(*self),
 	}
 
-	return json.Marshal(&tmp)
+	return json.Marshal(tmp)
 }
 {{end}}
 `

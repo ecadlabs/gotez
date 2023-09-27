@@ -1,6 +1,7 @@
 package gotez
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/big"
 	"math/bits"
@@ -81,6 +82,10 @@ func NewBLSSignature(compressedPoint []byte) *BLSSignature {
 	return &out
 }
 
+func (sig *BLSSignature) Split() (prefix *[32]byte, suffix *GenericSignature) {
+	return (*[32]byte)(unsafe.Pointer(&sig[0])), (*GenericSignature)(unsafe.Pointer(&sig[32]))
+}
+
 type AnySignature []byte
 
 func (sig AnySignature) Signature() (Signature, error) {
@@ -103,9 +108,25 @@ func (sig AnySignature) String() string {
 }
 
 func (sig AnySignature) MarshalText() ([]byte, error) {
+	if len(sig) == 0 {
+		return []byte{}, nil
+	}
 	s, err := sig.Signature()
 	if err != nil {
 		return nil, err
 	}
 	return s.ToBase58(), nil
+}
+
+func (sig AnySignature) MarshalJSON() ([]byte, error) {
+	var x *string
+	if len(sig) != 0 {
+		buf, err := sig.MarshalText()
+		if err != nil {
+			return nil, err
+		}
+		val := string(buf)
+		x = &val
+	}
+	return json.Marshal(x)
 }

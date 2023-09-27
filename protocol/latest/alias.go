@@ -58,3 +58,4 @@ type ZkRollupOrigination = proto_017_PtNairob.ZkRollupOrigination
 type ZkRollupPublish = proto_017_PtNairob.ZkRollupPublish
 type ZkRollupUpdate = proto_017_PtNairob.ZkRollupUpdate
 type SignaturePrefix = proto_017_PtNairob.SignaturePrefix
+type BLSSignaturePrefix = proto_017_PtNairob.BLSSignaturePrefix

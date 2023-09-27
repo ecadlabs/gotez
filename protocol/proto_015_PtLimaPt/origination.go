@@ -53,6 +53,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type OriginationContentsAndResult struct {
 	Origination
 	Metadata ManagerMetadata[OriginationResult] `json:"metadata"`

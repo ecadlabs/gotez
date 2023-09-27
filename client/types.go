@@ -12,6 +12,7 @@ import (
 type BlockInfo = protocol.BlockInfo
 type BlockHeaderInfo = protocol.BlockHeaderInfo
 type BigUint = tz.BigUint
+type ChainID = tz.ChainID
 type OperationWithOptionalMetadata = latest.OperationWithOptionalMetadata
 type Constants = core.Constants
 type BlockShellHeader = core.ShellHeader
@@ -81,6 +82,18 @@ type InjectRequestPayload struct {
 type BasicBlockInfo struct {
 	Hash     *tz.BlockHash
 	Protocol *tz.ProtocolHash
+}
+
+type HeadsRequest struct {
+	Chain        string
+	Protocol     *tz.ProtocolHash
+	NextProtocol *tz.ProtocolHash
+}
+
+type Head struct {
+	Hash *tz.BlockHash `json:"hash"`
+	core.ShellHeader
+	ProtocolData []byte `json:"protocol_data"` // not dyn, takes the rest
 }
 
 type Flag bool

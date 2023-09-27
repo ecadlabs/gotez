@@ -99,6 +99,7 @@ type TransactionSuccessfulManagerResult struct {
 
 func (*TransactionSuccessfulManagerResult) OperationKind() string { return "transaction" }
 
+//json:kind=OperationKind()
 type TransactionContentsAndResult struct {
 	Transaction
 	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`

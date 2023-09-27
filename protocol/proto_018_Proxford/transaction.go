@@ -160,6 +160,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type TransactionContentsAndResult struct {
 	Transaction
 	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`

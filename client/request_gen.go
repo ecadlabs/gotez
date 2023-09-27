@@ -183,3 +183,17 @@ func (client *Client) InjectOperation(ctx context.Context, r *InjectOperationReq
 	return response, nil
 }
 
+var path_Heads = template.Must(template.New("path").Parse("/monitor/heads/{{.Chain}}"))
+
+func (client *Client) Heads(ctx context.Context, r *HeadsRequest) (<-chan *Head, <-chan error, error) {
+	var path strings.Builder
+	if err := path_Heads.Execute(&path, r); err != nil {
+		return nil, nil, err
+	}
+	params := map[string]any{
+		"next_protocol": r.NextProtocol,
+		"protocol": r.Protocol,
+	}
+	return stream[Head](ctx, client, path.String(), params)
+}
+

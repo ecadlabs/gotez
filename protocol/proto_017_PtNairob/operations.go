@@ -1,5 +1,7 @@
 package proto_017_PtNairob
 
+//go:generate go run ../../cmd/genmarshaller.go
+
 import (
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"

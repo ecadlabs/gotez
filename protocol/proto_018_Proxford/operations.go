@@ -156,6 +156,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type SeedNonceRevelationContentsAndResult struct {
 	SeedNonceRevelation
 	Metadata BalanceUpdates `json:"metadata"`
@@ -166,6 +167,7 @@ func (op *SeedNonceRevelationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type DoubleAttestationEvidenceContentsAndResult struct {
 	DoubleAttestationEvidence
 	Metadata BalanceUpdates `json:"metadata"`
@@ -176,6 +178,7 @@ func (op *DoubleAttestationEvidenceContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type DoubleBakingEvidenceContentsAndResult struct {
 	DoubleBakingEvidence
 	Metadata BalanceUpdates `json:"metadata"`
@@ -186,6 +189,7 @@ func (op *DoubleBakingEvidenceContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type ActivateAccountContentsAndResult struct {
 	ActivateAccount
 	Metadata BalanceUpdates `json:"metadata"`
@@ -196,6 +200,7 @@ func (op *ActivateAccountContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type DoublePreattestationEvidenceContentsAndResult struct {
 	DoublePreattestationEvidence
 	Metadata BalanceUpdates `json:"metadata"`
@@ -206,6 +211,7 @@ func (op *DoublePreattestationEvidenceContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type VDFRevelationContentsAndResult struct {
 	VDFRevelation
 	Metadata BalanceUpdates `json:"metadata"`
@@ -221,6 +227,7 @@ type DrainDelegateMetadata struct {
 	AllocatedDestinationContract bool `json:"allocated_destination_contract"`
 }
 
+//json:kind=OperationKind()
 type DrainDelegateContentsAndResult struct {
 	DrainDelegate
 	Metadata DrainDelegateMetadata `json:"metadata"`
@@ -238,6 +245,7 @@ type AttestationMetadata struct {
 	ConsensusKey   tz.PublicKeyHash `json:"consensus_key"`
 }
 
+//json:kind=OperationKind()
 type AttestationContentsAndResult struct {
 	Attestation
 	Metadata AttestationMetadata `json:"metadata"`
@@ -249,6 +257,8 @@ func (op *AttestationContentsAndResult) GetMetadata() any {
 }
 
 type PreattestationMetadata = AttestationMetadata
+
+//json:kind=OperationKind()
 type PreattestationContentsAndResult struct {
 	Preattestation
 	Metadata PreattestationMetadata `json:"metadata"`
@@ -259,6 +269,7 @@ func (op *PreattestationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type RevealContentsAndResult struct {
 	Reveal
 	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
@@ -269,6 +280,7 @@ func (op *RevealContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type DelegationContentsAndResult struct {
 	Delegation
 	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
@@ -279,6 +291,7 @@ func (op *DelegationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type RegisterGlobalConstantContentsAndResult struct {
 	RegisterGlobalConstant
 	Metadata ManagerMetadata[RegisterGlobalConstantResult] `json:"metadata"`
@@ -352,6 +365,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type IncreasePaidStorageContentsAndResult struct {
 	IncreasePaidStorage
 	Metadata ManagerMetadata[IncreasePaidStorageResult] `json:"metadata"`
@@ -362,6 +376,7 @@ func (op *IncreasePaidStorageContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type UpdateConsensusKeyContentsAndResult struct {
 	UpdateConsensusKey
 	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
@@ -372,6 +387,7 @@ func (op *UpdateConsensusKeyContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type TransferTicketContentsAndResult struct {
 	TransferTicket
 	Metadata ManagerMetadata[TransferTicketResult] `json:"metadata"`
@@ -452,6 +468,7 @@ func init() {
 	})
 }
 
+//json:kind=OperationKind()
 type OriginationContentsAndResult struct {
 	Origination
 	Metadata ManagerMetadata[OriginationResult] `json:"metadata"`
@@ -462,6 +479,7 @@ func (op *OriginationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+//json:kind=OperationKind()
 type DALPublishSlotHeaderContentsAndResult struct {
 	DALPublishSlotHeader
 	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`

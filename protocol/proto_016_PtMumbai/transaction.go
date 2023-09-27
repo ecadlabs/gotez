@@ -93,6 +93,7 @@ type ToSmartRollup struct {
 func (*ToSmartRollup) TransactionResultDestination()     {}
 func (r *ToSmartRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
 
+//json:kind=OperationKind()
 type TransactionContentsAndResult struct {
 	Transaction
 	Metadata ManagerMetadata[TransactionResult] `json:"metadata"`
