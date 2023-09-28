@@ -69,31 +69,39 @@ func (client *Client) mkURL(path string, params map[string]any) (*url.URL, error
 	return u, nil
 }
 
+func (c *Client) debug(format string, a ...any) {
+	if c.DebugLogger != nil {
+		c.DebugLogger.Printf(format, a...)
+	}
+}
+
+func wrapErr(err error) error {
+	return fmt.Errorf("gotez-client: %w", err)
+}
+
 func (client *Client) request(ctx context.Context, method string, path string, params map[string]any, payload, out any) error {
 	u, err := client.mkURL(path, params)
 	if err != nil {
-		return fmt.Errorf("gotez-client: %w", err)
+		return wrapErr(err)
 	}
 
-	if client.DebugLogger != nil {
-		client.DebugLogger.Printf("%s %s", method, u.String())
-	}
+	client.debug("%s %s", method, u.String())
 
 	var req *http.Request
 	if method == "POST" {
 		var body bytes.Buffer
 		if err = encoding.Encode(&body, payload, encoding.Dynamic()); err != nil {
-			return fmt.Errorf("gotez-client: request encoding error: %w", err)
+			return wrapErr(err)
 		}
 		req, err = http.NewRequestWithContext(ctx, method, u.String(), &body)
 		if err != nil {
-			return fmt.Errorf("gotez-client: %w", err)
+			return wrapErr(err)
 		}
 		req.Header.Set("Content-Type", "application/octet-stream")
 	} else {
 		req, err = http.NewRequestWithContext(ctx, method, u.String(), nil)
 		if err != nil {
-			return fmt.Errorf("gotez-client: %w", err)
+			return wrapErr(err)
 		}
 	}
 	req.Header.Set("Accept", "application/octet-stream")
@@ -102,7 +110,7 @@ func (client *Client) request(ctx context.Context, method string, path string, p
 	}
 	res, err := client.client().Do(req)
 	if err != nil {
-		return fmt.Errorf("gotez-client: %w", err)
+		return wrapErr(err)
 	}
 	defer res.Body.Close()
 	if res.StatusCode/100 != 2 {
@@ -118,10 +126,10 @@ func (client *Client) request(ctx context.Context, method string, path string, p
 	}
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return fmt.Errorf("gotez-client: %w", err)
+		return wrapErr(err)
 	}
 	if _, err = encoding.Decode(body, out, encoding.Dynamic()); err != nil {
-		return fmt.Errorf("gotez-client: response decoding error: %w", err)
+		return wrapErr(err)
 	}
 	return nil
 }
@@ -129,14 +137,12 @@ func (client *Client) request(ctx context.Context, method string, path string, p
 func stream[T any](ctx context.Context, client *Client, path string, params map[string]any) (<-chan *T, <-chan error, error) {
 	u, err := client.mkURL(path, params)
 	if err != nil {
-		return nil, nil, fmt.Errorf("gotez-client: %w", err)
+		return nil, nil, wrapErr(err)
 	}
-	if client.DebugLogger != nil {
-		client.DebugLogger.Printf("GET %s", u.String())
-	}
+	client.debug("GET %s", u.String())
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
 	if err != nil {
-		return nil, nil, fmt.Errorf("gotez-client: %w", err)
+		return nil, nil, wrapErr(err)
 	}
 	req.Header.Set("Accept", "application/octet-stream")
 	if client.APIKey != "" {
@@ -144,7 +150,7 @@ func stream[T any](ctx context.Context, client *Client, path string, params map[
 	}
 	res, err := client.client().Do(req)
 	if err != nil {
-		return nil, nil, fmt.Errorf("gotez-client: %w", err)
+		return nil, nil, wrapErr(err)
 	}
 	if res.StatusCode/100 != 2 {
 		e := &Error{
@@ -165,27 +171,25 @@ func stream[T any](ctx context.Context, client *Client, path string, params map[
 			res.Body.Close()
 			close(streamCh)
 			close(errCh)
-			if client.DebugLogger != nil {
-				client.DebugLogger.Printf("gotez-client: stream closed")
-			}
+			client.debug("gotez-client: stream closed")
 		}()
 
 		for {
 			// decoder is zero copy so new buffer must be allocated for each read
 			var l [4]uint8
 			if _, err := io.ReadFull(res.Body, l[:]); err != nil {
-				errCh <- fmt.Errorf("gotez-client: %w", err)
+				errCh <- wrapErr(err)
 				return
 			}
 			len := binary.BigEndian.Uint32(l[:])
 			buf := make([]byte, int(len))
 			if _, err := io.ReadFull(res.Body, buf); err != nil {
-				errCh <- fmt.Errorf("gotez-client: %w", err)
+				errCh <- wrapErr(err)
 				return
 			}
 			v := new(T)
 			if _, err = encoding.Decode(buf, v); err != nil {
-				errCh <- fmt.Errorf("gotez-client: %w", err)
+				errCh <- wrapErr(err)
 				return
 			}
 			// v refers buf

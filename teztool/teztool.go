@@ -98,7 +98,7 @@ func mustBigUint(x *big.Int) tz.BigUint {
 	return v
 }
 
-func (t *Tool) log(format string, a ...any) {
+func (t *Tool) debug(format string, a ...any) {
 	if t.DebugLogger != nil {
 		t.DebugLogger.Printf(format, a...)
 	}
@@ -125,7 +125,6 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 		proto = blockInfo.Protocol
 	}
 
-	t.log("teztool: getting counters")
 	// fill counters
 	if attr.fillCounter {
 		counters := make(map[string]tz.BigUint)
@@ -144,6 +143,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 						if err != nil {
 							return err
 						}
+						t.debug("teztool: %v counter = %v", id, counter)
 					}
 					counter = incCounter(counter)
 					counters[id.String()] = counter
@@ -158,7 +158,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 	}
 
 	// get constants
-	t.log("teztool: getting constants")
+	t.debug("teztool: getting constants for %v", group.Branch)
 	constants, err := t.Client.Constants(ctx, &client.ContextRequest{
 		Chain:    t.ChainID.String(),
 		Block:    group.Branch.String(),
@@ -168,10 +168,24 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 		return err
 	}
 
+	// count actual manager ops
+	var managerOpsCount int
+	for _, op := range group.Contents {
+		if _, ok := op.(core.ManagerOperation); ok {
+			managerOpsCount++
+		}
+	}
+
+	// set limits for dry run
+	hardGasLimit := constants.GetHardGasLimitPerOperation().Int()
+	hardGasLimitBlockByOp := new(big.Int).Div(constants.GetHardGasLimitPerBlock().Int(), big.NewInt(int64(managerOpsCount)))
+	if hardGasLimitBlockByOp.Cmp(hardGasLimit) < 0 {
+		hardGasLimit = hardGasLimitBlockByOp
+	}
 	for _, op := range group.Contents {
 		if op, ok := op.(core.ManagerOperation); ok {
 			if attr.fillGasLimit {
-				op.SetGasLimit(mustBigUint(constants.GetHardGasLimitPerOperation().Int()))
+				op.SetGasLimit(mustBigUint(hardGasLimit))
 			}
 			if attr.fillStorageLimit {
 				op.SetStorageLimit(mustBigUint(constants.GetHardStorageLimitPerOperation().Int()))
@@ -187,7 +201,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 		Signature:         &tz.GenericSignature{},
 	}
 
-	t.log("teztool: dry run")
+	t.debug("teztool: dry run")
 	runResult, err := t.Client.RunOperation(ctx, &client.RunOperationRequest{
 		Chain: t.ChainID.String(),
 		Block: group.Branch.String(),
@@ -202,7 +216,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 
 	if t.DebugLogger != nil {
 		buf, _ := json.MarshalIndent(runResult, "", "    ")
-		t.log("teztool: dry run result: %s", string(buf))
+		t.debug("teztool: dry run result: %s", string(buf))
 	}
 
 	resultOps := runResult.Operations()
@@ -210,7 +224,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 		return errors.New("teztool: unexpected number of operations in reply")
 	}
 
-	t.log("teztool: collecting milligas and storage")
+	t.debug("teztool: collecting milligas and storage")
 	for i, op := range group.Contents {
 		manager, ok := op.(core.ManagerOperation)
 		if !ok {
@@ -248,8 +262,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 
 		// compute fee
 		if attr.fillFee {
-			gasFee := new(big.Int).Set(consumedGas)
-			gasFee.Mul(gasFee, minimalNanotezPerGasUnit)
+			gasFee := new(big.Int).Mul(consumedGas, minimalNanotezPerGasUnit)
 			gasFee.Add(gasFee, big.NewInt(1000-1))
 			gasFee.Div(gasFee, big.NewInt(1000)) // nanotez*gas to utez*gas
 
@@ -266,12 +279,10 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 					return err
 				}
 				opSize := buf.Len()
-				sizeFee := new(big.Int).Set(minimalMutezPerByte)
-				sizeFee.Mul(sizeFee, big.NewInt(int64(opSize)))
+				sizeFee := new(big.Int).Mul(minimalMutezPerByte, big.NewInt(int64(opSize)))
 
 				// https://gitlab.com/tezos/tezos/-/blob/master/src/proto_alpha/lib_client/injection.ml#L136
-				x := new(big.Int).Set(minimalFeesMutez)
-				x.Add(x, sizeFee)
+				x := new(big.Int).Add(minimalFeesMutez, sizeFee)
 				x.Add(x, gasFee)
 
 				done := x.Cmp(manager.GetFee().Int()) <= 0
@@ -351,7 +362,7 @@ func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.Operati
 	if err != nil {
 		return false, err
 	}
-	t.log("teztool: scanning block %s", hash.String())
+	t.debug("teztool: scanning block %v", hash)
 	block, err := t.Client.Block(ctx, &client.BlockRequest{
 		Chain:    t.ChainID.String(),
 		Block:    hash.String(),
@@ -371,7 +382,7 @@ func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.Operati
 	return false, nil
 }
 
-func (t *Tool) InjectWait(ctx context.Context, req *client.InjectOperationRequest) (*tz.OperationHash, error) {
+func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationRequest) (*tz.OperationHash, error) {
 	// open heads stream first
 	headsCtx, headsCancel := context.WithCancel(ctx)
 	defer headsCancel()
@@ -394,7 +405,7 @@ func (t *Tool) InjectWait(ctx context.Context, req *client.InjectOperationReques
 	if err != nil {
 		return nil, err
 	}
-	t.log("teztool: op hash: %v", opHash)
+	t.debug("teztool: op hash: %v", opHash)
 
 	// scan blocks
 	for {
@@ -408,7 +419,7 @@ func (t *Tool) InjectWait(ctx context.Context, req *client.InjectOperationReques
 				return nil, err
 			}
 			if ok {
-				t.log("teztool: found in %v", head.Hash)
+				t.debug("teztool: found in %v", head.Hash)
 				return opHash, nil
 			}
 		}
@@ -424,32 +435,32 @@ func (t *Tool) FillSignAndInject(ctx context.Context, signer Signer, ops []lates
 		Branch:   bi.Hash,
 		Contents: ops,
 	}
-	t.log("teztool: filling missing fields")
+	t.debug("teztool: filling missing fields")
 	if err = t.Fill(ctx, &group, append([]FillAttr{proto(bi.Protocol)}, attributes...)...); err != nil {
 		return nil, err
 	}
-	t.log("teztool: signing")
+	t.debug("teztool: signing")
 	signedGroup, err := Sign(ctx, signer, &group)
 	if err != nil {
 		return nil, err
 	}
 	if t.DebugLogger != nil {
 		buf, _ := json.MarshalIndent(signedGroup, "", "    ")
-		t.log("%s", string(buf))
+		t.debug("%s", string(buf))
 	}
-	t.log("teztool: encoding signed operation")
+	t.debug("teztool: encoding signed operation")
 	var buf bytes.Buffer
 	if err = encoding.Encode(&buf, signedGroup); err != nil {
 		return nil, err
 	}
 
-	t.log("teztool: injecting")
+	t.debug("teztool: injecting")
 	req := client.InjectOperationRequest{
 		Chain:   t.ChainID.String(),
 		Payload: &client.InjectRequestPayload{Contents: buf.Bytes()},
 	}
 	if wait {
-		return t.InjectWait(ctx, &req)
+		return t.InjectAndWait(ctx, &req)
 	} else {
 		return t.Client.InjectOperation(ctx, &req)
 	}
