@@ -228,6 +228,54 @@ func (self *DelegationInternalOperationResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(tmp)
 }
 
+func (self *OriginationSuccessfulManagerResult) MarshalJSON() ([]byte, error) {
+	type OriginationSuccessfulManagerResult_no_json_marshaller OriginationSuccessfulManagerResult
+
+	type json_OriginationSuccessfulManagerResult struct {
+		Marker0 any `json:"kind"`
+		OriginationSuccessfulManagerResult_no_json_marshaller
+	}
+
+	tmp := json_OriginationSuccessfulManagerResult {
+		Marker0: self.OperationKind(),
+		OriginationSuccessfulManagerResult_no_json_marshaller: OriginationSuccessfulManagerResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+
+func (self *OriginationContentsAndResult) MarshalJSON() ([]byte, error) {
+	type OriginationContentsAndResult_no_json_marshaller OriginationContentsAndResult
+
+	type json_OriginationContentsAndResult struct {
+		Marker0 any `json:"kind"`
+		OriginationContentsAndResult_no_json_marshaller
+	}
+
+	tmp := json_OriginationContentsAndResult {
+		Marker0: self.OperationKind(),
+		OriginationContentsAndResult_no_json_marshaller: OriginationContentsAndResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+
+func (self *OriginationInternalOperationResult) MarshalJSON() ([]byte, error) {
+	type OriginationInternalOperationResult_no_json_marshaller OriginationInternalOperationResult
+
+	type json_OriginationInternalOperationResult struct {
+		Marker0 any `json:"kind"`
+		OriginationInternalOperationResult_no_json_marshaller
+	}
+
+	tmp := json_OriginationInternalOperationResult {
+		Marker0: self.OperationKind(),
+		OriginationInternalOperationResult_no_json_marshaller: OriginationInternalOperationResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+
 func (self *BalanceUpdateFrozenBonds) MarshalJSON() ([]byte, error) {
 	type BalanceUpdateFrozenBonds_no_json_marshaller BalanceUpdateFrozenBonds
 
@@ -277,54 +325,6 @@ func (self *BalanceUpdateTxRollupRejectionPunishments) MarshalJSON() ([]byte, er
 		Marker0: self.BalanceUpdateCategory(),
 		Marker1: self.BalanceUpdateKind(),
 		BalanceUpdateTxRollupRejectionPunishments_no_json_marshaller: BalanceUpdateTxRollupRejectionPunishments_no_json_marshaller(*self),
-	}
-
-	return json.Marshal(tmp)
-}
-
-func (self *OriginationSuccessfulManagerResult) MarshalJSON() ([]byte, error) {
-	type OriginationSuccessfulManagerResult_no_json_marshaller OriginationSuccessfulManagerResult
-
-	type json_OriginationSuccessfulManagerResult struct {
-		Marker0 any `json:"kind"`
-		OriginationSuccessfulManagerResult_no_json_marshaller
-	}
-
-	tmp := json_OriginationSuccessfulManagerResult {
-		Marker0: self.OperationKind(),
-		OriginationSuccessfulManagerResult_no_json_marshaller: OriginationSuccessfulManagerResult_no_json_marshaller(*self),
-	}
-
-	return json.Marshal(tmp)
-}
-
-func (self *OriginationContentsAndResult) MarshalJSON() ([]byte, error) {
-	type OriginationContentsAndResult_no_json_marshaller OriginationContentsAndResult
-
-	type json_OriginationContentsAndResult struct {
-		Marker0 any `json:"kind"`
-		OriginationContentsAndResult_no_json_marshaller
-	}
-
-	tmp := json_OriginationContentsAndResult {
-		Marker0: self.OperationKind(),
-		OriginationContentsAndResult_no_json_marshaller: OriginationContentsAndResult_no_json_marshaller(*self),
-	}
-
-	return json.Marshal(tmp)
-}
-
-func (self *OriginationInternalOperationResult) MarshalJSON() ([]byte, error) {
-	type OriginationInternalOperationResult_no_json_marshaller OriginationInternalOperationResult
-
-	type json_OriginationInternalOperationResult struct {
-		Marker0 any `json:"kind"`
-		OriginationInternalOperationResult_no_json_marshaller
-	}
-
-	tmp := json_OriginationInternalOperationResult {
-		Marker0: self.OperationKind(),
-		OriginationInternalOperationResult_no_json_marshaller: OriginationInternalOperationResult_no_json_marshaller(*self),
 	}
 
 	return json.Marshal(tmp)

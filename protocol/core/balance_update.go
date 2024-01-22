@@ -1,37 +1,52 @@
 package core
 
 import (
-	"strconv"
+	"github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
-type BalanceUpdateOrigin uint8
-
-const (
-	BalanceUpdateOriginBlockApplication BalanceUpdateOrigin = iota
-	BalanceUpdateOriginProtocolMigration
-	BalanceUpdateOriginSubsidy
-	BalanceUpdateOriginSimulation
-	BalanceUpdateOrigin_Num
-)
-
-func (o BalanceUpdateOrigin) String() string {
-	switch o {
-	case BalanceUpdateOriginBlockApplication:
-		return "block_application"
-	case BalanceUpdateOriginProtocolMigration:
-		return "protocol_migration"
-	case BalanceUpdateOriginSubsidy:
-		return "subsidy"
-	case BalanceUpdateOriginSimulation:
-		return "simulation"
-	default:
-		return strconv.FormatInt(int64(o), 10)
-	}
+type BalanceUpdateOrigin interface {
+	BalanceUpdateOrigin() string
 }
 
-func (o BalanceUpdateOrigin) MarshalText() (text []byte, err error) {
-	return []byte(o.String()), nil
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[BalanceUpdateOrigin]{
+		Variants: encoding.Variants[BalanceUpdateOrigin]{
+			0: BalanceUpdateOriginBlockApplication{},
+			1: BalanceUpdateOriginProtocolMigration{},
+			2: BalanceUpdateOriginSubsidy{},
+			3: BalanceUpdateOriginSimulation{},
+			4: (*BalanceUpdateOriginDelayedOperation)(nil),
+		},
+	})
 }
+
+//json:origin=BalanceUpdateOrigin()
+type BalanceUpdateOriginBlockApplication struct{}
+
+func (BalanceUpdateOriginBlockApplication) BalanceUpdateOrigin() string { return "block_application" }
+
+//json:origin=BalanceUpdateOrigin()
+type BalanceUpdateOriginProtocolMigration struct{}
+
+func (BalanceUpdateOriginProtocolMigration) BalanceUpdateOrigin() string { return "protocol_migration" }
+
+//json:origin=BalanceUpdateOrigin()
+type BalanceUpdateOriginSubsidy struct{}
+
+func (BalanceUpdateOriginSubsidy) BalanceUpdateOrigin() string { return "subsidy" }
+
+//json:origin=BalanceUpdateOrigin()
+type BalanceUpdateOriginSimulation struct{}
+
+func (BalanceUpdateOriginSimulation) BalanceUpdateOrigin() string { return "simulation" }
+
+//json:origin=BalanceUpdateOrigin()
+type BalanceUpdateOriginDelayedOperation struct {
+	DelayedOperationHash gotez.OperationHash `json:"delayed_operation_hash"`
+}
+
+func (*BalanceUpdateOriginDelayedOperation) BalanceUpdateOrigin() string { return "delayed_operation" }
 
 // not present in the binary protocol
 type BalanceUpdateKind int
@@ -50,6 +65,8 @@ func (k BalanceUpdateKind) String() string {
 		return "burned"
 	case BalanceUpdateKindCommitment:
 		return "commitment"
+	case BalanceUpdateKindStaking:
+		return "staking"
 	default:
 		return "<unknown>"
 	}
@@ -66,7 +83,7 @@ const (
 	BalanceUpdateKindMinted
 	BalanceUpdateKindBurned
 	BalanceUpdateKindCommitment
-	BalanceUpdateKind_Num
+	BalanceUpdateKindStaking
 )
 
 type BalanceUpdate interface {

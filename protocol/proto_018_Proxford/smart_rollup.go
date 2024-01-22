@@ -2,17 +2,17 @@ package proto_018_Proxford
 
 import (
 	"math/big"
+	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/core/expression"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
 )
 
-type SmartRollupOriginate = proto_016_PtMumbai.SmartRollupOriginate
 type SmartRollupAddMessages = proto_016_PtMumbai.SmartRollupAddMessages
-type SmartRollupCement = proto_016_PtMumbai.SmartRollupCement
 type SmartRollupPublish = proto_016_PtMumbai.SmartRollupPublish
 type SmartRollupRefute = proto_016_PtMumbai.SmartRollupRefute
 type SmartRollupTimeout = proto_016_PtMumbai.SmartRollupTimeout
@@ -21,6 +21,55 @@ type SmartRollupRecoverBond = proto_016_PtMumbai.SmartRollupRecoverBond
 
 type SmartRollupCementResult = proto_017_PtNairob.SmartRollupCementResult
 type GameStatus = proto_016_PtMumbai.GameStatus
+
+type PVMKind uint8
+
+const (
+	PVMArith PVMKind = iota
+	PVM_WASM_2_0_0
+	PVM_RISCV
+)
+
+func (k PVMKind) String() string {
+	switch k {
+	case PVMArith:
+		return "arith"
+	case PVM_WASM_2_0_0:
+		return "wasm_2_0_0"
+	case PVM_RISCV:
+		return "riscv"
+	default:
+		return strconv.FormatInt(int64(k), 10)
+	}
+}
+
+func (k PVMKind) MarshalText() (text []byte, err error) {
+	return []byte(k.String()), nil
+}
+
+//json:kind=OperationKind()
+type SmartRollupOriginate struct {
+	ManagerOperation
+	PVMKind          PVMKind                         `json:"pvm_kind"`
+	Kernel           tz.Bytes                        `tz:"dyn" json:"kernel"`
+	OriginationProof tz.Bytes                        `tz:"dyn" json:"origination_proof"`
+	ParametersTy     expression.Expression           `tz:"dyn" json:"parameters_ty"`
+	Whitelist        tz.Option[SmartRollupWhitelist] `json:"whitelist"`
+}
+
+func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_originate" }
+
+type SmartRollupWhitelist struct {
+	Contents []tz.PublicKeyHash `tz:"dyn" json:"contents"`
+}
+
+//json:kind=OperationKind()
+type SmartRollupCement struct {
+	ManagerOperation
+	Rollup *tz.SmartRollupAddress `json:"rollup"`
+}
+
+func (*SmartRollupCement) OperationKind() string { return "smart_rollup_cement" }
 
 type SmartRollupOriginateResultContents struct {
 	BalanceUpdates

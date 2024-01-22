@@ -19,17 +19,12 @@ type Constants interface {
 	GetHardGasLimitPerOperation() tz.BigInt
 	GetHardGasLimitPerBlock() tz.BigInt
 	GetProofOfWorkThreshold() int64
-	GetSeedNonceRevelationTip() tz.BigUint
 	GetOriginationSize() int32
-	GetBakingRewardFixedPortion() tz.BigUint
-	GetBakingRewardBonusPerSlot() tz.BigUint
-	GetEndorsingRewardPerSlot() tz.BigUint
 	GetCostPerByte() tz.BigUint
 	GetHardStorageLimitPerOperation() tz.BigInt
 	GetQuorumMin() int32
 	GetQuorumMax() int32
 	GetMinProposalQuorum() int32
-	GetLiquidityBakingSubsidy() tz.BigUint
 	GetMaxOperationsTimeToLive() int16
 	GetMinimalBlockDelay() int64
 	GetDelayIncrementPerRound() int64
@@ -37,7 +32,4 @@ type Constants interface {
 	GetConsensusThreshold() int32
 	GetMinimalParticipationRatio() *Rat
 	GetMaxSlashingPeriod() int32
-	GetFrozenDepositsPercentage() int32
-	GetDoubleBakingPunishment() tz.BigUint
-	GetRatioOfFrozenDepositsSlashedPerDoubleEndorsement() *Rat
 }

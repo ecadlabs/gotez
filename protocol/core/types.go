@@ -5,6 +5,7 @@ package core
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -205,6 +206,16 @@ type Parameters interface {
 }
 
 type Rat [2]uint16
+
+func (r *Rat) String() string {
+	return fmt.Sprintf("%d/%d", r[0], r[1])
+}
+
+type BigRat [2]tz.BigInt
+
+func (r *BigRat) String() string {
+	return fmt.Sprintf("%v/%v", r[0], r[1])
+}
 
 type BlockProtocols struct {
 	Protocol     *tz.ProtocolHash

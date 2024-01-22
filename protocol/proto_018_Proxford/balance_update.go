@@ -32,7 +32,6 @@ func (b *BalanceUpdate) GetChange() int64                        { return b.Chan
 func (b *BalanceUpdate) GetOrigin() core.BalanceUpdateOrigin     { return b.Origin }
 
 type BalanceUpdateContract = proto_012_Psithaca.BalanceUpdateContract
-type BalanceUpdateDeposits = proto_012_Psithaca.BalanceUpdateDeposits
 type BalanceUpdateLostEndorsingRewards = proto_012_Psithaca.BalanceUpdateLostEndorsingRewards
 type BalanceUpdateCommitments = proto_012_Psithaca.BalanceUpdateCommitments
 type BalanceUpdateBlockFees = proto_012_Psithaca.BalanceUpdateBlockFees
@@ -54,6 +53,16 @@ type BalanceUpdateTxRollupRejectionPunishments = proto_013_PtJakart.BalanceUpdat
 type BalanceUpdateFrozenBonds = proto_016_PtMumbai.BalanceUpdateFrozenBonds
 type BalanceUpdateSmartRollupRefutationPunishments = proto_016_PtMumbai.BalanceUpdateSmartRollupRefutationPunishments
 type BalanceUpdateSmartRollupRefutationRewards = proto_016_PtMumbai.BalanceUpdateSmartRollupRefutationRewards
+
+//json:category=BalanceUpdateCategory(),kind=BalanceUpdateKind()
+type BalanceUpdateDeposits struct {
+	Staker FrozenStaker `json:"staker"`
+}
+
+func (BalanceUpdateDeposits) BalanceUpdateCategory() string { return "deposits" }
+func (BalanceUpdateDeposits) BalanceUpdateKind() core.BalanceUpdateKind {
+	return core.BalanceUpdateKindFreezer
+}
 
 type BalanceUpdateUnstakedDeposits struct {
 	Staker Staker `json:"staker"`
@@ -78,6 +87,20 @@ func init() {
 	})
 }
 
+type FrozenStaker interface {
+	Staker
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[FrozenStaker]{
+		Variants: encoding.Variants[FrozenStaker]{
+			0: StakerSingle{},
+			1: StakerShared{},
+			2: StakerBaker{},
+		},
+	})
+}
+
 type StakerSingle struct {
 	Contract core.ContractID  `json:"contract"`
 	Delegate tz.PublicKeyHash `json:"delegate"`
@@ -90,6 +113,32 @@ type StakerShared struct {
 }
 
 func (StakerShared) StakerKind() string { return "shared" }
+
+type StakerBaker struct {
+	Baker tz.PublicKeyHash `json:"baker"`
+}
+
+func (StakerBaker) StakerKind() string { return "baker" }
+
+type StakingDelegatorNumerator struct {
+	Delegator core.ContractID `json:"delegator"`
+}
+
+func (StakingDelegatorNumerator) BalanceUpdateCategory() string { return "staking_delegator_numerator" }
+func (StakingDelegatorNumerator) BalanceUpdateKind() core.BalanceUpdateKind {
+	return core.BalanceUpdateKindStaking
+}
+
+type StakingDelegateDenominator struct {
+	Delegate tz.PublicKeyHash `json:"delegate"`
+}
+
+func (StakingDelegateDenominator) BalanceUpdateCategory() string {
+	return "staking_delegate_denominator"
+}
+func (StakingDelegateDenominator) BalanceUpdateKind() core.BalanceUpdateKind {
+	return core.BalanceUpdateKindStaking
+}
 
 type BalanceUpdateContents interface {
 	core.BalanceUpdateContents
@@ -122,6 +171,8 @@ func init() {
 			24: BalanceUpdateSmartRollupRefutationPunishments{},
 			25: BalanceUpdateSmartRollupRefutationRewards{},
 			26: (*BalanceUpdateUnstakedDeposits)(nil),
+			27: StakingDelegatorNumerator{},
+			28: StakingDelegateDenominator{},
 		},
 	})
 }

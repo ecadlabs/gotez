@@ -2,60 +2,66 @@ package latest
 
 import (
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
+	latest "github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
 )
 
 var Protocol = core.Proto017PtNairob
 
-type OperationContents = proto_017_PtNairob.OperationContents
-type OperationContentsAndResult = proto_017_PtNairob.OperationContentsAndResult
-type InternalOperationResult = proto_017_PtNairob.InternalOperationResult
-type OperationWithOptionalMetadata = proto_017_PtNairob.OperationWithOptionalMetadata
+type OperationContents = latest.OperationContents
+type OperationContentsAndResult = latest.OperationContentsAndResult
+type InternalOperationResult = latest.InternalOperationResult
+type OperationWithOptionalMetadata = latest.OperationWithOptionalMetadata
 
-type RunOperationRequest = proto_017_PtNairob.RunOperationRequest
-type UnsignedOperation = proto_017_PtNairob.UnsignedOperation
-type SignedOperation = proto_017_PtNairob.SignedOperation
+type RunOperationRequest = latest.RunOperationRequest
+type UnsignedOperation = latest.UnsignedOperation
+type SignedOperation = latest.SignedOperation
 
-type UnsignedBlockHeader = proto_017_PtNairob.UnsignedBlockHeader
-type BlockHeader = proto_017_PtNairob.BlockHeader
+type UnsignedBlockHeader = latest.UnsignedBlockHeader
+type BlockHeader = latest.BlockHeader
 
-type ManagerOperation = proto_017_PtNairob.ManagerOperation
-type SeedNonceRevelation = proto_017_PtNairob.SeedNonceRevelation
-type DoubleEndorsementEvidence = proto_017_PtNairob.DoubleEndorsementEvidence
-type DoubleBakingEvidence = proto_017_PtNairob.DoubleBakingEvidence
-type ActivateAccount = proto_017_PtNairob.ActivateAccount
-type Proposals = proto_017_PtNairob.Proposals
-type Ballot = proto_017_PtNairob.Ballot
-type DoublePreendorsementEvidence = proto_017_PtNairob.DoublePreendorsementEvidence
-type VDFRevelation = proto_017_PtNairob.VDFRevelation
-type DrainDelegate = proto_017_PtNairob.DrainDelegate
-type FailingNoop = proto_017_PtNairob.FailingNoop
-type Preendorsement = proto_017_PtNairob.Preendorsement
-type InlinedPreendorsementContents = proto_017_PtNairob.InlinedPreendorsementContents
-type Endorsement = proto_017_PtNairob.Endorsement
-type InlinedEndorsementContents = proto_017_PtNairob.InlinedEndorsementContents
-type DALAttestation = proto_017_PtNairob.DALAttestation
-type Reveal = proto_017_PtNairob.Reveal
-type Transaction = proto_017_PtNairob.Transaction
-type Parameters = proto_017_PtNairob.Parameters
-type Origination = proto_017_PtNairob.Origination
-type Delegation = proto_017_PtNairob.Delegation
-type RegisterGlobalConstant = proto_017_PtNairob.RegisterGlobalConstant
-type SetDepositsLimit = proto_017_PtNairob.SetDepositsLimit
-type IncreasePaidStorage = proto_017_PtNairob.IncreasePaidStorage
-type UpdateConsensusKey = proto_017_PtNairob.UpdateConsensusKey
-type TransferTicket = proto_017_PtNairob.TransferTicket
-type SmartRollupOriginate = proto_017_PtNairob.SmartRollupOriginate
-type SmartRollupAddMessages = proto_017_PtNairob.SmartRollupAddMessages
-type SmartRollupCement = proto_017_PtNairob.SmartRollupCement
-type SmartRollupPublish = proto_017_PtNairob.SmartRollupPublish
-type SmartRollupRefute = proto_017_PtNairob.SmartRollupRefute
-type SmartRollupTimeout = proto_017_PtNairob.SmartRollupTimeout
-type SmartRollupExecuteOutboxMessage = proto_017_PtNairob.SmartRollupExecuteOutboxMessage
-type SmartRollupRecoverBond = proto_017_PtNairob.SmartRollupRecoverBond
-type DALPublishSlotHeader = proto_017_PtNairob.DALPublishSlotHeader
-type ZkRollupOrigination = proto_017_PtNairob.ZkRollupOrigination
-type ZkRollupPublish = proto_017_PtNairob.ZkRollupPublish
-type ZkRollupUpdate = proto_017_PtNairob.ZkRollupUpdate
-type SignaturePrefix = proto_017_PtNairob.SignaturePrefix
-type BLSSignaturePrefix = proto_017_PtNairob.BLSSignaturePrefix
+type ManagerOperation = latest.ManagerOperation
+type SeedNonceRevelation = latest.SeedNonceRevelation
+type DoubleEndorsementEvidence = latest.DoubleAttestationEvidence
+type DoubleAttestationEvidence = latest.DoubleAttestationEvidence
+type DoubleBakingEvidence = latest.DoubleBakingEvidence
+type ActivateAccount = latest.ActivateAccount
+type Proposals = latest.Proposals
+type Ballot = latest.Ballot
+type DoublePreendorsementEvidence = latest.DoublePreattestationEvidence
+type DoublePreattestationEvidence = latest.DoublePreattestationEvidence
+type VDFRevelation = latest.VDFRevelation
+type DrainDelegate = latest.DrainDelegate
+type FailingNoop = latest.FailingNoop
+type Preendorsement = latest.Preattestation
+type Preattestation = latest.Preattestation
+type InlinedPreendorsementContents = latest.InlinedPreattestationContents
+type InlinedPreattestationContents = latest.InlinedPreattestationContents
+type Endorsement = latest.Attestation
+type Attestation = latest.Attestation
+type InlinedEndorsementContents = latest.InlinedAttestationContents
+type InlinedAttestationContents = latest.InlinedAttestationContents
+type DALAttestation = latest.DALAttestation
+type Reveal = latest.Reveal
+type Transaction = latest.Transaction
+type Parameters = latest.Parameters
+type Origination = latest.Origination
+type Delegation = latest.Delegation
+type RegisterGlobalConstant = latest.RegisterGlobalConstant
+type SetDepositsLimit = latest.SetDepositsLimit
+type IncreasePaidStorage = latest.IncreasePaidStorage
+type UpdateConsensusKey = latest.UpdateConsensusKey
+type TransferTicket = latest.TransferTicket
+type SmartRollupOriginate = latest.SmartRollupOriginate
+type SmartRollupAddMessages = latest.SmartRollupAddMessages
+type SmartRollupCement = latest.SmartRollupCement
+type SmartRollupPublish = latest.SmartRollupPublish
+type SmartRollupRefute = latest.SmartRollupRefute
+type SmartRollupTimeout = latest.SmartRollupTimeout
+type SmartRollupExecuteOutboxMessage = latest.SmartRollupExecuteOutboxMessage
+type SmartRollupRecoverBond = latest.SmartRollupRecoverBond
+type DALPublishSlotHeader = latest.DALPublishSlotHeader
+type ZkRollupOrigination = latest.ZkRollupOrigination
+type ZkRollupPublish = latest.ZkRollupPublish
+type ZkRollupUpdate = latest.ZkRollupUpdate
+type SignaturePrefix = latest.SignaturePrefix
+type BLSSignaturePrefix = latest.BLSSignaturePrefix

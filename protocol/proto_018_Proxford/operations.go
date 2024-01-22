@@ -30,6 +30,7 @@ type Origination = proto_012_Psithaca.Origination
 type Delegation = proto_012_Psithaca.Delegation
 type RegisterGlobalConstant = proto_012_Psithaca.RegisterGlobalConstant
 type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
+type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
 type TransferTicket = proto_013_PtJakart.TransferTicket
 type DALPublishSlotHeader = proto_016_PtMumbai.DALPublishSlotHeader
@@ -136,6 +137,7 @@ func init() {
 			109: (*Origination)(nil),
 			110: (*Delegation)(nil),
 			111: (*RegisterGlobalConstant)(nil),
+			112: (*SetDepositsLimit)(nil),
 			113: (*IncreasePaidStorage)(nil),
 			114: (*UpdateConsensusKey)(nil),
 			158: (*TransferTicket)(nil),
@@ -299,6 +301,17 @@ type RegisterGlobalConstantContentsAndResult struct {
 
 func (*RegisterGlobalConstantContentsAndResult) OperationContentsAndResult() {}
 func (op *RegisterGlobalConstantContentsAndResult) GetMetadata() any {
+	return &op.Metadata
+}
+
+//json:kind=OperationKind()
+type SetDepositsLimitContentsAndResult struct {
+	SetDepositsLimit
+	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
+}
+
+func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
+func (op *SetDepositsLimitContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
@@ -514,6 +527,7 @@ func init() {
 			109: (*OriginationContentsAndResult)(nil),
 			110: (*DelegationContentsAndResult)(nil),
 			111: (*RegisterGlobalConstantContentsAndResult)(nil),
+			112: (*SetDepositsLimitContentsAndResult)(nil),
 			113: (*IncreasePaidStorageContentsAndResult)(nil),
 			114: (*UpdateConsensusKeyContentsAndResult)(nil),
 			158: (*TransferTicketContentsAndResult)(nil),
