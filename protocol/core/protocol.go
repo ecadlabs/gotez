@@ -99,6 +99,6 @@ func ProtocolShortName(proto *tz.ProtocolHash) string {
 	return proto.String()
 }
 
-func CmpProtocol(a, b *tz.ProtocolHash) int {
+func CompareProtocols(a, b *tz.ProtocolHash) int {
 	return indices[*a] - indices[*b]
 }

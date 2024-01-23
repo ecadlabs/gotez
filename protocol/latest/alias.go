@@ -18,6 +18,7 @@ type SignedOperation = latest.SignedOperation
 
 type UnsignedBlockHeader = latest.UnsignedBlockHeader
 type BlockHeader = latest.BlockHeader
+type UnsignedProtocolBlockHeader = latest.UnsignedProtocolBlockHeader
 
 type ManagerOperation = latest.ManagerOperation
 type SeedNonceRevelation = latest.SeedNonceRevelation
@@ -65,3 +66,15 @@ type ZkRollupPublish = latest.ZkRollupPublish
 type ZkRollupUpdate = latest.ZkRollupUpdate
 type SignaturePrefix = latest.SignaturePrefix
 type BLSSignaturePrefix = latest.BLSSignaturePrefix
+
+type EpDefault = latest.EpDefault
+type EpRoot = latest.EpRoot
+type EpDo = latest.EpDo
+type EpSetDelegate = latest.EpSetDelegate
+type EpRemoveDelegate = latest.EpRemoveDelegate
+type EpDeposit = latest.EpDeposit
+type EpStake = latest.EpStake
+type EpUnstake = latest.EpUnstake
+type EpFinalizeUnstake = latest.EpFinalizeUnstake
+type EpSetDelegateParameters = latest.EpSetDelegateParameters
+type EpNamed = latest.EpNamed
