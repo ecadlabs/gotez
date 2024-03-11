@@ -352,7 +352,7 @@ func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*l
 	return &operation, nil
 }
 
-func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.OperationHash) (core.OperationsGroup, error) {
+func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.OperationHash, meta client.MetadataMode) (core.OperationsGroup, error) {
 	basic, err := t.Client.BasicBlockInfo(ctx, t.ChainID.String(), hash.String())
 	if err != nil {
 		return nil, err
@@ -361,7 +361,7 @@ func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.Operati
 	block, err := t.Client.Block(ctx, &client.BlockRequest{
 		Chain:    t.ChainID.String(),
 		Block:    hash.String(),
-		Metadata: client.MetadataNever,
+		Metadata: meta,
 		Protocol: basic.Protocol,
 	})
 	if err != nil {
@@ -377,7 +377,7 @@ func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.Operati
 	return nil, nil
 }
 
-func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationRequest) (core.OperationsGroup, error) {
+func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationRequest, meta client.MetadataMode) (core.OperationsGroup, error) {
 	// open heads stream first
 	headsCtx, headsCancel := context.WithCancel(ctx)
 	defer headsCancel()
@@ -409,7 +409,7 @@ func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationReq
 			return nil, err
 
 		case head := <-stream:
-			grp, err := t.scanBlock(ctx, head.Hash, opHash)
+			grp, err := t.scanBlock(ctx, head.Hash, opHash, meta)
 			if err != nil {
 				return nil, err
 			}
@@ -463,11 +463,11 @@ func (t *Tool) FillSignAndInject(ctx context.Context, signer Signer, ops []lates
 	return t.Client.InjectOperation(ctx, req)
 }
 
-func (t *Tool) FillSignAndInjectWait(ctx context.Context, signer Signer, ops []latest.OperationContents, attributes ...FillAttr) (core.OperationsGroup, error) {
+func (t *Tool) FillSignAndInjectWait(ctx context.Context, signer Signer, ops []latest.OperationContents, meta client.MetadataMode, attributes ...FillAttr) (core.OperationsGroup, error) {
 	req, err := t.injectionRequest(ctx, signer, ops, attributes...)
 	if err != nil {
 		return nil, err
 	}
 	t.debug("teztool: injecting")
-	return t.InjectAndWait(ctx, req)
+	return t.InjectAndWait(ctx, req, meta)
 }
