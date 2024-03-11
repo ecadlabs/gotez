@@ -5,7 +5,10 @@ import (
 	latest "github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
 )
 
-var Protocol = core.Proto017PtNairob
+var (
+	Protocol               = core.Proto017PtNairob
+	NewRunOperationRequest = latest.NewRunOperationRequest
+)
 
 type OperationContents = latest.OperationContents
 type OperationContentsAndResult = latest.OperationContentsAndResult

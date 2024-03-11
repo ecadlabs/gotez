@@ -203,12 +203,9 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 
 	t.debug("teztool: dry run")
 	runResult, err := t.Client.RunOperation(ctx, &client.RunOperationRequest{
-		Chain: t.ChainID.String(),
-		Block: group.Branch.String(),
-		Payload: &latest.RunOperationRequest{
-			Operation: groupZeroSig,
-			ChainID:   t.ChainID,
-		},
+		Chain:   t.ChainID.String(),
+		Block:   group.Branch.String(),
+		Payload: latest.NewRunOperationRequest(&groupZeroSig, t.ChainID),
 	})
 	if err != nil {
 		return err
@@ -243,9 +240,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 		if op.OperationKind() != "reveal" && op.OperationKind() != "delegation" && op.OperationKind() != "increase_paid_storage" && !isImplDest {
 			resultGas.Add(resultGas, gasSafetyMargin)
 		}
-		if resultStorage.Sign() != 0 {
-			resultStorage.Add(resultStorage, storageSafetyMargin)
-		}
+		resultStorage.Add(resultStorage, storageSafetyMargin)
 
 		if attr.fillStorageLimit {
 			manager.SetStorageLimit(mustBigUint(resultStorage))
@@ -357,10 +352,10 @@ func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*l
 	return &operation, nil
 }
 
-func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.OperationHash) (bool, error) {
+func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.OperationHash) (core.OperationsGroup, error) {
 	basic, err := t.Client.BasicBlockInfo(ctx, t.ChainID.String(), hash.String())
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	t.debug("teztool: scanning block %v", hash)
 	block, err := t.Client.Block(ctx, &client.BlockRequest{
@@ -370,19 +365,19 @@ func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.Operati
 		Protocol: basic.Protocol,
 	})
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	for _, list := range block.GetOperations() {
 		for _, grp := range list {
 			if *grp.GetHash() == *op {
-				return true, nil
+				return grp, nil
 			}
 		}
 	}
-	return false, nil
+	return nil, nil
 }
 
-func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationRequest) (*tz.OperationHash, error) {
+func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationRequest) (core.OperationsGroup, error) {
 	// open heads stream first
 	headsCtx, headsCancel := context.WithCancel(ctx)
 	defer headsCancel()
@@ -414,19 +409,19 @@ func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationReq
 			return nil, err
 
 		case head := <-stream:
-			ok, err := t.scanBlock(ctx, head.Hash, opHash)
+			grp, err := t.scanBlock(ctx, head.Hash, opHash)
 			if err != nil {
 				return nil, err
 			}
-			if ok {
+			if grp != nil {
 				t.debug("teztool: found in %v", head.Hash)
-				return opHash, nil
+				return grp, nil
 			}
 		}
 	}
 }
 
-func (t *Tool) FillSignAndInject(ctx context.Context, signer Signer, ops []latest.OperationContents, wait bool, attributes ...FillAttr) (*tz.OperationHash, error) {
+func (t *Tool) injectionRequest(ctx context.Context, signer Signer, ops []latest.OperationContents, attributes ...FillAttr) (*client.InjectOperationRequest, error) {
 	bi, err := t.Client.BasicBlockInfo(ctx, t.ChainID.String(), "head")
 	if err != nil {
 		return nil, err
@@ -453,15 +448,26 @@ func (t *Tool) FillSignAndInject(ctx context.Context, signer Signer, ops []lates
 	if err = encoding.Encode(&buf, signedGroup); err != nil {
 		return nil, err
 	}
-
-	t.debug("teztool: injecting")
-	req := client.InjectOperationRequest{
+	return &client.InjectOperationRequest{
 		Chain:   t.ChainID.String(),
 		Payload: &client.InjectRequestPayload{Contents: buf.Bytes()},
+	}, nil
+}
+
+func (t *Tool) FillSignAndInject(ctx context.Context, signer Signer, ops []latest.OperationContents, attributes ...FillAttr) (*tz.OperationHash, error) {
+	req, err := t.injectionRequest(ctx, signer, ops, attributes...)
+	if err != nil {
+		return nil, err
 	}
-	if wait {
-		return t.InjectAndWait(ctx, &req)
-	} else {
-		return t.Client.InjectOperation(ctx, &req)
+	t.debug("teztool: injecting")
+	return t.Client.InjectOperation(ctx, req)
+}
+
+func (t *Tool) FillSignAndInjectWait(ctx context.Context, signer Signer, ops []latest.OperationContents, attributes ...FillAttr) (core.OperationsGroup, error) {
+	req, err := t.injectionRequest(ctx, signer, ops, attributes...)
+	if err != nil {
+		return nil, err
 	}
+	t.debug("teztool: injecting")
+	return t.InjectAndWait(ctx, req)
 }
