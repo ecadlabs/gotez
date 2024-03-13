@@ -1,3 +1,4 @@
+// Package teztool is an operation injection helper
 package teztool
 
 import (
@@ -104,6 +105,7 @@ func (t *Tool) debug(format string, a ...any) {
 	}
 }
 
+// Fill fills requested missed fields like fee, counter, gas_limit, and storage_limit based on protocol constants, source contract state and the result of operation dry run
 func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attributes ...FillAttr) error {
 	var attr fillAttrs
 	for _, a := range attributes {
@@ -377,6 +379,7 @@ func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.Operati
 	return nil, nil
 }
 
+// InjectAndWait injects the operation and waits for it to appear on chain
 func (t *Tool) InjectAndWait(ctx context.Context, req *client.InjectOperationRequest, meta client.MetadataMode) (core.OperationsGroup, error) {
 	// open heads stream first
 	headsCtx, headsCancel := context.WithCancel(ctx)
@@ -454,6 +457,7 @@ func (t *Tool) injectionRequest(ctx context.Context, signer Signer, ops []latest
 	}, nil
 }
 
+// FillSignAndInject is an all in one function which fills missing fields and injects the operation without waiting
 func (t *Tool) FillSignAndInject(ctx context.Context, signer Signer, ops []latest.OperationContents, attributes ...FillAttr) (*tz.OperationHash, error) {
 	req, err := t.injectionRequest(ctx, signer, ops, attributes...)
 	if err != nil {
@@ -463,6 +467,7 @@ func (t *Tool) FillSignAndInject(ctx context.Context, signer Signer, ops []lates
 	return t.Client.InjectOperation(ctx, req)
 }
 
+// FillSignAndInjectWait is an all in one function which fills missing fields, injects the operation and waits for it to appear on chain
 func (t *Tool) FillSignAndInjectWait(ctx context.Context, signer Signer, ops []latest.OperationContents, meta client.MetadataMode, attributes ...FillAttr) (core.OperationsGroup, error) {
 	req, err := t.injectionRequest(ctx, signer, ops, attributes...)
 	if err != nil {

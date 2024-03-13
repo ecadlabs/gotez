@@ -1,3 +1,4 @@
+// Package crypt is a wrapper around standard and 3rd party signature algorithms which adds a support of Tezos encodings of keys and signatures
 package crypt
 
 import (

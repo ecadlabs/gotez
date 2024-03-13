@@ -1,3 +1,4 @@
+// Package encoding handles Tezos binary encoding
 package encoding
 
 import (

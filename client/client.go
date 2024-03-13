@@ -1,3 +1,4 @@
+// Package client is a very limited Tezos RPC client library
 package client
 
 import (
