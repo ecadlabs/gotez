@@ -33,7 +33,6 @@ type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
 type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
 type TransferTicket = proto_013_PtJakart.TransferTicket
-type DALPublishSlotHeader = proto_016_PtMumbai.DALPublishSlotHeader
 type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
 type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContentsAndResult
@@ -111,6 +110,20 @@ type Preattestation proto_012_Psithaca.Preendorsement
 
 func (*Preattestation) InlinedPreattestationContents() {}
 func (*Preattestation) OperationKind() string          { return "preattestation" }
+
+//json:kind=OperationKind()
+type DALPublishSlotHeader struct {
+	ManagerOperation
+	SlotHeader SlotHeader `json:"slot_header"`
+}
+
+type SlotHeader struct {
+	Index           uint8             `json:"slot_index"`
+	Сommitment      *tz.DALCommitment `json:"commitment"`
+	CommitmentProof *tz.Bytes48       `json:"commitment_proof"`
+}
+
+func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_header" }
 
 type OperationContents interface {
 	core.OperationContents

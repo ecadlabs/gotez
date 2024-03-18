@@ -50,11 +50,10 @@ func (k PVMKind) MarshalText() (text []byte, err error) {
 //json:kind=OperationKind()
 type SmartRollupOriginate struct {
 	ManagerOperation
-	PVMKind          PVMKind                         `json:"pvm_kind"`
-	Kernel           tz.Bytes                        `tz:"dyn" json:"kernel"`
-	OriginationProof tz.Bytes                        `tz:"dyn" json:"origination_proof"`
-	ParametersTy     expression.Expression           `tz:"dyn" json:"parameters_ty"`
-	Whitelist        tz.Option[SmartRollupWhitelist] `json:"whitelist"`
+	PVMKind      PVMKind                         `json:"pvm_kind"`
+	Kernel       tz.Bytes                        `tz:"dyn" json:"kernel"`
+	ParametersTy expression.Expression           `tz:"dyn" json:"parameters_ty"`
+	Whitelist    tz.Option[SmartRollupWhitelist] `json:"whitelist"`
 }
 
 func (*SmartRollupOriginate) OperationKind() string { return "smart_rollup_originate" }
