@@ -256,7 +256,7 @@ func (op *DrainDelegateContentsAndResult) GetMetadata() any {
 type AttestationMetadata struct {
 	BalanceUpdates
 	Delegate       tz.PublicKeyHash `json:"delegate"`
-	ConsensusPower int32            `json:"endorsement_power"`
+	ConsensusPower int32            `json:"consensus_power"`
 	ConsensusKey   tz.PublicKeyHash `json:"consensus_key"`
 }
 
