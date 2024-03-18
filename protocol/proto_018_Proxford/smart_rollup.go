@@ -14,13 +14,18 @@ import (
 
 type SmartRollupAddMessages = proto_016_PtMumbai.SmartRollupAddMessages
 type SmartRollupPublish = proto_016_PtMumbai.SmartRollupPublish
-type SmartRollupRefute = proto_016_PtMumbai.SmartRollupRefute
 type SmartRollupTimeout = proto_016_PtMumbai.SmartRollupTimeout
 type SmartRollupExecuteOutboxMessage = proto_016_PtMumbai.SmartRollupExecuteOutboxMessage
 type SmartRollupRecoverBond = proto_016_PtMumbai.SmartRollupRecoverBond
-
 type SmartRollupCementResult = proto_017_PtNairob.SmartRollupCementResult
 type GameStatus = proto_016_PtMumbai.GameStatus
+type RefutationStart = proto_016_PtMumbai.RefutationStart
+type RefutationStepDissection = proto_016_PtMumbai.RefutationStepDissection
+type RefutationProofInbox = proto_016_PtMumbai.RefutationProofInbox
+type RefutationProofFirstInput = proto_016_PtMumbai.RefutationProofFirstInput
+type RevealProofRawData = proto_016_PtMumbai.RevealProofRawData
+type RevealProofMetadata = proto_016_PtMumbai.RevealProofMetadata
+type RevealProofDALPage = proto_016_PtMumbai.RevealProofDALPage
 
 type PVMKind uint8
 
@@ -305,3 +310,92 @@ type SmartRollupOriginateSuccessfulManagerResult struct {
 func (*SmartRollupOriginateSuccessfulManagerResult) OperationKind() string {
 	return "smart_rollup_originate"
 }
+
+//json:kind=OperationKind()
+type SmartRollupRefute struct {
+	ManagerOperation
+	Rollup     *tz.SmartRollupAddress `json:"rollup"`
+	Opponent   tz.PublicKeyHash       `json:"opponent"`
+	Refutation SmartRollupRefutation  `json:"refutation"`
+}
+
+func (*SmartRollupRefute) OperationKind() string { return "smart_rollup_refute" }
+
+type SmartRollupRefutation interface {
+	proto_016_PtMumbai.SmartRollupRefutation
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[SmartRollupRefutation]{
+		Variants: encoding.Variants[SmartRollupRefutation]{
+			0: (*RefutationStart)(nil),
+			1: (*RefutationMove)(nil),
+		},
+	})
+}
+
+type RefutationMove struct {
+	Choice tz.BigUint     `json:"choice"`
+	Step   RefutationStep `json:"step"`
+}
+
+func (*RefutationMove) RefutationKind() string { return "move" }
+
+type RefutationStep interface {
+	proto_016_PtMumbai.RefutationStep
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[RefutationStep]{
+		Variants: encoding.Variants[RefutationStep]{
+			0: (*RefutationStepDissection)(nil),
+			1: (*RefutationStepProof)(nil),
+		},
+	})
+}
+
+type RefutationStepProof struct {
+	PVMStep    tz.Bytes                   `tz:"dyn" json:"pvm_step"`
+	InputProof tz.Option[RefutationProof] `json:"input_proof"`
+}
+
+func (*RefutationStepProof) RefutationStepKind() string { return "proof" }
+
+type RefutationProof interface {
+	proto_016_PtMumbai.RefutationProof
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[RefutationProof]{
+		Variants: encoding.Variants[RefutationProof]{
+			0: (*RefutationProofInbox)(nil),
+			1: (*RefutationProofReveal)(nil),
+			2: RefutationProofFirstInput{},
+		},
+	})
+}
+
+type RefutationProofReveal struct {
+	RevealProof RevealProof `json:"reveal_proof"`
+}
+
+func (*RefutationProofReveal) RefutationProof() {}
+
+type RevealProof interface {
+	proto_016_PtMumbai.RevealProof
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[RevealProof]{
+		Variants: encoding.Variants[RevealProof]{
+			0: RevealProofRawData{},
+			1: RevealProofMetadata{},
+			2: (*RevealProofDALPage)(nil),
+			3: RevealProofDALParameters{},
+		},
+	})
+}
+
+type RevealProofDALParameters struct{}
+
+func (RevealProofDALParameters) RevealProof() {}

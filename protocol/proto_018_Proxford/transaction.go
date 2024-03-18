@@ -11,9 +11,11 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca/lazy"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 )
 
 type TicketReceipt = proto_015_PtLimaPt.TicketReceipt
+type ToSmartRollup = proto_016_PtMumbai.ToSmartRollup
 
 //json:kind=OperationKind()
 type Transaction struct {
@@ -114,14 +116,6 @@ func (r *ToContract) EstimateStorageSize(constants core.Constants) *big.Int {
 	}
 	return x
 }
-
-type ToSmartRollup struct {
-	ConsumedMilligas tz.BigUint       `json:"consumed_milligas"`
-	TicketUpdates    []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
-}
-
-func (*ToSmartRollup) TransactionResultDestination()     {}
-func (r *ToSmartRollup) GetConsumedMilligas() tz.BigUint { return r.ConsumedMilligas }
 
 type TransactionResultDestination interface {
 	proto_013_PtJakart.TransactionResultDestination
