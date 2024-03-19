@@ -3,21 +3,25 @@ package proto_018_Proxford
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
+	"github.com/ecadlabs/gotez/v2/protocol/core"
 )
 
-type UnsignedOperation struct {
-	Branch   *tz.BlockHash       `json:"branch"`
-	Contents []OperationContents `json:"contents"`
+type UnsignedOperation = UnsignedOperationImpl[OperationContents]
+type SignedOperation = SignedOperationImpl[OperationContents]
+
+type UnsignedOperationImpl[T core.OperationContents] struct {
+	Branch   *tz.BlockHash `json:"branch"`
+	Contents []T           `json:"contents"`
 }
 
-type SignedOperation struct {
-	UnsignedOperation
+type SignedOperationImpl[T core.OperationContents] struct {
+	UnsignedOperationImpl[T]
 	Signature *tz.GenericSignature `json:"signature"`
 }
 
-func (*SignedOperation) RunOperationRequestContents() {}
+func (*SignedOperationImpl[T]) RunOperationRequestContents() {}
 
-func (op *SignedOperation) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
+func (op *SignedOperationImpl[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
 	if data, err = encoding.Decode(data, &op.Branch, encoding.Ctx(ctx)); err != nil {
 		return nil, err
 	}
@@ -39,9 +43,24 @@ func NewRunOperationRequest(op *SignedOperation, chain *tz.ChainID) *RunOperatio
 	}
 }
 
-type RunOperationRequest struct {
-	Operation RunOperationRequestContents `json:"operation"`
-	ChainID   *tz.ChainID                 `json:"chain_id"`
+func NewUnsignedOperation(branch *tz.BlockHash, contents []OperationContents) *UnsignedOperation {
+	return &UnsignedOperation{
+		Branch:   branch,
+		Contents: contents,
+	}
+}
+
+func NewSignedOperation(operation *UnsignedOperation, signature *tz.GenericSignature) *SignedOperation {
+	return &SignedOperation{
+		UnsignedOperationImpl: *operation,
+		Signature:             signature,
+	}
+}
+
+type RunOperationRequest = RunOperationRequestImpl[RunOperationRequestContents]
+type RunOperationRequestImpl[T RunOperationRequestContents] struct {
+	Operation T           `json:"operation"`
+	ChainID   *tz.ChainID `json:"chain_id"`
 }
 
 type RunOperationRequestContents interface {

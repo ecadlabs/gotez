@@ -198,16 +198,12 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 		}
 	}
 
-	groupZeroSig := latest.SignedOperation{
-		UnsignedOperation: *group,
-		Signature:         &tz.GenericSignature{},
-	}
-
+	groupZeroSig := latest.NewSignedOperation(group, &tz.GenericSignature{})
 	t.debug("teztool: dry run")
 	runResult, err := t.Client.RunOperation(ctx, &client.RunOperationRequest{
 		Chain:   t.ChainID.String(),
 		Block:   group.Branch.String(),
-		Payload: latest.NewRunOperationRequest(&groupZeroSig, t.ChainID),
+		Payload: latest.NewRunOperationRequest(groupZeroSig, t.ChainID),
 	})
 	if err != nil {
 		return err
@@ -264,13 +260,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 			gasFee.Div(gasFee, big.NewInt(1000)) // nanotez*gas to utez*gas
 
 			for {
-				dummyGrp := latest.SignedOperation{
-					UnsignedOperation: latest.UnsignedOperation{
-						Branch:   &tz.BlockHash{},
-						Contents: []latest.OperationContents{op},
-					},
-					Signature: &tz.GenericSignature{},
-				}
+				dummyGrp := latest.NewSignedOperation(latest.NewUnsignedOperation(&tz.BlockHash{}, []latest.OperationContents{op}), &tz.GenericSignature{})
 				var buf bytes.Buffer
 				if err := encoding.Encode(&buf, &dummyGrp); err != nil {
 					return err
@@ -324,12 +314,10 @@ func collectMilligasAndStorage(op core.OperationContents, constants core.Constan
 
 func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*latest.SignedOperation, error) {
 	// forge operation
-	operation := latest.SignedOperation{
-		UnsignedOperation: *grp,
-	}
+	operation := latest.NewSignedOperation(grp, &tz.GenericSignature{})
 
 	// hash the operation with magic byte added
-	var signReq protocol.SignRequest = (*protocol.GenericOperationSignRequest)(&operation.UnsignedOperation)
+	var signReq protocol.SignRequest = (*protocol.GenericOperationSignRequest)(&operation.UnsignedOperationImpl)
 	var signBytes bytes.Buffer
 	if err := encoding.Encode(&signBytes, &signReq); err != nil {
 		return nil, err
@@ -351,7 +339,7 @@ func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*l
 	default:
 		panic("invalid signature")
 	}
-	return &operation, nil
+	return operation, nil
 }
 
 func (t *Tool) scanBlock(ctx context.Context, hash *tz.BlockHash, op *tz.OperationHash, meta client.MetadataMode) (core.OperationsGroup, error) {

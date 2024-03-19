@@ -8,6 +8,8 @@ import (
 var (
 	Protocol               = core.Proto017PtNairob
 	NewRunOperationRequest = latest.NewRunOperationRequest
+	NewUnsignedOperation   = latest.NewUnsignedOperation
+	NewSignedOperation     = latest.NewSignedOperation
 )
 
 type OperationContents = latest.OperationContents

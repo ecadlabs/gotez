@@ -12,10 +12,8 @@ type Constants interface {
 	GetMaxMichelineBytesLimit() int32
 	GetMaxAllowedGlobalConstantsDepth() int32
 	GetMichelsonMaximumTypeSize() uint16
-	GetPreservedCycles() uint8
 	GetBlocksPerCycle() int32
 	GetBlocksPerCommitment() int32
-	GetBlocksPerStakeSnapshot() int32
 	GetHardGasLimitPerOperation() tz.BigInt
 	GetHardGasLimitPerBlock() tz.BigInt
 	GetProofOfWorkThreshold() int64
