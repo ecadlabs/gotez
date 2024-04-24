@@ -7,12 +7,25 @@ import (
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/ecadlabs/gotez/v2/protocol/core/expression"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca/lazy"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
 )
+
+type EpDefault = proto_012_Psithaca.EpDefault
+type EpRoot = proto_012_Psithaca.EpRoot
+type EpDo = proto_012_Psithaca.EpDo
+type EpSetDelegate = proto_012_Psithaca.EpSetDelegate
+type EpRemoveDelegate = proto_012_Psithaca.EpRemoveDelegate
+type EpDeposit = proto_015_PtLimaPt.EpDeposit
+type EpNamed = proto_012_Psithaca.EpNamed
+type EpStake = proto_018_Proxford.EpStake
+type EpUnstake = proto_018_Proxford.EpUnstake
+type EpFinalizeUnstake = proto_018_Proxford.EpFinalizeUnstake
+type EpSetDelegateParameters = proto_018_Proxford.EpSetDelegateParameters
 
 type Transaction = proto_018_Proxford.Transaction
 type Parameters = proto_018_Proxford.Parameters

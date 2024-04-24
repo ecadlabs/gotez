@@ -29,7 +29,9 @@ type VDFRevelation = proto_014_PtKathma.VDFRevelation
 type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type Preattestation = proto_018_Proxford.Preattestation
+type InlinedPreattestationContents = proto_018_Proxford.InlinedPreattestationContents
 type Attestation = proto_018_Proxford.Attestation
+type InlinedAttestationContents = proto_018_Proxford.InlinedAttestationContents
 type Reveal = proto_012_Psithaca.Reveal
 type Origination = proto_012_Psithaca.Origination
 type Delegation = proto_012_Psithaca.Delegation
@@ -41,6 +43,11 @@ type TransferTicket = proto_013_PtJakart.TransferTicket
 type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type Script = proto_012_Psithaca.Script
+type DALAttestation = proto_016_PtMumbai.DALAttestation
+type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContentsAndResult
+type DALPublishSlotHeader = proto_018_Proxford.DALPublishSlotHeader
+type DALPublishSlotHeaderContentsAndResult = proto_018_Proxford.DALPublishSlotHeaderContentsAndResult
+type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 
 type OperationContents interface {
 	core.OperationContents
