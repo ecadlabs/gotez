@@ -197,3 +197,17 @@ func (client *Client) Heads(ctx context.Context, r *HeadsRequest) (<-chan *Head,
 	return stream[Head](ctx, client, path.String(), params)
 }
 
+var path_IsBootstrapped = template.Must(template.New("path").Parse("/chains/{{.}}/is_bootstrapped"))
+
+func (client *Client) IsBootstrapped(ctx context.Context, r *ChainID) (*BootstrappedResponse, error) {
+	var path strings.Builder
+	if err := path_IsBootstrapped.Execute(&path, r); err != nil {
+		return nil, err
+	}
+	response := new(BootstrappedResponse)
+	if err := client.request(ctx, "GET", path.String(), nil, nil, response); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+

@@ -130,6 +130,14 @@ var types = []*typeDef{
 		Func:         "Heads",
 		ResponseType: "Head",
 	},
+	{
+		RequestType:  "ChainID",
+		Method:       "GET",
+		Path:         "/chains/{{.}}/is_bootstrapped",
+		Func:         "IsBootstrapped",
+		ResponseType: "BootstrappedResponse",
+		AllocMode:    ModeAllocate,
+	},
 }
 
 const tplSrc = `package client

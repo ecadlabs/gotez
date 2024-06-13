@@ -3,6 +3,8 @@ package client
 //go:generate go run generate.go
 
 import (
+	"strconv"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -97,6 +99,32 @@ type Head struct {
 }
 
 type Flag bool
+
+type BootstrappedResponse struct {
+	Bootstrapped bool
+	SyncState    SyncState
+}
+
+type SyncState uint8
+
+const (
+	SyncStateSynced SyncState = iota
+	SyncStateUnsynced
+	SyncStateStuck
+)
+
+func (state SyncState) String() string {
+	switch state {
+	case SyncStateSynced:
+		return "synced"
+	case SyncStateUnsynced:
+		return "unsynced"
+	case SyncStateStuck:
+		return "stuck"
+	default:
+		return strconv.FormatUint(uint64(state), 10)
+	}
+}
 
 func newConstants(p *tz.ProtocolHash) (Constants, error) { return protocol.NewConstants(p) }
 func newBlockInfo(p *tz.ProtocolHash) (BlockInfo, error) { return protocol.NewBlockInfo(p) }
