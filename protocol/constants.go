@@ -17,7 +17,7 @@ import (
 
 func NewConstants(proto *tz.ProtocolHash) (constants core.Constants, err error) {
 	switch *proto {
-	case core.Proto019PtParisB:
+	case core.Proto019PtParisB, core.Proto020PsParisC:
 		constants = new(proto_019_PtParisB.Constants)
 	case core.Proto018Proxford:
 		constants = new(proto_018_Proxford.Constants)

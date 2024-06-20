@@ -17,7 +17,7 @@ import (
 
 func NewDelegateInfo(proto *tz.ProtocolHash) (delegate core.DelegateInfo, err error) {
 	switch *proto {
-	case core.Proto019PtParisB:
+	case core.Proto019PtParisB, core.Proto020PsParisC:
 		delegate = new(proto_019_PtParisB.DelegateInfo)
 	case core.Proto018Proxford:
 		delegate = new(proto_018_Proxford.DelegateInfo)

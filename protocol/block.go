@@ -31,7 +31,7 @@ type BlockHeaderInfo interface {
 
 func NewBlockInfo(proto *tz.ProtocolHash) (BlockInfo, error) {
 	switch *proto {
-	case core.Proto019PtParisB:
+	case core.Proto019PtParisB, core.Proto020PsParisC:
 		return new(proto_019_PtParisB.BlockInfo), nil
 	case core.Proto018Proxford:
 		return new(proto_018_Proxford.BlockInfo), nil
@@ -54,7 +54,7 @@ func NewBlockInfo(proto *tz.ProtocolHash) (BlockInfo, error) {
 
 func NewBlockHeaderInfo(proto *tz.ProtocolHash) (BlockHeaderInfo, error) {
 	switch *proto {
-	case core.Proto019PtParisB:
+	case core.Proto019PtParisB, core.Proto020PsParisC:
 		return new(proto_019_PtParisB.BlockHeaderInfo), nil
 	case core.Proto018Proxford:
 		return new(proto_018_Proxford.BlockHeaderInfo), nil

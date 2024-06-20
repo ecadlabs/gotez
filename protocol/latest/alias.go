@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	Protocol               = core.Proto019PtParisB
+	Protocol               = core.Proto020PsParisC
 	NewRunOperationRequest = latest.NewRunOperationRequest
 	NewUnsignedOperation   = latest.NewUnsignedOperation
 	NewSignedOperation     = latest.NewSignedOperation
