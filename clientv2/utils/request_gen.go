@@ -5,6 +5,7 @@ import (
 	"strings"
 	"text/template"
 	client "github.com/ecadlabs/gotez/v2/clientv2"
+	"github.com/ecadlabs/gotez/v2/clientv2/internal/transport"
 	"github.com/ecadlabs/gotez/v2"
 )
 
@@ -24,7 +25,7 @@ func InjectOperation(ctx context.Context, cl *client.Client, r *InjectOperationR
 	}
 	payload := r.Payload
 	response := new(gotez.OperationHash)
-	if err := cl.Request(ctx, "POST", path.String(), params, payload, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "POST", path.String(), params, payload, response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -39,7 +40,7 @@ func IsBootstrapped(ctx context.Context, cl *client.Client, r *gotez.ChainID) (*
 		return nil, err
 	}
 	response := new(BootstrappedResponse)
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
 		return nil, err
 	}
 	return response, nil

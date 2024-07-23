@@ -47,6 +47,7 @@ import (
 	"strings"
 	"text/template"
 	client "github.com/ecadlabs/gotez/v2/clientv2"
+	"github.com/ecadlabs/gotez/v2/clientv2/internal/transport"
 	{{- range .Import}}
 	"{{.}}"
 	{{- end}}
@@ -69,7 +70,7 @@ func {{.Func}}(ctx context.Context, cl *client.Client, r *{{.RequestType}}) ({{i
 	}
 	{{end -}}
 	{{if .Stream -}}
-	return client.Stream[{{.ResponseType}}](ctx, cl, path.String(), {{if .QueryParams}}params{{else}}nil{{end}})
+	return transport.Stream[{{.ResponseType}}](ctx, (*transport.Transport)(cl), path.String(), {{if .QueryParams}}params{{else}}nil{{end}})
 	{{- else -}}
 	{{if eq .Method "POST" -}}
 	payload := r.Payload
@@ -84,7 +85,7 @@ func {{.Func}}(ctx context.Context, cl *client.Client, r *{{.RequestType}}) ({{i
 		return nil, err
 	}
 	{{end -}}
-	if err := cl.Request(ctx, "{{.Method}}", path.String(), {{if .QueryParams}}params{{else}}nil{{end}}, {{if eq .Method "POST" -}}payload{{else}}nil{{end}}, {{if eq .AllocMode "var"}}&{{end}}response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "{{.Method}}", path.String(), {{if .QueryParams}}params{{else}}nil{{end}}, {{if eq .Method "POST" -}}payload{{else}}nil{{end}}, {{if eq .AllocMode "var"}}&{{end}}response); err != nil {
 		return nil, err
 	}
 	return response, nil

@@ -5,6 +5,7 @@ import (
 	"strings"
 	"text/template"
 	client "github.com/ecadlabs/gotez/v2/clientv2"
+	"github.com/ecadlabs/gotez/v2/clientv2/internal/transport"
 	"github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
@@ -22,7 +23,7 @@ func Hash(ctx context.Context, cl *client.Client, r *SimpleRequest) (*gotez.Bloc
 		return nil, err
 	}
 	response := new(gotez.BlockHash)
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -37,7 +38,7 @@ func Protocols(ctx context.Context, cl *client.Client, r *SimpleRequest) (*core.
 		return nil, err
 	}
 	response := new(core.BlockProtocols)
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -52,7 +53,7 @@ func ShellHeader(ctx context.Context, cl *client.Client, r *SimpleRequest) (*cor
 		return nil, err
 	}
 	response := new(core.ShellHeader)
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -73,7 +74,7 @@ func Header(ctx context.Context, cl *client.Client, r *BlockRequest) (protocol.B
 	if err != nil {
 		return nil, err
 	}
-	if err := cl.Request(ctx, "GET", path.String(), params, nil, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), params, nil, response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -94,7 +95,7 @@ func Block(ctx context.Context, cl *client.Client, r *BlockRequest) (protocol.Bl
 	if err != nil {
 		return nil, err
 	}
-	if err := cl.Request(ctx, "GET", path.String(), params, nil, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), params, nil, response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -109,7 +110,7 @@ func ContractBalance(ctx context.Context, cl *client.Client, r *ContractRequest)
 		return nil, err
 	}
 	var response gotez.BigUint
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, &response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, &response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -124,7 +125,7 @@ func ContractBalanceAndFrozenBonds(ctx context.Context, cl *client.Client, r *Co
 		return nil, err
 	}
 	var response gotez.BigUint
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, &response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, &response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -139,7 +140,7 @@ func ContractCounter(ctx context.Context, cl *client.Client, r *ContractRequest)
 		return nil, err
 	}
 	var response gotez.BigUint
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, &response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, &response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -155,7 +156,7 @@ func RunOperation(ctx context.Context, cl *client.Client, r *RunOperationRequest
 	}
 	payload := r.Payload
 	response := new(latest.OperationWithOptionalMetadata)
-	if err := cl.Request(ctx, "POST", path.String(), nil, payload, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "POST", path.String(), nil, payload, response); err != nil {
 		return nil, err
 	}
 	return response, nil
@@ -173,7 +174,7 @@ func Constants(ctx context.Context, cl *client.Client, r *ContextRequest) (core.
 	if err != nil {
 		return nil, err
 	}
-	if err := cl.Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
+	if err := (*transport.Transport)(cl).Request(ctx, "GET", path.String(), nil, nil, response); err != nil {
 		return nil, err
 	}
 	return response, nil
