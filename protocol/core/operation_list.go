@@ -55,7 +55,7 @@ type OperationWithoutMetadata[T OperationContents] struct {
 
 func (op *OperationWithoutMetadata[T]) DecodeTZ(data []byte, ctx *encoding.Context) (rest []byte, err error) {
 	if len(data) < tz.GenericSignatureBytesLen {
-		return nil, encoding.ErrBuffer(len(data))
+		return nil, encoding.ErrBuffer{tz.GenericSignatureBytesLen, len(data)}
 	}
 	tmp := data[:len(data)-tz.GenericSignatureBytesLen]
 	data = data[len(data)-tz.GenericSignatureBytesLen:]

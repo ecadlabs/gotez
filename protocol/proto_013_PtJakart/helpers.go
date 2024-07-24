@@ -20,7 +20,7 @@ func (op *SignedOperation) DecodeTZ(data []byte, ctx *encoding.Context) (rest []
 		return nil, err
 	}
 	if len(data) < tz.GenericSignatureBytesLen {
-		return nil, encoding.ErrBuffer(len(data))
+		return nil, encoding.ErrBuffer{tz.GenericSignatureBytesLen, len(data)}
 	}
 	tmp := data[:len(data)-tz.GenericSignatureBytesLen]
 	data = data[len(data)-tz.GenericSignatureBytesLen:]

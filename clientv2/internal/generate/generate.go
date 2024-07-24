@@ -58,9 +58,9 @@ import (
 {{$template := print "path_" (replace .Func "." "_")}}
 var {{$template}} = template.Must(template.New("path").Parse("{{.Path}}"))
 
-func {{.Func}}(ctx context.Context, cl *client.Client, r *{{.RequestType}}) ({{if .Stream}}<-chan *{{.ResponseType}}, <-chan error{{else}}{{if .PtrResult}}*{{end}}{{.ResponseType}}{{end}}, error) {
+func {{.Func}}(ctx context.Context, cl *client.Client{{with .RequestType}}, r *{{.}}{{end}}) ({{if .Stream}}<-chan *{{.ResponseType}}, <-chan error{{else}}{{if .PtrResult}}*{{end}}{{.ResponseType}}{{end}}, error) {
 	var path strings.Builder
-	if err := {{$template}}.Execute(&path, r); err != nil {
+	if err := {{$template}}.Execute(&path, {{if .RequestType}}r{{else}}nil{{end}}); err != nil {
 		return {{if .Stream}}nil, {{end}}nil, err
 	}
 	{{with .QueryParams -}}

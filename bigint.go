@@ -12,14 +12,14 @@ type BigInt []byte
 
 func getLen(data []byte) (int, error) {
 	if len(data) < 1 {
-		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer(1))
+		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer{1, len(data)})
 	}
 	i := 0
 	for i < len(data) && data[i]&0x80 != 0 {
 		i += 1
 	}
 	if i == len(data) {
-		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer(i))
+		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer{i, len(data)})
 	}
 	return i + 1, nil
 }

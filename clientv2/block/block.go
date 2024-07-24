@@ -61,8 +61,9 @@ type RunOperationRequest struct {
 }
 
 type BasicBlockInfo struct {
-	Hash     *gotez.BlockHash
-	Protocol *gotez.ProtocolHash
+	Hash         *gotez.BlockHash
+	Protocol     *gotez.ProtocolHash
+	NextProtocol *gotez.ProtocolHash
 }
 
 // BasicInfo returns hash and protocol of the block (usually head) to be used for sequent requests
@@ -84,7 +85,8 @@ func BasicInfo(ctx context.Context, cl *client.Client, chain string, block strin
 	}
 
 	return &BasicBlockInfo{
-		Hash:     hash,
-		Protocol: proto.Protocol,
+		Hash:         hash,
+		Protocol:     proto.Protocol,
+		NextProtocol: proto.NextProtocol,
 	}, nil
 }

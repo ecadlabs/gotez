@@ -60,7 +60,7 @@ func (e *EnumRegistry) tryDecode(t reflect.Type, data []byte, ctx *Context, path
 		return reflect.Value{}, nil, nil
 	}
 	if len(data) < 1 {
-		return reflect.Value{}, nil, &Error{path, ErrBuffer(1)}
+		return reflect.Value{}, nil, &Error{path, ErrBuffer{1, len(data)}}
 	}
 	tag := data[0]
 	data = data[1:]

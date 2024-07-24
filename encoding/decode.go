@@ -7,10 +7,10 @@ import (
 	"reflect"
 )
 
-type ErrBuffer int
+type ErrBuffer [2]int
 
 func (err ErrBuffer) Error() string {
-	return fmt.Sprintf("buffer is too short, at least %d byte(s) were expected", err)
+	return fmt.Sprintf("buffer is too short, at least %d byte(s) were expected, had %d", err[0], err[1])
 }
 
 type Decoder interface {
@@ -24,7 +24,7 @@ func decodeInt(data []byte, out reflect.Value, path ErrorPath) (rest []byte, err
 	switch k {
 	case reflect.Int8, reflect.Uint8:
 		if len(data) < 1 {
-			return nil, &Error{path, ErrBuffer(1)}
+			return nil, &Error{path, ErrBuffer{1, len(data)}}
 		}
 		if k == reflect.Int8 {
 			out.SetInt(int64(data[0]))
@@ -35,7 +35,7 @@ func decodeInt(data []byte, out reflect.Value, path ErrorPath) (rest []byte, err
 
 	case reflect.Int16, reflect.Uint16:
 		if len(data) < 2 {
-			return nil, &Error{path, ErrBuffer(2)}
+			return nil, &Error{path, ErrBuffer{2, len(data)}}
 		}
 		v := be.Uint16(data)
 		if k == reflect.Int16 {
@@ -47,7 +47,7 @@ func decodeInt(data []byte, out reflect.Value, path ErrorPath) (rest []byte, err
 
 	case reflect.Int32, reflect.Uint32:
 		if len(data) < 4 {
-			return nil, &Error{path, ErrBuffer(4)}
+			return nil, &Error{path, ErrBuffer{4, len(data)}}
 		}
 		v := be.Uint32(data)
 		if k == reflect.Int32 {
@@ -59,7 +59,7 @@ func decodeInt(data []byte, out reflect.Value, path ErrorPath) (rest []byte, err
 
 	case reflect.Int64, reflect.Uint64:
 		if len(data) < 8 {
-			return nil, &Error{path, ErrBuffer(8)}
+			return nil, &Error{path, ErrBuffer{8, len(data)}}
 		}
 		v := be.Uint64(data)
 		if k == reflect.Int64 {
@@ -80,7 +80,7 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context, path ErrorPath)
 	switch {
 	case k == reflect.Bool:
 		if len(data) < 1 {
-			return nil, &Error{path, ErrBuffer(1)}
+			return nil, &Error{path, ErrBuffer{1, len(data)}}
 		}
 		out.SetBool(data[0] != 0)
 		return data[1:], nil
@@ -96,7 +96,7 @@ func decodeBuiltin(data []byte, out reflect.Value, ctx *Context, path ErrorPath)
 		l := typ.Len()
 		if typ.Elem().Kind() == reflect.Uint8 {
 			if len(data) < l {
-				return nil, &Error{path, ErrBuffer(l)}
+				return nil, &Error{path, ErrBuffer{l, len(data)}}
 			}
 			reflect.Copy(out, reflect.ValueOf(data[:l]))
 			return data[l:], nil
@@ -170,12 +170,12 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 			fl = fl[1:]
 			// get length
 			if len(data) < 4 {
-				return nil, &Error{path, ErrBuffer(4)}
+				return nil, &Error{path, ErrBuffer{4, len(data)}}
 			}
 			ln := be.Uint32(data)
 			data = data[4:]
 			if len(data) < int(ln) {
-				return nil, &Error{path, ErrBuffer(int(ln))}
+				return nil, &Error{path, ErrBuffer{int(ln), len(data)}}
 			}
 			tmp := data[:ln]
 			data = data[ln:]
@@ -190,7 +190,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 			}
 			// get flag
 			if len(data) < 1 {
-				return nil, &Error{path, ErrBuffer(1)}
+				return nil, &Error{path, ErrBuffer{1, len(data)}}
 			}
 			some := data[0] != 0
 			data = data[1:]
@@ -209,7 +209,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 			// special case for the pointer to a byte array
 			l := el.Len()
 			if len(data) < l {
-				return nil, &Error{path, ErrBuffer(l)}
+				return nil, &Error{path, ErrBuffer{l, len(data)}}
 			}
 			out.Set(reflect.ValueOf(data[:l]).Convert(out.Type()))
 			return data[l:], nil

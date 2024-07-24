@@ -44,11 +44,11 @@ type String string
 
 func (str *String) DecodeTZ(data []byte, ctx *encoding.Context) ([]byte, error) {
 	if len(data) < 1 {
-		return nil, fmt.Errorf("(string) %w", encoding.ErrBuffer(1))
+		return nil, fmt.Errorf("(string) %w", encoding.ErrBuffer{1, len(data)})
 	}
 	length := int(data[0])
 	if len(data) < 1+length {
-		return nil, fmt.Errorf("(string) %w", encoding.ErrBuffer(1))
+		return nil, fmt.Errorf("(string) %w", encoding.ErrBuffer{1 + length, len(data)})
 	}
 	*str = String(data[1 : length+1])
 	return data[length+1:], nil
