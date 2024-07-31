@@ -200,6 +200,15 @@ type TransactionInternalOperationResult interface {
 	GetNonce() uint16
 }
 
+func GetPseudoOperation(op OperationContents) (string, bool) {
+	if tx, ok := op.(Transaction); ok && tx.GetSource().Eq(tx.GetDestination()) {
+		if param, ok := tx.GetParameters().CheckUnwrap(); ok {
+			return param.GetEntrypoint(), true
+		}
+	}
+	return "", false
+}
+
 type Parameters interface {
 	GetEntrypoint() string
 	GetValue() expression.Expression
