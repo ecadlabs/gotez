@@ -10,6 +10,8 @@ var (
 	NewRunOperationRequest = latest.NewRunOperationRequest
 	NewUnsignedOperation   = latest.NewUnsignedOperation
 	NewSignedOperation     = latest.NewSignedOperation
+	ListOperations         = latest.ListOperations
+	ListPseudoOperations   = latest.ListPseudoOperations
 )
 
 type OperationContents = latest.OperationContents

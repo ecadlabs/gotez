@@ -42,8 +42,9 @@ type Parameters struct {
 	Value      expression.Expression `tz:"dyn" json:"value"`
 }
 
-func (p *Parameters) GetEntrypoint() string           { return p.Entrypoint.Entrypoint() }
-func (p *Parameters) GetValue() expression.Expression { return p.Value }
+func (p *Parameters) GetEntrypoint() string               { return p.Entrypoint.Entrypoint() }
+func (p *Parameters) GetEntrypointValue() core.Entrypoint { return p.Entrypoint }
+func (p *Parameters) GetValue() expression.Expression     { return p.Value }
 
 type Entrypoint interface {
 	core.Entrypoint
@@ -67,6 +68,22 @@ func init() {
 	})
 }
 
+type PseudoOperation interface {
+	core.PseudoOperation
+}
+
+func init() {
+	// Not used directly for protovol handling but it may be helpful to have a list of known pseudo-ops
+	encoding.RegisterEnum(&encoding.Enum[PseudoOperation]{
+		Variants: encoding.Variants[PseudoOperation]{
+			6: EpStake{},
+			7: EpUnstake{},
+			8: EpFinalizeUnstake{},
+			9: EpSetDelegateParameters{},
+		},
+	})
+}
+
 type EpDefault = proto_012_Psithaca.EpDefault
 type EpRoot = proto_012_Psithaca.EpRoot
 type EpDo = proto_012_Psithaca.EpDo
@@ -81,14 +98,18 @@ type EpFinalizeUnstake struct{}
 type EpSetDelegateParameters struct{}
 
 func (EpStake) Entrypoint() string                         { return "stake" }
+func (ep EpStake) PseudoOperation() string                 { return ep.Entrypoint() }
 func (ep EpStake) MarshalText() (text []byte, err error)   { return []byte(ep.Entrypoint()), nil }
 func (EpUnstake) Entrypoint() string                       { return "unstake" }
+func (ep EpUnstake) PseudoOperation() string               { return ep.Entrypoint() }
 func (ep EpUnstake) MarshalText() (text []byte, err error) { return []byte(ep.Entrypoint()), nil }
 func (EpFinalizeUnstake) Entrypoint() string               { return "finalize_unstake" }
+func (ep EpFinalizeUnstake) PseudoOperation() string       { return ep.Entrypoint() }
 func (ep EpFinalizeUnstake) MarshalText() (text []byte, err error) {
 	return []byte(ep.Entrypoint()), nil
 }
-func (EpSetDelegateParameters) Entrypoint() string { return "set_delegate_parameters" }
+func (EpSetDelegateParameters) Entrypoint() string         { return "set_delegate_parameters" }
+func (ep EpSetDelegateParameters) PseudoOperation() string { return ep.Entrypoint() }
 func (ep EpSetDelegateParameters) MarshalText() (text []byte, err error) {
 	return []byte(ep.Entrypoint()), nil
 }
@@ -193,3 +214,7 @@ func (r *TransactionInternalOperationResult) GetResult() core.ManagerOperationRe
 	return r.Result
 }
 func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }
+
+func ListPseudoOperations() []PseudoOperation {
+	return encoding.ListVariants[PseudoOperation]()
+}

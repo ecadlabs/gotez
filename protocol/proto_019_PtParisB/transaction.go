@@ -26,6 +26,7 @@ type EpStake = proto_018_Proxford.EpStake
 type EpUnstake = proto_018_Proxford.EpUnstake
 type EpFinalizeUnstake = proto_018_Proxford.EpFinalizeUnstake
 type EpSetDelegateParameters = proto_018_Proxford.EpSetDelegateParameters
+type PseudoOperation = proto_018_Proxford.PseudoOperation
 
 type Transaction = proto_018_Proxford.Transaction
 type Parameters = proto_018_Proxford.Parameters
@@ -132,3 +133,5 @@ func (r *TransactionInternalOperationResult) GetResult() core.ManagerOperationRe
 	return r.Result
 }
 func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }
+
+var ListPseudoOperations = proto_018_Proxford.ListPseudoOperations

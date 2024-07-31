@@ -159,6 +159,10 @@ type Entrypoint interface {
 	Entrypoint() string
 }
 
+type PseudoOperation interface {
+	PseudoOperation() string
+}
+
 type Signed interface {
 	GetSignature() (tz.Signature, error)
 }
@@ -200,17 +204,19 @@ type TransactionInternalOperationResult interface {
 	GetNonce() uint16
 }
 
-func GetPseudoOperation(op OperationContents) (string, bool) {
+func GetPseudoOperation(op OperationContents) (PseudoOperation, bool) {
 	if tx, ok := op.(Transaction); ok && tx.GetSource().Eq(tx.GetDestination()) {
 		if param, ok := tx.GetParameters().CheckUnwrap(); ok {
-			return param.GetEntrypoint(), true
+			op, ok := param.GetEntrypointValue().(PseudoOperation)
+			return op, ok
 		}
 	}
-	return "", false
+	return nil, false
 }
 
 type Parameters interface {
 	GetEntrypoint() string
+	GetEntrypointValue() Entrypoint
 	GetValue() expression.Expression
 }
 

@@ -36,8 +36,9 @@ type Parameters struct {
 	Value      expression.Expression `tz:"dyn" json:"value"`
 }
 
-func (p *Parameters) GetEntrypoint() string           { return p.Entrypoint.Entrypoint() }
-func (p *Parameters) GetValue() expression.Expression { return p.Value }
+func (p *Parameters) GetEntrypoint() string               { return p.Entrypoint.Entrypoint() }
+func (p *Parameters) GetEntrypointValue() core.Entrypoint { return p.Entrypoint }
+func (p *Parameters) GetValue() expression.Expression     { return p.Value }
 
 type Entrypoint interface {
 	core.Entrypoint
