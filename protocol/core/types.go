@@ -214,6 +214,13 @@ func GetPseudoOperation(op OperationContents) (PseudoOperation, bool) {
 	return nil, false
 }
 
+func GetOperationKind(op OperationContents) string {
+	if pop, ok := GetPseudoOperation(op); ok {
+		return pop.PseudoOperation()
+	}
+	return op.OperationKind()
+}
+
 type Parameters interface {
 	GetEntrypoint() string
 	GetEntrypointValue() Entrypoint
