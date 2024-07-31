@@ -226,7 +226,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 		var dec Decoder
 		if out.Type().Implements(decoderType) {
 			dec = out.Interface().(Decoder)
-		} else if reflect.PtrTo(out.Type()).Implements(decoderType) && out.CanAddr() {
+		} else if reflect.PointerTo(out.Type()).Implements(decoderType) && out.CanAddr() {
 			dec = out.Addr().Interface().(Decoder)
 		}
 		if dec != nil {
@@ -249,6 +249,7 @@ func decodeValue(data []byte, out reflect.Value, ctx *Context, fl []flag, path E
 			Path: append(path, err.Path...),
 			Err:  err.Err,
 		}
+		return nil, err
 	}
 	if val.IsValid() {
 		out.Set(val)

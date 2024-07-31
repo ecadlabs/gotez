@@ -175,7 +175,7 @@ func encodeValue(out io.Writer, val reflect.Value, ctx *Context, fl []flag, path
 	// concrete type
 	if val.Kind() != reflect.Interface {
 		// user type
-		if wantsVal := val.Type().Implements(encoderType); wantsVal || reflect.PtrTo(val.Type()).Implements(encoderType) && val.CanAddr() {
+		if wantsVal := val.Type().Implements(encoderType); wantsVal || reflect.PointerTo(val.Type()).Implements(encoderType) && val.CanAddr() {
 			var enc Encoder
 			if wantsVal {
 				enc = val.Interface().(Encoder)
