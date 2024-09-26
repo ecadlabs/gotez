@@ -2,7 +2,7 @@ package latest
 
 import (
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	latest "github.com/ecadlabs/gotez/v2/protocol/proto_019_PtParisB"
+	latest "github.com/ecadlabs/gotez/v2/protocol/proto_021_PsquebeC"
 )
 
 var (
@@ -62,7 +62,6 @@ type EndorsementContentsAndResult = latest.AttestationContentsAndResult
 type InlinedEndorsementContents = latest.InlinedAttestationContents
 type InlinedAttestationContents = latest.InlinedAttestationContents
 type DALAttestation = latest.DALAttestation
-type DALAttestationContentsAndResult = latest.DALAttestationContentsAndResult
 type Reveal = latest.Reveal
 type RevealContentsAndResult = latest.RevealContentsAndResult
 type Transaction = latest.Transaction
@@ -99,8 +98,8 @@ type SmartRollupExecuteOutboxMessage = latest.SmartRollupExecuteOutboxMessage
 type SmartRollupExecuteOutboxMessageContentsAndResult = latest.SmartRollupExecuteOutboxMessageContentsAndResult
 type SmartRollupRecoverBond = latest.SmartRollupRecoverBond
 type SmartRollupRecoverBondContentsAndResult = latest.SmartRollupRecoverBondContentsAndResult
-type DALPublishSlotHeader = latest.DALPublishSlotHeader
-type DALPublishSlotHeaderContentsAndResult = latest.DALPublishSlotHeaderContentsAndResult
+type DALPublishCommitment = latest.DALPublishCommitment
+type DALPublishCommitmentContentsAndResult = latest.DALPublishCommitmentContentsAndResult
 type ZkRollupOrigination = latest.ZkRollupOrigination
 type ZkRollupOriginationContentsAndResult = latest.ZkRollupOriginationContentsAndResult
 type ZkRollupPublish = latest.ZkRollupPublish
