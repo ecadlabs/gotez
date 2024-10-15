@@ -31,7 +31,6 @@ type FailingNoop = proto_012_Psithaca.FailingNoop
 type Preattestation = proto_018_Proxford.Preattestation
 type InlinedPreattestationContents = proto_018_Proxford.InlinedPreattestationContents
 type Attestation = proto_018_Proxford.Attestation
-type InlinedAttestationContents = proto_018_Proxford.InlinedAttestationContents
 type Reveal = proto_012_Psithaca.Reveal
 type Origination = proto_012_Psithaca.Origination
 type Delegation = proto_012_Psithaca.Delegation
@@ -102,6 +101,19 @@ type AttestationWithDAL struct {
 }
 
 func (*AttestationWithDAL) OperationKind() string { return "attestation_with_dal" }
+
+type InlinedAttestationContents interface {
+	proto_018_Proxford.InlinedAttestationContents
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[InlinedAttestationContents]{
+		Variants: encoding.Variants[InlinedAttestationContents]{
+			21: (*Attestation)(nil),
+			23: (*AttestationWithDAL)(nil),
+		},
+	})
+}
 
 //json:kind=OperationKind()
 type DALPublishCommitment struct {
