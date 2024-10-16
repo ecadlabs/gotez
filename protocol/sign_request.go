@@ -1,6 +1,8 @@
 package protocol
 
 import (
+	"fmt"
+
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/latest"
@@ -23,7 +25,7 @@ func (*BlockSignRequest) SignRequestKind() string   { return "block" }
 type PreattestationSignRequest struct {
 	Chain     *tz.ChainID
 	Branch    *tz.BlockHash
-	Operation latest.InlinedPreendorsementContents
+	Operation latest.InlinedPreattestationContents
 }
 
 type PreendorsementSignRequest = PreattestationSignRequest
@@ -35,20 +37,38 @@ func (r *PreattestationSignRequest) GetLevel() int32 {
 func (r *PreattestationSignRequest) GetRound() int32 {
 	return r.Operation.(*latest.Preattestation).Round
 }
-func (*PreattestationSignRequest) SignRequestKind() string { return "preendorsement" }
+func (*PreattestationSignRequest) SignRequestKind() string { return "preattestation" }
 
 type AttestationSignRequest struct {
 	Chain     *tz.ChainID
 	Branch    *tz.BlockHash
-	Operation latest.InlinedEndorsementContents
+	Operation latest.InlinedAttestationContents
 }
 
 type EndorsementSignRequest = AttestationSignRequest
 
 func (r *AttestationSignRequest) GetChainID() *tz.ChainID { return r.Chain }
-func (r *AttestationSignRequest) GetLevel() int32         { return r.Operation.(*latest.Attestation).Level }
-func (r *AttestationSignRequest) GetRound() int32         { return r.Operation.(*latest.Attestation).Round }
-func (*AttestationSignRequest) SignRequestKind() string   { return "endorsement" }
+func (r *AttestationSignRequest) GetLevel() int32 {
+	switch op := r.Operation.(type) {
+	case *latest.Attestation:
+		return op.Level
+	case *latest.AttestationWithDAL:
+		return op.Level
+	default:
+		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
+	}
+}
+func (r *AttestationSignRequest) GetRound() int32 {
+	switch op := r.Operation.(type) {
+	case *latest.Attestation:
+		return op.Round
+	case *latest.AttestationWithDAL:
+		return op.Round
+	default:
+		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
+	}
+}
+func (*AttestationSignRequest) SignRequestKind() string { return "attestation" }
 
 type GenericOperationSignRequest latest.UnsignedOperation
 
