@@ -56,6 +56,7 @@ type PreendorsementContentsAndResult = latest.PreattestationContentsAndResult
 type InlinedPreendorsementContents = latest.InlinedPreattestationContents
 type InlinedPreattestationContents = latest.InlinedPreattestationContents
 type Attestation = latest.Attestation
+type AttestationWithDAL = latest.AttestationWithDAL
 type AttestationContentsAndResult = latest.AttestationContentsAndResult
 type Endorsement = latest.Attestation
 type EndorsementContentsAndResult = latest.AttestationContentsAndResult
