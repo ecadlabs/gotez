@@ -1,4 +1,4 @@
-package proto_021_PsquebeC
+package proto_021_PsQuebec
 
 //go:generate go run ../../cmd/genmarshaller.go
 

@@ -1,4 +1,4 @@
-package proto_021_PsquebeC
+package proto_021_PsQuebec
 
 import (
 	tz "github.com/ecadlabs/gotez/v2"
