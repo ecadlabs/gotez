@@ -20,3 +20,19 @@ func (self *SmartRollupCementContentsAndResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(tmp)
 }
 
+func (self *DALPublishSlotHeaderContentsAndResult) MarshalJSON() ([]byte, error) {
+	type DALPublishSlotHeaderContentsAndResult_no_json_marshaller DALPublishSlotHeaderContentsAndResult
+
+	type json_DALPublishSlotHeaderContentsAndResult struct {
+		Marker0 any `json:"kind"`
+		DALPublishSlotHeaderContentsAndResult_no_json_marshaller
+	}
+
+	tmp := json_DALPublishSlotHeaderContentsAndResult {
+		Marker0: self.OperationKind(),
+		DALPublishSlotHeaderContentsAndResult_no_json_marshaller: DALPublishSlotHeaderContentsAndResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+

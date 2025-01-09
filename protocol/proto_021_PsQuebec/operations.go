@@ -45,11 +45,9 @@ type TransferTicket = proto_013_PtJakart.TransferTicket
 type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type Script = proto_012_Psithaca.Script
-type DALAttestation = proto_016_PtMumbai.DALAttestation
-type DALPublishSlotHeader = proto_018_Proxford.DALPublishSlotHeader
 type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALPublishCommitment = proto_019_PtParisB.DALPublishCommitment
-
+type DALPublishCommitmentResult = proto_018_Proxford.DALPublishSlotHeaderResult
 type OperationContents = proto_019_PtParisB.OperationContents
 
 type OperationContentsAndResult interface {
@@ -125,10 +123,15 @@ func (op *SeedNonceRevelationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+type DoubleAttestationEvidenceMetadata struct {
+	ForbiddenDelegate tz.Option[tz.PublicKeyHash] `json:"forbidden_delegate"`
+	BalanceUpdates
+}
+
 //json:kind=OperationKind()
 type DoubleAttestationEvidenceContentsAndResult struct {
 	DoubleAttestationEvidence
-	Metadata BalanceUpdates `json:"metadata"`
+	Metadata DoubleAttestationEvidenceMetadata `json:"metadata"`
 }
 
 func (*DoubleAttestationEvidenceContentsAndResult) OperationContentsAndResult() {}
@@ -139,7 +142,7 @@ func (op *DoubleAttestationEvidenceContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DoubleBakingEvidenceContentsAndResult struct {
 	DoubleBakingEvidence
-	Metadata BalanceUpdates `json:"metadata"`
+	Metadata DoubleAttestationEvidenceMetadata `json:"metadata"`
 }
 
 func (*DoubleBakingEvidenceContentsAndResult) OperationContentsAndResult() {}
@@ -161,7 +164,7 @@ func (op *ActivateAccountContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DoublePreattestationEvidenceContentsAndResult struct {
 	DoublePreattestationEvidence
-	Metadata BalanceUpdates `json:"metadata"`
+	Metadata DoubleAttestationEvidenceMetadata `json:"metadata"`
 }
 
 func (*DoublePreattestationEvidenceContentsAndResult) OperationContentsAndResult() {}
@@ -252,7 +255,7 @@ func (op *RevealContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DelegationContentsAndResult struct {
 	Delegation
-	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
+	Metadata ManagerMetadata[DelegationResult] `json:"metadata"`
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
@@ -285,7 +288,7 @@ func (op *SetDepositsLimitContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DALPublishCommitmentContentsAndResult struct {
 	DALPublishCommitment
-	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
+	Metadata ManagerMetadata[DALPublishCommitmentResult] `json:"metadata"`
 }
 
 func (*DALPublishCommitmentContentsAndResult) OperationContentsAndResult() {}
@@ -502,7 +505,40 @@ func (r *OriginationInternalOperationResult) GetResult() core.ManagerOperationRe
 }
 func (*OriginationInternalOperationResult) OperationKind() string { return "origination" }
 
-type DelegationInternalOperationResult = proto_014_PtKathma.DelegationInternalOperationResult
+type DelegationResult interface {
+	core.ManagerOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[DelegationResult]{
+		Variants: encoding.Variants[DelegationResult]{
+			0: (*core.OperationResultApplied[*DelegationResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*DelegationResultContents])(nil),
+		},
+	})
+}
+
+type DelegationResultContents struct {
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
+	BalanceUpdates
+}
+
+//json:kind=OperationKind()
+type DelegationInternalOperationResult struct {
+	Source   core.TransactionDestination `json:"source"`
+	Nonce    uint16                      `json:"nonce"`
+	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`
+	Result   DelegationResult            `json:"result"`
+}
+
+func (r *DelegationInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
+func (*DelegationInternalOperationResult) OperationKind() string                    { return "delegation" }
+func (r *DelegationInternalOperationResult) GetResult() core.ManagerOperationResult {
+	return r.Result
+}
+
 type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
 
 type SuccessfulManagerOperationResult interface {

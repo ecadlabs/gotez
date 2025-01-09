@@ -362,14 +362,14 @@ func (op *DrainDelegateContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DALPublishSlotHeader struct {
 	ManagerOperation
-	SlotHeader SlotHeader `json:"slot_header"`
+	SlotHeader DALSlotHeader `json:"slot_header"`
 }
 
-type SlotHeader struct {
+type DALSlotHeader struct {
 	Level           int32             `json:"level"`
 	Index           uint8             `json:"index"`
 	Сommitment      *tz.DALCommitment `json:"commitment"`
-	CommitmentProof *tz.Bytes48       `json:"commitment_proof"`
+	CommitmentProof *tz.Bytes96       `json:"commitment_proof"`
 }
 
 func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_header" }

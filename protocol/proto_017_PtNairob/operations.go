@@ -3,6 +3,7 @@ package proto_017_PtNairob
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
+	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
@@ -53,7 +54,6 @@ type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContents
 type DoubleBakingEvidence = proto_016_PtMumbai.DoubleBakingEvidence
 type DoubleBakingEvidenceContentsAndResult = proto_016_PtMumbai.DoubleBakingEvidenceContentsAndResult
 type DALPublishSlotHeader = proto_016_PtMumbai.DALPublishSlotHeader
-type DALPublishSlotHeaderContentsAndResult = proto_016_PtMumbai.DALPublishSlotHeaderContentsAndResult
 type Origination = proto_012_Psithaca.Origination
 type OriginationContentsAndResult = proto_016_PtMumbai.OriginationContentsAndResult
 type Transaction = proto_015_PtLimaPt.Transaction
@@ -68,11 +68,47 @@ type ZkRollupUpdate = proto_016_PtMumbai.ZkRollupUpdate
 type ZkRollupUpdateContentsAndResult = proto_016_PtMumbai.ZkRollupUpdateContentsAndResult
 type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
 type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
-
 type BalanceUpdates = proto_016_PtMumbai.BalanceUpdates
 type InternalOperationResult = proto_016_PtMumbai.InternalOperationResult
 type SuccessfulManagerOperationResult = proto_016_PtMumbai.SuccessfulManagerOperationResult
 type OperationContents = proto_016_PtMumbai.OperationContents
+
+//json:kind=OperationKind()
+type DALPublishSlotHeaderContentsAndResult struct {
+	DALPublishSlotHeader
+	Metadata proto_016_PtMumbai.ManagerMetadata[DALPublishSlotHeaderResult] `json:"metadata"`
+}
+
+func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
+func (op *DALPublishSlotHeaderContentsAndResult) GetMetadata() any {
+	return &op.Metadata
+}
+
+type DALSlotHeaderResult struct {
+	Level      int32             `json:"level"`
+	Index      uint8             `json:"index"`
+	Сommitment *tz.DALCommitment `json:"commitment"`
+}
+
+type DALPublishSlotHeaderResult interface {
+	core.ManagerOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[DALPublishSlotHeaderResult]{
+		Variants: encoding.Variants[DALPublishSlotHeaderResult]{
+			0: (*core.OperationResultApplied[*DALPublishSlotHeaderResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*DALPublishSlotHeaderResultContents])(nil),
+		},
+	})
+}
+
+type DALPublishSlotHeaderResultContents struct {
+	SlotHeader       DALSlotHeaderResult `json:"slot_header"`
+	ConsumedMilligas tz.BigUint          `json:"consumed_milligas"`
+}
 
 type OperationContentsAndResult interface {
 	core.OperationContentsAndResult

@@ -23,26 +23,21 @@ var testData = []protoTestData{
 	{
 		proto: &core.Proto021PsQuebec,
 		blocks: []string{
-			"155262",
-			"155263",
-			"155264",
-			"155265",
-			"155266",
-			"155267",
-			"155268",
-			"155269",
-			"155270",
-			"155271",
-			"155272",
-			"155273",
-			"155274",
-			"155275",
-			"155276",
-			"155277",
-			"155278",
-			"155279",
-			"155280",
-			"155281",
+			"1196001",
+			"1196033",
+			"1196086",
+			"1197064",
+			"1197095",
+			"1197101",
+			"1197107",
+			"1197158",
+			"1197165",
+			"1197167",
+			"1197183",
+			"1233892",
+			"1234288",
+			"1234330",
+			"775785",
 		},
 	},
 	{
@@ -168,7 +163,11 @@ func TestBlock(t *testing.T) {
 					require.NoError(t, err)
 					_, err = encoding.Decode(buf, out, encoding.Dynamic())
 					if !assert.NoError(t, err) {
-						//pretty.Println(out)
+						//c := spew.NewDefaultConfig()
+						//c.DisableMethods = true
+						//c.Dump(out)
+						//j, _ := json.MarshalIndent(out, "", "    ")
+						//fmt.Println(string(j))
 						if err, ok := err.(*encoding.Error); ok {
 							fmt.Println(err.Path)
 						}

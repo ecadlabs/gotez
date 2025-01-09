@@ -62,7 +62,6 @@ type Endorsement = latest.Attestation
 type EndorsementContentsAndResult = latest.AttestationContentsAndResult
 type InlinedEndorsementContents = latest.InlinedAttestationContents
 type InlinedAttestationContents = latest.InlinedAttestationContents
-type DALAttestation = latest.DALAttestation
 type Reveal = latest.Reveal
 type RevealContentsAndResult = latest.RevealContentsAndResult
 type Transaction = latest.Transaction

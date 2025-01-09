@@ -1,0 +1,1105 @@
+{
+  "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+  "chain_id": "NetXuTeGinLEqxp",
+  "hash": "BL7XeVzetX7DtTazteSFYtyRKvni5Sf3w5uDc1H3hHCPodxjRZu",
+  "header": {
+    "level": 1197167,
+    "proto": 2,
+    "predecessor": "BMPPqV26khQQwmWBHBunKBjqN1QDuK1GTAz5Hf8k5VwsiJPmXUK",
+    "timestamp": "2025-01-07T22:24:54Z",
+    "validation_pass": 4,
+    "operations_hash": "LLoafZJVWTLxX6m45TtHF91832qbiTa2bmsiV9yPjrWVVTitzFGeu",
+    "fitness": [
+      "02",
+      "0012446f",
+      "",
+      "ffffffff",
+      "00000000"
+    ],
+    "context": "CoW5doNWc6EbHknrSyLhp1GSpuscGhg2u25thHLPTihzrAkusxV6",
+    "payload_hash": "vh1wCHzrKeeakaZnM2oL9JMawfi8YeFSfMCVZsMMFSr9KUarBLMT",
+    "payload_round": 0,
+    "proof_of_work_nonce": "5ab976bc00000000",
+    "liquidity_baking_toggle_vote": "pass",
+    "adaptive_issuance_vote": "pass",
+    "signature": "sigfdBTsshu8RF5qrfEJqLyht5CrQA6wcz23ugNyK4yoFu4jtJ8BFTJJBH9WA4z1q1fPyd2w7dwcHmwDRkYAGWwfy6noBHGt"
+  },
+  "metadata": {
+    "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+    "next_protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+    "test_chain_status": {
+      "status": "not_running"
+    },
+    "max_operations_ttl": 187,
+    "max_operation_data_length": 32768,
+    "max_block_header_length": 289,
+    "max_operation_list_length": [
+      {
+        "max_size": 4194304,
+        "max_op": 2048
+      },
+      {
+        "max_size": 32768
+      },
+      {
+        "max_size": 135168,
+        "max_op": 132
+      },
+      {
+        "max_size": 524288
+      }
+    ],
+    "proposer": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+    "baker": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+    "level_info": {
+      "level": 1197167,
+      "level_position": 1197166,
+      "cycle": 5703,
+      "cycle_position": 82,
+      "expected_commitment": false
+    },
+    "voting_period_info": {
+      "voting_period": {
+        "index": 5703,
+        "kind": "proposal",
+        "start_position": 1197084
+      },
+      "position": 82,
+      "remaining": 127
+    },
+    "nonce_hash": null,
+    "deactivated": [],
+    "balance_updates": [
+      {
+        "kind": "accumulator",
+        "category": "block fees",
+        "change": "-1722",
+        "origin": "block"
+      },
+      {
+        "kind": "contract",
+        "contract": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+        "change": "1722",
+        "origin": "block"
+      },
+      {
+        "kind": "minted",
+        "category": "baking rewards",
+        "change": "-177051708",
+        "origin": "block"
+      },
+      {
+        "kind": "freezer",
+        "category": "deposits",
+        "staker": {
+          "baker_own_stake": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD"
+        },
+        "change": "177051708",
+        "origin": "block"
+      },
+      {
+        "kind": "minted",
+        "category": "baking rewards",
+        "change": "-1300946",
+        "origin": "block"
+      },
+      {
+        "kind": "contract",
+        "contract": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+        "change": "1300946",
+        "origin": "block"
+      },
+      {
+        "kind": "minted",
+        "category": "baking bonuses",
+        "change": "-176985071",
+        "origin": "block"
+      },
+      {
+        "kind": "freezer",
+        "category": "deposits",
+        "staker": {
+          "baker_own_stake": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD"
+        },
+        "change": "176985071",
+        "origin": "block"
+      },
+      {
+        "kind": "minted",
+        "category": "baking bonuses",
+        "change": "-1300456",
+        "origin": "block"
+      },
+      {
+        "kind": "contract",
+        "contract": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+        "change": "1300456",
+        "origin": "block"
+      }
+    ],
+    "liquidity_baking_toggle_ema": 0,
+    "adaptive_issuance_vote_ema": 0,
+    "adaptive_issuance_activation_cycle": 5,
+    "implicit_operations_results": [
+      {
+        "kind": "transaction",
+        "storage": [
+          {
+            "int": "1"
+          },
+          {
+            "int": "399236850317"
+          },
+          {
+            "int": "100"
+          },
+          {
+            "bytes": "01e927f00ef734dfc85919635e9afc9166c83ef9fc00"
+          },
+          {
+            "bytes": "0115eb0104481a6d7921160bc982c5e0a561cd8a3a00"
+          }
+        ],
+        "balance_updates": [
+          {
+            "kind": "minted",
+            "category": "subsidy",
+            "change": "-333333",
+            "origin": "subsidy"
+          },
+          {
+            "kind": "contract",
+            "contract": "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5",
+            "change": "333333",
+            "origin": "subsidy"
+          }
+        ],
+        "consumed_milligas": "206532",
+        "storage_size": "4632"
+      }
+    ],
+    "proposer_consensus_key": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+    "baker_consensus_key": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+    "consumed_milligas": "1615000",
+    "dal_attestation": "0"
+  },
+  "operations": [
+    [
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "onmyU4v9HpXKmVhUib4v2skUAGdBcNj9ui5ADjHSG7bk23SxrqJ",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 0,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1VigrUuQDe1EikkGQTWGMS6JVkaKb1rnx1",
+              "consensus_power": 158,
+              "consensus_key": "tz1VigrUuQDe1EikkGQTWGMS6JVkaKb1rnx1"
+            }
+          }
+        ],
+        "signature": "sigvusDf7Hax65YxkoeSSUHPzuyFJuM3AzJx8Ur4L148fYjYDr11fviWgdGo9RojGTSpBLB8Q5jZ9RtgLooz8b4hAWVN57Tx"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "ooRj4zn7QwC17f6SECxsp82NbtkwXPccbNQ1owb1ZP9ESYw7NBi",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 1,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1TnEtqDV9mZyts2pfMy6Jw1BTPs4LMjL8M",
+              "consensus_power": 1093,
+              "consensus_key": "tz1TnEtqDV9mZyts2pfMy6Jw1BTPs4LMjL8M"
+            }
+          }
+        ],
+        "signature": "sigNN23y8qrRnjoYsxsFH8pbfpqqy1AcAuENsqj72QEaBShNogiVsQKvhDtbBUhp5WXtqEyNmFXa5TVuiek3wHo8Rv8S9F4t"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "ooK6RxStKsXwFfGhskG1PGnn885fFCGL1o7pvkF8KUrMvhdRp6H",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 2,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1TGKSrZrBpND3PELJ43nVdyadoeiM1WMzb",
+              "consensus_power": 984,
+              "consensus_key": "tz1TGKSrZrBpND3PELJ43nVdyadoeiM1WMzb"
+            }
+          }
+        ],
+        "signature": "sigsw32Yxng1qfqzX1SmWasoGVjqE7oxbMFZ8KAcHACwnP31GcECQ6vBop1zvv4HhvvCiRCGQpSGRQAJDzTwy5CBexya5vfw"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "oo1PYGt1PACb3pKLwGj7vkwvzQDq3ZtisLJBW7wXt7XGtRXe8Kj",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation_with_dal",
+            "slot": 3,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "dal_attestation": "0",
+            "metadata": {
+              "delegate": "tz1Zt8QQ9aBznYNk5LUBjtME9DuExomw9YRs",
+              "consensus_power": 1374,
+              "consensus_key": "tz1Zt8QQ9aBznYNk5LUBjtME9DuExomw9YRs"
+            }
+          }
+        ],
+        "signature": "sigSpqras1FVQw5vZVRMM2rqnAFxp3zQphaSvZjSVWoTBDNYJ9cRL2R7PgBcWN7JfFxmPdf8umksJdxdfsCkyDBjr8s7C5jR"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "oogBAK7VMX25tucqsgoNfBPNfDUzfgHu2tnCW2fXAquvUbSuRBs",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 4,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz3Q1fwk1vh3zm5LqyUV9e2wZBdaEXcovh2r",
+              "consensus_power": 1482,
+              "consensus_key": "tz3Q1fwk1vh3zm5LqyUV9e2wZBdaEXcovh2r"
+            }
+          }
+        ],
+        "signature": "sigd7hXU8PZ76TDQ4op4sV6UiRmqtPw6L2TBKeL8tCtar6MHhb56zEtk2KU39eS1iHA6ubbQujkRmsQmQVKVWpXVGwEZf9y2"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "ooUvbwJHEqu4J3gou4nhFy65kbsNbwfVU2985SFA4nDFdyX8tbX",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation_with_dal",
+            "slot": 9,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "dal_attestation": "0",
+            "metadata": {
+              "delegate": "tz1NNT9EERmcKekRq2vdv6e8TL3WQpY8AXSF",
+              "consensus_power": 297,
+              "consensus_key": "tz1NNT9EERmcKekRq2vdv6e8TL3WQpY8AXSF"
+            }
+          }
+        ],
+        "signature": "sigRuebxmrzqkui42FJpCv2V71xYdWuKaxd29AUEZXpUnUYWAu5oLVodWaZaxYEtbUnWDU5LdqfsN9UG9EJQZrGr898MMciK"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "op2Q7iqxGKUqjkAq23FoevJNKXjNHsgqq4m5CcxLaYLgMfwagPY",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 14,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1N29q5T3jJ2i1JEWHax7q1NRkDMADj6fof",
+              "consensus_power": 393,
+              "consensus_key": "tz1N29q5T3jJ2i1JEWHax7q1NRkDMADj6fof"
+            }
+          }
+        ],
+        "signature": "sigYy44EiofmyV45WjXEeYjQUAJeFXxJawToSJfSsBtNkEthmK78Kuw5CfB5Mzmrc5REnY2nLUhiMfBUKgX2jUhEqHWbGrQA"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "oozvLQ18Q7pMRp9gESCp8Dn1AD9q65VUdKvfFJ4WMeo5rts9Xic",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 17,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+              "consensus_power": 410,
+              "consensus_key": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD"
+            }
+          }
+        ],
+        "signature": "sigwMKW7vU4eiN17EZES1yuNZhpjkYr23UAKUZAvYRcWVv3dyDAiXtiZeUHB6Z4Vsnf5QnN4ox3EwSkFE7ue25wjeE22H4eH"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "onowTmYPoxaGxsYyru8A44qjNpuwjWCF49STmKns1UN2pMyqqi9",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 29,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1RuHDSj9P7mNNhfKxsyLGRDahTX5QD1DdP",
+              "consensus_power": 388,
+              "consensus_key": "tz1RuHDSj9P7mNNhfKxsyLGRDahTX5QD1DdP"
+            }
+          }
+        ],
+        "signature": "signhVKW8JXYxsVXMF85Hg4cTDFeRaiZCs8ieoQd7hnCXDLAD2NNPGtNcnU7njXAEnCgD37mMgk3JGYGwWBoYNGQVVD4YL8z"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "opV6RpPW3U4jCzLAtsPj75Xye8jyTUS3Ma8ys26GYmKu6bqk7Ph",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 39,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1VigxFsaiceHojGNfEKMsPHuL8sxK4t7jZ",
+              "consensus_power": 188,
+              "consensus_key": "tz1VigxFsaiceHojGNfEKMsPHuL8sxK4t7jZ"
+            }
+          }
+        ],
+        "signature": "sigimXjR3rMbBTFRi62tyLeuACwSpmm7Xds2P3eJNHyTvDNh79wg5GP1msbV9cCfkTX6kNAAoYG4Y8V6PbgGpry3pGhRm9XA"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "opQhWM1afXZV5piKYgt91wszUhJWDnitain7mznfrThCMJFEeUA",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 113,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1eP8LwL56Cxki6Dri4a3SVGWuYGm5TG5mj",
+              "consensus_power": 64,
+              "consensus_key": "tz1eP8LwL56Cxki6Dri4a3SVGWuYGm5TG5mj"
+            }
+          }
+        ],
+        "signature": "sigbz8GnhcnGKw3sfbcPPNdbMavAiacL6Bq543tisGhztHsvN9W3is1Vw3cq1eoPK7zQqrAebDHAucs6BTiRAzVTpfmudHZT"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "opXpKXQBjYYSnCJi7kogTP2tVsg1ADxxyFSEgHAzyDTc91QmWLT",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 151,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1ViGA65hAiAvWonzuc4ndnUkztCnbDTsFj",
+              "consensus_power": 144,
+              "consensus_key": "tz1ViGA65hAiAvWonzuc4ndnUkztCnbDTsFj"
+            }
+          }
+        ],
+        "signature": "sigvgZUfQVm9gkEFuYj2XemAYQV6Gp91PAULW678i87eJesSfbPfAqFiPzQ8ezgwKNwPhrtNkwZXSNSuFDSifhtL5habqY1M"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "ooT3JHwJnQ8QZmifuMAzKauKGy1qkpW8a5UZjGprHkP5P9yr9jf",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation_with_dal",
+            "slot": 225,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "dal_attestation": "0",
+            "metadata": {
+              "delegate": "tz3WHnWQBDK81Y2yAf8vwrqByB5Za9ghRe3Z",
+              "consensus_power": 6,
+              "consensus_key": "tz3WHnWQBDK81Y2yAf8vwrqByB5Za9ghRe3Z"
+            }
+          }
+        ],
+        "signature": "siguqsB3wArVfuoM9r6xxKmKDVSapokYW9eR656A1P4pm6JoRijWwumwmVQ89KUsQ2G6b57viqQHszXGemfHUVSWAU9SWvTM"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "op592J5xtR44rDEvD1QfVvgSMHbAf3MK5AicEhGqW6v6sxZt211",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 270,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1QodY9iQFuZMTQcdYf5RLqDMt9yBrKcGUh",
+              "consensus_power": 5,
+              "consensus_key": "tz3eMwb4rMQaD7wDc1zPSdoV3Cb2ta6yV9g8"
+            }
+          }
+        ],
+        "signature": "sigTAGWXfkgG3sk9AeNXH4KfCt6szWNRnsH23vyB623EA5JKY8kF4a4vyHE2r26BAqEDcLY2zt5HVk2sXz8A6S1dTL3qNKFX"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "opThLYw4cC5jRqwYojCF3CYnQKLsgw6eJyABMULE3NZ3VnpKDN5",
+        "branch": "BMVvKCG57SQ52WQJGDbm3pXZa6f8v1hsdr7YLNzQmK9zLTxjJiL",
+        "contents": [
+          {
+            "kind": "attestation",
+            "slot": 1073,
+            "level": 1197166,
+            "round": 0,
+            "block_payload_hash": "vh2v2EPsZxEW8yEC3BZFiGCChqnunv6Hiri81AkmzCTtgUoiTLe5",
+            "metadata": {
+              "delegate": "tz1WAiurJ6xvdK9gmLJ5tasLiLoXSSFPufjT",
+              "consensus_power": 14,
+              "consensus_key": "tz1WAiurJ6xvdK9gmLJ5tasLiLoXSSFPufjT"
+            }
+          }
+        ],
+        "signature": "siggYnjSqucranGG9QRXSio2NNCDz2iZhUqg9KNyZKBKocYgeSsKxddUQrFmFvp4pzUiUsnWs1NpabNPRBgrtmF3JwCdnoHv"
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "oodwMSq1pckMvPD12qtewHLFCt4VfY4nRbBmJLBz3RcKqjNqH2U",
+        "branch": "BMQybFSzHBfNpjZ2Km9CzhAtGfmXUpVYqhMGxu5bypMNb1vCyu1",
+        "contents": [
+          {
+            "kind": "reveal",
+            "source": "tz2URENcy6iEf2deZhNeP4TijgCXwscj6PpX",
+            "fee": "331",
+            "counter": "20000",
+            "gas_limit": "574",
+            "storage_limit": "0",
+            "public_key": "sppk7asPy4FkKYckYmaB2fbJFk3VTqggyJPHvBdeHrRf7JsGCtPPHjj",
+            "metadata": {
+              "balance_updates": [
+                {
+                  "kind": "contract",
+                  "contract": "tz2URENcy6iEf2deZhNeP4TijgCXwscj6PpX",
+                  "change": "-331",
+                  "origin": "block"
+                },
+                {
+                  "kind": "accumulator",
+                  "category": "block fees",
+                  "change": "331",
+                  "origin": "block"
+                }
+              ],
+              "operation_result": {
+                "status": "applied",
+                "consumed_milligas": "156469"
+              }
+            }
+          },
+          {
+            "kind": "delegation",
+            "source": "tz2URENcy6iEf2deZhNeP4TijgCXwscj6PpX",
+            "fee": "345",
+            "counter": "20001",
+            "gas_limit": "100",
+            "storage_limit": "0",
+            "delegate": "tz1cjyja1TU6fiyiFav3mFAdnDsCReJ12hPD",
+            "metadata": {
+              "balance_updates": [
+                {
+                  "kind": "contract",
+                  "contract": "tz2URENcy6iEf2deZhNeP4TijgCXwscj6PpX",
+                  "change": "-345",
+                  "origin": "block"
+                },
+                {
+                  "kind": "accumulator",
+                  "category": "block fees",
+                  "change": "345",
+                  "origin": "block"
+                }
+              ],
+              "operation_result": {
+                "status": "applied",
+                "consumed_milligas": "100000"
+              }
+            }
+          }
+        ],
+        "signature": "sigcyDYoRQeLLhJZWrrdip2Le4puKpXGBtUhR6zjbTjDawcD6Jt8z4aKL2NaZQdMd5U4Fe8M8nepuxNWPkNm6rKN4iMboPUG"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "opPdXpeqL7gQ3BWTioFwpcripqwuWESQWYVPHY2rjdx1egDFcCN",
+        "branch": "BMQybFSzHBfNpjZ2Km9CzhAtGfmXUpVYqhMGxu5bypMNb1vCyu1",
+        "contents": [
+          {
+            "kind": "transaction",
+            "source": "tz2GMa6BiVUGMVs1WXu2UE1xNV1hvZjddovB",
+            "fee": "290",
+            "counter": "6553",
+            "gas_limit": "155",
+            "storage_limit": "0",
+            "amount": "2000000",
+            "destination": "tz1ZfrERcALBwmAqwonRXYVQBDT9BjNjBHJu",
+            "metadata": {
+              "balance_updates": [
+                {
+                  "kind": "contract",
+                  "contract": "tz2GMa6BiVUGMVs1WXu2UE1xNV1hvZjddovB",
+                  "change": "-290",
+                  "origin": "block"
+                },
+                {
+                  "kind": "accumulator",
+                  "category": "block fees",
+                  "change": "290",
+                  "origin": "block"
+                }
+              ],
+              "operation_result": {
+                "status": "applied",
+                "balance_updates": [
+                  {
+                    "kind": "contract",
+                    "contract": "tz2GMa6BiVUGMVs1WXu2UE1xNV1hvZjddovB",
+                    "change": "-2000000",
+                    "origin": "block"
+                  },
+                  {
+                    "kind": "contract",
+                    "contract": "tz1ZfrERcALBwmAqwonRXYVQBDT9BjNjBHJu",
+                    "change": "2000000",
+                    "origin": "block"
+                  }
+                ],
+                "consumed_milligas": "154521"
+              }
+            }
+          }
+        ],
+        "signature": "sigU4zVsQBRYZAB79xUhuXqYrSnLjSLeH8LJuuHN7cCQQaBn5odtnRPbCJ8RK61FvZRSAcwvZhT16w7bxzi4ykV6Uc816Eve"
+      },
+      {
+        "protocol": "PsQuebecnLByd3JwTiGadoG4nGWi3HYiLXUjkibeFV8dCFeVMUg",
+        "chain_id": "NetXuTeGinLEqxp",
+        "hash": "opVv6rYm3dRcyVfiZUtMCwKbqyEmSnrY427cR4rzRsYuee2dCm3",
+        "branch": "BMQybFSzHBfNpjZ2Km9CzhAtGfmXUpVYqhMGxu5bypMNb1vCyu1",
+        "contents": [
+          {
+            "kind": "origination",
+            "source": "tz2T2fkAanX3xkggQb7tfp111RPXVhbBn4CF",
+            "fee": "756",
+            "counter": "6562",
+            "gas_limit": "786",
+            "storage_limit": "704",
+            "balance": "0",
+            "script": {
+              "code": [
+                {
+                  "prim": "parameter",
+                  "args": [
+                    {
+                      "prim": "unit"
+                    }
+                  ]
+                },
+                {
+                  "prim": "storage",
+                  "args": [
+                    {
+                      "prim": "unit"
+                    }
+                  ]
+                },
+                {
+                  "prim": "code",
+                  "args": [
+                    [
+                      {
+                        "prim": "DROP"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "nat"
+                          },
+                          {
+                            "int": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "BYTES"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "bytes"
+                          },
+                          {
+                            "bytes": ""
+                          }
+                        ]
+                      },
+                      [
+                        [
+                          {
+                            "prim": "COMPARE"
+                          },
+                          {
+                            "prim": "EQ"
+                          }
+                        ],
+                        {
+                          "prim": "IF",
+                          "args": [
+                            [],
+                            [
+                              [
+                                {
+                                  "prim": "UNIT"
+                                },
+                                {
+                                  "prim": "FAILWITH"
+                                }
+                              ]
+                            ]
+                          ]
+                        }
+                      ],
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "nat"
+                          },
+                          {
+                            "int": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "BYTES"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "bytes"
+                          },
+                          {
+                            "bytes": "01"
+                          }
+                        ]
+                      },
+                      [
+                        [
+                          {
+                            "prim": "COMPARE"
+                          },
+                          {
+                            "prim": "EQ"
+                          }
+                        ],
+                        {
+                          "prim": "IF",
+                          "args": [
+                            [],
+                            [
+                              [
+                                {
+                                  "prim": "UNIT"
+                                },
+                                {
+                                  "prim": "FAILWITH"
+                                }
+                              ]
+                            ]
+                          ]
+                        }
+                      ],
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "nat"
+                          },
+                          {
+                            "int": "1193046"
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "BYTES"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "bytes"
+                          },
+                          {
+                            "bytes": "123456"
+                          }
+                        ]
+                      },
+                      [
+                        [
+                          {
+                            "prim": "COMPARE"
+                          },
+                          {
+                            "prim": "EQ"
+                          }
+                        ],
+                        {
+                          "prim": "IF",
+                          "args": [
+                            [],
+                            [
+                              [
+                                {
+                                  "prim": "UNIT"
+                                },
+                                {
+                                  "prim": "FAILWITH"
+                                }
+                              ]
+                            ]
+                          ]
+                        }
+                      ],
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "bytes"
+                          },
+                          {
+                            "bytes": "123456"
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "NAT"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "nat"
+                          },
+                          {
+                            "int": "1193046"
+                          }
+                        ]
+                      },
+                      [
+                        [
+                          {
+                            "prim": "COMPARE"
+                          },
+                          {
+                            "prim": "EQ"
+                          }
+                        ],
+                        {
+                          "prim": "IF",
+                          "args": [
+                            [],
+                            [
+                              [
+                                {
+                                  "prim": "UNIT"
+                                },
+                                {
+                                  "prim": "FAILWITH"
+                                }
+                              ]
+                            ]
+                          ]
+                        }
+                      ],
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "bytes"
+                          },
+                          {
+                            "bytes": "0000123456"
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "NAT"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "nat"
+                          },
+                          {
+                            "int": "1193046"
+                          }
+                        ]
+                      },
+                      [
+                        [
+                          {
+                            "prim": "COMPARE"
+                          },
+                          {
+                            "prim": "EQ"
+                          }
+                        ],
+                        {
+                          "prim": "IF",
+                          "args": [
+                            [],
+                            [
+                              [
+                                {
+                                  "prim": "UNIT"
+                                },
+                                {
+                                  "prim": "FAILWITH"
+                                }
+                              ]
+                            ]
+                          ]
+                        }
+                      ],
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "bytes"
+                          },
+                          {
+                            "bytes": ""
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "NAT"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "nat"
+                          },
+                          {
+                            "int": "0"
+                          }
+                        ]
+                      },
+                      [
+                        [
+                          {
+                            "prim": "COMPARE"
+                          },
+                          {
+                            "prim": "EQ"
+                          }
+                        ],
+                        {
+                          "prim": "IF",
+                          "args": [
+                            [],
+                            [
+                              [
+                                {
+                                  "prim": "UNIT"
+                                },
+                                {
+                                  "prim": "FAILWITH"
+                                }
+                              ]
+                            ]
+                          ]
+                        }
+                      ],
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "bytes"
+                          },
+                          {
+                            "bytes": "0000"
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "NAT"
+                      },
+                      {
+                        "prim": "PUSH",
+                        "args": [
+                          {
+                            "prim": "nat"
+                          },
+                          {
+                            "int": "0"
+                          }
+                        ]
+                      },
+                      [
+                        [
+                          {
+                            "prim": "COMPARE"
+                          },
+                          {
+                            "prim": "EQ"
+                          }
+                        ],
+                        {
+                          "prim": "IF",
+                          "args": [
+                            [],
+                            [
+                              [
+                                {
+                                  "prim": "UNIT"
+                                },
+                                {
+                                  "prim": "FAILWITH"
+                                }
+                              ]
+                            ]
+                          ]
+                        }
+                      ],
+                      {
+                        "prim": "UNIT"
+                      },
+                      {
+                        "prim": "NIL",
+                        "args": [
+                          {
+                            "prim": "operation"
+                          }
+                        ]
+                      },
+                      {
+                        "prim": "PAIR"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "storage": {
+                "prim": "Unit"
+              }
+            },
+            "metadata": {
+              "balance_updates": [
+                {
+                  "kind": "contract",
+                  "contract": "tz2T2fkAanX3xkggQb7tfp111RPXVhbBn4CF",
+                  "change": "-756",
+                  "origin": "block"
+                },
+                {
+                  "kind": "accumulator",
+                  "category": "block fees",
+                  "change": "756",
+                  "origin": "block"
+                }
+              ],
+              "operation_result": {
+                "status": "applied",
+                "balance_updates": [
+                  {
+                    "kind": "contract",
+                    "contract": "tz2T2fkAanX3xkggQb7tfp111RPXVhbBn4CF",
+                    "change": "-106750",
+                    "origin": "block"
+                  },
+                  {
+                    "kind": "burned",
+                    "category": "storage fees",
+                    "change": "106750",
+                    "origin": "block"
+                  },
+                  {
+                    "kind": "contract",
+                    "contract": "tz2T2fkAanX3xkggQb7tfp111RPXVhbBn4CF",
+                    "change": "-64250",
+                    "origin": "block"
+                  },
+                  {
+                    "kind": "burned",
+                    "category": "storage fees",
+                    "change": "64250",
+                    "origin": "block"
+                  }
+                ],
+                "originated_contracts": [
+                  "KT1KduxygZkXmzgVvamo9ArDfqhUuMSdJW9d"
+                ],
+                "consumed_milligas": "685479",
+                "storage_size": "427",
+                "paid_storage_size_diff": "427"
+              }
+            }
+          }
+        ],
+        "signature": "sigUaZyKD392c5t9RhtMPg6tuSFQuS7J8UzbEiVaSYdcsADJuMrtJJUhs7iYNn4wYuZirmq3Np85W1YshRR18RcBsph4EV69"
+      }
+    ]
+  ]
+}

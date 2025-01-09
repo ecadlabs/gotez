@@ -454,6 +454,22 @@ func (self *OriginationInternalOperationResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(tmp)
 }
 
+func (self *DelegationInternalOperationResult) MarshalJSON() ([]byte, error) {
+	type DelegationInternalOperationResult_no_json_marshaller DelegationInternalOperationResult
+
+	type json_DelegationInternalOperationResult struct {
+		Marker0 any `json:"kind"`
+		DelegationInternalOperationResult_no_json_marshaller
+	}
+
+	tmp := json_DelegationInternalOperationResult {
+		Marker0: self.OperationKind(),
+		DelegationInternalOperationResult_no_json_marshaller: DelegationInternalOperationResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+
 func (self *SmartRollupOriginateContentsAndResult) MarshalJSON() ([]byte, error) {
 	type SmartRollupOriginateContentsAndResult_no_json_marshaller SmartRollupOriginateContentsAndResult
 

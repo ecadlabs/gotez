@@ -14,6 +14,7 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
 )
 
 type ManagerOperation = proto_012_Psithaca.ManagerOperation
@@ -38,6 +39,8 @@ type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContentsAndResult
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type Script = proto_012_Psithaca.Script
+type DALPublishSlotHeaderResult = proto_017_PtNairob.DALPublishSlotHeaderResult
+type DALPublishSlotHeader = proto_016_PtMumbai.DALPublishSlotHeader
 
 //json:kind=OperationKind()
 type DoubleAttestationEvidence struct {
@@ -111,20 +114,6 @@ type Preattestation proto_012_Psithaca.Preendorsement
 func (*Preattestation) InlinedPreattestationContents() {}
 func (*Preattestation) OperationKind() string          { return "preattestation" }
 
-//json:kind=OperationKind()
-type DALPublishSlotHeader struct {
-	ManagerOperation
-	SlotHeader SlotHeader `json:"slot_header"`
-}
-
-type SlotHeader struct {
-	Index           uint8             `json:"slot_index"`
-	Сommitment      *tz.DALCommitment `json:"commitment"`
-	CommitmentProof *tz.Bytes48       `json:"commitment_proof"`
-}
-
-func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_header" }
-
 type OperationContents interface {
 	core.OperationContents
 }
@@ -185,7 +174,7 @@ func (op *SeedNonceRevelationContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DoubleAttestationEvidenceContentsAndResult struct {
 	DoubleAttestationEvidence
-	Metadata BalanceUpdates `json:"metadata"`
+	Metadata DoubleAttestationEvidenceMetadata `json:"metadata"`
 }
 
 func (*DoubleAttestationEvidenceContentsAndResult) OperationContentsAndResult() {}
@@ -193,10 +182,15 @@ func (op *DoubleAttestationEvidenceContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+type DoubleAttestationEvidenceMetadata struct {
+	ForbiddenDelegate tz.Option[tz.PublicKeyHash] `json:"forbidden_delegate"`
+	BalanceUpdates
+}
+
 //json:kind=OperationKind()
 type DoubleBakingEvidenceContentsAndResult struct {
 	DoubleBakingEvidence
-	Metadata BalanceUpdates `json:"metadata"`
+	Metadata DoubleAttestationEvidenceMetadata `json:"metadata"`
 }
 
 func (*DoubleBakingEvidenceContentsAndResult) OperationContentsAndResult() {}
@@ -218,7 +212,7 @@ func (op *ActivateAccountContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DoublePreattestationEvidenceContentsAndResult struct {
 	DoublePreattestationEvidence
-	Metadata BalanceUpdates `json:"metadata"`
+	Metadata DoubleAttestationEvidenceMetadata `json:"metadata"`
 }
 
 func (*DoublePreattestationEvidenceContentsAndResult) OperationContentsAndResult() {}
@@ -295,10 +289,30 @@ func (op *RevealContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+type DelegationResult interface {
+	core.ManagerOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[DelegationResult]{
+		Variants: encoding.Variants[DelegationResult]{
+			0: (*core.OperationResultApplied[*DelegationResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*DelegationResultContents])(nil),
+		},
+	})
+}
+
+type DelegationResultContents struct {
+	ConsumedMilligas tz.BigUint `json:"consumed_milligas"`
+	BalanceUpdates
+}
+
 //json:kind=OperationKind()
 type DelegationContentsAndResult struct {
 	Delegation
-	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
+	Metadata ManagerMetadata[DelegationResult] `json:"metadata"`
 }
 
 func (*DelegationContentsAndResult) OperationContentsAndResult() {}
@@ -508,7 +522,7 @@ func (op *OriginationContentsAndResult) GetMetadata() any {
 //json:kind=OperationKind()
 type DALPublishSlotHeaderContentsAndResult struct {
 	DALPublishSlotHeader
-	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
+	Metadata ManagerMetadata[DALPublishSlotHeaderResult] `json:"metadata"`
 }
 
 func (*DALPublishSlotHeaderContentsAndResult) OperationContentsAndResult() {}
@@ -597,8 +611,21 @@ func (r *OriginationInternalOperationResult) GetResult() core.ManagerOperationRe
 }
 func (*OriginationInternalOperationResult) OperationKind() string { return "origination" }
 
-type DelegationInternalOperationResult = proto_014_PtKathma.DelegationInternalOperationResult
 type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
+
+//json:kind=OperationKind()
+type DelegationInternalOperationResult struct {
+	Source   core.TransactionDestination `json:"source"`
+	Nonce    uint16                      `json:"nonce"`
+	Delegate tz.Option[tz.PublicKeyHash] `json:"delegate"`
+	Result   DelegationResult            `json:"result"`
+}
+
+func (r *DelegationInternalOperationResult) GetSource() core.TransactionDestination { return r.Source }
+func (*DelegationInternalOperationResult) OperationKind() string                    { return "delegation" }
+func (r *DelegationInternalOperationResult) GetResult() core.ManagerOperationResult {
+	return r.Result
+}
 
 type InternalOperationResult interface {
 	core.InternalOperationResult
