@@ -114,19 +114,10 @@ func NewPublicKey(pub tz.PublicKey) (PublicKey, error) {
 		default:
 			panic("unreachable")
 		}
-		x, y, err := unmarshalCompressed(data, curve)
-		if err != nil {
-			return nil, err
-		}
-		return (*ECDSAPublicKey)(&ecdsa.PublicKey{
-			Curve: curve,
-			X:     x,
-			Y:     y,
-		}), nil
+		return UnmarshalECDSAPublicKey(data, curve)
 
 	case *tz.BLSPublicKey:
 		p, err := minpk.PublicKeyFromBytes(pub[:])
-
 		if err != nil {
 			return nil, err
 		}

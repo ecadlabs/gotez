@@ -74,6 +74,18 @@ func (priv *ECDSAPrivateKey) Unwrap() crypto.PrivateKey {
 
 type ECDSAPublicKey ecdsa.PublicKey
 
+func UnmarshalECDSAPublicKey(data []byte, curve elliptic.Curve) (*ECDSAPublicKey, error) {
+	x, y, err := unmarshalCompressed(data, curve)
+	if err != nil {
+		return nil, err
+	}
+	return (*ECDSAPublicKey)(&ecdsa.PublicKey{
+		Curve: curve,
+		X:     x,
+		Y:     y,
+	}), nil
+}
+
 func (pub *ECDSAPublicKey) Hash() PublicKeyHash {
 	return pub.ToProtocol().Hash()
 }
