@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/b58"
@@ -66,7 +65,7 @@ func NewPrivateKey(priv tz.PrivateKey) (PrivateKey, error) {
 		return Ed25519PrivateKey(ed25519.NewKeyFromSeed(key[:])), nil
 
 	case *tz.Secp256k1PrivateKey:
-		p, err := unmarshalPrivateKey(key[:], secp256k1.S256())
+		p, err := unmarshalPrivateKey(key[:], S256())
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +105,7 @@ func NewPublicKey(pub tz.PublicKey) (PublicKey, error) {
 		)
 		switch key := pub.(type) {
 		case *tz.Secp256k1PublicKey:
-			curve = secp256k1.S256()
+			curve = S256()
 			data = key[:]
 		case *tz.P256PublicKey:
 			curve = elliptic.P256()
@@ -134,7 +133,7 @@ func NewPrivateKeyFrom(priv crypto.PrivateKey) (PrivateKey, error) {
 	switch priv := priv.(type) {
 	case *ecdsa.PrivateKey:
 		switch priv.Curve {
-		case secp256k1.S256(), elliptic.P256():
+		case S256(), elliptic.P256():
 			return (*ECDSAPrivateKey)(priv), nil
 		default:
 			return nil, ErrUnsupportedKeyType
@@ -154,7 +153,7 @@ func NewPublicKeyFrom(pub crypto.PublicKey) (PublicKey, error) {
 	switch pub := pub.(type) {
 	case *ecdsa.PublicKey:
 		switch pub.Curve {
-		case secp256k1.S256(), elliptic.P256():
+		case S256(), elliptic.P256():
 			return (*ECDSAPublicKey)(pub), nil
 		default:
 			return nil, ErrUnsupportedKeyType
@@ -184,7 +183,7 @@ func NewSignature(sig tz.Signature) (Signature, error) {
 		return &ECDSASignature{
 			R:     r,
 			S:     s,
-			Curve: secp256k1.S256(),
+			Curve: S256(),
 		}, nil
 
 	case *tz.P256Signature:

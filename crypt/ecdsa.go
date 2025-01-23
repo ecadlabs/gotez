@@ -12,6 +12,8 @@ import (
 	tz "github.com/ecadlabs/gotez/v2"
 )
 
+func S256() *secp256k1.KoblitzCurve { return secp256k1.S256() }
+
 type ECDSAPrivateKey ecdsa.PrivateKey
 
 func (priv *ECDSAPrivateKey) ToBase58() []byte {
