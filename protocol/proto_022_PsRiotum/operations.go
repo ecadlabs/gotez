@@ -1,4 +1,4 @@
-package proto_019_PtParisB
+package proto_022_PsRiotum
 
 //go:generate go run ../../cmd/genmarshaller.go
 
@@ -8,46 +8,35 @@ import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_012_Psithaca/lazy"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_021_PsQuebec"
 )
 
-type ManagerOperation = proto_012_Psithaca.ManagerOperation
-type SeedNonceRevelation = proto_012_Psithaca.SeedNonceRevelation
-type DoubleBakingEvidence = proto_018_Proxford.DoubleBakingEvidence
-type ActivateAccount = proto_012_Psithaca.ActivateAccount
-type Proposals = proto_012_Psithaca.Proposals
-type Ballot = proto_012_Psithaca.Ballot
-type DoublePreattestationEvidence = proto_018_Proxford.DoublePreattestationEvidence
-type VDFRevelation = proto_014_PtKathma.VDFRevelation
-type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
-type FailingNoop = proto_012_Psithaca.FailingNoop
-type Preattestation = proto_018_Proxford.Preattestation
-type InlinedPreattestationContents = proto_018_Proxford.InlinedPreattestationContents
-type Attestation = proto_018_Proxford.Attestation
-type Reveal = proto_012_Psithaca.Reveal
-type Origination = proto_012_Psithaca.Origination
-type Delegation = proto_012_Psithaca.Delegation
-type RegisterGlobalConstant = proto_012_Psithaca.RegisterGlobalConstant
-type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
-type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
-type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
-type TransferTicket = proto_013_PtJakart.TransferTicket
-type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
-type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
-type Script = proto_012_Psithaca.Script
-type DALAttestation = proto_016_PtMumbai.DALAttestation
-type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContentsAndResult
-type DALPublishSlotHeaderContentsAndResult = proto_018_Proxford.DALPublishSlotHeaderContentsAndResult
-type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
-type DALSlotHeader = proto_016_PtMumbai.DALSlotHeader
-type DALSlotHeaderResult = proto_017_PtNairob.DALSlotHeaderResult
+type ManagerOperation = proto_021_PsQuebec.ManagerOperation
+type SeedNonceRevelation = proto_021_PsQuebec.SeedNonceRevelation
+type DoubleAttestationEvidence = proto_021_PsQuebec.DoubleAttestationEvidence
+type DoubleBakingEvidence = proto_021_PsQuebec.DoubleBakingEvidence
+type ActivateAccount = proto_021_PsQuebec.ActivateAccount
+type Proposals = proto_021_PsQuebec.Proposals
+type Ballot = proto_021_PsQuebec.Ballot
+type DoublePreattestationEvidence = proto_021_PsQuebec.DoublePreattestationEvidence
+type VDFRevelation = proto_021_PsQuebec.VDFRevelation
+type DrainDelegate = proto_021_PsQuebec.DrainDelegate
+type FailingNoop = proto_021_PsQuebec.FailingNoop
+type Preattestation = proto_021_PsQuebec.Preattestation
+type Attestation = proto_021_PsQuebec.Attestation
+type AttestationWithDAL = proto_021_PsQuebec.AttestationWithDAL
+type InlinedAttestation = proto_021_PsQuebec.InlinedAttestation
+type Reveal = proto_021_PsQuebec.Reveal
+type Origination = proto_021_PsQuebec.Origination
+type Delegation = proto_021_PsQuebec.Delegation
+type RegisterGlobalConstant = proto_021_PsQuebec.RegisterGlobalConstant
+type IncreasePaidStorage = proto_021_PsQuebec.IncreasePaidStorage
+type SetDepositsLimit = proto_021_PsQuebec.SetDepositsLimit
+type TransferTicket = proto_021_PsQuebec.TransferTicket
+type DALPublishCommitment = proto_021_PsQuebec.DALPublishCommitment
+type SignaturePrefix = proto_021_PsQuebec.SignaturePrefix
+type Script = proto_021_PsQuebec.Script
 
 type OperationContents interface {
 	core.OperationContents
@@ -69,6 +58,8 @@ func init() {
 			20:  (*Preattestation)(nil),
 			21:  (*Attestation)(nil),
 			23:  (*AttestationWithDAL)(nil),
+			24:  (*DALEntrapmentEvidence)(nil),
+			31:  (*AttestationsAggregate)(nil),
 			107: (*Reveal)(nil),
 			108: (*Transaction)(nil),
 			109: (*Origination)(nil),
@@ -96,47 +87,50 @@ func init() {
 }
 
 //json:kind=OperationKind()
-type AttestationWithDAL struct {
-	Attestation
-	DALAttestation tz.BigInt `json:"dal_attestation"`
-}
-
-func (*AttestationWithDAL) OperationKind() string { return "attestation_with_dal" }
-
-type InlinedAttestationContents interface {
-	proto_018_Proxford.InlinedAttestationContents
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedAttestationContents]{
-		Variants: encoding.Variants[InlinedAttestationContents]{
-			21: (*Attestation)(nil),
-			23: (*AttestationWithDAL)(nil),
-		},
-	})
-}
-
-//json:kind=OperationKind()
-type DoubleAttestationEvidence struct {
-	Op1 InlinedAttestation `tz:"dyn" json:"op1"`
-	Op2 InlinedAttestation `tz:"dyn" json:"op2"`
-}
-
-func (*DoubleAttestationEvidence) OperationKind() string { return "double_attestation_evidence" }
-
-type InlinedAttestation struct {
-	Branch    *tz.BlockHash              `json:"branch"`
-	Contents  InlinedAttestationContents `json:"contents"`
-	Signature tz.AnySignature            `json:"signature"`
-}
-
-//json:kind=OperationKind()
-type DALPublishCommitment struct {
+type UpdateConsensusKey struct {
 	ManagerOperation
-	SlotHeader DALSlotHeader `json:"slot_header"`
+	PublicKey tz.PublicKey     `json:"public_key"`
+	Proof     tz.Option[Proof] `json:"proof"`
 }
 
-func (*DALPublishCommitment) OperationKind() string { return "dal_publish_commitment" }
+func (*UpdateConsensusKey) OperationKind() string { return "update_consensus_key" }
+
+type Proof struct {
+	Signature tz.AnySignature `tz:"dyn" json:"signature"`
+}
+
+//json:kind=OperationKind()
+type DALEntrapmentEvidence struct {
+	Attestation    InlinedAttestation `tz:"dyn" json:"attestation"`
+	SlotIndex      uint8              `json:"slot_index"`
+	ShardWithProof ShardWithProof     `json:"shard_with_proof"`
+}
+
+func (*DALEntrapmentEvidence) OperationKind() string { return "dal_entrapment_evidence" }
+
+type ShardWithProof struct {
+	Shard Shard            `json:"shard"`
+	Proof tz.DALCommitment `json:"proof"`
+}
+
+type Shard struct {
+	Field0 int32    `json:"field_0"`
+	Field1 tz.Bytes `tz:"dyn" json:"field_1"`
+}
+
+//json:kind=OperationKind()
+type AttestationsAggregate struct {
+	ConsensusContent ConsensusContent `json:"consensus_content"`
+	Committee        []uint16         `tz:"dyn" json:"committee"`
+}
+
+func (*AttestationsAggregate) OperationKind() string { return "attestations_aggregate" }
+
+type ConsensusContent struct {
+	Level            int32                `json:"level"`
+	Round            int32                `json:"round"`
+	BlockPayloadHash *tz.BlockPayloadHash `json:"block_payload_hash"`
+}
 
 type OperationContentsAndResult interface {
 	core.OperationContentsAndResult
@@ -157,6 +151,8 @@ func init() {
 			20:  (*PreattestationContentsAndResult)(nil),
 			21:  (*AttestationContentsAndResult)(nil),
 			23:  (*AttestationWithDALContentsAndResult)(nil),
+			24:  (*DALEntrapmentEvidenceContentsAndResult)(nil),
+			31:  (*AttestationsAggregateContentsAndResult)(nil),
 			107: (*RevealContentsAndResult)(nil),
 			108: (*TransactionContentsAndResult)(nil),
 			109: (*OriginationContentsAndResult)(nil),
@@ -183,6 +179,9 @@ func init() {
 	})
 }
 
+type ConsumedGasResult = proto_021_PsQuebec.ConsumedGasResult
+type DALPublishCommitmentResult = proto_021_PsQuebec.DALPublishCommitmentResult
+
 type ManagerMetadata[T core.ManagerOperationResult] struct {
 	BalanceUpdates
 	OperationResult          T                         `json:"operation_result"`
@@ -201,6 +200,28 @@ func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperat
 }
 
 //json:kind=OperationKind()
+type AttestationsAggregateContentsAndResult struct {
+	AttestationsAggregate
+	Metadata AttestationsAggregateMetadata `json:"metadata"`
+}
+
+func (*AttestationsAggregateContentsAndResult) OperationContentsAndResult() {}
+func (op *AttestationsAggregateContentsAndResult) GetMetadata() any {
+	return &op.Metadata
+}
+
+type Committee struct {
+	Delegate     tz.PublicKeyHash `json:"delegate"`
+	ConsensusPKH tz.PublicKeyHash `json:"consensus_pkh"`
+}
+
+type AttestationsAggregateMetadata struct {
+	BalanceUpdates
+	Committee      []Committee `tz:"dyn" json:"committee"`
+	ConsensusPower int32       `json:"consensus_power"`
+}
+
+//json:kind=OperationKind()
 type SeedNonceRevelationContentsAndResult struct {
 	SeedNonceRevelation
 	Metadata BalanceUpdates `json:"metadata"`
@@ -209,6 +230,11 @@ type SeedNonceRevelationContentsAndResult struct {
 func (*SeedNonceRevelationContentsAndResult) OperationContentsAndResult() {}
 func (op *SeedNonceRevelationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
+}
+
+type DoubleAttestationEvidenceMetadata struct {
+	ForbiddenDelegate tz.Option[tz.PublicKeyHash] `json:"forbidden_delegate"`
+	BalanceUpdates
 }
 
 //json:kind=OperationKind()
@@ -220,11 +246,6 @@ type DoubleAttestationEvidenceContentsAndResult struct {
 func (*DoubleAttestationEvidenceContentsAndResult) OperationContentsAndResult() {}
 func (op *DoubleAttestationEvidenceContentsAndResult) GetMetadata() any {
 	return &op.Metadata
-}
-
-type DoubleAttestationEvidenceMetadata struct {
-	ForbiddenDelegate tz.Option[tz.PublicKeyHash] `json:"forbidden_delegate"`
-	BalanceUpdates
 }
 
 //json:kind=OperationKind()
@@ -330,6 +351,17 @@ func (op *AttestationWithDALContentsAndResult) GetMetadata() any {
 }
 
 //json:kind=OperationKind()
+type DALEntrapmentEvidenceContentsAndResult struct {
+	DALEntrapmentEvidence
+	Metadata BalanceUpdates `json:"metadata"`
+}
+
+func (*DALEntrapmentEvidenceContentsAndResult) OperationContentsAndResult() {}
+func (op *DALEntrapmentEvidenceContentsAndResult) GetMetadata() any {
+	return &op.Metadata
+}
+
+//json:kind=OperationKind()
 type RevealContentsAndResult struct {
 	Reveal
 	Metadata ManagerMetadata[ConsumedGasResult] `json:"metadata"`
@@ -371,26 +403,6 @@ type SetDepositsLimitContentsAndResult struct {
 func (*SetDepositsLimitContentsAndResult) OperationContentsAndResult() {}
 func (op *SetDepositsLimitContentsAndResult) GetMetadata() any {
 	return &op.Metadata
-}
-
-type DALPublishCommitmentResult interface {
-	core.ManagerOperationResult
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[DALPublishCommitmentResult]{
-		Variants: encoding.Variants[DALPublishCommitmentResult]{
-			0: (*core.OperationResultApplied[*DALPublishCommitmentResultContents])(nil),
-			1: (*core.OperationResultFailed)(nil),
-			2: (*core.OperationResultSkipped)(nil),
-			3: (*core.OperationResultBacktracked[*DALPublishCommitmentResultContents])(nil),
-		},
-	})
-}
-
-type DALPublishCommitmentResultContents struct {
-	SlotHeader       DALSlotHeaderResult `json:"slot_header"`
-	ConsumedMilligas tz.BigUint          `json:"consumed_milligas"`
 }
 
 //json:kind=OperationKind()
@@ -647,7 +659,7 @@ func (r *DelegationInternalOperationResult) GetResult() core.ManagerOperationRes
 	return r.Result
 }
 
-type EventInternalOperationResult = proto_014_PtKathma.EventInternalOperationResult
+type EventInternalOperationResult = proto_021_PsQuebec.EventInternalOperationResult
 
 type SuccessfulManagerOperationResult interface {
 	core.SuccessfulManagerOperationResult
@@ -667,9 +679,9 @@ func init() {
 	})
 }
 
-type RevealSuccessfulManagerResult = proto_014_PtKathma.RevealSuccessfulManagerResult
-type DelegationSuccessfulManagerResult = proto_014_PtKathma.DelegationSuccessfulManagerResult
-type UpdateConsensusKeySuccessfulManagerResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerResult
+type RevealSuccessfulManagerResult = proto_021_PsQuebec.RevealSuccessfulManagerResult
+type DelegationSuccessfulManagerResult = proto_021_PsQuebec.DelegationSuccessfulManagerResult
+type UpdateConsensusKeySuccessfulManagerResult = proto_021_PsQuebec.UpdateConsensusKeySuccessfulManagerResult
 
 func ListOperations() []OperationContents {
 	return encoding.ListVariants[OperationContents]()

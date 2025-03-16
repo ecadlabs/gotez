@@ -27,7 +27,5 @@ type Constants interface {
 	GetMinimalBlockDelay() int64
 	GetDelayIncrementPerRound() int64
 	GetConsensusCommitteeSize() int32
-	GetConsensusThreshold() int32
 	GetMinimalParticipationRatio() *Rat
-	GetMaxSlashingPeriod() int32
 }

@@ -93,7 +93,7 @@ func (*DoublePreattestationEvidence) OperationKind() string { return "double_pre
 type InlinedPreattestation struct {
 	Branch    *tz.BlockHash                 `json:"branch"`
 	Contents  InlinedPreattestationContents `json:"contents"`
-	Signature *tz.GenericSignature          `json:"signature"`
+	Signature tz.AnySignature               `json:"signature"`
 }
 
 type InlinedPreattestationContents interface {

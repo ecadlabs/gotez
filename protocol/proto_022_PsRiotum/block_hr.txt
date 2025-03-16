@@ -1,0 +1,3003 @@
+Output format:
+  { "protocol": "PsRiotumaAMotcRoDWW1bysEhQy2n1M5fy8JgRp8jjRfHGmfeA7",
+    "chain_id": $Chain_id,
+    "hash": $block_hash,
+    "header": $raw_block_header,
+    "metadata"?: $block_header_metadata,
+    "operations": [ [ $operation ... ] ... ] }
+  $022-PsRiotum.adaptive_issuance_vote: "on" || "off" || "pass"
+  $022-PsRiotum.apply_internal_results.alpha.operation_result:
+    { /* transaction */
+      "kind": "transaction",
+      "source": $022-PsRiotum.transaction_destination,
+      "nonce": integer ∈ ]0, 2^16-1[,
+      "amount": $022-PsRiotum.mutez,
+      "destination": $022-PsRiotum.transaction_destination,
+      "parameters"?: { "entrypoint": $022-PsRiotum.entrypoint,
+                       "value": any },
+      "result":
+        $022-PsRiotum.operation.alpha.internal_operation_result.transaction }
+    || { /* origination */
+         "kind": "origination",
+         "source": $022-PsRiotum.transaction_destination,
+         "nonce": integer ∈ ]0, 2^16-1[,
+         "balance": $022-PsRiotum.mutez,
+         "delegate"?: $Signature.Public_key_hash,
+         "script": $022-PsRiotum.scripted.contracts,
+         "result":
+           $022-PsRiotum.operation.alpha.internal_operation_result.origination }
+    || { /* delegation */
+         "kind": "delegation",
+         "source": $022-PsRiotum.transaction_destination,
+         "nonce": integer ∈ ]0, 2^16-1[,
+         "delegate"?: $Signature.Public_key_hash,
+         "result":
+           $022-PsRiotum.operation.alpha.internal_operation_result.delegation }
+    || { /* event */
+         "kind": "event",
+         "source": $022-PsRiotum.transaction_destination,
+         "nonce": integer ∈ ]0, 2^16-1[,
+         "type": $micheline.022-PsRiotum.michelson_v1.expression,
+         "tag"?: $022-PsRiotum.entrypoint,
+         "payload"?: $micheline.022-PsRiotum.michelson_v1.expression,
+         "result":
+           $022-PsRiotum.operation.alpha.internal_operation_result.event }
+  $022-PsRiotum.big_map_id:
+    /* Big map identifier
+       A big map identifier */
+    $bignum
+  $022-PsRiotum.block_header.alpha.full_header:
+    /* Shell header
+       Block header's shell-related content. It contains information such as
+       the block level, its predecessor and timestamp. */
+    { "level": integer ∈ ]-2^31-1, 2^31[,
+      "proto": integer ∈ ]0, 255[,
+      "predecessor": $block_hash,
+      "timestamp": $timestamp.protocol,
+      "validation_pass": integer ∈ ]0, 255[,
+      "operations_hash": $Operation_list_list_hash,
+      "fitness": $fitness,
+      "context": $Context_hash,
+      "payload_hash": $value_hash,
+      "payload_round": integer ∈ ]-2^31-1, 2^31[,
+      "proof_of_work_nonce": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+      "seed_nonce_hash"?: $cycle_nonce,
+      "liquidity_baking_toggle_vote": $022-PsRiotum.liquidity_baking_vote,
+      "adaptive_issuance_vote": $022-PsRiotum.adaptive_issuance_vote,
+      "signature": $Signature.V1 }
+  $022-PsRiotum.bond_id: { "smart_rollup": $smart_rollup_address }
+  $022-PsRiotum.contract_id:
+    /* A contract handle
+       A contract notation as given to an RPC or inside scripts. Can be a
+       base58 implicit contract hash or a base58 originated contract hash. */
+    $unistring
+  $022-PsRiotum.contract_id.originated:
+    /* A contract handle -- originated account
+       A contract notation as given to an RPC or inside scripts. Can be a
+       base58 originated contract hash. */
+    $unistring
+  $022-PsRiotum.entrypoint:
+    /* entrypoint
+       Named entrypoint to a Michelson smart contract */
+    "default"
+    || "root"
+    || "do"
+    || "set_delegate"
+    || "remove_delegate"
+    || "deposit"
+    || "stake"
+    || "unstake"
+    || "finalize_unstake"
+    || "set_delegate_parameters"
+    || $unistring
+    /* named */
+  $022-PsRiotum.error:
+    /* The full list of RPC errors would be too long to include.
+       It is available at RPC `/errors` (GET).
+       Errors specific to protocol Alpha have an id that starts with
+       `proto.alpha`. */
+    any
+  $022-PsRiotum.frozen_staker:
+    /* frozen_staker
+       Abstract notion of staker used in operation receipts for frozen
+       deposits, either a single staker or all the stakers delegating to some
+       delegate. */
+    { /* Single */
+      "contract": $022-PsRiotum.contract_id,
+      "delegate": $Signature.Public_key_hash }
+    || { /* Shared */
+         "delegate": $Signature.Public_key_hash }
+    || { /* Baker */
+         "baker_own_stake": $Signature.Public_key_hash }
+    || { /* Baker_edge */
+         "baker_edge": $Signature.Public_key_hash }
+  $022-PsRiotum.inlined.attestation:
+    /* An operation's shell header. */
+    { "branch": $block_hash,
+      "operations": $022-PsRiotum.inlined.attestation_mempool.contents,
+      "signature"?: $Signature.V1 }
+  $022-PsRiotum.inlined.attestation_mempool.contents:
+    { /* Attestation */
+      "kind": "attestation",
+      "slot": integer ∈ ]0, 2^16-1[,
+      "level": integer ∈ ]0, 2^31[,
+      "round": integer ∈ ]-2^31-1, 2^31[,
+      "block_payload_hash": $value_hash }
+    || { /* Attestation_with_dal */
+         "kind": "attestation_with_dal",
+         "slot": integer ∈ ]0, 2^16-1[,
+         "level": integer ∈ ]0, 2^31[,
+         "round": integer ∈ ]-2^31-1, 2^31[,
+         "block_payload_hash": $value_hash,
+         "dal_attestation": $bignum }
+  $022-PsRiotum.inlined.preattestation:
+    /* An operation's shell header. */
+    { "branch": $block_hash,
+      "operations": $022-PsRiotum.inlined.preattestation.contents,
+      "signature"?: $Signature.V1 }
+  $022-PsRiotum.inlined.preattestation.contents:
+    { "kind": "preattestation",
+      "slot": integer ∈ ]0, 2^16-1[,
+      "level": integer ∈ ]0, 2^31[,
+      "round": integer ∈ ]-2^31-1, 2^31[,
+      "block_payload_hash": $value_hash }
+  $022-PsRiotum.lazy_storage_diff:
+    [ { /* big_map */
+        "kind": "big_map",
+        "id": $022-PsRiotum.big_map_id,
+        "diff":
+          { /* update */
+            "action": "update",
+            "updates":
+              [ { "key_hash": $script_expr,
+                  "key": $micheline.022-PsRiotum.michelson_v1.expression,
+                  "value"?: $micheline.022-PsRiotum.michelson_v1.expression } ... ] }
+          || { /* remove */
+               "action": "remove" }
+          || { /* copy */
+               "action": "copy",
+               "source": $022-PsRiotum.big_map_id,
+               "updates":
+                 [ { "key_hash": $script_expr,
+                     "key": $micheline.022-PsRiotum.michelson_v1.expression,
+                     "value"?:
+                       $micheline.022-PsRiotum.michelson_v1.expression } ... ] }
+          || { /* alloc */
+               "action": "alloc",
+               "updates":
+                 [ { "key_hash": $script_expr,
+                     "key": $micheline.022-PsRiotum.michelson_v1.expression,
+                     "value"?:
+                       $micheline.022-PsRiotum.michelson_v1.expression } ... ],
+               "key_type": $micheline.022-PsRiotum.michelson_v1.expression,
+               "value_type": $micheline.022-PsRiotum.michelson_v1.expression } }
+      || { /* sapling_state */
+           "kind": "sapling_state",
+           "id": $022-PsRiotum.sapling_state_id,
+           "diff":
+             { /* update */
+               "action": "update",
+               "updates":
+                 { "commitments_and_ciphertexts":
+                     [ [ $sapling.transaction.commitment,
+                         $sapling.transaction.ciphertext ] ... ],
+                   "nullifiers": [ $sapling.transaction.nullifier ... ] } }
+             || { /* remove */
+                  "action": "remove" }
+             || { /* copy */
+                  "action": "copy",
+                  "source": $022-PsRiotum.sapling_state_id,
+                  "updates":
+                    { "commitments_and_ciphertexts":
+                        [ [ $sapling.transaction.commitment,
+                            $sapling.transaction.ciphertext ] ... ],
+                      "nullifiers": [ $sapling.transaction.nullifier ... ] } }
+             || { /* alloc */
+                  "action": "alloc",
+                  "updates":
+                    { "commitments_and_ciphertexts":
+                        [ [ $sapling.transaction.commitment,
+                            $sapling.transaction.ciphertext ] ... ],
+                      "nullifiers": [ $sapling.transaction.nullifier ... ] },
+                  "memo_size": integer ∈ ]0, 2^16-1[ } } ... ]
+  $022-PsRiotum.liquidity_baking_vote: "on" || "off" || "pass"
+  $022-PsRiotum.michelson.v1.primitives:
+    "SHA256"
+    | "GT"
+    | "RIGHT"
+    | "SAPLING_EMPTY_STATE"
+    | "False"
+    | "RENAME"
+    | "CAST"
+    | "tx_rollup_l2_address"
+    | "PACK"
+    | "BYTES"
+    | "timestamp"
+    | "bls12_381_g2"
+    | "Pair"
+    | "IF_LEFT"
+    | "contract"
+    | "mutez"
+    | "storage"
+    | "PAIR"
+    | "view"
+    | "UNPACK"
+    | "ADD"
+    | "DROP"
+    | "big_map"
+    | "MUL"
+    | "NAT"
+    | "SELF"
+    | "CONTRACT"
+    | "CDR"
+    | "SAPLING_VERIFY_UPDATE"
+    | "pair"
+    | "LSL"
+    | "int"
+    | "operation"
+    | "SHA512"
+    | "CREATE_ACCOUNT"
+    | "BLAKE2B"
+    | "SPLIT_TICKET"
+    | "LEFT"
+    | "never"
+    | "unit"
+    | "address"
+    | "signature"
+    | "CHAIN_ID"
+    | "constant"
+    | "SLICE"
+    | "SENDER"
+    | "IMPLICIT_ACCOUNT"
+    | "key_hash"
+    | "AMOUNT"
+    | "CHECK_SIGNATURE"
+    | "sapling_state"
+    | "LT"
+    | "EXEC"
+    | "Elt"
+    | "EMIT"
+    | "NONE"
+    | "CREATE_CONTRACT"
+    | "LSR"
+    | "SET_DELEGATE"
+    | "OPEN_CHEST"
+    | "TRANSFER_TOKENS"
+    | "Some"
+    | "parameter"
+    | "set"
+    | "bls12_381_fr"
+    | "EDIV"
+    | "None"
+    | "STEPS_TO_QUOTA"
+    | "key"
+    | "ABS"
+    | "list"
+    | "NEVER"
+    | "map"
+    | "CAR"
+    | "IF"
+    | "GET_AND_UPDATE"
+    | "CONCAT"
+    | "LOOP"
+    | "DIG"
+    | "KECCAK"
+    | "Lambda_rec"
+    | "SOME"
+    | "option"
+    | "SUB"
+    | "INT"
+    | "PUSH"
+    | "CONS"
+    | "Unit"
+    | "ISNAT"
+    | "NEG"
+    | "XOR"
+    | "APPLY"
+    | "UNPAIR"
+    | "JOIN_TICKETS"
+    | "SIZE"
+    | "lambda"
+    | "AND"
+    | "NEQ"
+    | "or"
+    | "BALANCE"
+    | "UNIT"
+    | "VOTING_POWER"
+    | "OR"
+    | "LAMBDA"
+    | "chest"
+    | "LOOP_LEFT"
+    | "True"
+    | "Right"
+    | "Ticket"
+    | "HASH_KEY"
+    | "DUG"
+    | "sapling_transaction"
+    | "SUB_MUTEZ"
+    | "EMPTY_BIG_MAP"
+    | "MEM"
+    | "IF_NONE"
+    | "nat"
+    | "TOTAL_VOTING_POWER"
+    | "LE"
+    | "Left"
+    | "chest_key"
+    | "READ_TICKET"
+    | "ticket"
+    | "bls12_381_g1"
+    | "LEVEL"
+    | "VIEW"
+    | "string"
+    | "PAIRING_CHECK"
+    | "LAMBDA_REC"
+    | "NOW"
+    | "SHA3"
+    | "bool"
+    | "MIN_BLOCK_TIME"
+    | "GET"
+    | "bytes"
+    | "sapling_transaction_deprecated"
+    | "NIL"
+    | "IF_CONS"
+    | "GE"
+    | "NOT"
+    | "SWAP"
+    | "ITER"
+    | "ADDRESS"
+    | "TICKET"
+    | "DUP"
+    | "EMPTY_MAP"
+    | "UPDATE"
+    | "chain_id"
+    | "TICKET_DEPRECATED"
+    | "EMPTY_SET"
+    | "FAILWITH"
+    | "MAP"
+    | "SOURCE"
+    | "DIP"
+    | "COMPARE"
+    | "EQ"
+    | "SELF_ADDRESS"
+    | "code"
+  $022-PsRiotum.mutez: $positive_bignum
+  $022-PsRiotum.operation.alpha.contents:
+    { /* Preattestation */
+      "kind": "preattestation",
+      "slot": integer ∈ ]0, 2^16-1[,
+      "level": integer ∈ ]0, 2^31[,
+      "round": integer ∈ ]-2^31-1, 2^31[,
+      "block_payload_hash": $value_hash }
+    || { /* Attestation */
+         "kind": "attestation",
+         "slot": integer ∈ ]0, 2^16-1[,
+         "level": integer ∈ ]0, 2^31[,
+         "round": integer ∈ ]-2^31-1, 2^31[,
+         "block_payload_hash": $value_hash }
+    || { /* Attestations_aggregate */
+         "kind": "attestations_aggregate",
+         "consensus_content":
+           { "level": integer ∈ ]0, 2^31[,
+             "round": integer ∈ ]-2^31-1, 2^31[,
+             "block_payload_hash": $value_hash },
+         "committee": [ integer ∈ ]0, 2^16-1[ ... ] }
+    || { /* Attestation_with_dal */
+         "kind": "attestation_with_dal",
+         "slot": integer ∈ ]0, 2^16-1[,
+         "level": integer ∈ ]0, 2^31[,
+         "round": integer ∈ ]-2^31-1, 2^31[,
+         "block_payload_hash": $value_hash,
+         "dal_attestation": $bignum }
+    || { /* Double_preattestation_evidence */
+         "kind": "double_preattestation_evidence",
+         "op1": $022-PsRiotum.inlined.preattestation,
+         "op2": $022-PsRiotum.inlined.preattestation }
+    || { /* Double_attestation_evidence */
+         "kind": "double_attestation_evidence",
+         "op1": $022-PsRiotum.inlined.attestation,
+         "op2": $022-PsRiotum.inlined.attestation }
+    || { /* Seed_nonce_revelation */
+         "kind": "seed_nonce_revelation",
+         "level": integer ∈ ]0, 2^31[,
+         "nonce": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+    || { /* Vdf_revelation */
+         "kind": "vdf_revelation",
+         "solution":
+           [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/, /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ] }
+    || { /* Double_baking_evidence */
+         "kind": "double_baking_evidence",
+         "bh1": $022-PsRiotum.block_header.alpha.full_header,
+         "bh2": $022-PsRiotum.block_header.alpha.full_header }
+    || { /* Dal_entrapment_evidence */
+         "kind": "dal_entrapment_evidence",
+         "attestation": $022-PsRiotum.inlined.attestation,
+         "slot_index": integer ∈ ]0, 255[,
+         "shard_with_proof":
+           { "shard":
+               [ integer ∈ ]-2^30, 2^30[,
+                 [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ] ],
+             "proof": $DAL_commitment } }
+    || { /* Activate_account */
+         "kind": "activate_account",
+         "pkh": $Ed25519.Public_key_hash,
+         "secret": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+    || { /* Proposals */
+         "kind": "proposals",
+         "source": $Signature.Public_key_hash,
+         "period": integer ∈ ]-2^31-1, 2^31[,
+         "proposals": [ $Protocol_hash ... ] }
+    || { /* Ballot */
+         "kind": "ballot",
+         "source": $Signature.Public_key_hash,
+         "period": integer ∈ ]-2^31-1, 2^31[,
+         "proposal": $Protocol_hash,
+         "ballot": "nay" | "yay" | "pass" }
+    || { /* Reveal */
+         "kind": "reveal",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "public_key": $Signature.Public_key }
+    || { /* Transaction */
+         "kind": "transaction",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "amount": $022-PsRiotum.mutez,
+         "destination": $022-PsRiotum.contract_id,
+         "parameters"?:
+           { "entrypoint": $022-PsRiotum.entrypoint,
+             "value": any } }
+    || { /* Origination */
+         "kind": "origination",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "balance": $022-PsRiotum.mutez,
+         "delegate"?: $Signature.Public_key_hash,
+         "script": $022-PsRiotum.scripted.contracts }
+    || { /* Delegation */
+         "kind": "delegation",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "delegate"?: $Signature.Public_key_hash }
+    || { /* Set_deposits_limit */
+         "kind": "set_deposits_limit",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "limit"?: $022-PsRiotum.mutez }
+    || { /* Increase_paid_storage */
+         "kind": "increase_paid_storage",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "amount": $bignum,
+         "destination": $022-PsRiotum.contract_id.originated }
+    || { /* Update_consensus_key */
+         "kind": "update_consensus_key",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "pk": $Signature.Public_key,
+         "proof"?: $Signature.V1 }
+    || { /* Drain_delegate */
+         "kind": "drain_delegate",
+         "consensus_key": $Signature.Public_key_hash,
+         "delegate": $Signature.Public_key_hash,
+         "destination": $Signature.Public_key_hash }
+    || { /* Failing_noop */
+         "kind": "failing_noop",
+         "arbitrary": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+    || { /* Register_global_constant */
+         "kind": "register_global_constant",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "value": any }
+    || { /* Transfer_ticket */
+         "kind": "transfer_ticket",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "ticket_contents": any,
+         "ticket_ty": any,
+         "ticket_ticketer": $022-PsRiotum.contract_id,
+         "ticket_amount": $positive_bignum,
+         "destination": $022-PsRiotum.contract_id,
+         "entrypoint": $unistring }
+    || { /* Dal_publish_commitment */
+         "kind": "dal_publish_commitment",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "slot_header":
+           { "slot_index": integer ∈ ]0, 255[,
+             "commitment": $DAL_commitment,
+             "commitment_proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ } }
+    || { /* Smart_rollup_originate */
+         "kind": "smart_rollup_originate",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "pvm_kind": "wasm_2_0_0" | "arith" | "riscv",
+         "kernel": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+         "parameters_ty": any,
+         "whitelist"?: [ $Signature.Public_key_hash ... ] }
+    || { /* Smart_rollup_add_messages */
+         "kind": "smart_rollup_add_messages",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "message": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ] }
+    || { /* Smart_rollup_cement */
+         "kind": "smart_rollup_cement",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address }
+    || { /* Smart_rollup_publish */
+         "kind": "smart_rollup_publish",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "commitment":
+           { "compressed_state": $smart_rollup_state_hash,
+             "inbox_level": integer ∈ ]0, 2^31[,
+             "predecessor": $smart_rollup_commitment_hash,
+             "number_of_ticks": $int64 } }
+    || { /* Smart_rollup_refute */
+         "kind": "smart_rollup_refute",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "opponent": $Signature.Public_key_hash,
+         "refutation":
+           { /* Start */
+             "refutation_kind": "start",
+             "player_commitment_hash": $smart_rollup_commitment_hash,
+             "opponent_commitment_hash": $smart_rollup_commitment_hash }
+           || { /* Move */
+                "refutation_kind": "move",
+                "choice": $positive_bignum,
+                "step":
+                  [ { "state"?: $smart_rollup_state_hash,
+                      "tick": $positive_bignum } ... ]
+                  /* Dissection */
+                  || { /* Proof */
+                       "pvm_step": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+                       "input_proof"?:
+                         { /* inbox proof */
+                           "input_proof_kind": "inbox_proof",
+                           "level": integer ∈ ]0, 2^31[,
+                           "message_counter": $positive_bignum,
+                           "serialized_proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+                         || { /* reveal proof */
+                              "input_proof_kind": "reveal_proof",
+                              "reveal_proof":
+                                { /* raw data proof */
+                                  "reveal_proof_kind": "raw_data_proof",
+                                  "raw_data": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+                                || { /* metadata proof */
+                                     "reveal_proof_kind": "metadata_proof" }
+                                || { /* dal page proof */
+                                     "reveal_proof_kind": "dal_page_proof",
+                                     "dal_page_id":
+                                       { "published_level":
+                                           integer ∈ ]0, 2^31[,
+                                         "slot_index": integer ∈ ]0, 255[,
+                                         "page_index":
+                                           integer ∈ ]-2^15, 2^15-1[ },
+                                     "dal_proof":
+                                       /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+                                || { /* dal parameters proof */
+                                     "reveal_proof_kind":
+                                       "dal_parameters_proof" } }
+                         || { /* first input */
+                              "input_proof_kind": "first_input" } } } }
+    || { /* Smart_rollup_timeout */
+         "kind": "smart_rollup_timeout",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "stakers":
+           { "alice": $Signature.Public_key_hash,
+             "bob": $Signature.Public_key_hash } }
+    || { /* Smart_rollup_execute_outbox_message */
+         "kind": "smart_rollup_execute_outbox_message",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "cemented_commitment": $smart_rollup_commitment_hash,
+         "output_proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+    || { /* Smart_rollup_recover_bond */
+         "kind": "smart_rollup_recover_bond",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "staker": $Signature.Public_key_hash }
+    || { /* Zk_rollup_origination */
+         "kind": "zk_rollup_origination",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "public_parameters": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+         "circuits_info":
+           [ [ $unistring,
+               { /* Public */
+                 "public": any }
+               || { /* Private */
+                    "private": any }
+               || { /* Fee */
+                    "fee": any } ] ... ],
+         "init_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ],
+         "nb_ops": integer ∈ ]-2^30, 2^30[ }
+    || { /* Zk_rollup_publish */
+         "kind": "zk_rollup_publish",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "zk_rollup": $Zk_rollup_hash,
+         "op":
+           [ [ { "op_code": integer ∈ ]-2^30, 2^30[,
+                 "price": { "id": $script_expr,
+                            "amount": $bignum },
+                 "l1_dst": $Signature.Public_key_hash,
+                 "rollup_id": $Zk_rollup_hash,
+                 "payload": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ] },
+               { /* Some */
+                 "contents": $micheline.022-PsRiotum.michelson_v1.expression,
+                 "ty": $micheline.022-PsRiotum.michelson_v1.expression,
+                 "ticketer": $022-PsRiotum.contract_id }
+               || null
+               /* None */ ] ... ] }
+    || { /* Zk_rollup_update */
+         "kind": "zk_rollup_update",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "zk_rollup": $Zk_rollup_hash,
+         "update":
+           { "pending_pis":
+               [ [ $unistring,
+                   { "new_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ],
+                     "fee": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+                     "exit_validity": boolean } ] ... ],
+             "private_pis":
+               [ [ $unistring,
+                   { "new_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ],
+                     "fee": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ } ] ... ],
+             "fee_pi": { "new_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ] },
+             "proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ } }
+  $022-PsRiotum.operation.alpha.contents_and_signature:
+    { "contents": [ $022-PsRiotum.operation.alpha.contents ... ],
+      "signature"?: $Signature.V1 }
+  $022-PsRiotum.operation.alpha.internal_operation_result.delegation:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum,
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates }
+  $022-PsRiotum.operation.alpha.internal_operation_result.event:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.internal_operation_result.origination:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "originated_contracts"?: [ $022-PsRiotum.contract_id.originated ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "paid_storage_size_diff"?: $bignum,
+      "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "originated_contracts"?:
+           [ $022-PsRiotum.contract_id.originated ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "storage_size"?: $bignum,
+         "paid_storage_size_diff"?: $bignum,
+         "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+  $022-PsRiotum.operation.alpha.internal_operation_result.transaction:
+    /* Applied */
+    { /* To_contract */
+      "status": "applied",
+      "storage"?: $micheline.022-PsRiotum.michelson_v1.expression,
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "ticket_receipt"?:
+        [ { "ticket_token":
+              { "ticketer": $022-PsRiotum.contract_id,
+                "content_type":
+                  $micheline.022-PsRiotum.michelson_v1.expression,
+                "content": $micheline.022-PsRiotum.michelson_v1.expression },
+            "updates":
+              [ { "account": $022-PsRiotum.transaction_destination,
+                  "amount": $bignum } ... ] } ... ],
+      "originated_contracts"?: [ $022-PsRiotum.contract_id.originated ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "paid_storage_size_diff"?: $bignum,
+      "allocated_destination_contract"?: boolean,
+      "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* To_smart_rollup */
+         "status": "applied",
+         "consumed_milligas"?: $positive_bignum,
+         "ticket_receipt":
+           [ { "ticket_token":
+                 { "ticketer": $022-PsRiotum.contract_id,
+                   "content_type":
+                     $micheline.022-PsRiotum.michelson_v1.expression,
+                   "content": $micheline.022-PsRiotum.michelson_v1.expression },
+               "updates":
+                 [ { "account": $022-PsRiotum.transaction_destination,
+                     "amount": $bignum } ... ] } ... ] }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || /* Backtracked */
+    { /* To_contract */
+      "status": "backtracked",
+      "errors"?: [ $022-PsRiotum.error ... ],
+      "storage"?: $micheline.022-PsRiotum.michelson_v1.expression,
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "ticket_receipt"?:
+        [ { "ticket_token":
+              { "ticketer": $022-PsRiotum.contract_id,
+                "content_type":
+                  $micheline.022-PsRiotum.michelson_v1.expression,
+                "content": $micheline.022-PsRiotum.michelson_v1.expression },
+            "updates":
+              [ { "account": $022-PsRiotum.transaction_destination,
+                  "amount": $bignum } ... ] } ... ],
+      "originated_contracts"?: [ $022-PsRiotum.contract_id.originated ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "paid_storage_size_diff"?: $bignum,
+      "allocated_destination_contract"?: boolean,
+      "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* To_smart_rollup */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "ticket_receipt":
+           [ { "ticket_token":
+                 { "ticketer": $022-PsRiotum.contract_id,
+                   "content_type":
+                     $micheline.022-PsRiotum.michelson_v1.expression,
+                   "content": $micheline.022-PsRiotum.michelson_v1.expression },
+               "updates":
+                 [ { "account": $022-PsRiotum.transaction_destination,
+                     "amount": $bignum } ... ] } ... ] }
+  $022-PsRiotum.operation.alpha.operation_contents_and_result:
+    { /* Attestation */
+      "kind": "attestation",
+      "slot": integer ∈ ]0, 2^16-1[,
+      "level": integer ∈ ]0, 2^31[,
+      "round": integer ∈ ]-2^31-1, 2^31[,
+      "block_payload_hash": $value_hash,
+      "metadata":
+        { "balance_updates"?:
+            $022-PsRiotum.operation_metadata.alpha.balance_updates,
+          "delegate": $Signature.Public_key_hash,
+          "consensus_power": integer ∈ ]-2^30, 2^30[,
+          "consensus_key": $Signature.Public_key_hash } }
+    || { /* Attestation_with_dal */
+         "kind": "attestation_with_dal",
+         "slot": integer ∈ ]0, 2^16-1[,
+         "level": integer ∈ ]0, 2^31[,
+         "round": integer ∈ ]-2^31-1, 2^31[,
+         "block_payload_hash": $value_hash,
+         "dal_attestation": $bignum,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "delegate": $Signature.Public_key_hash,
+             "consensus_power": integer ∈ ]-2^30, 2^30[,
+             "consensus_key": $Signature.Public_key_hash } }
+    || { /* Preattestation */
+         "kind": "preattestation",
+         "slot": integer ∈ ]0, 2^16-1[,
+         "level": integer ∈ ]0, 2^31[,
+         "round": integer ∈ ]-2^31-1, 2^31[,
+         "block_payload_hash": $value_hash,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "delegate": $Signature.Public_key_hash,
+             "consensus_power": integer ∈ ]-2^30, 2^30[,
+             "consensus_key": $Signature.Public_key_hash } }
+    || { /* Attestations_aggregate */
+         "kind": "attestations_aggregate",
+         "consensus_content":
+           { "level": integer ∈ ]0, 2^31[,
+             "round": integer ∈ ]-2^31-1, 2^31[,
+             "block_payload_hash": $value_hash },
+         "committee": [ integer ∈ ]0, 2^16-1[ ... ],
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "committee":
+               [ { "delegate": $Signature.Public_key_hash,
+                   "consensus_pkh": $Signature.Public_key_hash } ... ],
+             "consensus_power": integer ∈ ]-2^30, 2^30[ } }
+    || { /* Double_attestation_evidence */
+         "kind": "double_attestation_evidence",
+         "op1": $022-PsRiotum.inlined.attestation,
+         "op2": $022-PsRiotum.inlined.attestation,
+         "metadata":
+           { "forbidden_delegate"?: $Signature.Public_key_hash,
+             "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates } }
+    || { /* Double_preattestation_evidence */
+         "kind": "double_preattestation_evidence",
+         "op1": $022-PsRiotum.inlined.preattestation,
+         "op2": $022-PsRiotum.inlined.preattestation,
+         "metadata":
+           { "forbidden_delegate"?: $Signature.Public_key_hash,
+             "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates } }
+    || { /* Dal_entrapment_evidence */
+         "kind": "dal_entrapment_evidence",
+         "attestation": $022-PsRiotum.inlined.attestation,
+         "slot_index": integer ∈ ]0, 255[,
+         "shard_with_proof":
+           { "shard":
+               [ integer ∈ ]-2^30, 2^30[,
+                 [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ] ],
+             "proof": $DAL_commitment },
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates } }
+    || { /* Seed_nonce_revelation */
+         "kind": "seed_nonce_revelation",
+         "level": integer ∈ ]0, 2^31[,
+         "nonce": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates } }
+    || { /* Vdf_revelation */
+         "kind": "vdf_revelation",
+         "solution":
+           [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/, /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ],
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates } }
+    || { /* Double_baking_evidence */
+         "kind": "double_baking_evidence",
+         "bh1": $022-PsRiotum.block_header.alpha.full_header,
+         "bh2": $022-PsRiotum.block_header.alpha.full_header,
+         "metadata":
+           { "forbidden_delegate"?: $Signature.Public_key_hash,
+             "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates } }
+    || { /* Activate_account */
+         "kind": "activate_account",
+         "pkh": $Ed25519.Public_key_hash,
+         "secret": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates } }
+    || { /* Proposals */
+         "kind": "proposals",
+         "source": $Signature.Public_key_hash,
+         "period": integer ∈ ]-2^31-1, 2^31[,
+         "proposals": [ $Protocol_hash ... ],
+         "metadata": {  } }
+    || { /* Ballot */
+         "kind": "ballot",
+         "source": $Signature.Public_key_hash,
+         "period": integer ∈ ]-2^31-1, 2^31[,
+         "proposal": $Protocol_hash,
+         "ballot": "nay" | "yay" | "pass",
+         "metadata": {  } }
+    || { /* Drain_delegate */
+         "kind": "drain_delegate",
+         "consensus_key": $Signature.Public_key_hash,
+         "delegate": $Signature.Public_key_hash,
+         "destination": $Signature.Public_key_hash,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "allocated_destination_contract"?: boolean } }
+    || { /* Reveal */
+         "kind": "reveal",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "public_key": $Signature.Public_key,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.reveal,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Transaction */
+         "kind": "transaction",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "amount": $022-PsRiotum.mutez,
+         "destination": $022-PsRiotum.contract_id,
+         "parameters"?:
+           { "entrypoint": $022-PsRiotum.entrypoint,
+             "value": any },
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.transaction,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Origination */
+         "kind": "origination",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "balance": $022-PsRiotum.mutez,
+         "delegate"?: $Signature.Public_key_hash,
+         "script": $022-PsRiotum.scripted.contracts,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.origination,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Delegation */
+         "kind": "delegation",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "delegate"?: $Signature.Public_key_hash,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.delegation,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Register_global_constant */
+         "kind": "register_global_constant",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "value": any,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.register_global_constant,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Set_deposits_limit */
+         "kind": "set_deposits_limit",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "limit"?: $022-PsRiotum.mutez,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.set_deposits_limit,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Increase_paid_storage */
+         "kind": "increase_paid_storage",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "amount": $bignum,
+         "destination": $022-PsRiotum.contract_id.originated,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.increase_paid_storage,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Update_consensus_key */
+         "kind": "update_consensus_key",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "pk": $Signature.Public_key,
+         "proof"?: $Signature.V1,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.update_consensus_key,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Transfer_ticket */
+         "kind": "transfer_ticket",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "ticket_contents": any,
+         "ticket_ty": any,
+         "ticket_ticketer": $022-PsRiotum.contract_id,
+         "ticket_amount": $positive_bignum,
+         "destination": $022-PsRiotum.contract_id,
+         "entrypoint": $unistring,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.transfer_ticket,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Dal_publish_commitment */
+         "kind": "dal_publish_commitment",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "slot_header":
+           { "slot_index": integer ∈ ]0, 255[,
+             "commitment": $DAL_commitment,
+             "commitment_proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ },
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.dal_publish_commitment,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_originate */
+         "kind": "smart_rollup_originate",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "pvm_kind": "wasm_2_0_0" | "arith" | "riscv",
+         "kernel": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+         "parameters_ty": any,
+         "whitelist"?: [ $Signature.Public_key_hash ... ],
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_originate,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_add_messages */
+         "kind": "smart_rollup_add_messages",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "message": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ],
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_add_messages,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_cement */
+         "kind": "smart_rollup_cement",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_cement,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_publish */
+         "kind": "smart_rollup_publish",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "commitment":
+           { "compressed_state": $smart_rollup_state_hash,
+             "inbox_level": integer ∈ ]0, 2^31[,
+             "predecessor": $smart_rollup_commitment_hash,
+             "number_of_ticks": $int64 },
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_publish,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_refute */
+         "kind": "smart_rollup_refute",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "opponent": $Signature.Public_key_hash,
+         "refutation":
+           { /* Start */
+             "refutation_kind": "start",
+             "player_commitment_hash": $smart_rollup_commitment_hash,
+             "opponent_commitment_hash": $smart_rollup_commitment_hash }
+           || { /* Move */
+                "refutation_kind": "move",
+                "choice": $positive_bignum,
+                "step":
+                  [ { "state"?: $smart_rollup_state_hash,
+                      "tick": $positive_bignum } ... ]
+                  /* Dissection */
+                  || { /* Proof */
+                       "pvm_step": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+                       "input_proof"?:
+                         { /* inbox proof */
+                           "input_proof_kind": "inbox_proof",
+                           "level": integer ∈ ]0, 2^31[,
+                           "message_counter": $positive_bignum,
+                           "serialized_proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+                         || { /* reveal proof */
+                              "input_proof_kind": "reveal_proof",
+                              "reveal_proof":
+                                { /* raw data proof */
+                                  "reveal_proof_kind": "raw_data_proof",
+                                  "raw_data": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+                                || { /* metadata proof */
+                                     "reveal_proof_kind": "metadata_proof" }
+                                || { /* dal page proof */
+                                     "reveal_proof_kind": "dal_page_proof",
+                                     "dal_page_id":
+                                       { "published_level":
+                                           integer ∈ ]0, 2^31[,
+                                         "slot_index": integer ∈ ]0, 255[,
+                                         "page_index":
+                                           integer ∈ ]-2^15, 2^15-1[ },
+                                     "dal_proof":
+                                       /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+                                || { /* dal parameters proof */
+                                     "reveal_proof_kind":
+                                       "dal_parameters_proof" } }
+                         || { /* first input */
+                              "input_proof_kind": "first_input" } } },
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_refute,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_timeout */
+         "kind": "smart_rollup_timeout",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "stakers":
+           { "alice": $Signature.Public_key_hash,
+             "bob": $Signature.Public_key_hash },
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_timeout,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_execute_outbox_message */
+         "kind": "smart_rollup_execute_outbox_message",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "cemented_commitment": $smart_rollup_commitment_hash,
+         "output_proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_execute_outbox_message,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Smart_rollup_recover_bond */
+         "kind": "smart_rollup_recover_bond",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "rollup": $smart_rollup_address,
+         "staker": $Signature.Public_key_hash,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.smart_rollup_recover_bond,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Zk_rollup_origination */
+         "kind": "zk_rollup_origination",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "public_parameters": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+         "circuits_info":
+           [ [ $unistring,
+               { /* Public */
+                 "public": any }
+               || { /* Private */
+                    "private": any }
+               || { /* Fee */
+                    "fee": any } ] ... ],
+         "init_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ],
+         "nb_ops": integer ∈ ]-2^30, 2^30[,
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.zk_rollup_origination,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Zk_rollup_publish */
+         "kind": "zk_rollup_publish",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "zk_rollup": $Zk_rollup_hash,
+         "op":
+           [ [ { "op_code": integer ∈ ]-2^30, 2^30[,
+                 "price": { "id": $script_expr,
+                            "amount": $bignum },
+                 "l1_dst": $Signature.Public_key_hash,
+                 "rollup_id": $Zk_rollup_hash,
+                 "payload": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ] },
+               { /* Some */
+                 "contents": $micheline.022-PsRiotum.michelson_v1.expression,
+                 "ty": $micheline.022-PsRiotum.michelson_v1.expression,
+                 "ticketer": $022-PsRiotum.contract_id }
+               || null
+               /* None */ ] ... ],
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.zk_rollup_publish,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+    || { /* Zk_rollup_update */
+         "kind": "zk_rollup_update",
+         "source": $Signature.Public_key_hash,
+         "fee": $022-PsRiotum.mutez,
+         "counter": $positive_bignum,
+         "gas_limit": $positive_bignum,
+         "storage_limit": $positive_bignum,
+         "zk_rollup": $Zk_rollup_hash,
+         "update":
+           { "pending_pis":
+               [ [ $unistring,
+                   { "new_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ],
+                     "fee": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+                     "exit_validity": boolean } ] ... ],
+             "private_pis":
+               [ [ $unistring,
+                   { "new_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ],
+                     "fee": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ } ] ... ],
+             "fee_pi": { "new_state": [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ] },
+             "proof": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ },
+         "metadata":
+           { "balance_updates"?:
+               $022-PsRiotum.operation_metadata.alpha.balance_updates,
+             "operation_result":
+               $022-PsRiotum.operation.alpha.operation_result.zk_rollup_update,
+             "internal_operation_results"?:
+               [ $022-PsRiotum.apply_internal_results.alpha.operation_result ... ] } }
+  $022-PsRiotum.operation.alpha.operation_result.dal_publish_commitment:
+    { /* Applied */
+      "status": "applied",
+      "slot_header":
+        { "version": "0",
+          "level": integer ∈ ]0, 2^31[,
+          "index": integer ∈ ]0, 255[,
+          "commitment": $DAL_commitment },
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "slot_header":
+           { "version": "0",
+             "level": integer ∈ ]0, 2^31[,
+             "index": integer ∈ ]0, 255[,
+             "commitment": $DAL_commitment },
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.operation_result.delegation:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum,
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates }
+  $022-PsRiotum.operation.alpha.operation_result.increase_paid_storage:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.operation_result.origination:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "originated_contracts"?: [ $022-PsRiotum.contract_id.originated ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "paid_storage_size_diff"?: $bignum,
+      "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "originated_contracts"?:
+           [ $022-PsRiotum.contract_id.originated ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "storage_size"?: $bignum,
+         "paid_storage_size_diff"?: $bignum,
+         "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+  $022-PsRiotum.operation.alpha.operation_result.register_global_constant:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "global_address": $script_expr }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "consumed_milligas"?: $positive_bignum,
+         "storage_size"?: $bignum,
+         "global_address": $script_expr }
+  $022-PsRiotum.operation.alpha.operation_result.reveal:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.operation_result.set_deposits_limit:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_add_messages:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_cement:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum,
+      "inbox_level": integer ∈ ]0, 2^31[,
+      "commitment_hash": $smart_rollup_commitment_hash }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "inbox_level": integer ∈ ]0, 2^31[,
+         "commitment_hash": $smart_rollup_commitment_hash }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_execute_outbox_message:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "ticket_updates":
+        [ { "ticket_token":
+              { "ticketer": $022-PsRiotum.contract_id,
+                "content_type":
+                  $micheline.022-PsRiotum.michelson_v1.expression,
+                "content": $micheline.022-PsRiotum.michelson_v1.expression },
+            "updates":
+              [ { "account": $022-PsRiotum.transaction_destination,
+                  "amount": $bignum } ... ] } ... ],
+      "whitelist_update"?:
+        { /* Public */
+          "kind": "public" }
+        || { /* Private */
+             "kind": "update",
+             "whitelist": [ $Signature.Public_key_hash ... ] },
+      "consumed_milligas"?: $positive_bignum,
+      "paid_storage_size_diff"?: $bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "ticket_updates":
+           [ { "ticket_token":
+                 { "ticketer": $022-PsRiotum.contract_id,
+                   "content_type":
+                     $micheline.022-PsRiotum.michelson_v1.expression,
+                   "content": $micheline.022-PsRiotum.michelson_v1.expression },
+               "updates":
+                 [ { "account": $022-PsRiotum.transaction_destination,
+                     "amount": $bignum } ... ] } ... ],
+         "whitelist_update"?:
+           { /* Public */
+             "kind": "public" }
+           || { /* Private */
+                "kind": "update",
+                "whitelist": [ $Signature.Public_key_hash ... ] },
+         "consumed_milligas"?: $positive_bignum,
+         "paid_storage_size_diff"?: $bignum }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_originate:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "address": $smart_rollup_address,
+      "genesis_commitment_hash": $smart_rollup_commitment_hash,
+      "consumed_milligas"?: $positive_bignum,
+      "size": $bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "address": $smart_rollup_address,
+         "genesis_commitment_hash": $smart_rollup_commitment_hash,
+         "consumed_milligas"?: $positive_bignum,
+         "size": $bignum }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_publish:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum,
+      "staked_hash": $smart_rollup_commitment_hash,
+      "published_at_level": integer ∈ ]0, 2^31[,
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "staked_hash": $smart_rollup_commitment_hash,
+         "published_at_level": integer ∈ ]0, 2^31[,
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_recover_bond:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_refute:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum,
+      "game_status":
+        "ongoing"
+        || { /* Ended */
+             "result":
+               { /* Loser */
+                 "kind": "loser",
+                 "reason": "conflict_resolved" || "timeout",
+                 "player": $Signature.Public_key_hash }
+               || { /* Draw */
+                    "kind": "draw" } },
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "game_status":
+           "ongoing"
+           || { /* Ended */
+                "result":
+                  { /* Loser */
+                    "kind": "loser",
+                    "reason": "conflict_resolved" || "timeout",
+                    "player": $Signature.Public_key_hash }
+                  || { /* Draw */
+                       "kind": "draw" } },
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates }
+  $022-PsRiotum.operation.alpha.operation_result.smart_rollup_timeout:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum,
+      "game_status":
+        "ongoing"
+        || { /* Ended */
+             "result":
+               { /* Loser */
+                 "kind": "loser",
+                 "reason": "conflict_resolved" || "timeout",
+                 "player": $Signature.Public_key_hash }
+               || { /* Draw */
+                    "kind": "draw" } },
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "game_status":
+           "ongoing"
+           || { /* Ended */
+                "result":
+                  { /* Loser */
+                    "kind": "loser",
+                    "reason": "conflict_resolved" || "timeout",
+                    "player": $Signature.Public_key_hash }
+                  || { /* Draw */
+                       "kind": "draw" } },
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates }
+  $022-PsRiotum.operation.alpha.operation_result.transaction:
+    /* Applied */
+    { /* To_contract */
+      "status": "applied",
+      "storage"?: $micheline.022-PsRiotum.michelson_v1.expression,
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "ticket_updates"?:
+        [ { "ticket_token":
+              { "ticketer": $022-PsRiotum.contract_id,
+                "content_type":
+                  $micheline.022-PsRiotum.michelson_v1.expression,
+                "content": $micheline.022-PsRiotum.michelson_v1.expression },
+            "updates":
+              [ { "account": $022-PsRiotum.transaction_destination,
+                  "amount": $bignum } ... ] } ... ],
+      "originated_contracts"?: [ $022-PsRiotum.contract_id.originated ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "paid_storage_size_diff"?: $bignum,
+      "allocated_destination_contract"?: boolean,
+      "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* To_smart_rollup */
+         "status": "applied",
+         "consumed_milligas"?: $positive_bignum,
+         "ticket_updates":
+           [ { "ticket_token":
+                 { "ticketer": $022-PsRiotum.contract_id,
+                   "content_type":
+                     $micheline.022-PsRiotum.michelson_v1.expression,
+                   "content": $micheline.022-PsRiotum.michelson_v1.expression },
+               "updates":
+                 [ { "account": $022-PsRiotum.transaction_destination,
+                     "amount": $bignum } ... ] } ... ] }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || /* Backtracked */
+    { /* To_contract */
+      "status": "backtracked",
+      "errors"?: [ $022-PsRiotum.error ... ],
+      "storage"?: $micheline.022-PsRiotum.michelson_v1.expression,
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "ticket_updates"?:
+        [ { "ticket_token":
+              { "ticketer": $022-PsRiotum.contract_id,
+                "content_type":
+                  $micheline.022-PsRiotum.michelson_v1.expression,
+                "content": $micheline.022-PsRiotum.michelson_v1.expression },
+            "updates":
+              [ { "account": $022-PsRiotum.transaction_destination,
+                  "amount": $bignum } ... ] } ... ],
+      "originated_contracts"?: [ $022-PsRiotum.contract_id.originated ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "paid_storage_size_diff"?: $bignum,
+      "allocated_destination_contract"?: boolean,
+      "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* To_smart_rollup */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "ticket_updates":
+           [ { "ticket_token":
+                 { "ticketer": $022-PsRiotum.contract_id,
+                   "content_type":
+                     $micheline.022-PsRiotum.michelson_v1.expression,
+                   "content": $micheline.022-PsRiotum.michelson_v1.expression },
+               "updates":
+                 [ { "account": $022-PsRiotum.transaction_destination,
+                     "amount": $bignum } ... ] } ... ] }
+  $022-PsRiotum.operation.alpha.operation_result.transfer_ticket:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "ticket_updates":
+        [ { "ticket_token":
+              { "ticketer": $022-PsRiotum.contract_id,
+                "content_type":
+                  $micheline.022-PsRiotum.michelson_v1.expression,
+                "content": $micheline.022-PsRiotum.michelson_v1.expression },
+            "updates":
+              [ { "account": $022-PsRiotum.transaction_destination,
+                  "amount": $bignum } ... ] } ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "paid_storage_size_diff"?: $bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "ticket_updates":
+           [ { "ticket_token":
+                 { "ticketer": $022-PsRiotum.contract_id,
+                   "content_type":
+                     $micheline.022-PsRiotum.michelson_v1.expression,
+                   "content": $micheline.022-PsRiotum.michelson_v1.expression },
+               "updates":
+                 [ { "account": $022-PsRiotum.transaction_destination,
+                     "amount": $bignum } ... ] } ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "paid_storage_size_diff"?: $bignum }
+  $022-PsRiotum.operation.alpha.operation_result.update_consensus_key:
+    { /* Applied */
+      "status": "applied",
+      "consumed_milligas"?: $positive_bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "consumed_milligas"?: $positive_bignum }
+  $022-PsRiotum.operation.alpha.operation_result.zk_rollup_origination:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "originated_zk_rollup": $Zk_rollup_hash,
+      "consumed_milligas"?: $positive_bignum,
+      "size": $bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "originated_zk_rollup": $Zk_rollup_hash,
+         "consumed_milligas"?: $positive_bignum,
+         "size": $bignum }
+  $022-PsRiotum.operation.alpha.operation_result.zk_rollup_publish:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "consumed_milligas"?: $positive_bignum,
+      "size": $bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "consumed_milligas"?: $positive_bignum,
+         "size": $bignum }
+  $022-PsRiotum.operation.alpha.operation_result.zk_rollup_update:
+    { /* Applied */
+      "status": "applied",
+      "balance_updates":
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "consumed_milligas"?: $positive_bignum,
+      "paid_storage_size_diff"?: $bignum }
+    || { /* Failed */
+         "status": "failed",
+         "errors": [ $022-PsRiotum.error ... ] }
+    || { /* Skipped */
+         "status": "skipped" }
+    || { /* Backtracked */
+         "status": "backtracked",
+         "errors"?: [ $022-PsRiotum.error ... ],
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "consumed_milligas"?: $positive_bignum,
+         "paid_storage_size_diff"?: $bignum }
+  $022-PsRiotum.operation.alpha.operation_with_metadata:
+    { /* Operation_with_metadata */
+      "contents":
+        [ $022-PsRiotum.operation.alpha.operation_contents_and_result ... ],
+      "signature"?: $Signature.V1 }
+    || { /* Operation_without_metadata */
+         "contents": [ $022-PsRiotum.operation.alpha.contents ... ],
+         "signature"?: $Signature.V1 }
+  $022-PsRiotum.operation.alpha.successful_manager_operation_result:
+    { /* reveal */
+      "kind": "reveal",
+      "consumed_milligas"?: $positive_bignum }
+    || /* transaction */
+    { /* To_contract */
+      "kind": "transaction",
+      "storage"?: $micheline.022-PsRiotum.michelson_v1.expression,
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "ticket_updates"?:
+        [ { "ticket_token":
+              { "ticketer": $022-PsRiotum.contract_id,
+                "content_type":
+                  $micheline.022-PsRiotum.michelson_v1.expression,
+                "content": $micheline.022-PsRiotum.michelson_v1.expression },
+            "updates":
+              [ { "account": $022-PsRiotum.transaction_destination,
+                  "amount": $bignum } ... ] } ... ],
+      "originated_contracts"?: [ $022-PsRiotum.contract_id.originated ... ],
+      "consumed_milligas"?: $positive_bignum,
+      "storage_size"?: $bignum,
+      "paid_storage_size_diff"?: $bignum,
+      "allocated_destination_contract"?: boolean,
+      "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* To_smart_rollup */
+         "kind": "transaction",
+         "consumed_milligas"?: $positive_bignum,
+         "ticket_updates":
+           [ { "ticket_token":
+                 { "ticketer": $022-PsRiotum.contract_id,
+                   "content_type":
+                     $micheline.022-PsRiotum.michelson_v1.expression,
+                   "content": $micheline.022-PsRiotum.michelson_v1.expression },
+               "updates":
+                 [ { "account": $022-PsRiotum.transaction_destination,
+                     "amount": $bignum } ... ] } ... ] }
+    || { /* origination */
+         "kind": "origination",
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "originated_contracts"?:
+           [ $022-PsRiotum.contract_id.originated ... ],
+         "consumed_milligas"?: $positive_bignum,
+         "storage_size"?: $bignum,
+         "paid_storage_size_diff"?: $bignum,
+         "lazy_storage_diff"?: $022-PsRiotum.lazy_storage_diff }
+    || { /* delegation */
+         "kind": "delegation",
+         "consumed_milligas"?: $positive_bignum,
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates }
+    || { /* update_consensus_key */
+         "kind": "update_consensus_key",
+         "consumed_milligas"?: $positive_bignum }
+    || { /* set_deposits_limit */
+         "kind": "set_deposits_limit",
+         "consumed_milligas"?: $positive_bignum }
+    || { /* increase_paid_storage */
+         "kind": "increase_paid_storage",
+         "balance_updates"?:
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "consumed_milligas"?: $positive_bignum }
+    || { /* smart_rollup_originate */
+         "kind": "smart_rollup_originate",
+         "balance_updates":
+           $022-PsRiotum.operation_metadata.alpha.balance_updates,
+         "address": $smart_rollup_address,
+         "genesis_commitment_hash": $smart_rollup_commitment_hash,
+         "consumed_milligas"?: $positive_bignum,
+         "size": $bignum }
+  $022-PsRiotum.operation_metadata.alpha.balance_updates:
+    [ { /* Contract */
+        "kind": "contract",
+        "contract": $022-PsRiotum.contract_id,
+        "change": $int64,
+        "origin": "block" }
+      || { /* Contract */
+           "kind": "contract",
+           "contract": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Contract */
+           "kind": "contract",
+           "contract": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Contract */
+           "kind": "contract",
+           "contract": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Contract */
+           "kind": "contract",
+           "contract": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Block_fees */
+           "kind": "accumulator",
+           "category": "block fees",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Block_fees */
+           "kind": "accumulator",
+           "category": "block fees",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Block_fees */
+           "kind": "accumulator",
+           "category": "block fees",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Block_fees */
+           "kind": "accumulator",
+           "category": "block fees",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Block_fees */
+           "kind": "accumulator",
+           "category": "block fees",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Deposits */
+           "kind": "freezer",
+           "category": "deposits",
+           "staker": $022-PsRiotum.frozen_staker,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Deposits */
+           "kind": "freezer",
+           "category": "deposits",
+           "staker": $022-PsRiotum.frozen_staker,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Deposits */
+           "kind": "freezer",
+           "category": "deposits",
+           "staker": $022-PsRiotum.frozen_staker,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Deposits */
+           "kind": "freezer",
+           "category": "deposits",
+           "staker": $022-PsRiotum.frozen_staker,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Deposits */
+           "kind": "freezer",
+           "category": "deposits",
+           "staker": $022-PsRiotum.frozen_staker,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Nonce_revelation_rewards */
+           "kind": "minted",
+           "category": "nonce revelation rewards",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Nonce_revelation_rewards */
+           "kind": "minted",
+           "category": "nonce revelation rewards",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Nonce_revelation_rewards */
+           "kind": "minted",
+           "category": "nonce revelation rewards",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Nonce_revelation_rewards */
+           "kind": "minted",
+           "category": "nonce revelation rewards",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Nonce_revelation_rewards */
+           "kind": "minted",
+           "category": "nonce revelation rewards",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Attesting_rewards */
+           "kind": "minted",
+           "category": "attesting rewards",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Attesting_rewards */
+           "kind": "minted",
+           "category": "attesting rewards",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Attesting_rewards */
+           "kind": "minted",
+           "category": "attesting rewards",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Attesting_rewards */
+           "kind": "minted",
+           "category": "attesting rewards",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Attesting_rewards */
+           "kind": "minted",
+           "category": "attesting rewards",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Baking_rewards */
+           "kind": "minted",
+           "category": "baking rewards",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Baking_rewards */
+           "kind": "minted",
+           "category": "baking rewards",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Baking_rewards */
+           "kind": "minted",
+           "category": "baking rewards",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Baking_rewards */
+           "kind": "minted",
+           "category": "baking rewards",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Baking_rewards */
+           "kind": "minted",
+           "category": "baking rewards",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Baking_bonuses */
+           "kind": "minted",
+           "category": "baking bonuses",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Baking_bonuses */
+           "kind": "minted",
+           "category": "baking bonuses",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Baking_bonuses */
+           "kind": "minted",
+           "category": "baking bonuses",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Baking_bonuses */
+           "kind": "minted",
+           "category": "baking bonuses",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Baking_bonuses */
+           "kind": "minted",
+           "category": "baking bonuses",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Storage_fees */
+           "kind": "burned",
+           "category": "storage fees",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Storage_fees */
+           "kind": "burned",
+           "category": "storage fees",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Storage_fees */
+           "kind": "burned",
+           "category": "storage fees",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Storage_fees */
+           "kind": "burned",
+           "category": "storage fees",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Storage_fees */
+           "kind": "burned",
+           "category": "storage fees",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Double_signing_punishments */
+           "kind": "burned",
+           "category": "punishments",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Double_signing_punishments */
+           "kind": "burned",
+           "category": "punishments",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Double_signing_punishments */
+           "kind": "burned",
+           "category": "punishments",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Double_signing_punishments */
+           "kind": "burned",
+           "category": "punishments",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Double_signing_punishments */
+           "kind": "burned",
+           "category": "punishments",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Lost_attesting_rewards */
+           "kind": "burned",
+           "category": "lost attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "participation": boolean,
+           "revelation": boolean,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Lost_attesting_rewards */
+           "kind": "burned",
+           "category": "lost attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "participation": boolean,
+           "revelation": boolean,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Lost_attesting_rewards */
+           "kind": "burned",
+           "category": "lost attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "participation": boolean,
+           "revelation": boolean,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Lost_attesting_rewards */
+           "kind": "burned",
+           "category": "lost attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "participation": boolean,
+           "revelation": boolean,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Lost_attesting_rewards */
+           "kind": "burned",
+           "category": "lost attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "participation": boolean,
+           "revelation": boolean,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Liquidity_baking_subsidies */
+           "kind": "minted",
+           "category": "subsidy",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Liquidity_baking_subsidies */
+           "kind": "minted",
+           "category": "subsidy",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Liquidity_baking_subsidies */
+           "kind": "minted",
+           "category": "subsidy",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Liquidity_baking_subsidies */
+           "kind": "minted",
+           "category": "subsidy",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Liquidity_baking_subsidies */
+           "kind": "minted",
+           "category": "subsidy",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Burned */
+           "kind": "burned",
+           "category": "burned",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Burned */
+           "kind": "burned",
+           "category": "burned",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Burned */
+           "kind": "burned",
+           "category": "burned",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Burned */
+           "kind": "burned",
+           "category": "burned",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Burned */
+           "kind": "burned",
+           "category": "burned",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Commitments */
+           "kind": "commitment",
+           "category": "commitment",
+           "committer": $Blinded public key hash,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Commitments */
+           "kind": "commitment",
+           "category": "commitment",
+           "committer": $Blinded public key hash,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Commitments */
+           "kind": "commitment",
+           "category": "commitment",
+           "committer": $Blinded public key hash,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Commitments */
+           "kind": "commitment",
+           "category": "commitment",
+           "committer": $Blinded public key hash,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Commitments */
+           "kind": "commitment",
+           "category": "commitment",
+           "committer": $Blinded public key hash,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Bootstrap */
+           "kind": "minted",
+           "category": "bootstrap",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Bootstrap */
+           "kind": "minted",
+           "category": "bootstrap",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Bootstrap */
+           "kind": "minted",
+           "category": "bootstrap",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Bootstrap */
+           "kind": "minted",
+           "category": "bootstrap",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Bootstrap */
+           "kind": "minted",
+           "category": "bootstrap",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Invoice */
+           "kind": "minted",
+           "category": "invoice",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Invoice */
+           "kind": "minted",
+           "category": "invoice",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Invoice */
+           "kind": "minted",
+           "category": "invoice",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Invoice */
+           "kind": "minted",
+           "category": "invoice",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Invoice */
+           "kind": "minted",
+           "category": "invoice",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Initial_commitments */
+           "kind": "minted",
+           "category": "commitment",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Initial_commitments */
+           "kind": "minted",
+           "category": "commitment",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Initial_commitments */
+           "kind": "minted",
+           "category": "commitment",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Initial_commitments */
+           "kind": "minted",
+           "category": "commitment",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Initial_commitments */
+           "kind": "minted",
+           "category": "commitment",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Minted */
+           "kind": "minted",
+           "category": "minted",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Minted */
+           "kind": "minted",
+           "category": "minted",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Minted */
+           "kind": "minted",
+           "category": "minted",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Minted */
+           "kind": "minted",
+           "category": "minted",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Minted */
+           "kind": "minted",
+           "category": "minted",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Frozen_bonds */
+           "kind": "freezer",
+           "category": "bonds",
+           "contract": $022-PsRiotum.contract_id,
+           "bond_id": $022-PsRiotum.bond_id,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Frozen_bonds */
+           "kind": "freezer",
+           "category": "bonds",
+           "contract": $022-PsRiotum.contract_id,
+           "bond_id": $022-PsRiotum.bond_id,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Frozen_bonds */
+           "kind": "freezer",
+           "category": "bonds",
+           "contract": $022-PsRiotum.contract_id,
+           "bond_id": $022-PsRiotum.bond_id,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Frozen_bonds */
+           "kind": "freezer",
+           "category": "bonds",
+           "contract": $022-PsRiotum.contract_id,
+           "bond_id": $022-PsRiotum.bond_id,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Frozen_bonds */
+           "kind": "freezer",
+           "category": "bonds",
+           "contract": $022-PsRiotum.contract_id,
+           "bond_id": $022-PsRiotum.bond_id,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Smart_rollup_refutation_punishments */
+           "kind": "burned",
+           "category": "smart_rollup_refutation_punishments",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Smart_rollup_refutation_punishments */
+           "kind": "burned",
+           "category": "smart_rollup_refutation_punishments",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Smart_rollup_refutation_punishments */
+           "kind": "burned",
+           "category": "smart_rollup_refutation_punishments",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Smart_rollup_refutation_punishments */
+           "kind": "burned",
+           "category": "smart_rollup_refutation_punishments",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Smart_rollup_refutation_punishments */
+           "kind": "burned",
+           "category": "smart_rollup_refutation_punishments",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Smart_rollup_refutation_rewards */
+           "kind": "minted",
+           "category": "smart_rollup_refutation_rewards",
+           "change": $int64,
+           "origin": "block" }
+      || { /* Smart_rollup_refutation_rewards */
+           "kind": "minted",
+           "category": "smart_rollup_refutation_rewards",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Smart_rollup_refutation_rewards */
+           "kind": "minted",
+           "category": "smart_rollup_refutation_rewards",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Smart_rollup_refutation_rewards */
+           "kind": "minted",
+           "category": "smart_rollup_refutation_rewards",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Smart_rollup_refutation_rewards */
+           "kind": "minted",
+           "category": "smart_rollup_refutation_rewards",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Unstaked_deposits */
+           "kind": "freezer",
+           "category": "unstaked_deposits",
+           "staker": $022-PsRiotum.staker,
+           "cycle": integer ∈ ]-2^31-1, 2^31[,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Unstaked_deposits */
+           "kind": "freezer",
+           "category": "unstaked_deposits",
+           "staker": $022-PsRiotum.staker,
+           "cycle": integer ∈ ]-2^31-1, 2^31[,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Unstaked_deposits */
+           "kind": "freezer",
+           "category": "unstaked_deposits",
+           "staker": $022-PsRiotum.staker,
+           "cycle": integer ∈ ]-2^31-1, 2^31[,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Unstaked_deposits */
+           "kind": "freezer",
+           "category": "unstaked_deposits",
+           "staker": $022-PsRiotum.staker,
+           "cycle": integer ∈ ]-2^31-1, 2^31[,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Unstaked_deposits */
+           "kind": "freezer",
+           "category": "unstaked_deposits",
+           "staker": $022-PsRiotum.staker,
+           "cycle": integer ∈ ]-2^31-1, 2^31[,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Staking_delegator_numerator */
+           "kind": "staking",
+           "category": "delegator_numerator",
+           "delegator": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Staking_delegator_numerator */
+           "kind": "staking",
+           "category": "delegator_numerator",
+           "delegator": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Staking_delegator_numerator */
+           "kind": "staking",
+           "category": "delegator_numerator",
+           "delegator": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Staking_delegator_numerator */
+           "kind": "staking",
+           "category": "delegator_numerator",
+           "delegator": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Staking_delegator_numerator */
+           "kind": "staking",
+           "category": "delegator_numerator",
+           "delegator": $022-PsRiotum.contract_id,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Staking_delegate_denominator */
+           "kind": "staking",
+           "category": "delegate_denominator",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Staking_delegate_denominator */
+           "kind": "staking",
+           "category": "delegate_denominator",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Staking_delegate_denominator */
+           "kind": "staking",
+           "category": "delegate_denominator",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Staking_delegate_denominator */
+           "kind": "staking",
+           "category": "delegate_denominator",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Staking_delegate_denominator */
+           "kind": "staking",
+           "category": "delegate_denominator",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* DAL_attesting_rewards */
+           "kind": "minted",
+           "category": "DAL attesting rewards",
+           "change": $int64,
+           "origin": "block" }
+      || { /* DAL_attesting_rewards */
+           "kind": "minted",
+           "category": "DAL attesting rewards",
+           "change": $int64,
+           "origin": "migration" }
+      || { /* DAL_attesting_rewards */
+           "kind": "minted",
+           "category": "DAL attesting rewards",
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* DAL_attesting_rewards */
+           "kind": "minted",
+           "category": "DAL attesting rewards",
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* DAL_attesting_rewards */
+           "kind": "minted",
+           "category": "DAL attesting rewards",
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash }
+      || { /* Lost_DAL_attesting_rewards */
+           "kind": "burned",
+           "category": "lost DAL attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "block" }
+      || { /* Lost_DAL_attesting_rewards */
+           "kind": "burned",
+           "category": "lost DAL attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "migration" }
+      || { /* Lost_DAL_attesting_rewards */
+           "kind": "burned",
+           "category": "lost DAL attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "subsidy" }
+      || { /* Lost_DAL_attesting_rewards */
+           "kind": "burned",
+           "category": "lost DAL attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "simulation" }
+      || { /* Lost_DAL_attesting_rewards */
+           "kind": "burned",
+           "category": "lost DAL attesting rewards",
+           "delegate": $Signature.Public_key_hash,
+           "change": $int64,
+           "origin": "delayed_operation",
+           "delayed_operation_hash": $Operation_hash } ... ]
+  $022-PsRiotum.sapling_state_id:
+    /* Sapling state identifier
+       A sapling state identifier */
+    $bignum
+  $022-PsRiotum.scripted.contracts: { "code": any,
+                                      "storage": any }
+  $022-PsRiotum.staker:
+    /* unstaked_frozen_staker
+       Abstract notion of staker used in operation receipts for unstaked
+       frozen deposits, either a single staker or all the stakers delegating
+       to some delegate. */
+    { /* Single */
+      "contract": $022-PsRiotum.contract_id,
+      "delegate": $Signature.Public_key_hash }
+    || { /* Shared */
+         "delegate": $Signature.Public_key_hash }
+  $022-PsRiotum.transaction_destination:
+    /* A destination of a transaction
+       A destination notation compatible with the contract notation as given
+       to an RPC or inside scripts. Can be a base58 implicit contract hash, a
+       base58 originated contract hash, a base58 originated transaction
+       rollup, or a base58 originated smart rollup. */
+    $unistring
+  $Blinded public key hash:
+    /* A blinded public key hash (Base58Check-encoded) */
+    $unistring
+  $Chain_id:
+    /* Network identifier (Base58Check-encoded) */
+    $unistring
+  $Context_hash:
+    /* A hash of context (Base58Check-encoded) */
+    $unistring
+  $DAL_commitment:
+    /* Commitment representation for the DAL (Base58Check-encoded) */
+    $unistring
+  $Ed25519.Public_key_hash:
+    /* An Ed25519 public key hash (Base58Check-encoded) */
+    $unistring
+  $Operation_hash:
+    /* A Tezos operation ID (Base58Check-encoded) */
+    $unistring
+  $Operation_list_list_hash:
+    /* A list of list of operations (Base58Check-encoded) */
+    $unistring
+  $Protocol_hash:
+    /* A Tezos protocol ID (Base58Check-encoded) */
+    $unistring
+  $Signature.Public_key:
+    /* A Ed25519, Secp256k1, or P256 public key (Base58Check-encoded) */
+    $unistring
+  $Signature.Public_key_hash:
+    /* A Ed25519, Secp256k1, P256, or BLS public key hash
+       (Base58Check-encoded) */
+    $unistring
+  $Signature.V1:
+    /* A Ed25519, Secp256k1, P256 or BLS signature (Base58Check-encoded) */
+    $unistring
+  $Zk_rollup_hash:
+    /* A zk rollup address (Base58Check-encoded) */
+    $unistring
+  $bignum:
+    /* Big number
+       Decimal representation of a big number */
+    string
+  $block_hash:
+    /* A block identifier (Base58Check-encoded) */
+    $unistring
+  $block_header_metadata:
+    { "protocol": "PsRiotumaAMotcRoDWW1bysEhQy2n1M5fy8JgRp8jjRfHGmfeA7",
+      "next_protocol": "PsRiotumaAMotcRoDWW1bysEhQy2n1M5fy8JgRp8jjRfHGmfeA7",
+      "test_chain_status": $test_chain_status,
+      "max_operations_ttl": integer ∈ ]-2^30, 2^30[,
+      "max_operation_data_length": integer ∈ ]-2^30, 2^30[,
+      "max_block_header_length": integer ∈ ]-2^30, 2^30[,
+      "max_operation_list_length":
+        [ { "max_size": integer ∈ ]-2^30, 2^30[,
+            "max_op"?: integer ∈ ]-2^30, 2^30[ } ... ],
+      "proposer": $Signature.Public_key_hash,
+      "baker": $Signature.Public_key_hash,
+      "level_info":
+        { "level":
+            integer ∈ ]0, 2^31[
+            /* The level of the block relative to genesis. This is also the
+               Shell's notion of level. */,
+          "level_position":
+            integer ∈ ]-2^31-1, 2^31[
+            /* The level of the block relative to the successor of the
+               genesis block. More precisely, it is the position of the block
+               relative to the block that starts the "Alpha family" of
+               protocols, which includes all protocols except Genesis (that
+               is, from 001 onwards). */,
+          "cycle":
+            integer ∈ ]-2^31-1, 2^31[
+            /* The current cycle's number. Note that cycles are a
+               protocol-specific notion. As a result, the cycle number starts
+               at 0 with the first block of the Alpha family of protocols. */,
+          "cycle_position":
+            integer ∈ ]-2^31-1, 2^31[
+            /* The current level of the block relative to the first block of
+               the current cycle. */,
+          "expected_commitment":
+            boolean
+            /* Tells whether the baker of this block has to commit a seed
+               nonce hash. */ },
+      "voting_period_info":
+        { "voting_period":
+            { /* The voting period to which the block belongs. */
+              "index":
+                integer ∈ ]-2^31-1, 2^31[
+                /* The voting period's index. Starts at 0 with the first
+                   block of the Alpha family of protocols. */,
+              "kind":
+                /* One of the several kinds of periods in the voting
+                   procedure. */
+                "proposal"
+                || "exploration"
+                || "cooldown"
+                || "promotion"
+                || "adoption",
+              "start_position":
+                integer ∈ ]-2^31-1, 2^31[
+                /* The relative position of the first level of the period
+                   with respect to the first level of the Alpha family of
+                   protocols. */ },
+          "position":
+            integer ∈ ]-2^31-1, 2^31[
+            /* The position of the block within the voting period. */,
+          "remaining":
+            integer ∈ ]-2^31-1, 2^31[
+            /* The number of blocks remaining till the end of the voting
+               period. */ },
+      "nonce_hash": $cycle_nonce /* Some */ || null /* None */,
+      "deactivated": [ $Signature.Public_key_hash ... ],
+      "balance_updates"?:
+        $022-PsRiotum.operation_metadata.alpha.balance_updates,
+      "liquidity_baking_toggle_ema": integer ∈ ]-2^31-1, 2^31[,
+      "adaptive_issuance_vote_ema": integer ∈ ]-2^31-1, 2^31[,
+      "adaptive_issuance_activation_cycle"?: integer ∈ ]-2^31-1, 2^31[,
+      "implicit_operations_results":
+        [ $022-PsRiotum.operation.alpha.successful_manager_operation_result ... ],
+      "proposer_consensus_key": $Signature.Public_key_hash,
+      "baker_consensus_key": $Signature.Public_key_hash,
+      "consumed_milligas": $positive_bignum,
+      "dal_attestation": $bignum }
+  $cycle_nonce:
+    /* A nonce hash (Base58Check-encoded) */
+    $unistring
+  $fitness:
+    /* Block fitness
+       The fitness, or score, of a block, that allow the Tezos to decide
+       which chain is the best. A fitness value is a list of byte sequences.
+       They are compared as follows: shortest lists are smaller; lists of the
+       same length are compared according to the lexicographical order. */
+    [ /^([a-zA-Z0-9][a-zA-Z0-9])*$/ ... ]
+  $int64:
+    /* 64 bit integers
+       Decimal representation of 64 bit integers */
+    string
+  $micheline.022-PsRiotum.michelson_v1.expression:
+    { /* Int */
+      "int": $bignum }
+    || { /* String */
+         "string": $unistring }
+    || { /* Bytes */
+         "bytes": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+    || [ $micheline.022-PsRiotum.michelson_v1.expression ... ]
+    /* Sequence */
+    || { /* Prim__generic
+            Generic primitive (any number of args with or without
+            annotations) */
+         "prim": $022-PsRiotum.michelson.v1.primitives,
+         "args"?: [ $micheline.022-PsRiotum.michelson_v1.expression ... ],
+         "annots"?: [ $unistring ... ] }
+  $operation:
+    { /* An operation's shell header. */
+      "protocol": "PsRiotumaAMotcRoDWW1bysEhQy2n1M5fy8JgRp8jjRfHGmfeA7",
+      "chain_id": $Chain_id,
+      "hash": $Operation_hash,
+      "branch": $block_hash,
+      "contents": [ $022-PsRiotum.operation.alpha.contents ... ],
+      "signature"?: $Signature.V1,
+      "metadata": "too large" }
+    || { /* An operation's shell header. */
+         "protocol": "PsRiotumaAMotcRoDWW1bysEhQy2n1M5fy8JgRp8jjRfHGmfeA7",
+         "chain_id": $Chain_id,
+         "hash": $Operation_hash,
+         "branch": $block_hash,
+         "contents": [ $022-PsRiotum.operation.alpha.contents ... ],
+         "signature"?: $Signature.V1 }
+    || { /* An operation's shell header. */
+         "protocol": "PsRiotumaAMotcRoDWW1bysEhQy2n1M5fy8JgRp8jjRfHGmfeA7",
+         "chain_id": $Chain_id,
+         "hash": $Operation_hash,
+         "branch": $block_hash,
+         "contents":
+           [ $022-PsRiotum.operation.alpha.operation_contents_and_result ... ],
+         "signature"?: $Signature.V1 }
+    || { /* An operation's shell header. */
+         "protocol": "PsRiotumaAMotcRoDWW1bysEhQy2n1M5fy8JgRp8jjRfHGmfeA7",
+         "chain_id": $Chain_id,
+         "hash": $Operation_hash,
+         "branch": $block_hash,
+         "contents": [ $022-PsRiotum.operation.alpha.contents ... ],
+         "signature"?: $Signature.V1 }
+  $positive_bignum:
+    /* Positive big number
+       Decimal representation of a positive big number */
+    string
+  $raw_block_header:
+    /* Shell header
+       Block header's shell-related content. It contains information such as
+       the block level, its predecessor and timestamp. */
+    { "level": integer ∈ ]-2^31-1, 2^31[,
+      "proto": integer ∈ ]0, 255[,
+      "predecessor": $block_hash,
+      "timestamp": $timestamp.protocol,
+      "validation_pass": integer ∈ ]0, 255[,
+      "operations_hash": $Operation_list_list_hash,
+      "fitness": $fitness,
+      "context": $Context_hash,
+      "payload_hash": $value_hash,
+      "payload_round": integer ∈ ]-2^31-1, 2^31[,
+      "proof_of_work_nonce": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+      "seed_nonce_hash"?: $cycle_nonce,
+      "liquidity_baking_toggle_vote": $022-PsRiotum.liquidity_baking_vote,
+      "adaptive_issuance_vote": $022-PsRiotum.adaptive_issuance_vote,
+      "signature": $Signature.V1 }
+  $sapling.DH.epk: /^([a-zA-Z0-9][a-zA-Z0-9])*$/
+  $sapling.transaction.ciphertext:
+    { "cv": $sapling.transaction.commitment_value,
+      "epk": $sapling.DH.epk,
+      "payload_enc": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+      "nonce_enc": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+      "payload_out": /^([a-zA-Z0-9][a-zA-Z0-9])*$/,
+      "nonce_out": /^([a-zA-Z0-9][a-zA-Z0-9])*$/ }
+  $sapling.transaction.commitment: /^([a-zA-Z0-9][a-zA-Z0-9])*$/
+  $sapling.transaction.commitment_value: /^([a-zA-Z0-9][a-zA-Z0-9])*$/
+  $sapling.transaction.nullifier: /^([a-zA-Z0-9][a-zA-Z0-9])*$/
+  $script_expr:
+    /* A script expression ID (Base58Check-encoded) */
+    $unistring
+  $smart_rollup_address:
+    /* A smart rollup address (Base58Check-encoded) */
+    $unistring
+  $smart_rollup_commitment_hash:
+    /* The hash of a commitment of a smart rollup (Base58Check-encoded) */
+    $unistring
+  $smart_rollup_state_hash:
+    /* The hash of the VM state of a smart rollup (Base58Check-encoded) */
+    $unistring
+  $test_chain_status:
+    /* The status of the test chain: not_running (there is no test chain at
+       the moment), forking (the test chain is being setup), running (the
+       test chain is running). */
+    { /* Not_running */
+      "status": "not_running" }
+    || { /* Forking */
+         "status": "forking",
+         "protocol": $Protocol_hash,
+         "expiration": $timestamp.protocol }
+    || { /* Running */
+         "status": "running",
+         "chain_id": $Chain_id,
+         "genesis": $block_hash,
+         "protocol": $Protocol_hash,
+         "expiration": $timestamp.protocol }
+  $timestamp.protocol:
+    /* A timestamp as seen by the protocol: second-level precision, epoch
+       based. */
+    $unistring
+  $unistring:
+    /* Universal string representation
+       Either a plain UTF8 string, or a sequence of bytes for strings that
+       contain invalid byte sequences. */
+    string || { "invalid_utf8_string": [ integer ∈ ]0, 255[ ... ] }
+  $value_hash:
+    /* Hash of a consensus value (Base58Check-encoded) */
+    $unistring
+

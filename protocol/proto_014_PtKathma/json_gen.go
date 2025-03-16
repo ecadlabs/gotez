@@ -52,54 +52,6 @@ func (self *OriginationInternalOperationResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(tmp)
 }
 
-func (self *TransactionSuccessfulManagerResult) MarshalJSON() ([]byte, error) {
-	type TransactionSuccessfulManagerResult_no_json_marshaller TransactionSuccessfulManagerResult
-
-	type json_TransactionSuccessfulManagerResult struct {
-		Marker0 any `json:"kind"`
-		TransactionSuccessfulManagerResult_no_json_marshaller
-	}
-
-	tmp := json_TransactionSuccessfulManagerResult {
-		Marker0: self.OperationKind(),
-		TransactionSuccessfulManagerResult_no_json_marshaller: TransactionSuccessfulManagerResult_no_json_marshaller(*self),
-	}
-
-	return json.Marshal(tmp)
-}
-
-func (self *TransactionContentsAndResult) MarshalJSON() ([]byte, error) {
-	type TransactionContentsAndResult_no_json_marshaller TransactionContentsAndResult
-
-	type json_TransactionContentsAndResult struct {
-		Marker0 any `json:"kind"`
-		TransactionContentsAndResult_no_json_marshaller
-	}
-
-	tmp := json_TransactionContentsAndResult {
-		Marker0: self.OperationKind(),
-		TransactionContentsAndResult_no_json_marshaller: TransactionContentsAndResult_no_json_marshaller(*self),
-	}
-
-	return json.Marshal(tmp)
-}
-
-func (self *TransactionInternalOperationResult) MarshalJSON() ([]byte, error) {
-	type TransactionInternalOperationResult_no_json_marshaller TransactionInternalOperationResult
-
-	type json_TransactionInternalOperationResult struct {
-		Marker0 any `json:"kind"`
-		TransactionInternalOperationResult_no_json_marshaller
-	}
-
-	tmp := json_TransactionInternalOperationResult {
-		Marker0: self.OperationKind(),
-		TransactionInternalOperationResult_no_json_marshaller: TransactionInternalOperationResult_no_json_marshaller(*self),
-	}
-
-	return json.Marshal(tmp)
-}
-
 func (self *BalanceUpdateFrozenBonds) MarshalJSON() ([]byte, error) {
 	type BalanceUpdateFrozenBonds_no_json_marshaller BalanceUpdateFrozenBonds
 
@@ -547,6 +499,54 @@ func (self *EventInternalOperationResult) MarshalJSON() ([]byte, error) {
 	tmp := json_EventInternalOperationResult {
 		Marker0: self.OperationKind(),
 		EventInternalOperationResult_no_json_marshaller: EventInternalOperationResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+
+func (self *TransactionSuccessfulManagerResult) MarshalJSON() ([]byte, error) {
+	type TransactionSuccessfulManagerResult_no_json_marshaller TransactionSuccessfulManagerResult
+
+	type json_TransactionSuccessfulManagerResult struct {
+		Marker0 any `json:"kind"`
+		TransactionSuccessfulManagerResult_no_json_marshaller
+	}
+
+	tmp := json_TransactionSuccessfulManagerResult {
+		Marker0: self.OperationKind(),
+		TransactionSuccessfulManagerResult_no_json_marshaller: TransactionSuccessfulManagerResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+
+func (self *TransactionContentsAndResult) MarshalJSON() ([]byte, error) {
+	type TransactionContentsAndResult_no_json_marshaller TransactionContentsAndResult
+
+	type json_TransactionContentsAndResult struct {
+		Marker0 any `json:"kind"`
+		TransactionContentsAndResult_no_json_marshaller
+	}
+
+	tmp := json_TransactionContentsAndResult {
+		Marker0: self.OperationKind(),
+		TransactionContentsAndResult_no_json_marshaller: TransactionContentsAndResult_no_json_marshaller(*self),
+	}
+
+	return json.Marshal(tmp)
+}
+
+func (self *TransactionInternalOperationResult) MarshalJSON() ([]byte, error) {
+	type TransactionInternalOperationResult_no_json_marshaller TransactionInternalOperationResult
+
+	type json_TransactionInternalOperationResult struct {
+		Marker0 any `json:"kind"`
+		TransactionInternalOperationResult_no_json_marshaller
+	}
+
+	tmp := json_TransactionInternalOperationResult {
+		Marker0: self.OperationKind(),
+		TransactionInternalOperationResult_no_json_marshaller: TransactionInternalOperationResult_no_json_marshaller(*self),
 	}
 
 	return json.Marshal(tmp)

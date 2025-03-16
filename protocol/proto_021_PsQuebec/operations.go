@@ -49,6 +49,7 @@ type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALPublishCommitment = proto_019_PtParisB.DALPublishCommitment
 type DALPublishCommitmentResult = proto_018_Proxford.DALPublishSlotHeaderResult
 type OperationContents = proto_019_PtParisB.OperationContents
+type InlinedAttestation = proto_019_PtParisB.InlinedAttestation
 
 type OperationContentsAndResult interface {
 	core.OperationContentsAndResult
