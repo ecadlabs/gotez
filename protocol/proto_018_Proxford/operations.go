@@ -14,7 +14,6 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
 )
 
 type ManagerOperation = proto_012_Psithaca.ManagerOperation
@@ -39,8 +38,46 @@ type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContentsAndResult
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type Script = proto_012_Psithaca.Script
-type DALPublishSlotHeaderResult = proto_017_PtNairob.DALPublishSlotHeaderResult
-type DALPublishSlotHeader = proto_016_PtMumbai.DALPublishSlotHeader
+
+//json:kind=OperationKind()
+type DALPublishSlotHeader struct {
+	ManagerOperation
+	SlotHeader DALSlotHeader `json:"slot_header"`
+}
+
+type DALSlotHeader struct {
+	Index           uint8             `json:"index"`
+	Сommitment      *tz.DALCommitment `json:"commitment"`
+	CommitmentProof *tz.Bytes96       `json:"commitment_proof"`
+}
+
+func (*DALPublishSlotHeader) OperationKind() string { return "dal_publish_slot_header" }
+
+type DALPublishSlotHeaderResult interface {
+	core.ManagerOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[DALPublishSlotHeaderResult]{
+		Variants: encoding.Variants[DALPublishSlotHeaderResult]{
+			0: (*core.OperationResultApplied[*DALPublishSlotHeaderResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*DALPublishSlotHeaderResultContents])(nil),
+		},
+	})
+}
+
+type DALSlotHeaderResult struct {
+	Level      int32             `json:"level"`
+	Index      uint8             `json:"index"`
+	Сommitment *tz.DALCommitment `json:"commitment"`
+}
+
+type DALPublishSlotHeaderResultContents struct {
+	SlotHeader       DALSlotHeaderResult `json:"slot_header"`
+	ConsumedMilligas tz.BigUint          `json:"consumed_milligas"`
+}
 
 //json:kind=OperationKind()
 type DoubleAttestationEvidence struct {

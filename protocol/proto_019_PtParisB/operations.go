@@ -14,7 +14,6 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
 )
 
@@ -46,8 +45,7 @@ type DALAttestation = proto_016_PtMumbai.DALAttestation
 type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContentsAndResult
 type DALPublishSlotHeaderContentsAndResult = proto_018_Proxford.DALPublishSlotHeaderContentsAndResult
 type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
-type DALSlotHeader = proto_016_PtMumbai.DALSlotHeader
-type DALSlotHeaderResult = proto_017_PtNairob.DALSlotHeaderResult
+type DALSlotHeader = proto_018_Proxford.DALSlotHeader
 
 type OperationContents interface {
 	core.OperationContents
@@ -402,6 +400,13 @@ type DALPublishCommitmentContentsAndResult struct {
 func (*DALPublishCommitmentContentsAndResult) OperationContentsAndResult() {}
 func (op *DALPublishCommitmentContentsAndResult) GetMetadata() any {
 	return &op.Metadata
+}
+
+type DALSlotHeaderResult struct {
+	Tag        uint8             `json:"tag"`
+	Level      int32             `json:"level"`
+	Index      uint8             `json:"index"`
+	Сommitment *tz.DALCommitment `json:"commitment"`
 }
 
 //json:kind=OperationKind()

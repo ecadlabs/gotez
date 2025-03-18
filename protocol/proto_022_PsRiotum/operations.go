@@ -24,9 +24,12 @@ type VDFRevelation = proto_021_PsQuebec.VDFRevelation
 type DrainDelegate = proto_021_PsQuebec.DrainDelegate
 type FailingNoop = proto_021_PsQuebec.FailingNoop
 type Preattestation = proto_021_PsQuebec.Preattestation
+type InlinedPreattestation = proto_021_PsQuebec.InlinedPreattestation
+type InlinedPreattestationContents = proto_021_PsQuebec.InlinedPreattestationContents
 type Attestation = proto_021_PsQuebec.Attestation
 type AttestationWithDAL = proto_021_PsQuebec.AttestationWithDAL
 type InlinedAttestation = proto_021_PsQuebec.InlinedAttestation
+type InlinedAttestationContents = proto_021_PsQuebec.InlinedAttestationContents
 type Reveal = proto_021_PsQuebec.Reveal
 type Origination = proto_021_PsQuebec.Origination
 type Delegation = proto_021_PsQuebec.Delegation
@@ -34,9 +37,12 @@ type RegisterGlobalConstant = proto_021_PsQuebec.RegisterGlobalConstant
 type IncreasePaidStorage = proto_021_PsQuebec.IncreasePaidStorage
 type SetDepositsLimit = proto_021_PsQuebec.SetDepositsLimit
 type TransferTicket = proto_021_PsQuebec.TransferTicket
-type DALPublishCommitment = proto_021_PsQuebec.DALPublishCommitment
 type SignaturePrefix = proto_021_PsQuebec.SignaturePrefix
 type Script = proto_021_PsQuebec.Script
+type BLSSignaturePrefix = proto_021_PsQuebec.BLSSignaturePrefix
+type ConsumedGasResult = proto_021_PsQuebec.ConsumedGasResult
+type DALPublishCommitment = proto_021_PsQuebec.DALPublishCommitment
+type DALPublishCommitmentResult = proto_021_PsQuebec.DALPublishCommitmentResult
 
 type OperationContents interface {
 	core.OperationContents
@@ -178,9 +184,6 @@ func init() {
 		},
 	})
 }
-
-type ConsumedGasResult = proto_021_PsQuebec.ConsumedGasResult
-type DALPublishCommitmentResult = proto_021_PsQuebec.DALPublishCommitmentResult
 
 type ManagerMetadata[T core.ManagerOperationResult] struct {
 	BalanceUpdates

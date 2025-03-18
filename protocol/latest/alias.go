@@ -2,11 +2,11 @@ package latest
 
 import (
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	latest "github.com/ecadlabs/gotez/v2/protocol/proto_021_PsQuebec"
+	latest "github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"
 )
 
 var (
-	Protocol               = core.Proto021PsQuebec
+	Protocol               = core.Proto022PsRiotum
 	NewRunOperationRequest = latest.NewRunOperationRequest
 	NewUnsignedOperation   = latest.NewUnsignedOperation
 	NewSignedOperation     = latest.NewSignedOperation

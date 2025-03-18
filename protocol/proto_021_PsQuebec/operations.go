@@ -30,6 +30,7 @@ type VDFRevelation = proto_014_PtKathma.VDFRevelation
 type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type Preattestation = proto_018_Proxford.Preattestation
+type InlinedPreattestation = proto_018_Proxford.InlinedPreattestation
 type InlinedPreattestationContents = proto_018_Proxford.InlinedPreattestationContents
 type Attestation = proto_018_Proxford.Attestation
 type InlinedAttestationContents = proto_019_PtParisB.InlinedAttestationContents
@@ -47,7 +48,7 @@ type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type Script = proto_012_Psithaca.Script
 type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALPublishCommitment = proto_019_PtParisB.DALPublishCommitment
-type DALPublishCommitmentResult = proto_018_Proxford.DALPublishSlotHeaderResult
+type DALPublishCommitmentResult = proto_019_PtParisB.DALPublishCommitmentResult
 type OperationContents = proto_019_PtParisB.OperationContents
 type InlinedAttestation = proto_019_PtParisB.InlinedAttestation
 
