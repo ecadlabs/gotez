@@ -204,6 +204,10 @@ type TransactionInternalOperationResult interface {
 	GetNonce() uint16
 }
 
+type Ballot interface {
+	BallotKind() BallotKind
+}
+
 func GetPseudoOperation(op OperationContents) (PseudoOperation, bool) {
 	if tx, ok := op.(Transaction); ok && tx.GetSource().Eq(tx.GetDestination()) {
 		if param, ok := tx.GetParameters().CheckUnwrap(); ok {

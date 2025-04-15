@@ -43,7 +43,12 @@ type Ballot struct {
 	Ballot   core.BallotKind  `json:"ballot"`
 }
 
-var _ core.OperationWithSource = (*Ballot)(nil)
+func (b *Ballot) BallotKind() core.BallotKind { return b.Ballot }
+
+var (
+	_ core.OperationWithSource = (*Ballot)(nil)
+	_ core.Ballot              = (*Ballot)(nil)
+)
 
 func (op *Ballot) GetSource() core.TransactionDestination {
 	return core.ImplicitContract{PublicKeyHash: op.Source}
