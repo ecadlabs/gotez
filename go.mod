@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0
-	github.com/ecadlabs/goblst v1.0.0
+	github.com/ecadlabs/goblst v1.1.0
 	github.com/ecadlabs/pretty v0.0.0-20230412124801-f948fc689a04
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/crypto v0.7.0

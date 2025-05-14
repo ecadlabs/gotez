@@ -23,7 +23,7 @@ func (priv *BLSPrivateKey) Public() PublicKey {
 }
 
 func (priv *BLSPrivateKey) Sign(message []byte) (signature Signature, err error) {
-	sig := minpk.Sign((*minpk.PrivateKey)(priv), message, bls.Augmentation)
+	sig := minpk.Sign((*minpk.PrivateKey)(priv), message, bls.ProofOfPossession)
 	return (*BLSSignature)(sig), nil
 }
 
