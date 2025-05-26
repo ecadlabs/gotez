@@ -78,7 +78,7 @@ func (pub *BLSPublicKey) Equal(other PublicKey) bool {
 func (pub *BLSPublicKey) VerifySignature(sig Signature, message []byte) bool {
 	switch sig := sig.(type) {
 	case *BLSSignature:
-		return minpk.Verify((*minpk.PublicKey)(pub), message, (*minpk.Signature)(sig), bls.Augmentation) == nil
+		return minpk.Verify((*minpk.PublicKey)(pub), message, (*minpk.Signature)(sig), bls.ProofOfPossession) == nil
 	default:
 		return false
 	}
