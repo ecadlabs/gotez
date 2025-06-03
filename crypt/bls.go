@@ -27,6 +27,11 @@ func (priv *BLSPrivateKey) Sign(message []byte) (signature Signature, err error)
 	return (*BLSSignature)(sig), nil
 }
 
+func (priv *BLSPrivateKey) ProvePossession() *BLSSignature {
+	sig := minpk.Prove((*minpk.PrivateKey)(priv))
+	return (*BLSSignature)(sig)
+}
+
 func (priv *BLSPrivateKey) ToProtocol() tz.PrivateKey {
 	out, err := tz.NewBLSPrivateKey((*minpk.PrivateKey)(priv).Bytes())
 	if err != nil {
