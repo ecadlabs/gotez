@@ -1,0 +1,10 @@
+package proto_alpha
+
+import "github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"
+
+type ZkRollupOrigination = proto_022_PsRiotum.ZkRollupOrigination
+type ZkRollupOriginationContentsAndResult = proto_022_PsRiotum.ZkRollupOriginationContentsAndResult
+type ZkRollupPublish = proto_022_PsRiotum.ZkRollupPublish
+type ZkRollupPublishContentsAndResult = proto_022_PsRiotum.ZkRollupPublishContentsAndResult
+type ZkRollupUpdate = proto_022_PsRiotum.ZkRollupUpdate
+type ZkRollupUpdateContentsAndResult = proto_022_PsRiotum.ZkRollupUpdateContentsAndResult

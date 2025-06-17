@@ -9,6 +9,7 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_017_PtNairob"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_019_PtParisB"
 )
 
 type SmartRollupAddMessages = proto_016_PtMumbai.SmartRollupAddMessages
@@ -169,11 +170,14 @@ func (op *SmartRollupRefuteContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+type WhitelistUpdate = proto_019_PtParisB.WhitelistUpdate
+
 type SmartRollupExecuteOutboxMessageResultContents struct {
 	BalanceUpdates
-	TicketUpdates       []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
-	ConsumedMilligas    tz.BigUint       `json:"consumed_milligas"`
-	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
+	TicketUpdates       []*TicketReceipt           `tz:"dyn" json:"ticket_updates"`
+	WhitelistUpdate     tz.Option[WhitelistUpdate] `json:"whitelist_update"`
+	ConsumedMilligas    tz.BigUint                 `json:"consumed_milligas"`
+	PaidStorageSizeDiff tz.BigInt                  `json:"paid_storage_size_diff"`
 }
 
 func (r *SmartRollupExecuteOutboxMessageResultContents) GetConsumedMilligas() tz.BigUint {

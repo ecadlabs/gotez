@@ -334,7 +334,7 @@ func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*l
 		operation.Signature = sig.Generic()
 	case *tz.BLSSignature:
 		prefix, suffix := sig.Split()
-		operation.Contents = append(operation.Contents, &latest.SignaturePrefix{SignaturePrefix: (*latest.BLSSignaturePrefix)(prefix)})
+		operation.Contents = append(operation.Contents, &core.SignaturePrefix{SignaturePrefix: (*core.BLSSignaturePrefix)(prefix)})
 		operation.Signature = suffix
 	default:
 		panic("invalid signature")

@@ -106,8 +106,6 @@ type ZkRollupPublish = latest.ZkRollupPublish
 type ZkRollupPublishContentsAndResult = latest.ZkRollupPublishContentsAndResult
 type ZkRollupUpdate = latest.ZkRollupUpdate
 type ZkRollupUpdateContentsAndResult = latest.ZkRollupUpdateContentsAndResult
-type SignaturePrefix = latest.SignaturePrefix
-type BLSSignaturePrefix = latest.BLSSignaturePrefix
 
 type EpDefault = latest.EpDefault
 type EpRoot = latest.EpRoot

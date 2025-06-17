@@ -31,8 +31,8 @@ type OperationWithoutMetadata[T core.OperationContents] struct {
 func (op *OperationWithoutMetadata[T]) GetSignature() (tz.Option[tz.Signature], error) {
 	if len(op.Contents) != 0 {
 		var last core.OperationContents = op.Contents[len(op.Contents)-1]
-		if prefix, ok := last.(*SignaturePrefix); ok {
-			if blsPrefix, ok := prefix.SignaturePrefix.(*BLSSignaturePrefix); ok {
+		if prefix, ok := last.(*core.SignaturePrefix); ok {
+			if blsPrefix, ok := prefix.SignaturePrefix.(*core.BLSSignaturePrefix); ok {
 				var sig tz.BLSSignature
 				copy(sig[:], blsPrefix[:])
 				copy(sig[:len(blsPrefix)], op.Signature[:])
@@ -76,8 +76,8 @@ func (op *OperationWithOptionalMetadataWithMetadata[T]) GetSignature() (tz.Optio
 	}
 	if len(op.Contents) != 0 {
 		var last core.OperationContentsAndResult = op.Contents[len(op.Contents)-1]
-		if prefix, ok := last.(*SignaturePrefix); ok {
-			if blsPrefix, ok := prefix.SignaturePrefix.(*BLSSignaturePrefix); ok {
+		if prefix, ok := last.(*core.SignaturePrefix); ok {
+			if blsPrefix, ok := prefix.SignaturePrefix.(*core.BLSSignaturePrefix); ok {
 				var sig tz.BLSSignature
 				copy(sig[:], blsPrefix[:])
 				copy(sig[:len(blsPrefix)], op.Signature)
@@ -112,8 +112,8 @@ func (op *OperationWithOptionalMetadataWithoutMetadata[T]) GetSignature() (tz.Op
 	}
 	if len(op.Contents) != 0 {
 		var last core.OperationContents = op.Contents[len(op.Contents)-1]
-		if prefix, ok := last.(*SignaturePrefix); ok {
-			if blsPrefix, ok := prefix.SignaturePrefix.(*BLSSignaturePrefix); ok {
+		if prefix, ok := last.(*core.SignaturePrefix); ok {
+			if blsPrefix, ok := prefix.SignaturePrefix.(*core.BLSSignaturePrefix); ok {
 				var sig tz.BLSSignature
 				copy(sig[:], blsPrefix[:])
 				copy(sig[:len(blsPrefix)], op.Signature)

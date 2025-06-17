@@ -385,32 +385,6 @@ func (op *DALPublishSlotHeaderContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
-type SignaturePrefix struct {
-	SignaturePrefix SignaturePrefixPayload `json:"signature_prefix"`
-}
-
-func (*SignaturePrefix) OperationKind() string       { return "signature_prefix" }
-func (*SignaturePrefix) OperationContentsAndResult() {}
-func (op *SignaturePrefix) GetMetadata() any {
-	return op
-}
-
-type SignaturePrefixPayload interface {
-	SignaturePrefixPayload()
-}
-
-func init() {
-	encoding.RegisterEnum(&encoding.Enum[SignaturePrefixPayload]{
-		Variants: encoding.Variants[SignaturePrefixPayload]{
-			3: (*BLSSignaturePrefix)(nil),
-		},
-	})
-}
-
-type BLSSignaturePrefix [32]byte
-
-func (*BLSSignaturePrefix) SignaturePrefixPayload() {}
-
 type OperationContents interface {
 	core.OperationContents
 }
@@ -460,7 +434,7 @@ func init() {
 			250: (*ZkRollupOrigination)(nil),
 			251: (*ZkRollupPublish)(nil),
 			252: (*ZkRollupUpdate)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }
@@ -505,7 +479,7 @@ func init() {
 			250: (*ZkRollupOriginationContentsAndResult)(nil),
 			251: (*ZkRollupPublishContentsAndResult)(nil),
 			252: (*ZkRollupUpdateContentsAndResult)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }

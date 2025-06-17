@@ -169,11 +169,14 @@ func (op *SmartRollupRefuteContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+type WhitelistUpdate = proto_018_Proxford.WhitelistUpdate
+
 type SmartRollupExecuteOutboxMessageResultContents struct {
 	BalanceUpdates
-	TicketUpdates       []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
-	ConsumedMilligas    tz.BigUint       `json:"consumed_milligas"`
-	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
+	TicketUpdates       []*TicketReceipt           `tz:"dyn" json:"ticket_updates"`
+	WhitelistUpdate     tz.Option[WhitelistUpdate] `json:"whitelist_update"`
+	ConsumedMilligas    tz.BigUint                 `json:"consumed_milligas"`
+	PaidStorageSizeDiff tz.BigInt                  `json:"paid_storage_size_diff"`
 }
 
 func (r *SmartRollupExecuteOutboxMessageResultContents) GetConsumedMilligas() tz.BigUint {

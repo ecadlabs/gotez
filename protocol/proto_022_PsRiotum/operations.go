@@ -37,9 +37,7 @@ type RegisterGlobalConstant = proto_021_PsQuebec.RegisterGlobalConstant
 type IncreasePaidStorage = proto_021_PsQuebec.IncreasePaidStorage
 type SetDepositsLimit = proto_021_PsQuebec.SetDepositsLimit
 type TransferTicket = proto_021_PsQuebec.TransferTicket
-type SignaturePrefix = proto_021_PsQuebec.SignaturePrefix
 type Script = proto_021_PsQuebec.Script
-type BLSSignaturePrefix = proto_021_PsQuebec.BLSSignaturePrefix
 type ConsumedGasResult = proto_021_PsQuebec.ConsumedGasResult
 type DALPublishCommitment = proto_021_PsQuebec.DALPublishCommitment
 type DALPublishCommitmentResult = proto_021_PsQuebec.DALPublishCommitmentResult
@@ -87,7 +85,7 @@ func init() {
 			250: (*ZkRollupOrigination)(nil),
 			251: (*ZkRollupPublish)(nil),
 			252: (*ZkRollupUpdate)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }
@@ -180,7 +178,7 @@ func init() {
 			250: (*ZkRollupOriginationContentsAndResult)(nil),
 			251: (*ZkRollupPublishContentsAndResult)(nil),
 			252: (*ZkRollupUpdateContentsAndResult)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }

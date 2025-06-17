@@ -247,3 +247,29 @@ type BlockProtocols struct {
 	Protocol     *tz.ProtocolHash
 	NextProtocol *tz.ProtocolHash
 }
+
+type SignaturePrefix struct {
+	SignaturePrefix SignaturePrefixContent `json:"signature_prefix"`
+}
+
+func (*SignaturePrefix) OperationKind() string       { return "signature_prefix" }
+func (*SignaturePrefix) OperationContentsAndResult() {}
+func (op *SignaturePrefix) GetMetadata() any {
+	return op
+}
+
+type SignaturePrefixContent interface {
+	SignaturePrefixContent()
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[SignaturePrefixContent]{
+		Variants: encoding.Variants[SignaturePrefixContent]{
+			3: (*BLSSignaturePrefix)(nil),
+		},
+	})
+}
+
+type BLSSignaturePrefix [32]byte
+
+func (*BLSSignaturePrefix) SignaturePrefixContent() {}

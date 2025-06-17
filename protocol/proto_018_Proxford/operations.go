@@ -33,8 +33,6 @@ type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
 type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
 type TransferTicket = proto_013_PtJakart.TransferTicket
-type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
-type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALAttestationContentsAndResult = proto_016_PtMumbai.DALAttestationContentsAndResult
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type Script = proto_012_Psithaca.Script
@@ -192,7 +190,7 @@ func init() {
 			250: (*ZkRollupOrigination)(nil),
 			251: (*ZkRollupPublish)(nil),
 			252: (*ZkRollupUpdate)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }
@@ -607,7 +605,7 @@ func init() {
 			250: (*ZkRollupOriginationContentsAndResult)(nil),
 			251: (*ZkRollupPublishContentsAndResult)(nil),
 			252: (*ZkRollupUpdateContentsAndResult)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }

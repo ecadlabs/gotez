@@ -85,12 +85,41 @@ type ZkRollupTicket struct {
 //json:kind=OperationKind()
 type ZkRollupOriginationContentsAndResult struct {
 	ZkRollupOrigination
-	Metadata ManagerMetadata[ZkRollupPublishResult] `json:"metadata"`
+	Metadata ManagerMetadata[ZkRollupOriginationResult] `json:"metadata"`
 }
 
 func (*ZkRollupOriginationContentsAndResult) OperationContentsAndResult() {}
 func (op *ZkRollupOriginationContentsAndResult) GetMetadata() any {
 	return &op.Metadata
+}
+
+type ZkRollupOriginationResultContents struct {
+	BalanceUpdates
+	OriginatedZkRollup *tz.ZkRollupAddress `json:"originated_zk_rollup"`
+	ConsumedMilligas   tz.BigUint          `json:"consumed_milligas"`
+	Size               tz.BigInt           `json:"size"`
+}
+
+func (r *ZkRollupOriginationResultContents) GetConsumedMilligas() tz.BigUint {
+	return r.ConsumedMilligas
+}
+func (r *ZkRollupOriginationResultContents) EstimateStorageSize(constants core.Constants) *big.Int {
+	return r.Size.Int()
+}
+
+type ZkRollupOriginationResult interface {
+	core.ManagerOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[ZkRollupOriginationResult]{
+		Variants: encoding.Variants[ZkRollupOriginationResult]{
+			0: (*core.OperationResultApplied[*ZkRollupOriginationResultContents])(nil),
+			1: (*core.OperationResultFailed)(nil),
+			2: (*core.OperationResultSkipped)(nil),
+			3: (*core.OperationResultBacktracked[*ZkRollupOriginationResultContents])(nil),
+		},
+	})
 }
 
 type ZkRollupPublishResultContents struct {

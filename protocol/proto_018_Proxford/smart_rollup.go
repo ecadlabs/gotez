@@ -222,11 +222,35 @@ func (op *SmartRollupRefuteContentsAndResult) GetMetadata() any {
 	return &op.Metadata
 }
 
+type WhitelistUpdate interface {
+	WhitelistUpdate()
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[WhitelistUpdate]{
+		Variants: encoding.Variants[WhitelistUpdate]{
+			0: WhitelistUpdatePublic{},
+			1: WhitelistUpdatePrivate{},
+		},
+	})
+}
+
+type WhitelistUpdatePublic struct{}
+
+func (WhitelistUpdatePublic) WhitelistUpdate() {}
+
+type WhitelistUpdatePrivate struct {
+	Whitelist SmartRollupWhitelist `json:"whitelist"`
+}
+
+func (WhitelistUpdatePrivate) WhitelistUpdate() {}
+
 type SmartRollupExecuteOutboxMessageResultContents struct {
 	BalanceUpdates
-	TicketUpdates       []*TicketReceipt `tz:"dyn" json:"ticket_updates"`
-	ConsumedMilligas    tz.BigUint       `json:"consumed_milligas"`
-	PaidStorageSizeDiff tz.BigInt        `json:"paid_storage_size_diff"`
+	TicketUpdates       []*TicketReceipt           `tz:"dyn" json:"ticket_updates"`
+	WhitelistUpdate     tz.Option[WhitelistUpdate] `json:"whitelist_update"`
+	ConsumedMilligas    tz.BigUint                 `json:"consumed_milligas"`
+	PaidStorageSizeDiff tz.BigInt                  `json:"paid_storage_size_diff"`
 }
 
 func (r *SmartRollupExecuteOutboxMessageResultContents) GetConsumedMilligas() tz.BigUint {

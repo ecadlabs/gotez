@@ -13,7 +13,6 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_013_PtJakart"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_014_PtKathma"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_015_PtLimaPt"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_019_PtParisB"
 )
@@ -43,10 +42,8 @@ type IncreasePaidStorage = proto_014_PtKathma.IncreasePaidStorage
 type SetDepositsLimit = proto_012_Psithaca.SetDepositsLimit
 type UpdateConsensusKey = proto_015_PtLimaPt.UpdateConsensusKey
 type TransferTicket = proto_013_PtJakart.TransferTicket
-type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
 type ConsumedGasResult = proto_014_PtKathma.ConsumedGasResult
 type Script = proto_012_Psithaca.Script
-type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type DALPublishCommitment = proto_019_PtParisB.DALPublishCommitment
 type DALPublishCommitmentResult = proto_019_PtParisB.DALPublishCommitmentResult
 type OperationContents = proto_019_PtParisB.OperationContents
@@ -92,7 +89,7 @@ func init() {
 			250: (*ZkRollupOriginationContentsAndResult)(nil),
 			251: (*ZkRollupPublishContentsAndResult)(nil),
 			252: (*ZkRollupUpdateContentsAndResult)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }

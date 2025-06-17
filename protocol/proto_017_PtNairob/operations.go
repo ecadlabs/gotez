@@ -66,8 +66,6 @@ type ZkRollupPublish = proto_015_PtLimaPt.ZkRollupPublish
 type ZkRollupPublishContentsAndResult = proto_016_PtMumbai.ZkRollupPublishContentsAndResult
 type ZkRollupUpdate = proto_016_PtMumbai.ZkRollupUpdate
 type ZkRollupUpdateContentsAndResult = proto_016_PtMumbai.ZkRollupUpdateContentsAndResult
-type SignaturePrefix = proto_016_PtMumbai.SignaturePrefix
-type BLSSignaturePrefix = proto_016_PtMumbai.BLSSignaturePrefix
 type BalanceUpdates = proto_016_PtMumbai.BalanceUpdates
 type InternalOperationResult = proto_016_PtMumbai.InternalOperationResult
 type SuccessfulManagerOperationResult = proto_016_PtMumbai.SuccessfulManagerOperationResult
@@ -150,7 +148,7 @@ func init() {
 			250: (*ZkRollupOriginationContentsAndResult)(nil),
 			251: (*ZkRollupPublishContentsAndResult)(nil),
 			252: (*ZkRollupUpdateContentsAndResult)(nil),
-			255: (*SignaturePrefix)(nil),
+			255: (*core.SignaturePrefix)(nil),
 		},
 	})
 }
