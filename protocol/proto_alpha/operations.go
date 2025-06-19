@@ -1,5 +1,7 @@
 package proto_alpha
 
+//go:generate go run ../../cmd/genmarshaller.go
+
 import (
 	"strconv"
 
@@ -121,14 +123,14 @@ func (*UpdateCompanionKey) OperationKind() string { return "update_companion_key
 //json:kind=OperationKind()
 type Attestation proto_022_PsRiotum.Attestation
 
-func (*Attestation) InlinedConsensusOperationContents() {}
-func (*Attestation) OperationKind() string              { return "attestation" }
+func (*Attestation) InlinedConsensusOperationContent() {}
+func (*Attestation) OperationKind() string             { return "attestation" }
 
 //json:kind=OperationKind()
 type Preattestation Attestation
 
-func (*Preattestation) InlinedConsensusOperationContents() {}
-func (*Preattestation) OperationKind() string              { return "preattestation" }
+func (*Preattestation) InlinedConsensusOperationContent() {}
+func (*Preattestation) OperationKind() string             { return "preattestation" }
 
 //json:kind=OperationKind()
 type AttestationsAggregate struct {
@@ -136,8 +138,8 @@ type AttestationsAggregate struct {
 	Committee        []*Committee     `tz:"dyn" json:"committee"`
 }
 
-func (*AttestationsAggregate) InlinedConsensusOperationContents() {}
-func (*AttestationsAggregate) OperationKind() string              { return "attestations_aggregate" }
+func (*AttestationsAggregate) InlinedConsensusOperationContent() {}
+func (*AttestationsAggregate) OperationKind() string             { return "attestations_aggregate" }
 
 //json:kind=OperationKind()
 type PreattestationsAggregate struct {
@@ -145,8 +147,8 @@ type PreattestationsAggregate struct {
 	Committee        []uint16         `tz:"dyn" json:"committee"`
 }
 
-func (*PreattestationsAggregate) InlinedConsensusOperationContents() {}
-func (*PreattestationsAggregate) OperationKind() string              { return "preattestations_aggregate" }
+func (*PreattestationsAggregate) InlinedConsensusOperationContent() {}
+func (*PreattestationsAggregate) OperationKind() string             { return "preattestations_aggregate" }
 
 type Committee struct {
 	Slot           uint16               `json:"slot"`
@@ -156,8 +158,8 @@ type Committee struct {
 //json:kind=OperationKind()
 type AttestationWithDAL proto_022_PsRiotum.AttestationWithDAL
 
-func (*AttestationWithDAL) InlinedConsensusOperationContents() {}
-func (*AttestationWithDAL) OperationKind() string              { return "attestation_with_dal" }
+func (*AttestationWithDAL) InlinedConsensusOperationContent() {}
+func (*AttestationWithDAL) OperationKind() string             { return "attestation_with_dal" }
 
 //json:kind=OperationKind()
 type BLSModeAttestation struct {
@@ -184,18 +186,18 @@ func (*DoubleConsensusOperationEvidence) OperationKind() string {
 }
 
 type InlinedConsensusOperation struct {
-	Branch     *tz.BlockHash                     `json:"branch"`
-	Operations InlinedConsensusOperationContents `json:"operations"`
-	Signature  tz.AnySignature                   `json:"signature"`
+	Branch     *tz.BlockHash                    `json:"branch"`
+	Operations InlinedConsensusOperationContent `json:"operations"`
+	Signature  tz.AnySignature                  `json:"signature"`
 }
 
-type InlinedConsensusOperationContents interface {
-	InlinedConsensusOperationContents()
+type InlinedConsensusOperationContent interface {
+	InlinedConsensusOperationContent()
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedConsensusOperationContents]{
-		Variants: encoding.Variants[InlinedConsensusOperationContents]{
+	encoding.RegisterEnum(&encoding.Enum[InlinedConsensusOperationContent]{
+		Variants: encoding.Variants[InlinedConsensusOperationContent]{
 			20: (*Preattestation)(nil),
 			21: (*Attestation)(nil),
 			23: (*AttestationWithDAL)(nil),
@@ -437,6 +439,15 @@ type UpdateConsensusKeyResultContents struct {
 }
 
 //json:kind=OperationKind()
+type UpdateConsensusKeySuccessfulManagerResult struct {
+	core.OperationResultApplied[*UpdateConsensusKeyResultContents]
+}
+
+func (*UpdateConsensusKeySuccessfulManagerResult) OperationKind() string {
+	return "update_consensus_key"
+}
+
+//json:kind=OperationKind()
 type UpdateCompanionKeyContentsAndResult struct {
 	UpdateCompanionKey
 	Metadata ManagerMetadata[UpdateConsensusKeyResult] `json:"metadata"`
@@ -445,4 +456,35 @@ type UpdateCompanionKeyContentsAndResult struct {
 func (*UpdateCompanionKeyContentsAndResult) OperationContentsAndResult() {}
 func (op *UpdateCompanionKeyContentsAndResult) GetMetadata() any {
 	return &op.Metadata
+}
+
+type SuccessfulManagerOperationResult interface {
+	core.SuccessfulManagerOperationResult
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[SuccessfulManagerOperationResult]{
+		Variants: encoding.Variants[SuccessfulManagerOperationResult]{
+			0:   (*RevealSuccessfulManagerResult)(nil),
+			1:   (*TransactionSuccessfulManagerResult)(nil),
+			2:   (*OriginationSuccessfulManagerResult)(nil),
+			3:   (*DelegationSuccessfulManagerResult)(nil),
+			5:   (*SetDepositsLimitSuccessfulManagerResult)(nil),
+			6:   (*UpdateConsensusKeySuccessfulManagerResult)(nil),
+			9:   (*IncreasePaidStorageSuccessfulManagerResult)(nil),
+			200: (*SmartRollupOriginateSuccessfulManagerResult)(nil),
+		},
+	})
+}
+
+type RevealSuccessfulManagerResult = proto_022_PsRiotum.RevealSuccessfulManagerResult
+type DelegationSuccessfulManagerResult = proto_022_PsRiotum.DelegationSuccessfulManagerResult
+type TransactionSuccessfulManagerResult = proto_022_PsRiotum.TransactionSuccessfulManagerResult
+type OriginationSuccessfulManagerResult = proto_022_PsRiotum.OriginationSuccessfulManagerResult
+type IncreasePaidStorageSuccessfulManagerResult = proto_022_PsRiotum.IncreasePaidStorageSuccessfulManagerResult
+type SmartRollupOriginateSuccessfulManagerResult = proto_022_PsRiotum.SmartRollupOriginateSuccessfulManagerResult
+type SetDepositsLimitSuccessfulManagerResult = proto_022_PsRiotum.SetDepositsLimitSuccessfulManagerResult
+
+func ListOperations() []OperationContents {
+	return encoding.ListVariants[OperationContents]()
 }

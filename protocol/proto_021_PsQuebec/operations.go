@@ -30,9 +30,9 @@ type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type Preattestation = proto_018_Proxford.Preattestation
 type InlinedPreattestation = proto_018_Proxford.InlinedPreattestation
-type InlinedPreattestationContents = proto_018_Proxford.InlinedPreattestationContents
+type InlinedPreattestationContent = proto_018_Proxford.InlinedPreattestationContent
 type Attestation = proto_018_Proxford.Attestation
-type InlinedAttestationContents = proto_019_PtParisB.InlinedAttestationContents
+type InlinedAttestationContent = proto_019_PtParisB.InlinedAttestationContent
 type AttestationWithDAL = proto_019_PtParisB.AttestationWithDAL
 type Reveal = proto_012_Psithaca.Reveal
 type Origination = proto_012_Psithaca.Origination
@@ -551,6 +551,7 @@ func init() {
 			1:   (*TransactionSuccessfulManagerResult)(nil),
 			2:   (*OriginationSuccessfulManagerResult)(nil),
 			3:   (*DelegationSuccessfulManagerResult)(nil),
+			5:   (*SetDepositsLimitSuccessfulManagerResult)(nil),
 			6:   (*UpdateConsensusKeySuccessfulManagerResult)(nil),
 			9:   (*IncreasePaidStorageSuccessfulManagerResult)(nil),
 			200: (*SmartRollupOriginateSuccessfulManagerResult)(nil),
@@ -561,6 +562,7 @@ func init() {
 type RevealSuccessfulManagerResult = proto_014_PtKathma.RevealSuccessfulManagerResult
 type DelegationSuccessfulManagerResult = proto_014_PtKathma.DelegationSuccessfulManagerResult
 type UpdateConsensusKeySuccessfulManagerResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerResult
+type SetDepositsLimitSuccessfulManagerResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerResult
 
 func ListOperations() []OperationContents {
 	return encoding.ListVariants[OperationContents]()

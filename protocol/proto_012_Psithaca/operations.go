@@ -139,22 +139,22 @@ type Endorsement struct {
 	BlockPayloadHash *tz.BlockPayloadHash `json:"block_payload_hash"`
 }
 
-func (*Endorsement) InlinedEndorsementContents() {}
-func (*Endorsement) OperationKind() string       { return "endorsement" }
+func (*Endorsement) InlinedEndorsementContent() {}
+func (*Endorsement) OperationKind() string      { return "endorsement" }
 
 type InlinedEndorsement struct {
-	Branch    *tz.BlockHash              `json:"branch"`
-	Contents  InlinedEndorsementContents `json:"contents"`
-	Signature tz.AnySignature            `json:"signature"`
+	Branch    *tz.BlockHash             `json:"branch"`
+	Contents  InlinedEndorsementContent `json:"contents"`
+	Signature tz.AnySignature           `json:"signature"`
 }
 
-type InlinedEndorsementContents interface {
-	InlinedEndorsementContents()
+type InlinedEndorsementContent interface {
+	InlinedEndorsementContent()
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedEndorsementContents]{
-		Variants: encoding.Variants[InlinedEndorsementContents]{
+	encoding.RegisterEnum(&encoding.Enum[InlinedEndorsementContent]{
+		Variants: encoding.Variants[InlinedEndorsementContent]{
 			21: (*Endorsement)(nil),
 		},
 	})
@@ -177,18 +177,18 @@ type DoublePreendorsementEvidence struct {
 func (*DoublePreendorsementEvidence) OperationKind() string { return "double_preendorsement_evidence" }
 
 type InlinedPreendorsement struct {
-	Branch    *tz.BlockHash                 `json:"branch"`
-	Contents  InlinedPreendorsementContents `json:"contents"`
-	Signature *tz.GenericSignature          `json:"signature"`
+	Branch    *tz.BlockHash                `json:"branch"`
+	Contents  InlinedPreendorsementContent `json:"contents"`
+	Signature *tz.GenericSignature         `json:"signature"`
 }
 
-type InlinedPreendorsementContents interface {
-	InlinedPreendorsementContents()
+type InlinedPreendorsementContent interface {
+	InlinedPreendorsementContent()
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedPreendorsementContents]{
-		Variants: encoding.Variants[InlinedPreendorsementContents]{
+	encoding.RegisterEnum(&encoding.Enum[InlinedPreendorsementContent]{
+		Variants: encoding.Variants[InlinedPreendorsementContent]{
 			20: (*Preendorsement)(nil),
 		},
 	})
@@ -197,8 +197,8 @@ func init() {
 //json:kind=OperationKind()
 type Preendorsement Endorsement
 
-func (*Preendorsement) InlinedPreendorsementContents() {}
-func (*Preendorsement) OperationKind() string          { return "preendorsement" }
+func (*Preendorsement) InlinedPreendorsementContent() {}
+func (*Preendorsement) OperationKind() string         { return "preendorsement" }
 
 //json:kind=OperationKind()
 type DoubleBakingEvidence struct {

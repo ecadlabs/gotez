@@ -12,7 +12,6 @@ import (
 	"github.com/ecadlabs/gotez/v2/client"
 	"github.com/ecadlabs/gotez/v2/crypt"
 	"github.com/ecadlabs/gotez/v2/encoding"
-	"github.com/ecadlabs/gotez/v2/protocol"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/ecadlabs/gotez/v2/protocol/latest"
 )
@@ -317,7 +316,7 @@ func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*l
 	operation := latest.NewSignedOperation(grp, &tz.GenericSignature{})
 
 	// hash the operation with magic byte added
-	var signReq protocol.SignRequest = (*protocol.GenericOperationSignRequest)(&operation.UnsignedOperationImpl)
+	var signReq latest.SignRequest = (*latest.GenericOperationSignRequest)(&operation.UnsignedOperationImpl)
 	var signBytes bytes.Buffer
 	if err := encoding.Encode(&signBytes, &signReq); err != nil {
 		return nil, err

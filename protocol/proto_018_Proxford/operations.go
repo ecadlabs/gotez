@@ -86,18 +86,18 @@ type DoubleAttestationEvidence struct {
 func (*DoubleAttestationEvidence) OperationKind() string { return "double_attestation_evidence" }
 
 type InlinedAttestation struct {
-	Branch    *tz.BlockHash              `json:"branch"`
-	Contents  InlinedAttestationContents `json:"contents"`
-	Signature tz.AnySignature            `json:"signature"`
+	Branch    *tz.BlockHash             `json:"branch"`
+	Contents  InlinedAttestationContent `json:"contents"`
+	Signature tz.AnySignature           `json:"signature"`
 }
 
-type InlinedAttestationContents interface {
-	InlinedAttestationContents()
+type InlinedAttestationContent interface {
+	InlinedAttestationContent()
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedAttestationContents]{
-		Variants: encoding.Variants[InlinedAttestationContents]{
+	encoding.RegisterEnum(&encoding.Enum[InlinedAttestationContent]{
+		Variants: encoding.Variants[InlinedAttestationContent]{
 			21: (*Attestation)(nil),
 		},
 	})
@@ -106,8 +106,8 @@ func init() {
 //json:kind=OperationKind()
 type Attestation proto_012_Psithaca.Endorsement
 
-func (*Attestation) InlinedAttestationContents() {}
-func (*Attestation) OperationKind() string       { return "attestation" }
+func (*Attestation) InlinedAttestationContent() {}
+func (*Attestation) OperationKind() string      { return "attestation" }
 
 //json:kind=OperationKind()
 type DoubleBakingEvidence struct {
@@ -126,18 +126,18 @@ type DoublePreattestationEvidence struct {
 func (*DoublePreattestationEvidence) OperationKind() string { return "double_preattestation_evidence" }
 
 type InlinedPreattestation struct {
-	Branch    *tz.BlockHash                 `json:"branch"`
-	Contents  InlinedPreattestationContents `json:"contents"`
-	Signature tz.AnySignature               `json:"signature"`
+	Branch    *tz.BlockHash                `json:"branch"`
+	Contents  InlinedPreattestationContent `json:"contents"`
+	Signature tz.AnySignature              `json:"signature"`
 }
 
-type InlinedPreattestationContents interface {
-	InlinedPreattestationContents()
+type InlinedPreattestationContent interface {
+	InlinedPreattestationContent()
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedPreattestationContents]{
-		Variants: encoding.Variants[InlinedPreattestationContents]{
+	encoding.RegisterEnum(&encoding.Enum[InlinedPreattestationContent]{
+		Variants: encoding.Variants[InlinedPreattestationContent]{
 			20: (*Preattestation)(nil),
 		},
 	})
@@ -146,8 +146,8 @@ func init() {
 //json:kind=OperationKind()
 type Preattestation proto_012_Psithaca.Preendorsement
 
-func (*Preattestation) InlinedPreattestationContents() {}
-func (*Preattestation) OperationKind() string          { return "preattestation" }
+func (*Preattestation) InlinedPreattestationContent() {}
+func (*Preattestation) OperationKind() string         { return "preattestation" }
 
 type OperationContents interface {
 	core.OperationContents
@@ -680,6 +680,7 @@ func init() {
 type RevealSuccessfulManagerResult = proto_014_PtKathma.RevealSuccessfulManagerResult
 type DelegationSuccessfulManagerResult = proto_014_PtKathma.DelegationSuccessfulManagerResult
 type UpdateConsensusKeySuccessfulManagerResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerResult
+type SetDepositsLimitSuccessfulManagerResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerResult
 
 type SuccessfulManagerOperationResult interface {
 	core.SuccessfulManagerOperationResult
@@ -692,6 +693,7 @@ func init() {
 			1:   (*TransactionSuccessfulManagerResult)(nil),
 			2:   (*OriginationSuccessfulManagerResult)(nil),
 			3:   (*DelegationSuccessfulManagerResult)(nil),
+			5:   (*SetDepositsLimitSuccessfulManagerResult)(nil),
 			6:   (*UpdateConsensusKeySuccessfulManagerResult)(nil),
 			9:   (*IncreasePaidStorageSuccessfulManagerResult)(nil),
 			200: (*SmartRollupOriginateSuccessfulManagerResult)(nil),

@@ -15,10 +15,13 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_019_PtParisB"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_021_PsQuebec"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_alpha"
 )
 
 func NewConstants(proto *tz.ProtocolHash) (constants core.Constants, err error) {
 	switch *proto {
+	case core.ProtoAlpha:
+		constants = new(proto_alpha.Constants)
 	case core.Proto022PsRiotum:
 		constants = new(proto_022_PsRiotum.Constants)
 	case core.Proto021PsQuebec:

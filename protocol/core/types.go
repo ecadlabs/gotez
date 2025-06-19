@@ -273,3 +273,12 @@ func init() {
 type BLSSignaturePrefix [32]byte
 
 func (*BLSSignaturePrefix) SignaturePrefixContent() {}
+
+type SignRequest interface {
+	SignRequestKind() string
+}
+
+type InlinedConsensusOperationContent interface {
+	OperationContents
+	InlinedConsensusOperationContent()
+}

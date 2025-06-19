@@ -53,15 +53,15 @@ type Preattestation = latest.Preattestation
 type PreattestationContentsAndResult = latest.PreattestationContentsAndResult
 type Preendorsement = latest.Preattestation
 type PreendorsementContentsAndResult = latest.PreattestationContentsAndResult
-type InlinedPreendorsementContents = latest.InlinedPreattestationContents
-type InlinedPreattestationContents = latest.InlinedPreattestationContents
+type InlinedPreendorsementContent = latest.InlinedPreattestationContent
+type InlinedPreattestationContent = latest.InlinedPreattestationContent
 type Attestation = latest.Attestation
 type AttestationWithDAL = latest.AttestationWithDAL
 type AttestationContentsAndResult = latest.AttestationContentsAndResult
 type Endorsement = latest.Attestation
 type EndorsementContentsAndResult = latest.AttestationContentsAndResult
-type InlinedEndorsementContents = latest.InlinedAttestationContents
-type InlinedAttestationContents = latest.InlinedAttestationContents
+type InlinedEndorsementContent = latest.InlinedAttestationContent
+type InlinedAttestationContent = latest.InlinedAttestationContent
 type Reveal = latest.Reveal
 type RevealContentsAndResult = latest.RevealContentsAndResult
 type Transaction = latest.Transaction
@@ -121,3 +121,6 @@ type EpNamed = latest.EpNamed
 
 type ToContract = latest.ToContract
 type ToSmartRollup = latest.ToSmartRollup
+
+type SignRequest = latest.SignRequest
+type GenericOperationSignRequest = latest.GenericOperationSignRequest

@@ -25,11 +25,11 @@ type DrainDelegate = proto_021_PsQuebec.DrainDelegate
 type FailingNoop = proto_021_PsQuebec.FailingNoop
 type Preattestation = proto_021_PsQuebec.Preattestation
 type InlinedPreattestation = proto_021_PsQuebec.InlinedPreattestation
-type InlinedPreattestationContents = proto_021_PsQuebec.InlinedPreattestationContents
+type InlinedPreattestationContent = proto_021_PsQuebec.InlinedPreattestationContent
 type Attestation = proto_021_PsQuebec.Attestation
 type AttestationWithDAL = proto_021_PsQuebec.AttestationWithDAL
 type InlinedAttestation = proto_021_PsQuebec.InlinedAttestation
-type InlinedAttestationContents = proto_021_PsQuebec.InlinedAttestationContents
+type InlinedAttestationContent = proto_021_PsQuebec.InlinedAttestationContent
 type Reveal = proto_021_PsQuebec.Reveal
 type Origination = proto_021_PsQuebec.Origination
 type Delegation = proto_021_PsQuebec.Delegation
@@ -673,6 +673,7 @@ func init() {
 			1:   (*TransactionSuccessfulManagerResult)(nil),
 			2:   (*OriginationSuccessfulManagerResult)(nil),
 			3:   (*DelegationSuccessfulManagerResult)(nil),
+			5:   (*SetDepositsLimitSuccessfulManagerResult)(nil),
 			6:   (*UpdateConsensusKeySuccessfulManagerResult)(nil),
 			9:   (*IncreasePaidStorageSuccessfulManagerResult)(nil),
 			200: (*SmartRollupOriginateSuccessfulManagerResult)(nil),
@@ -683,6 +684,7 @@ func init() {
 type RevealSuccessfulManagerResult = proto_021_PsQuebec.RevealSuccessfulManagerResult
 type DelegationSuccessfulManagerResult = proto_021_PsQuebec.DelegationSuccessfulManagerResult
 type UpdateConsensusKeySuccessfulManagerResult = proto_021_PsQuebec.UpdateConsensusKeySuccessfulManagerResult
+type SetDepositsLimitSuccessfulManagerResult = proto_021_PsQuebec.SetDepositsLimitSuccessfulManagerResult
 
 func ListOperations() []OperationContents {
 	return encoding.ListVariants[OperationContents]()

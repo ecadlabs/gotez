@@ -28,7 +28,7 @@ type VDFRevelation = proto_014_PtKathma.VDFRevelation
 type DrainDelegate = proto_015_PtLimaPt.DrainDelegate
 type FailingNoop = proto_012_Psithaca.FailingNoop
 type Preattestation = proto_018_Proxford.Preattestation
-type InlinedPreattestationContents = proto_018_Proxford.InlinedPreattestationContents
+type InlinedPreattestationContent = proto_018_Proxford.InlinedPreattestationContent
 type Attestation = proto_018_Proxford.Attestation
 type Reveal = proto_012_Psithaca.Reveal
 type Origination = proto_012_Psithaca.Origination
@@ -99,13 +99,13 @@ type AttestationWithDAL struct {
 
 func (*AttestationWithDAL) OperationKind() string { return "attestation_with_dal" }
 
-type InlinedAttestationContents interface {
-	proto_018_Proxford.InlinedAttestationContents
+type InlinedAttestationContent interface {
+	proto_018_Proxford.InlinedAttestationContent
 }
 
 func init() {
-	encoding.RegisterEnum(&encoding.Enum[InlinedAttestationContents]{
-		Variants: encoding.Variants[InlinedAttestationContents]{
+	encoding.RegisterEnum(&encoding.Enum[InlinedAttestationContent]{
+		Variants: encoding.Variants[InlinedAttestationContent]{
 			21: (*Attestation)(nil),
 			23: (*AttestationWithDAL)(nil),
 		},
@@ -121,9 +121,9 @@ type DoubleAttestationEvidence struct {
 func (*DoubleAttestationEvidence) OperationKind() string { return "double_attestation_evidence" }
 
 type InlinedAttestation struct {
-	Branch    *tz.BlockHash              `json:"branch"`
-	Contents  InlinedAttestationContents `json:"contents"`
-	Signature tz.AnySignature            `json:"signature"`
+	Branch    *tz.BlockHash             `json:"branch"`
+	Contents  InlinedAttestationContent `json:"contents"`
+	Signature tz.AnySignature           `json:"signature"`
 }
 
 //json:kind=OperationKind()
@@ -663,6 +663,7 @@ func init() {
 			1:   (*TransactionSuccessfulManagerResult)(nil),
 			2:   (*OriginationSuccessfulManagerResult)(nil),
 			3:   (*DelegationSuccessfulManagerResult)(nil),
+			5:   (*SetDepositsLimitSuccessfulManagerResult)(nil),
 			6:   (*UpdateConsensusKeySuccessfulManagerResult)(nil),
 			9:   (*IncreasePaidStorageSuccessfulManagerResult)(nil),
 			200: (*SmartRollupOriginateSuccessfulManagerResult)(nil),
@@ -673,6 +674,7 @@ func init() {
 type RevealSuccessfulManagerResult = proto_014_PtKathma.RevealSuccessfulManagerResult
 type DelegationSuccessfulManagerResult = proto_014_PtKathma.DelegationSuccessfulManagerResult
 type UpdateConsensusKeySuccessfulManagerResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerResult
+type SetDepositsLimitSuccessfulManagerResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerResult
 
 func ListOperations() []OperationContents {
 	return encoding.ListVariants[OperationContents]()
