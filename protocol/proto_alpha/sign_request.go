@@ -9,23 +9,25 @@ import (
 )
 
 type PreattestationRequestContent interface {
-	core.InlinedConsensusOperationContent
+	core.OperationContents
 }
 
 type AttestationRequestContent interface {
-	core.InlinedConsensusOperationContent
+	core.OperationContents
 }
 
 func init() {
 	encoding.RegisterEnum(&encoding.Enum[PreattestationRequestContent]{
 		Variants: encoding.Variants[PreattestationRequestContent]{
 			20: (*Preattestation)(nil),
+			40: (*BLSModePreattestation)(nil),
 		},
 	})
 	encoding.RegisterEnum(&encoding.Enum[AttestationRequestContent]{
 		Variants: encoding.Variants[AttestationRequestContent]{
 			21: (*Attestation)(nil),
 			23: (*AttestationWithDAL)(nil),
+			41: (*BLSModeAttestation)(nil),
 		},
 	})
 }
@@ -69,12 +71,26 @@ type PreattestationSignRequest ConsensusSignRequest[PreattestationRequestContent
 
 func (r *PreattestationSignRequest) GetChainID() *tz.ChainID { return r.Chain }
 func (r *PreattestationSignRequest) GetLevel() int32 {
-	return r.Operation.(*Preattestation).Level
+	switch op := r.Operation.(type) {
+	case *Preattestation:
+		return op.Level
+	case *BLSModePreattestation:
+		return op.Level
+	default:
+		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
+	}
 }
 func (r *PreattestationSignRequest) GetRound() int32 {
-	return r.Operation.(*Preattestation).Round
+	switch op := r.Operation.(type) {
+	case *Preattestation:
+		return op.Round
+	case *BLSModePreattestation:
+		return op.Round
+	default:
+		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
+	}
 }
-func (*PreattestationSignRequest) SignRequestKind() string { return "preattestation" }
+func (r *PreattestationSignRequest) SignRequestKind() string { return r.Operation.OperationKind() }
 
 type AttestationSignRequest ConsensusSignRequest[AttestationRequestContent]
 
@@ -82,6 +98,8 @@ func (r *AttestationSignRequest) GetChainID() *tz.ChainID { return r.Chain }
 func (r *AttestationSignRequest) GetLevel() int32 {
 	switch op := r.Operation.(type) {
 	case *Attestation:
+		return op.Level
+	case *BLSModeAttestation:
 		return op.Level
 	case *AttestationWithDAL:
 		return op.Level
@@ -93,10 +111,12 @@ func (r *AttestationSignRequest) GetRound() int32 {
 	switch op := r.Operation.(type) {
 	case *Attestation:
 		return op.Round
+	case *BLSModeAttestation:
+		return op.Round
 	case *AttestationWithDAL:
 		return op.Round
 	default:
 		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
 	}
 }
-func (*AttestationSignRequest) SignRequestKind() string { return "attestation" }
+func (r *AttestationSignRequest) SignRequestKind() string { return r.Operation.OperationKind() }
