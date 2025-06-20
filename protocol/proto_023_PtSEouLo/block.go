@@ -1,4 +1,4 @@
-package proto_alpha
+package proto_023_PtSEouLo
 
 import (
 	tz "github.com/ecadlabs/gotez/v2"

@@ -1,4 +1,4 @@
-package proto_alpha
+package proto_023_PtSEouLo
 
 import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"

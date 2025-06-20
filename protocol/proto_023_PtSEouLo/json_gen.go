@@ -1,4 +1,4 @@
-package proto_alpha
+package proto_023_PtSEouLo
 
 import "encoding/json"
 
@@ -12,8 +12,8 @@ func (self *DALEntrapmentEvidence) MarshalJSON() ([]byte, error) {
 		DALEntrapmentEvidence_no_json_marshaller
 	}
 
-	tmp := json_DALEntrapmentEvidence {
-		Marker0: self.OperationKind(),
+	tmp := json_DALEntrapmentEvidence{
+		Marker0:                                  self.OperationKind(),
 		DALEntrapmentEvidence_no_json_marshaller: DALEntrapmentEvidence_no_json_marshaller(*self),
 	}
 
@@ -28,8 +28,8 @@ func (self *Reveal) MarshalJSON() ([]byte, error) {
 		Reveal_no_json_marshaller
 	}
 
-	tmp := json_Reveal {
-		Marker0: self.OperationKind(),
+	tmp := json_Reveal{
+		Marker0:                   self.OperationKind(),
 		Reveal_no_json_marshaller: Reveal_no_json_marshaller(*self),
 	}
 
@@ -44,8 +44,8 @@ func (self *UpdateConsensusKey) MarshalJSON() ([]byte, error) {
 		UpdateConsensusKey_no_json_marshaller
 	}
 
-	tmp := json_UpdateConsensusKey {
-		Marker0: self.OperationKind(),
+	tmp := json_UpdateConsensusKey{
+		Marker0:                               self.OperationKind(),
 		UpdateConsensusKey_no_json_marshaller: UpdateConsensusKey_no_json_marshaller(*self),
 	}
 
@@ -60,8 +60,8 @@ func (self *UpdateCompanionKey) MarshalJSON() ([]byte, error) {
 		UpdateCompanionKey_no_json_marshaller
 	}
 
-	tmp := json_UpdateCompanionKey {
-		Marker0: self.OperationKind(),
+	tmp := json_UpdateCompanionKey{
+		Marker0:                               self.OperationKind(),
 		UpdateCompanionKey_no_json_marshaller: UpdateCompanionKey_no_json_marshaller(*self),
 	}
 
@@ -76,8 +76,8 @@ func (self *Attestation) MarshalJSON() ([]byte, error) {
 		Attestation_no_json_marshaller
 	}
 
-	tmp := json_Attestation {
-		Marker0: self.OperationKind(),
+	tmp := json_Attestation{
+		Marker0:                        self.OperationKind(),
 		Attestation_no_json_marshaller: Attestation_no_json_marshaller(*self),
 	}
 
@@ -92,8 +92,8 @@ func (self *Preattestation) MarshalJSON() ([]byte, error) {
 		Preattestation_no_json_marshaller
 	}
 
-	tmp := json_Preattestation {
-		Marker0: self.OperationKind(),
+	tmp := json_Preattestation{
+		Marker0:                           self.OperationKind(),
 		Preattestation_no_json_marshaller: Preattestation_no_json_marshaller(*self),
 	}
 
@@ -108,8 +108,8 @@ func (self *AttestationsAggregate) MarshalJSON() ([]byte, error) {
 		AttestationsAggregate_no_json_marshaller
 	}
 
-	tmp := json_AttestationsAggregate {
-		Marker0: self.OperationKind(),
+	tmp := json_AttestationsAggregate{
+		Marker0:                                  self.OperationKind(),
 		AttestationsAggregate_no_json_marshaller: AttestationsAggregate_no_json_marshaller(*self),
 	}
 
@@ -124,7 +124,7 @@ func (self *PreattestationsAggregate) MarshalJSON() ([]byte, error) {
 		PreattestationsAggregate_no_json_marshaller
 	}
 
-	tmp := json_PreattestationsAggregate {
+	tmp := json_PreattestationsAggregate{
 		Marker0: self.OperationKind(),
 		PreattestationsAggregate_no_json_marshaller: PreattestationsAggregate_no_json_marshaller(*self),
 	}
@@ -140,8 +140,8 @@ func (self *AttestationWithDAL) MarshalJSON() ([]byte, error) {
 		AttestationWithDAL_no_json_marshaller
 	}
 
-	tmp := json_AttestationWithDAL {
-		Marker0: self.OperationKind(),
+	tmp := json_AttestationWithDAL{
+		Marker0:                               self.OperationKind(),
 		AttestationWithDAL_no_json_marshaller: AttestationWithDAL_no_json_marshaller(*self),
 	}
 
@@ -156,8 +156,8 @@ func (self *BLSModeAttestation) MarshalJSON() ([]byte, error) {
 		BLSModeAttestation_no_json_marshaller
 	}
 
-	tmp := json_BLSModeAttestation {
-		Marker0: self.OperationKind(),
+	tmp := json_BLSModeAttestation{
+		Marker0:                               self.OperationKind(),
 		BLSModeAttestation_no_json_marshaller: BLSModeAttestation_no_json_marshaller(*self),
 	}
 
@@ -172,8 +172,8 @@ func (self *BLSModePreattestation) MarshalJSON() ([]byte, error) {
 		BLSModePreattestation_no_json_marshaller
 	}
 
-	tmp := json_BLSModePreattestation {
-		Marker0: self.OperationKind(),
+	tmp := json_BLSModePreattestation{
+		Marker0:                                  self.OperationKind(),
 		BLSModePreattestation_no_json_marshaller: BLSModePreattestation_no_json_marshaller(*self),
 	}
 
@@ -188,7 +188,7 @@ func (self *DoubleConsensusOperationEvidenceContentsAndResult) MarshalJSON() ([]
 		DoubleConsensusOperationEvidenceContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_DoubleConsensusOperationEvidenceContentsAndResult {
+	tmp := json_DoubleConsensusOperationEvidenceContentsAndResult{
 		Marker0: self.OperationKind(),
 		DoubleConsensusOperationEvidenceContentsAndResult_no_json_marshaller: DoubleConsensusOperationEvidenceContentsAndResult_no_json_marshaller(*self),
 	}
@@ -204,7 +204,7 @@ func (self *DoubleBakingEvidenceContentsAndResult) MarshalJSON() ([]byte, error)
 		DoubleBakingEvidenceContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_DoubleBakingEvidenceContentsAndResult {
+	tmp := json_DoubleBakingEvidenceContentsAndResult{
 		Marker0: self.OperationKind(),
 		DoubleBakingEvidenceContentsAndResult_no_json_marshaller: DoubleBakingEvidenceContentsAndResult_no_json_marshaller(*self),
 	}
@@ -220,7 +220,7 @@ func (self *AttestationContentsAndResult) MarshalJSON() ([]byte, error) {
 		AttestationContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_AttestationContentsAndResult {
+	tmp := json_AttestationContentsAndResult{
 		Marker0: self.OperationKind(),
 		AttestationContentsAndResult_no_json_marshaller: AttestationContentsAndResult_no_json_marshaller(*self),
 	}
@@ -236,7 +236,7 @@ func (self *PreattestationContentsAndResult) MarshalJSON() ([]byte, error) {
 		PreattestationContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_PreattestationContentsAndResult {
+	tmp := json_PreattestationContentsAndResult{
 		Marker0: self.OperationKind(),
 		PreattestationContentsAndResult_no_json_marshaller: PreattestationContentsAndResult_no_json_marshaller(*self),
 	}
@@ -252,7 +252,7 @@ func (self *AttestationWithDALContentsAndResult) MarshalJSON() ([]byte, error) {
 		AttestationWithDALContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_AttestationWithDALContentsAndResult {
+	tmp := json_AttestationWithDALContentsAndResult{
 		Marker0: self.OperationKind(),
 		AttestationWithDALContentsAndResult_no_json_marshaller: AttestationWithDALContentsAndResult_no_json_marshaller(*self),
 	}
@@ -268,7 +268,7 @@ func (self *DALEntrapmentEvidenceContentsAndResult) MarshalJSON() ([]byte, error
 		DALEntrapmentEvidenceContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_DALEntrapmentEvidenceContentsAndResult {
+	tmp := json_DALEntrapmentEvidenceContentsAndResult{
 		Marker0: self.OperationKind(),
 		DALEntrapmentEvidenceContentsAndResult_no_json_marshaller: DALEntrapmentEvidenceContentsAndResult_no_json_marshaller(*self),
 	}
@@ -284,7 +284,7 @@ func (self *AttestationsAggregateContentsAndResult) MarshalJSON() ([]byte, error
 		AttestationsAggregateContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_AttestationsAggregateContentsAndResult {
+	tmp := json_AttestationsAggregateContentsAndResult{
 		Marker0: self.OperationKind(),
 		AttestationsAggregateContentsAndResult_no_json_marshaller: AttestationsAggregateContentsAndResult_no_json_marshaller(*self),
 	}
@@ -300,7 +300,7 @@ func (self *PreattestationsAggregateContentsAndResult) MarshalJSON() ([]byte, er
 		PreattestationsAggregateContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_PreattestationsAggregateContentsAndResult {
+	tmp := json_PreattestationsAggregateContentsAndResult{
 		Marker0: self.OperationKind(),
 		PreattestationsAggregateContentsAndResult_no_json_marshaller: PreattestationsAggregateContentsAndResult_no_json_marshaller(*self),
 	}
@@ -316,7 +316,7 @@ func (self *RevealContentsAndResult) MarshalJSON() ([]byte, error) {
 		RevealContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_RevealContentsAndResult {
+	tmp := json_RevealContentsAndResult{
 		Marker0: self.OperationKind(),
 		RevealContentsAndResult_no_json_marshaller: RevealContentsAndResult_no_json_marshaller(*self),
 	}
@@ -332,7 +332,7 @@ func (self *UpdateConsensusKeyContentsAndResult) MarshalJSON() ([]byte, error) {
 		UpdateConsensusKeyContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_UpdateConsensusKeyContentsAndResult {
+	tmp := json_UpdateConsensusKeyContentsAndResult{
 		Marker0: self.OperationKind(),
 		UpdateConsensusKeyContentsAndResult_no_json_marshaller: UpdateConsensusKeyContentsAndResult_no_json_marshaller(*self),
 	}
@@ -348,7 +348,7 @@ func (self *UpdateConsensusKeySuccessfulManagerResult) MarshalJSON() ([]byte, er
 		UpdateConsensusKeySuccessfulManagerResult_no_json_marshaller
 	}
 
-	tmp := json_UpdateConsensusKeySuccessfulManagerResult {
+	tmp := json_UpdateConsensusKeySuccessfulManagerResult{
 		Marker0: self.OperationKind(),
 		UpdateConsensusKeySuccessfulManagerResult_no_json_marshaller: UpdateConsensusKeySuccessfulManagerResult_no_json_marshaller(*self),
 	}
@@ -364,11 +364,10 @@ func (self *UpdateCompanionKeyContentsAndResult) MarshalJSON() ([]byte, error) {
 		UpdateCompanionKeyContentsAndResult_no_json_marshaller
 	}
 
-	tmp := json_UpdateCompanionKeyContentsAndResult {
+	tmp := json_UpdateCompanionKeyContentsAndResult{
 		Marker0: self.OperationKind(),
 		UpdateCompanionKeyContentsAndResult_no_json_marshaller: UpdateCompanionKeyContentsAndResult_no_json_marshaller(*self),
 	}
 
 	return json.Marshal(tmp)
 }
-
