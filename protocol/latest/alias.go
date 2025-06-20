@@ -2,7 +2,7 @@ package latest
 
 import (
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	latest "github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"
+	latest "github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSEouLo"
 )
 
 var (
@@ -30,18 +30,14 @@ type UnsignedProtocolBlockHeader = latest.UnsignedProtocolBlockHeader
 type ManagerOperation = latest.ManagerOperation
 type SeedNonceRevelation = latest.SeedNonceRevelation
 type SeedNonceRevelationContentsAndResult = latest.SeedNonceRevelationContentsAndResult
-type DoubleAttestationEvidence = latest.DoubleAttestationEvidence
-type DoubleAttestationEvidenceContentsAndResult = latest.DoubleAttestationEvidenceContentsAndResult
+type DoubleConsensusOperationEvidence = latest.DoubleConsensusOperationEvidence
+type DoubleConsensusOperationEvidenceContentsAndResult = latest.DoubleConsensusOperationEvidenceContentsAndResult
 type DoubleBakingEvidence = latest.DoubleBakingEvidence
 type DoubleBakingEvidenceContentsAndResult = latest.DoubleBakingEvidenceContentsAndResult
 type ActivateAccount = latest.ActivateAccount
 type ActivateAccountContentsAndResult = latest.ActivateAccountContentsAndResult
 type Proposals = latest.Proposals
 type Ballot = latest.Ballot
-type DoublePreattestationEvidence = latest.DoublePreattestationEvidence
-type DoublePreattestationEvidenceContentsAndResult = latest.DoublePreattestationEvidenceContentsAndResult
-type DoublePreendorsementEvidence = latest.DoublePreattestationEvidence
-type DoublePreendorsementEvidenceContentsAndResult = latest.DoublePreattestationEvidenceContentsAndResult
 type VDFRevelation = latest.VDFRevelation
 type VDFRevelationContentsAndResult = latest.VDFRevelationContentsAndResult
 type DrainDelegate = latest.DrainDelegate
@@ -51,12 +47,10 @@ type Preattestation = latest.Preattestation
 type PreattestationContentsAndResult = latest.PreattestationContentsAndResult
 type Preendorsement = latest.Preattestation
 type PreendorsementContentsAndResult = latest.PreattestationContentsAndResult
-type InlinedPreendorsementContent = latest.InlinedPreattestationContent
-type InlinedPreattestationContent = latest.InlinedPreattestationContent
+type InlinedConsensusOperation = latest.InlinedConsensusOperation
 type Attestation = latest.Attestation
 type AttestationWithDAL = latest.AttestationWithDAL
 type AttestationContentsAndResult = latest.AttestationContentsAndResult
-type InlinedAttestationContent = latest.InlinedAttestationContent
 type Reveal = latest.Reveal
 type RevealContentsAndResult = latest.RevealContentsAndResult
 type Transaction = latest.Transaction

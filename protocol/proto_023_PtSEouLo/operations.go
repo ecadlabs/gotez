@@ -32,6 +32,8 @@ type BalanceUpdate = proto_022_PsRiotum.BalanceUpdate
 type BalanceUpdates = proto_022_PsRiotum.BalanceUpdates
 type ConsensusContent = proto_022_PsRiotum.ConsensusContent
 
+type InternalOperationResult = proto_022_PsRiotum.InternalOperationResult
+
 type OperationContents interface {
 	core.OperationContents
 }
