@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"math/big"
+	"math/bits"
 )
 
 type String []byte
@@ -33,25 +35,15 @@ func (errEOS) Is(target error) bool {
 	return target == ErrUnexpectedEOS || target == io.ErrUnexpectedEOF
 }
 
-func getUint(s []byte) (val uint64, err error) {
+func getUintBE(s []byte) (val uint64, err error) {
 	if len(s) == 0 {
 		return 0, ErrEOS
 	}
-
-	var i int
-	for i < len(s) && s[i] == 0 {
-		i++
-	}
-
-	if rem := len(s) - i; rem > 8 {
-		return 0, ErrOverflow
-	} else if rem != 0 {
-		shift := (rem - 1) * 8
-		for i < len(s) {
-			val |= uint64(s[i]) << shift
-			shift -= 8
-			i++
+	for _, x := range s {
+		if val >= 1<<56 {
+			return 0, ErrOverflow
 		}
+		val = (val << 8) | uint64(x)
 	}
 	return val, nil
 }
@@ -97,7 +89,7 @@ func getElem(s []byte) (consumed int, list bool, val []byte, err error) {
 		}
 
 		lnLn := int(prefix - base)
-		ln, err := getUint(s[i : i+lnLn])
+		ln, err := getUintBE(s[i : i+lnLn])
 		if err != nil {
 			return 0, false, nil, err
 		}
@@ -115,15 +107,77 @@ func getElem(s []byte) (consumed int, list bool, val []byte, err error) {
 	return i, list, val, nil
 }
 
-func (s *String) Uint64() (uint64, error) {
+func (s *String) Uint64BE() (uint64, error) {
 	n, list, val, err := getElem(*s)
 	if err != nil {
 		return 0, err
 	} else if list {
 		return 0, ErrType
 	}
+	res, err := getUintBE(val)
+	if err != nil {
+		return 0, err
+	}
 	*s = (*s)[n:]
-	return getUint(val)
+	return res, nil
+}
+
+func (s *String) Uint64LE() (uint64, error) {
+	n, list, val, err := getElem(*s)
+	if err != nil {
+		return 0, err
+	} else if list {
+		return 0, ErrType
+	}
+	var (
+		res   uint64
+		shift uint
+	)
+	for _, x := range val {
+		if x != 0 && shift > 56 {
+			return 0, ErrOverflow
+		}
+		res = res | (uint64(x) << shift)
+		shift += 8
+	}
+	*s = (*s)[n:]
+	return res, nil
+}
+
+func (s *String) BigIntBE() (*big.Int, error) {
+	n, list, val, err := getElem(*s)
+	if err != nil {
+		return nil, err
+	} else if list {
+		return nil, ErrType
+	}
+	res := new(big.Int).SetBytes(val)
+	*s = (*s)[n:]
+	return res, nil
+}
+
+const WS = bits.UintSize / 8
+
+func (s *String) BigIntLE() (*big.Int, error) {
+	n, list, val, err := getElem(*s)
+	if err != nil {
+		return nil, err
+	} else if list {
+		return nil, ErrType
+	}
+	res := new(big.Int)
+	var (
+		shift uint
+		t     big.Int
+	)
+	for _, x := range val {
+		t.SetInt64(int64(x))
+		t.Lsh(&t, shift)
+		res.Add(res, &t)
+		shift += 8
+	}
+	*s = (*s)[n:]
+	return res, nil
 }
 
 func (s *String) Bytes() ([]byte, error) {
@@ -177,8 +231,8 @@ func (s *String) RawList() ([]String, error) {
 	return res, nil
 }
 
-func Uint[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
-	v, err := s.Uint64()
+func UintBE[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
+	v, err := s.Uint64BE()
 	if err != nil {
 		return 0, err
 	}
@@ -188,18 +242,13 @@ func Uint[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
 	return T(v), nil
 }
 
-type ByteSetter[T any] interface {
-	SetBytes(buf []byte) T
-}
-
-func SetBytes[T ByteSetter[R], R any](s *String, dst T) error {
-	n, list, val, err := getElem(*s)
+func UintLE[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
+	v, err := s.Uint64LE()
 	if err != nil {
-		return err
-	} else if list {
-		return ErrType
+		return 0, err
 	}
-	dst.SetBytes(val)
-	*s = (*s)[n:]
-	return nil
+	if v > uint64(^T(0)) {
+		return 0, ErrOverflow
+	}
+	return T(v), nil
 }

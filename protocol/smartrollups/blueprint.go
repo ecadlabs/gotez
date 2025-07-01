@@ -25,23 +25,20 @@ func parseUnsignedSequencerBlueprint(list []rlp.String, res *UnsignedSequencerBl
 	if res.Chunk, err = list[0].Bytes(); err != nil {
 		return err
 	}
-	res.Number = new(big.Int)
-	if err = rlp.SetBytes(&list[1], res.Number); err != nil {
+	if res.Number, err = list[1].BigIntLE(); err != nil {
 		return err
 	}
-	if res.NbChunks, err = rlp.Uint[uint16](&list[2]); err != nil {
+	if res.NbChunks, err = rlp.UintLE[uint16](&list[2]); err != nil {
 		return err
 	}
-	if res.ChunkIndex, err = rlp.Uint[uint16](&list[3]); err != nil {
+	if res.ChunkIndex, err = rlp.UintLE[uint16](&list[3]); err != nil {
 		return err
 	}
 	if len(list) == 5 {
-		res.ChainID = new(big.Int)
-		if err = rlp.SetBytes(&list[4], res.ChainID); err != nil {
+		if res.ChainID, err = list[4].BigIntLE(); err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
