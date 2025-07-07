@@ -32,7 +32,7 @@ func init() {
 	encoding.RegisterEnum(&encoding.Enum[SequencerInput]{
 		Variants: encoding.Variants[SequencerInput]{
 			SequencerBlueprintTag:  SequencerBlueprintRLPBytes{},
-			DALSlotImportSignalTag: DALSlotImportSignalRLPBytes{},
+			DALSlotImportSignalTag: DALSlotImportSignalsRLPBytes{},
 			ForceKernelUpgradeTag:  ForceKernelUpgrade{},
 		},
 	})
@@ -51,9 +51,9 @@ type SequencerBlueprintRLPBytes []byte
 
 func (SequencerBlueprintRLPBytes) SequencerInput() {}
 
-type DALSlotImportSignalRLPBytes []byte
+type DALSlotImportSignalsRLPBytes []byte
 
-func (DALSlotImportSignalRLPBytes) SequencerInput() {}
+func (DALSlotImportSignalsRLPBytes) SequencerInput() {}
 
 type ForceKernelUpgrade struct{}
 

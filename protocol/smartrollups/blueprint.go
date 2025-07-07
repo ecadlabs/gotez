@@ -42,8 +42,8 @@ func parseUnsignedSequencerBlueprint(list []rlp.String, res *UnsignedSequencerBl
 	return nil
 }
 
-func ParseUnsignedSequencerBlueprint(buf []byte) (*UnsignedSequencerBlueprint, error) {
-	s := rlp.String(buf)
+func ParseUnsignedSequencerBlueprint(rlpData []byte) (*UnsignedSequencerBlueprint, error) {
+	s := rlp.String(rlpData)
 	list, err := s.RawList()
 	if err != nil {
 		return nil, err
@@ -60,8 +60,8 @@ type SequencerBlueprint struct {
 	Signature tz.AnySignature
 }
 
-func ParseSequencerBlueprint(buf []byte) (*SequencerBlueprint, error) {
-	s := rlp.String(buf)
+func ParseSequencerBlueprint(rlpData []byte) (*SequencerBlueprint, error) {
+	s := rlp.String(rlpData)
 	list, err := s.RawList()
 	if err != nil {
 		return nil, err
