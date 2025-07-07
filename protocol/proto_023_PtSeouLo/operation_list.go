@@ -1,4 +1,4 @@
-package proto_023_PtSEouLo
+package proto_023_PtSeouLo
 
 import (
 	"github.com/ecadlabs/gotez/v2/encoding"

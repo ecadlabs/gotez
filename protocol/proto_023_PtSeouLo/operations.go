@@ -1,4 +1,4 @@
-package proto_023_PtSEouLo
+package proto_023_PtSeouLo
 
 //go:generate go run ../../cmd/genmarshaller.go
 

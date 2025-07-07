@@ -15,7 +15,7 @@ import (
 	"github.com/ecadlabs/gotez/v2/protocol/proto_019_PtParisB"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_021_PsQuebec"
 	"github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSEouLo"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSeouLo"
 )
 
 type BlockInfo interface {
@@ -34,8 +34,8 @@ type BlockHeaderInfo interface {
 
 func NewBlockInfo(proto *tz.ProtocolHash) (BlockInfo, error) {
 	switch *proto {
-	case core.Proto023PtSEouLo:
-		return new(proto_023_PtSEouLo.BlockInfo), nil
+	case core.Proto023PtSeouLo:
+		return new(proto_023_PtSeouLo.BlockInfo), nil
 	case core.Proto022PsRiotum:
 		return new(proto_022_PsRiotum.BlockInfo), nil
 	case core.Proto021PsQuebec:
@@ -63,8 +63,8 @@ func NewBlockInfo(proto *tz.ProtocolHash) (BlockInfo, error) {
 
 func NewBlockHeaderInfo(proto *tz.ProtocolHash) (BlockHeaderInfo, error) {
 	switch *proto {
-	case core.Proto023PtSEouLo:
-		return new(proto_023_PtSEouLo.BlockHeaderInfo), nil
+	case core.Proto023PtSeouLo:
+		return new(proto_023_PtSeouLo.BlockHeaderInfo), nil
 	case core.Proto022PsRiotum:
 		return new(proto_022_PsRiotum.BlockHeaderInfo), nil
 	case core.Proto021PsQuebec:

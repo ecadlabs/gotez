@@ -2,7 +2,7 @@ package latest
 
 import (
 	"github.com/ecadlabs/gotez/v2/protocol/core"
-	latest "github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSEouLo"
+	latest "github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSeouLo"
 )
 
 var (

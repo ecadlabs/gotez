@@ -21,7 +21,7 @@ type protoTestData struct {
 
 var testData = []protoTestData{
 	{
-		proto: &core.Proto023PtSEouLo,
+		proto: &core.Proto023PtSeouLo,
 		blocks: []string{
 			"217650",
 			"217651",
