@@ -2,6 +2,7 @@ package proto_023_PtSeouLo
 
 import (
 	"fmt"
+	"slices"
 
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
@@ -67,9 +68,20 @@ type ConsensusSignRequest[T core.OperationContents] struct {
 	Operation T
 }
 
+func (c *ConsensusSignRequest[T]) listOperations() []string {
+	vars := encoding.ListVariants[T]()
+	ret := make([]string, len(vars))
+	for i, v := range vars {
+		ret[i] = v.OperationKind()
+	}
+	slices.Sort(ret)
+	return slices.Compact(ret)
+}
+
 type PreattestationSignRequest ConsensusSignRequest[PreattestationRequestContent]
 
 func (r *PreattestationSignRequest) GetChainID() *tz.ChainID { return r.Chain }
+
 func (r *PreattestationSignRequest) GetLevel() int32 {
 	switch op := r.Operation.(type) {
 	case *Preattestation:
@@ -80,6 +92,7 @@ func (r *PreattestationSignRequest) GetLevel() int32 {
 		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
 	}
 }
+
 func (r *PreattestationSignRequest) GetRound() int32 {
 	switch op := r.Operation.(type) {
 	case *Preattestation:
@@ -90,11 +103,17 @@ func (r *PreattestationSignRequest) GetRound() int32 {
 		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
 	}
 }
+
 func (r *PreattestationSignRequest) SignRequestKind() string { return r.Operation.OperationKind() }
+
+func (r *PreattestationSignRequest) listOperations() []string {
+	return (*ConsensusSignRequest[PreattestationRequestContent])(r).listOperations()
+}
 
 type AttestationSignRequest ConsensusSignRequest[AttestationRequestContent]
 
 func (r *AttestationSignRequest) GetChainID() *tz.ChainID { return r.Chain }
+
 func (r *AttestationSignRequest) GetLevel() int32 {
 	switch op := r.Operation.(type) {
 	case *Attestation:
@@ -107,6 +126,7 @@ func (r *AttestationSignRequest) GetLevel() int32 {
 		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
 	}
 }
+
 func (r *AttestationSignRequest) GetRound() int32 {
 	switch op := r.Operation.(type) {
 	case *Attestation:
@@ -119,4 +139,27 @@ func (r *AttestationSignRequest) GetRound() int32 {
 		panic(fmt.Sprintf("unexpected operation %T", r.Operation))
 	}
 }
+
 func (r *AttestationSignRequest) SignRequestKind() string { return r.Operation.OperationKind() }
+
+func (r *AttestationSignRequest) listOperations() []string {
+	return (*ConsensusSignRequest[AttestationRequestContent])(r).listOperations()
+}
+
+type consensusSignRequest interface {
+	listOperations() []string
+}
+
+func ListSignRequests() []string {
+	var kinds []string
+	for _, variant := range encoding.ListVariants[SignRequest]() {
+		switch v := variant.(type) {
+		case consensusSignRequest:
+			kinds = append(kinds, v.listOperations()...)
+		default:
+			kinds = append(kinds, v.SignRequestKind())
+		}
+	}
+	slices.Sort(kinds)
+	return slices.Compact(kinds)
+}

@@ -12,6 +12,7 @@ var (
 	NewSignedOperation     = latest.NewSignedOperation
 	ListOperations         = latest.ListOperations
 	ListPseudoOperations   = latest.ListPseudoOperations
+	ListSignRequests       = latest.ListSignRequests
 )
 
 type OperationContents = latest.OperationContents

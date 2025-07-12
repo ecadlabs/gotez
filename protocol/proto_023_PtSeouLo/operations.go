@@ -3,6 +3,7 @@ package proto_023_PtSeouLo
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
+	"slices"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -487,6 +488,12 @@ type IncreasePaidStorageSuccessfulManagerResult = proto_022_PsRiotum.IncreasePai
 type SmartRollupOriginateSuccessfulManagerResult = proto_022_PsRiotum.SmartRollupOriginateSuccessfulManagerResult
 type SetDepositsLimitSuccessfulManagerResult = proto_022_PsRiotum.SetDepositsLimitSuccessfulManagerResult
 
-func ListOperations() []OperationContents {
-	return encoding.ListVariants[OperationContents]()
+func ListOperations() []string {
+	ops := encoding.ListVariants[OperationContents]()
+	ret := make([]string, len(ops))
+	for i, op := range ops {
+		ret[i] = op.OperationKind()
+	}
+	slices.Sort(ret)
+	return slices.Compact(ret)
 }
