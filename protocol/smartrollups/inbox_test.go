@@ -7,6 +7,7 @@ import (
 
 	"github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
+	"github.com/ecadlabs/gotez/v2/rlp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -42,8 +43,12 @@ func TestExternalMessageFrame(t *testing.T) {
 		require.NoError(t, err)
 
 		rlpBytes := frame.(*TargettedMessageFrame).Content.(SequencerBlueprintRLPBytes)
-		bp, err := ParseSequencerBlueprint(rlpBytes)
+		bp, err := rlp.Unmarshal[SequencerBlueprint](rlpBytes)
 		require.NoError(t, err)
 		require.Equal(t, c.expect, bp)
+
+		out, err := rlp.Marshal(bp)
+		require.NoError(t, err)
+		require.Equal(t, []byte(rlpBytes), out)
 	}
 }

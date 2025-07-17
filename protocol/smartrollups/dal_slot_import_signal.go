@@ -8,79 +8,98 @@ import (
 )
 
 type DALSlotImportSignals struct {
-	Signals   []*DALSlotIndicesOfLevel
+	Signals   UnsignedDALSlotSignals
 	Signature tz.AnySignature
 }
 
+type UnsignedDALSlotSignals []*DALSlotIndicesOfLevel
 type DALSlotIndicesOfLevel struct {
 	PublishedLevel uint32
 	SlotIndices    []uint8
 }
 
-func parseDALSlotIndicesOfLevel(s *rlp.String) (*DALSlotIndicesOfLevel, error) {
+func (d *DALSlotIndicesOfLevel) UnmarshalRLP(s *rlp.Stream) error {
 	l, err := s.List()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var res DALSlotIndicesOfLevel
-	if res.PublishedLevel, err = rlp.UintLE[uint32](&l); err != nil {
-		return nil, err
+	if d.PublishedLevel, err = rlp.UintLE[uint32](&l); err != nil {
+		return err
 	}
 
 	ll, err := l.List()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	res.SlotIndices = make([]uint8, 0, len(ll))
+	d.SlotIndices = make([]uint8, 0, len(ll))
 	for {
 		i, err := rlp.UintLE[uint8](&ll)
 		if err != nil {
 			if errors.Is(err, rlp.ErrEOS) {
 				break
 			}
-			return nil, err
+			return err
 		}
-		res.SlotIndices = append(res.SlotIndices, i)
+		d.SlotIndices = append(d.SlotIndices, i)
 	}
-	return &res, nil
+	return nil
 }
 
-func parseUnsignedDALSlotSignals(s *rlp.String) ([]*DALSlotIndicesOfLevel, error) {
+func (d *DALSlotIndicesOfLevel) MarshalRLP(b *rlp.Builder) {
+	b.AddList(func(b *rlp.Builder) {
+		rlp.AddUintLE(b, d.PublishedLevel)
+		b.AddList(func(b *rlp.Builder) {
+			for _, i := range d.SlotIndices {
+				b.AddUint(uint64(i))
+			}
+		})
+	})
+}
+
+func (sig *UnsignedDALSlotSignals) UnmarshalRLP(s *rlp.Stream) error {
 	l, err := s.List()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	res := make([]*DALSlotIndicesOfLevel, 0)
+	*sig = make(UnsignedDALSlotSignals, 0)
 	for {
-		i, err := parseDALSlotIndicesOfLevel(&l)
-		if err != nil {
+		i := new(DALSlotIndicesOfLevel)
+		if err := i.UnmarshalRLP(&l); err != nil {
 			if errors.Is(err, rlp.ErrEOS) {
 				break
 			}
-			return nil, err
+			return err
 		}
-		res = append(res, i)
+		*sig = append(*sig, i)
 	}
-	return res, nil
+	return nil
 }
 
-func ParseUnsignedDALSlotSignals(rlpData []byte) ([]*DALSlotIndicesOfLevel, error) {
-	s := rlp.String(rlpData)
-	return parseUnsignedDALSlotSignals(&s)
+func (s UnsignedDALSlotSignals) MarshalRLP(b *rlp.Builder) {
+	b.AddList(func(b *rlp.Builder) {
+		for _, iol := range s {
+			b.Add(iol)
+		}
+	})
 }
 
-func ParseDALSlotImportSignals(rlpData []byte) (*DALSlotImportSignals, error) {
-	s := rlp.String(rlpData)
+func (sig *DALSlotImportSignals) UnmarshalRLP(s *rlp.Stream) error {
 	l, err := s.List()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var res DALSlotImportSignals
-	if res.Signals, err = parseUnsignedDALSlotSignals(&l); err != nil {
-		return nil, err
+	if err := sig.Signals.UnmarshalRLP(&l); err != nil {
+		return err
 	}
-	if res.Signature, err = l.Bytes(); err != nil {
-		return nil, err
+	if sig.Signature, err = l.Bytes(); err != nil {
+		return err
 	}
-	return &res, nil
+	return nil
+}
+
+func (s *DALSlotImportSignals) MarshalRLP(b *rlp.Builder) {
+	b.AddList(func(b *rlp.Builder) {
+		b.Add(s.Signals)
+		b.AddString(s.Signature)
+	})
 }

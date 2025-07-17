@@ -9,7 +9,11 @@ import (
 	"math/bits"
 )
 
-type String []byte
+type Stream []byte
+
+type Unmarshaler interface {
+	UnmarshalRLP(s *Stream) error
+}
 
 var (
 	ErrEOS           = errors.New("rlp: end of byte string")
@@ -35,7 +39,7 @@ func (errEOS) Is(target error) bool {
 	return target == ErrUnexpectedEOS || target == io.ErrUnexpectedEOF
 }
 
-func getUintBE(s []byte) (val uint64, err error) {
+func getUint(s []byte) (val uint64, err error) {
 	if len(s) == 0 {
 		return 0, ErrEOS
 	}
@@ -89,7 +93,7 @@ func getElem(s []byte) (consumed int, list bool, val []byte, err error) {
 		}
 
 		lnLn := int(prefix - base)
-		ln, err := getUintBE(s[i : i+lnLn])
+		ln, err := getUint(s[i : i+lnLn])
 		if err != nil {
 			return 0, false, nil, err
 		}
@@ -107,14 +111,14 @@ func getElem(s []byte) (consumed int, list bool, val []byte, err error) {
 	return i, list, val, nil
 }
 
-func (s *String) Uint64BE() (uint64, error) {
+func (s *Stream) Uint64() (uint64, error) {
 	n, list, val, err := getElem(*s)
 	if err != nil {
 		return 0, err
 	} else if list {
 		return 0, ErrType
 	}
-	res, err := getUintBE(val)
+	res, err := getUint(val)
 	if err != nil {
 		return 0, err
 	}
@@ -122,7 +126,7 @@ func (s *String) Uint64BE() (uint64, error) {
 	return res, nil
 }
 
-func (s *String) Uint64LE() (uint64, error) {
+func (s *Stream) Uint64LE() (uint64, error) {
 	n, list, val, err := getElem(*s)
 	if err != nil {
 		return 0, err
@@ -144,7 +148,7 @@ func (s *String) Uint64LE() (uint64, error) {
 	return res, nil
 }
 
-func (s *String) BigIntBE() (*big.Int, error) {
+func (s *Stream) BigInt() (*big.Int, error) {
 	n, list, val, err := getElem(*s)
 	if err != nil {
 		return nil, err
@@ -156,31 +160,39 @@ func (s *String) BigIntBE() (*big.Int, error) {
 	return res, nil
 }
 
-const WS = bits.UintSize / 8
+const wordBytes = bits.UintSize / 8
 
-func (s *String) BigIntLE() (*big.Int, error) {
+func (s *Stream) BigIntLE() (*big.Int, error) {
 	n, list, val, err := getElem(*s)
 	if err != nil {
 		return nil, err
 	} else if list {
 		return nil, ErrType
 	}
-	res := new(big.Int)
-	var (
-		shift uint
-		t     big.Int
-	)
+
+	words := make([]big.Word, (len(val)+wordBytes-1)/wordBytes)
+	i := 0
+	shift := 0
+	var w big.Word
 	for _, x := range val {
-		t.SetInt64(int64(x))
-		t.Lsh(&t, shift)
-		res.Add(res, &t)
+		w |= big.Word(x) << shift
 		shift += 8
+		if shift == bits.UintSize {
+			words[i] = w
+			i++
+			w = 0
+			shift = 0
+		}
 	}
+	if shift != 0 {
+		words[i] = w
+	}
+	res := new(big.Int).SetBits(words)
 	*s = (*s)[n:]
 	return res, nil
 }
 
-func (s *String) Bytes() ([]byte, error) {
+func (s *Stream) Bytes() ([]byte, error) {
 	n, list, val, err := getElem(*s)
 	if err != nil {
 		return nil, err
@@ -191,7 +203,7 @@ func (s *String) Bytes() ([]byte, error) {
 	return val, nil
 }
 
-func (s *String) List() (String, error) {
+func (s *Stream) List() (Stream, error) {
 	n, list, val, err := getElem(*s)
 	if err != nil {
 		return nil, err
@@ -199,27 +211,27 @@ func (s *String) List() (String, error) {
 		return nil, ErrType
 	}
 	*s = (*s)[n:]
-	return String(val), nil
+	return Stream(val), nil
 }
 
-func (s *String) Raw() (String, error) {
+func (s *Stream) Elem() (Stream, error) {
 	n, _, _, err := getElem(*s)
 	if err != nil {
 		return nil, err
 	}
 	raw := (*s)[:n]
 	*s = (*s)[n:]
-	return String(raw), nil
+	return Stream(raw), nil
 }
 
-func (s *String) RawList() ([]String, error) {
+func (s *Stream) ElemList() ([]Stream, error) {
 	list, err := s.List()
 	if err != nil {
 		return nil, err
 	}
-	res := make([]String, 0)
+	res := make([]Stream, 0)
 	for {
-		elem, err := list.Raw()
+		elem, err := list.Elem()
 		if err != nil {
 			if err == ErrEOS {
 				break
@@ -231,8 +243,8 @@ func (s *String) RawList() ([]String, error) {
 	return res, nil
 }
 
-func UintBE[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
-	v, err := s.Uint64BE()
+func Uint[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *Stream) (T, error) {
+	v, err := s.Uint64()
 	if err != nil {
 		return 0, err
 	}
@@ -242,7 +254,7 @@ func UintBE[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
 	return T(v), nil
 }
 
-func UintLE[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
+func UintLE[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *Stream) (T, error) {
 	v, err := s.Uint64LE()
 	if err != nil {
 		return 0, err
@@ -251,4 +263,13 @@ func UintLE[T ~uint8 | ~uint16 | ~uint32 | ~uint64](s *String) (T, error) {
 		return 0, ErrOverflow
 	}
 	return T(v), nil
+}
+
+func Unmarshal[T any, U interface {
+	Unmarshaler
+	*T
+}](data []byte) (*T, error) {
+	res := U(new(T))
+	s := Stream(data)
+	return res, res.UnmarshalRLP(&s)
 }

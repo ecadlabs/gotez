@@ -16,7 +16,7 @@ type UnsignedSequencerBlueprint struct {
 	ChainID    *big.Int
 }
 
-func parseUnsignedSequencerBlueprint(list []rlp.String, res *UnsignedSequencerBlueprint) error {
+func parseUnsignedSequencerBlueprint(list []rlp.Stream, res *UnsignedSequencerBlueprint) error {
 	if len(list) != 4 && len(list) != 5 {
 		return fmt.Errorf("invalid RLP list length: %d", len(list))
 	}
@@ -42,17 +42,26 @@ func parseUnsignedSequencerBlueprint(list []rlp.String, res *UnsignedSequencerBl
 	return nil
 }
 
-func ParseUnsignedSequencerBlueprint(rlpData []byte) (*UnsignedSequencerBlueprint, error) {
-	s := rlp.String(rlpData)
-	list, err := s.RawList()
+func (b *UnsignedSequencerBlueprint) UnmarshalRLP(s *rlp.Stream) error {
+	list, err := s.ElemList()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var res UnsignedSequencerBlueprint
-	if err := parseUnsignedSequencerBlueprint(list, &res); err != nil {
-		return nil, err
+	return parseUnsignedSequencerBlueprint(list, b)
+}
+
+func (b *UnsignedSequencerBlueprint) writeContent(builder *rlp.Builder) {
+	builder.AddString(b.Chunk)
+	builder.AddBigIntLE(b.Number, 32)
+	rlp.AddUintLE(builder, b.NbChunks)
+	rlp.AddUintLE(builder, b.ChunkIndex)
+	if b.ChainID != nil {
+		builder.AddBigIntLE(b.ChainID, 32)
 	}
-	return &res, nil
+}
+
+func (b *UnsignedSequencerBlueprint) MarshalRLP(builder *rlp.Builder) {
+	builder.AddList(b.writeContent)
 }
 
 type SequencerBlueprint struct {
@@ -60,22 +69,27 @@ type SequencerBlueprint struct {
 	Signature tz.AnySignature
 }
 
-func ParseSequencerBlueprint(rlpData []byte) (*SequencerBlueprint, error) {
-	s := rlp.String(rlpData)
-	list, err := s.RawList()
+func (b *SequencerBlueprint) UnmarshalRLP(s *rlp.Stream) error {
+	list, err := s.ElemList()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if len(list) != 5 && len(list) != 6 {
-		return nil, fmt.Errorf("invalid RLP list length: %d", len(list))
+		return fmt.Errorf("invalid RLP list length: %d", len(list))
 	}
 
-	var res SequencerBlueprint
-	if err := parseUnsignedSequencerBlueprint(list[:len(list)-1], &res.UnsignedSequencerBlueprint); err != nil {
-		return nil, err
+	if err := parseUnsignedSequencerBlueprint(list[:len(list)-1], &b.UnsignedSequencerBlueprint); err != nil {
+		return err
 	}
-	if res.Signature, err = list[len(list)-1].Bytes(); err != nil {
-		return nil, err
+	if b.Signature, err = list[len(list)-1].Bytes(); err != nil {
+		return err
 	}
-	return &res, nil
+	return nil
+}
+
+func (b *SequencerBlueprint) MarshalRLP(builder *rlp.Builder) {
+	builder.AddList(func(builder *rlp.Builder) {
+		b.UnsignedSequencerBlueprint.writeContent(builder)
+		builder.AddString(b.Signature)
+	})
 }
