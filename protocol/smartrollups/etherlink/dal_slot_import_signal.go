@@ -1,4 +1,4 @@
-package smartrollups
+package etherlink
 
 import (
 	"errors"
