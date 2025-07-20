@@ -13,6 +13,9 @@ type DALSlotImportSignals struct {
 }
 
 type UnsignedDALSlotSignals []*DALSlotIndicesOfLevel
+
+func (UnsignedDALSlotSignals) SignRequestKind() string { return "sequencer_signal" }
+
 type DALSlotIndicesOfLevel struct {
 	PublishedLevel uint32
 	SlotIndices    []uint8

@@ -16,6 +16,8 @@ type UnsignedSequencerBlueprint struct {
 	ChainID    *big.Int
 }
 
+func (*UnsignedSequencerBlueprint) SignRequestKind() string { return "sequencer_blueprint" }
+
 func parseUnsignedSequencerBlueprint(list []rlp.Stream, res *UnsignedSequencerBlueprint) error {
 	if len(list) != 4 && len(list) != 5 {
 		return fmt.Errorf("invalid RLP list length: %d", len(list))
