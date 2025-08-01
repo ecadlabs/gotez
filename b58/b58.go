@@ -84,6 +84,11 @@ func ParsePrivateKey(src []byte) (tz.PrivateKey, error) {
 		copy(out[:], payload)
 		return &out, nil
 
+	case &prefix.Ed25519SecretKey:
+		var out tz.Ed25519PrivateKey
+		copy(out[:], payload[:32])
+		return &out, nil
+
 	case &prefix.Secp256k1SecretKey:
 		var out tz.Secp256k1PrivateKey
 		copy(out[:], payload)
@@ -113,6 +118,11 @@ func ParseEncryptedPrivateKey(src []byte) (tz.EncryptedPrivateKey, error) {
 	case &prefix.Ed25519Seed:
 		var out tz.Ed25519PrivateKey
 		copy(out[:], payload)
+		return &out, nil
+
+	case &prefix.Ed25519SecretKey:
+		var out tz.Ed25519PrivateKey
+		copy(out[:], payload[:32])
 		return &out, nil
 
 	case &prefix.Secp256k1SecretKey:
