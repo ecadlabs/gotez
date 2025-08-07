@@ -27,6 +27,11 @@ func (priv *BLSPrivateKey) Sign(message []byte) (signature Signature, err error)
 	return (*BLSSignature)(sig), nil
 }
 
+func (priv *BLSPrivateKey) SignAugmented(message []byte) (signature Signature, err error) {
+	sig := minpk.Sign((*minpk.PrivateKey)(priv), message, bls.Augmentation)
+	return (*BLSSignature)(sig), nil
+}
+
 func (priv *BLSPrivateKey) ProvePossession() *BLSSignature {
 	sig := minpk.Prove((*minpk.PrivateKey)(priv))
 	return (*BLSSignature)(sig)
@@ -84,6 +89,15 @@ func (pub *BLSPublicKey) VerifySignature(sig Signature, message []byte) bool {
 	switch sig := sig.(type) {
 	case *BLSSignature:
 		return minpk.Verify((*minpk.PublicKey)(pub), message, (*minpk.Signature)(sig), bls.ProofOfPossession) == nil
+	default:
+		return false
+	}
+}
+
+func (pub *BLSPublicKey) VerifySignatureAugmented(sig Signature, message []byte) bool {
+	switch sig := sig.(type) {
+	case *BLSSignature:
+		return minpk.Verify((*minpk.PublicKey)(pub), message, (*minpk.Signature)(sig), bls.Augmentation) == nil
 	default:
 		return false
 	}
