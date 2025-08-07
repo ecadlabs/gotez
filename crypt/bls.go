@@ -125,6 +125,10 @@ func (sig *BLSSignature) Verify(pub PublicKey, message []byte) bool {
 	return pub.VerifySignature(sig, message)
 }
 
+func (sig *BLSSignature) VerifyAugmented(pub PublicKey, message []byte) bool {
+	return pub.(*BLSPublicKey).VerifySignatureAugmented(sig, message)
+}
+
 func (sig *BLSSignature) ToProtocol() tz.Signature {
 	return tz.NewBLSSignature((*minpk.Signature)(sig).Bytes())
 }
