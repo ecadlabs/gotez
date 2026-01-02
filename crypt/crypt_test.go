@@ -126,6 +126,12 @@ func TestSignature(t *testing.T) {
 
 			require.True(t, sig.Verify(priv.Public(), message))
 
+			if priv, ok := priv.(*BLSPrivateKey); ok {
+				sig3, err := priv.SignAugmented(message)
+				require.NoError(t, err)
+				require.True(t, sig3.(*BLSSignature).VerifyAugmented(priv.Public(), message))
+			}
+
 			// via generic
 			if genSig := asGeneric(sig.ToProtocol()); genSig != nil {
 				sig, err := NewSignature(genSig)
