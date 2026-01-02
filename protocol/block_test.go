@@ -21,6 +21,22 @@ type protoTestData struct {
 
 var testData = []protoTestData{
 	{
+		proto: &core.Proto024PtTALLiN,
+		blocks: []string{
+			"295520",
+			"449131",
+			"880107",
+			"928754",
+			"928755",
+			"928792",
+			"930637",
+			"930989",
+			"931138",
+			"931152",
+			"966982",
+		},
+	},
+	{
 		proto: &core.Proto023PtSeouLo,
 		blocks: []string{
 			"217650",

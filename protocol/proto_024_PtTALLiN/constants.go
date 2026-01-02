@@ -1,9 +1,15 @@
-package proto_022_PsRiotum
+package proto_024_PtTALLiN
 
 import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSeouLo"
 )
+
+type IssuanceWeights = proto_023_PtSeouLo.IssuanceWeights
+type DALParametric = proto_023_PtSeouLo.DALParametric
+type SmartRollupRevealActivationLevel = proto_023_PtSeouLo.SmartRollupRevealActivationLevel
+type AdaptiveRewardsParams = proto_023_PtSeouLo.AdaptiveRewardsParams
 
 type Constants struct {
 	ProofOfWorkNonceSize                             uint8                            `json:"proof_of_work_nonce_size"`
@@ -85,59 +91,10 @@ type Constants struct {
 	DirectTicketSpendingEnable                       bool                             `json:"direct_ticket_spending_enable"`
 	AggregateAttestation                             bool                             `json:"aggregate_attestation"`
 	AllowTz4DelegateEnable                           bool                             `json:"allow_tz4_delegate_enable"`
-	AllBakersAttestActivationLevel                   tz.Option[int32]                 `json:"all_bakers_attest_activation_level"`
+	AllBakersAttestActivationThreshold               core.Rat                         `json:"all_bakers_attest_activation_threshold"`
 	IssuanceModificationDelay                        uint8                            `json:"issuance_modification_delay"`
 	ConsensusKeyActivationDelay                      uint8                            `json:"consensus_key_activation_delay"`
 	UnstakeFinalizationDelay                         uint8                            `json:"unstake_finalization_delay"`
-}
-
-type DALParametric struct {
-	FeatureEnable             bool        `json:"feature_enable"`
-	IncentivesEnable          bool        `json:"incentives_enable"`
-	NumberOfSlots             uint16      `json:"number_of_slots"`
-	AttestationLag            uint8       `json:"attestation_lag"`
-	AttestationThreshold      uint8       `json:"attestation_threshold"`
-	MinimalParticipationRatio core.BigRat `json:"minimal_participation_ratio"`
-	RewardsRatio              core.BigRat `json:"rewards_ratio"`
-	TrapsFraction             core.BigRat `json:"traps_fraction"`
-	RedundancyFactor          uint8       `json:"redundancy_factor"`
-	PageSize                  uint16      `json:"page_size"`
-	SlotSize                  int32       `json:"slot_size"`
-	NumberOfShards            uint16      `json:"number_of_shards"`
-}
-
-type IssuanceWeights struct {
-	BaseTotalIssuedPerMinute       tz.BigUint `json:"base_total_issued_per_minute"`
-	BakingRewardFixedPortionWeight int32      `json:"baking_reward_fixed_portion_weight"`
-	BakingRewardBonusWeight        int32      `json:"baking_reward_bonus_weight"`
-	AttestingRewardWeight          int32      `json:"attesting_reward_weight"`
-	SeedNonceRevelationTipWeight   int32      `json:"seed_nonce_revelation_tip_weight"`
-	VDFRevelationTipWeight         int32      `json:"vdf_revelation_tip_weight"`
-	DALRewardsWeight               int32      `json:"dal_rewards_weight"`
-}
-
-type SmartRollupRevealActivationLevel struct {
-	RawData                     int32 `json:"raw_data"`
-	Metadata                    int32 `json:"metadata"`
-	DALPage                     int32 `json:"dal_page"`
-	DALParameters               int32 `json:"dal_parameters"`
-	DALAttestedSlotsValidityLag int32 `json:"dal_attested_slots_validity_lag"`
-}
-
-type AdaptiveRewardsParams struct {
-	IssuanceRatioFinalMin   core.BigRat `json:"issuance_ratio_final_min"`
-	IssuanceRatioFinalMax   core.BigRat `json:"issuance_ratio_final_max"`
-	IssuanceRatioInitialMin core.BigRat `json:"issuance_ratio_initial_min"`
-	IssuanceRatioInitialMax core.BigRat `json:"issuance_ratio_initial_max"`
-	InitialPeriod           uint8       `json:"initial_period"`
-	TransitionPeriod        uint8       `json:"transition_period"`
-	MaxBonus                int64       `json:"max_bonus"`
-	GrowthRate              core.BigRat `json:"growth_rate"`
-	CenterDz                core.BigRat `json:"center_dz"`
-	RadiusDz                core.BigRat `json:"radius_dz"`
-}
-
-type AllBakersAttestActivationLevel struct {
 }
 
 func (c *Constants) GetProofOfWorkNonceSize() uint8    { return c.ProofOfWorkNonceSize }
@@ -169,5 +126,3 @@ func (c *Constants) GetMinimalBlockDelay() int64             { return c.MinimalB
 func (c *Constants) GetDelayIncrementPerRound() int64        { return c.DelayIncrementPerRound }
 func (c *Constants) GetConsensusCommitteeSize() int32        { return c.ConsensusCommitteeSize }
 func (c *Constants) GetMinimalParticipationRatio() *core.Rat { return &c.MinimalParticipationRatio }
-
-var _ core.Constants = (*Constants)(nil)

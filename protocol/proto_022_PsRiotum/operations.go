@@ -686,6 +686,4 @@ type DelegationSuccessfulManagerResult = proto_021_PsQuebec.DelegationSuccessful
 type UpdateConsensusKeySuccessfulManagerResult = proto_021_PsQuebec.UpdateConsensusKeySuccessfulManagerResult
 type SetDepositsLimitSuccessfulManagerResult = proto_021_PsQuebec.SetDepositsLimitSuccessfulManagerResult
 
-func ListOperations() []OperationContents {
-	return encoding.ListVariants[OperationContents]()
-}
+var ListOperations = core.ListOperations[OperationContents]

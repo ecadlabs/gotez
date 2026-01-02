@@ -215,6 +215,4 @@ func (r *TransactionInternalOperationResult) GetResult() core.ManagerOperationRe
 }
 func (*TransactionInternalOperationResult) OperationKind() string { return "transaction" }
 
-func ListPseudoOperations() []PseudoOperation {
-	return encoding.ListVariants[PseudoOperation]()
-}
+var ListPseudoOperations = core.ListPseudoOperations[PseudoOperation]

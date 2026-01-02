@@ -676,6 +676,4 @@ type DelegationSuccessfulManagerResult = proto_014_PtKathma.DelegationSuccessful
 type UpdateConsensusKeySuccessfulManagerResult = proto_015_PtLimaPt.UpdateConsensusKeySuccessfulManagerResult
 type SetDepositsLimitSuccessfulManagerResult = proto_015_PtLimaPt.SetDepositsLimitSuccessfulManagerResult
 
-func ListOperations() []OperationContents {
-	return encoding.ListVariants[OperationContents]()
-}
+var ListOperations = core.ListOperations[OperationContents]

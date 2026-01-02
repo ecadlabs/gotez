@@ -3,7 +3,6 @@ package proto_023_PtSeouLo
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
-	"slices"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -34,6 +33,9 @@ type BalanceUpdates = proto_022_PsRiotum.BalanceUpdates
 type ConsensusContent = proto_022_PsRiotum.ConsensusContent
 
 type InternalOperationResult = proto_022_PsRiotum.InternalOperationResult
+type OriginationInternalOperationResult = proto_022_PsRiotum.OriginationInternalOperationResult
+type DelegationInternalOperationResult = proto_022_PsRiotum.DelegationInternalOperationResult
+type EventInternalOperationResult = proto_022_PsRiotum.EventInternalOperationResult
 
 type OperationContents interface {
 	core.OperationContents
@@ -218,12 +220,18 @@ type AttestationMetadata = proto_022_PsRiotum.AttestationMetadata
 type AttestationsAggregateMetadata = proto_022_PsRiotum.AttestationsAggregateMetadata
 type ConsumedGasResult = proto_022_PsRiotum.ConsumedGasResult
 type OriginationContentsAndResult = proto_022_PsRiotum.OriginationContentsAndResult
+type OriginationResult = proto_022_PsRiotum.OriginationResult
 type DelegationContentsAndResult = proto_022_PsRiotum.DelegationContentsAndResult
+type DelegationResult = proto_022_PsRiotum.DelegationResult
 type RegisterGlobalConstantContentsAndResult = proto_022_PsRiotum.RegisterGlobalConstantContentsAndResult
+type RegisterGlobalConstantResult = proto_022_PsRiotum.RegisterGlobalConstantResult
 type SetDepositsLimitContentsAndResult = proto_022_PsRiotum.SetDepositsLimitContentsAndResult
 type IncreasePaidStorageContentsAndResult = proto_022_PsRiotum.IncreasePaidStorageContentsAndResult
+type IncreasePaidStorageResult = proto_022_PsRiotum.IncreasePaidStorageResult
 type TransferTicketContentsAndResult = proto_022_PsRiotum.TransferTicketContentsAndResult
+type TransferTicketResult = proto_022_PsRiotum.TransferTicketResult
 type DALPublishCommitmentContentsAndResult = proto_022_PsRiotum.DALPublishCommitmentContentsAndResult
+type DALPublishCommitmentResult = proto_022_PsRiotum.DALPublishCommitmentResult
 type ManagerMetadata[T core.ManagerOperationResult] = proto_022_PsRiotum.ManagerMetadata[T]
 
 type OperationContentsAndResult interface {
@@ -488,12 +496,4 @@ type IncreasePaidStorageSuccessfulManagerResult = proto_022_PsRiotum.IncreasePai
 type SmartRollupOriginateSuccessfulManagerResult = proto_022_PsRiotum.SmartRollupOriginateSuccessfulManagerResult
 type SetDepositsLimitSuccessfulManagerResult = proto_022_PsRiotum.SetDepositsLimitSuccessfulManagerResult
 
-func ListOperations() []string {
-	ops := encoding.ListVariants[OperationContents]()
-	ret := make([]string, len(ops))
-	for i, op := range ops {
-		ret[i] = op.OperationKind()
-	}
-	slices.Sort(ret)
-	return slices.Compact(ret)
-}
+var ListOperations = core.ListOperations[OperationContents]

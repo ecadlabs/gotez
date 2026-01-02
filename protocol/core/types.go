@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -281,4 +282,24 @@ type SignRequest interface {
 type InlinedConsensusOperationContent interface {
 	OperationContents
 	InlinedConsensusOperationContent()
+}
+
+func ListOperations[T OperationContents]() []string {
+	ops := encoding.ListVariants[T]()
+	ret := make([]string, len(ops))
+	for i, op := range ops {
+		ret[i] = op.OperationKind()
+	}
+	slices.Sort(ret)
+	return slices.Compact(ret)
+}
+
+func ListPseudoOperations[T PseudoOperation]() []string {
+	ops := encoding.ListVariants[T]()
+	ret := make([]string, len(ops))
+	for i, op := range ops {
+		ret[i] = op.PseudoOperation()
+	}
+	slices.Sort(ret)
+	return slices.Compact(ret)
 }

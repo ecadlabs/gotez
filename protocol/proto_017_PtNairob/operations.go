@@ -153,6 +153,4 @@ func init() {
 	})
 }
 
-func ListOperations() []OperationContents {
-	return encoding.ListVariants[OperationContents]()
-}
+var ListOperations = core.ListOperations[OperationContents]

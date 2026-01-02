@@ -4,7 +4,10 @@ import "github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"
 
 type ZkRollupOrigination = proto_022_PsRiotum.ZkRollupOrigination
 type ZkRollupOriginationContentsAndResult = proto_022_PsRiotum.ZkRollupOriginationContentsAndResult
+type ZkRollupOriginationResult = proto_022_PsRiotum.ZkRollupOriginationResult
 type ZkRollupPublish = proto_022_PsRiotum.ZkRollupPublish
 type ZkRollupPublishContentsAndResult = proto_022_PsRiotum.ZkRollupPublishContentsAndResult
+type ZkRollupPublishResult = proto_022_PsRiotum.ZkRollupPublishResult
 type ZkRollupUpdate = proto_022_PsRiotum.ZkRollupUpdate
 type ZkRollupUpdateContentsAndResult = proto_022_PsRiotum.ZkRollupUpdateContentsAndResult
+type ZkRollupUpdateResult = proto_022_PsRiotum.ZkRollupUpdateResult
