@@ -13,6 +13,7 @@ func TestListSignRequests(t *testing.T) {
 		"attestation_with_dal",
 		"block",
 		"generic",
+		"pack",
 		"preattestation",
 	}
 	require.Equal(t, expect, reqs)
