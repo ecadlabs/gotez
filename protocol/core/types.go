@@ -303,3 +303,9 @@ func ListPseudoOperations[T PseudoOperation]() []string {
 	slices.Sort(ret)
 	return slices.Compact(ret)
 }
+
+type PackData struct {
+	expression.Expression
+}
+
+func (PackData) SignRequestKind() string { return "pack" }

@@ -7,7 +7,10 @@ import (
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 	"github.com/ecadlabs/gotez/v2/protocol/core"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_022_PsRiotum"
 )
+
+type BlockSignRequest = proto_022_PsRiotum.BlockSignRequest
 
 type PreattestationRequestContent interface {
 	core.OperationContents
@@ -41,6 +44,7 @@ func init() {
 	encoding.RegisterEnum(&encoding.Enum[SignRequest]{
 		Variants: encoding.Variants[SignRequest]{
 			0x03: (*GenericOperationSignRequest)(nil),
+			0x05: core.PackData{},
 			0x11: (*BlockSignRequest)(nil),
 			0x12: (*PreattestationSignRequest)(nil),
 			0x13: (*AttestationSignRequest)(nil),
@@ -51,16 +55,6 @@ func init() {
 type GenericOperationSignRequest UnsignedOperation
 
 func (*GenericOperationSignRequest) SignRequestKind() string { return "generic" }
-
-type BlockSignRequest struct {
-	Chain       *tz.ChainID
-	BlockHeader UnsignedBlockHeader
-}
-
-func (r *BlockSignRequest) GetChainID() *tz.ChainID { return r.Chain }
-func (r *BlockSignRequest) GetLevel() int32         { return r.BlockHeader.Level }
-func (r *BlockSignRequest) GetRound() int32         { return r.BlockHeader.PayloadRound }
-func (*BlockSignRequest) SignRequestKind() string   { return "block" }
 
 type ConsensusSignRequest[T core.OperationContents] struct {
 	Chain     *tz.ChainID
