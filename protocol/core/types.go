@@ -286,9 +286,12 @@ type InlinedConsensusOperationContent interface {
 
 func ListOperations[T OperationContents]() []string {
 	ops := encoding.ListVariants[T]()
-	ret := make([]string, len(ops))
-	for i, op := range ops {
-		ret[i] = op.OperationKind()
+	ret := make([]string, 0, len(ops))
+	for _, op := range ops {
+		if _, ok := any(op).(InlinedConsensusOperationContent); ok {
+			continue
+		}
+		ret = append(ret, op.OperationKind())
 	}
 	slices.Sort(ret)
 	return slices.Compact(ret)

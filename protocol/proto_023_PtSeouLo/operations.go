@@ -173,12 +173,14 @@ type BLSModeAttestation struct {
 	BlockPayloadHash *tz.BlockPayloadHash `json:"block_payload_hash"`
 }
 
-func (*BLSModeAttestation) OperationKind() string { return "attestation" }
+func (*BLSModeAttestation) InlinedConsensusOperationContent() {}
+func (*BLSModeAttestation) OperationKind() string             { return "attestation" }
 
 //json:kind=OperationKind()
 type BLSModePreattestation BLSModeAttestation
 
-func (*BLSModePreattestation) OperationKind() string { return "preattestation" }
+func (*BLSModePreattestation) InlinedConsensusOperationContent() {}
+func (*BLSModePreattestation) OperationKind() string             { return "preattestation" }
 
 type DoubleConsensusOperationEvidence struct {
 	Slot uint16                    `json:"slot"`
