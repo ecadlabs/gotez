@@ -316,7 +316,7 @@ func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*l
 	operation := latest.NewSignedOperation(grp, &tz.GenericSignature{})
 
 	// hash the operation with magic byte added
-	var signReq latest.SignRequest = (*latest.GenericOperationSignRequest)(&operation.UnsignedOperationImpl)
+	var signReq latest.SignRequest = (*latest.GenericOperationSignRequest)(&operation.UnsignedOperation)
 	var signBytes bytes.Buffer
 	if err := encoding.Encode(&signBytes, &signReq); err != nil {
 		return nil, err

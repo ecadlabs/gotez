@@ -1,15 +1,40 @@
 package proto_021_PsQuebec
 
 import (
-	"github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_019_PtParisB"
+	tz "github.com/ecadlabs/gotez/v2"
 )
 
-type UnsignedOperation = proto_018_Proxford.UnsignedOperationImpl[OperationContents]
-type SignedOperation = proto_018_Proxford.SignedOperationImpl[OperationContents]
-type RunOperationRequest = proto_018_Proxford.RunOperationRequestImpl[RunOperationRequestContents]
-type RunOperationRequestContents = proto_019_PtParisB.RunOperationRequestContents
+type UnsignedOperation struct {
+	Branch   *tz.BlockHash       `json:"branch"`
+	Contents []OperationContents `json:"contents"`
+}
+type SignedOperation struct {
+	UnsignedOperation
+	Signature *tz.GenericSignature `json:"signature"`
+}
 
-var NewRunOperationRequest = proto_019_PtParisB.NewRunOperationRequest
-var NewUnsignedOperation = proto_019_PtParisB.NewUnsignedOperation
-var NewSignedOperation = proto_019_PtParisB.NewSignedOperation
+type RunOperationRequest struct {
+	Operation *SignedOperation `json:"operation"`
+	ChainID   *tz.ChainID      `json:"chain_id"`
+}
+
+func NewRunOperationRequest(op *SignedOperation, chain *tz.ChainID) *RunOperationRequest {
+	return &RunOperationRequest{
+		Operation: op,
+		ChainID:   chain,
+	}
+}
+
+func NewUnsignedOperation(branch *tz.BlockHash, contents []OperationContents) *UnsignedOperation {
+	return &UnsignedOperation{
+		Branch:   branch,
+		Contents: contents,
+	}
+}
+
+func NewSignedOperation(operation *UnsignedOperation, signature *tz.GenericSignature) *SignedOperation {
+	return &SignedOperation{
+		UnsignedOperation: *operation,
+		Signature:         signature,
+	}
+}

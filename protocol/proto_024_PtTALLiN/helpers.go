@@ -1,33 +1,12 @@
 package proto_024_PtTALLiN
 
 import (
-	tz "github.com/ecadlabs/gotez/v2"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_018_Proxford"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_019_PtParisB"
+	"github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSeouLo"
 )
 
-type UnsignedOperation = proto_018_Proxford.UnsignedOperationImpl[OperationContents]
-type SignedOperation = proto_018_Proxford.SignedOperationImpl[OperationContents]
-type RunOperationRequest = proto_018_Proxford.RunOperationRequestImpl[RunOperationRequestContents]
-type RunOperationRequestContents = proto_019_PtParisB.RunOperationRequestContents
+type UnsignedOperation = proto_023_PtSeouLo.UnsignedOperation
+type SignedOperation = proto_023_PtSeouLo.SignedOperation
 
-func NewRunOperationRequest(op *SignedOperation, chain *tz.ChainID) *RunOperationRequest {
-	return &RunOperationRequest{
-		Operation: op,
-		ChainID:   chain,
-	}
-}
-
-func NewUnsignedOperation(branch *tz.BlockHash, contents []OperationContents) *UnsignedOperation {
-	return &UnsignedOperation{
-		Branch:   branch,
-		Contents: contents,
-	}
-}
-
-func NewSignedOperation(operation *UnsignedOperation, signature *tz.GenericSignature) *SignedOperation {
-	return &SignedOperation{
-		UnsignedOperationImpl: *operation,
-		Signature:             signature,
-	}
-}
+var NewRunOperationRequest = proto_023_PtSeouLo.NewRunOperationRequest
+var NewUnsignedOperation = proto_023_PtSeouLo.NewUnsignedOperation
+var NewSignedOperation = proto_023_PtSeouLo.NewSignedOperation
