@@ -6,6 +6,7 @@ import (
 
 type UnsignedOperation = proto_023_PtSeouLo.UnsignedOperation
 type SignedOperation = proto_023_PtSeouLo.SignedOperation
+type RunOperationRequest = proto_023_PtSeouLo.RunOperationRequest
 
 var NewRunOperationRequest = proto_023_PtSeouLo.NewRunOperationRequest
 var NewUnsignedOperation = proto_023_PtSeouLo.NewUnsignedOperation
