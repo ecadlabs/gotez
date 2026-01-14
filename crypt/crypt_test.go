@@ -5,6 +5,7 @@ import (
 	"crypto/ed25519"
 	"crypto/elliptic"
 	"crypto/rand"
+	"math/big"
 	"sync"
 	"testing"
 
@@ -164,4 +165,138 @@ func TestMinpkGenkey1kParallel(t *testing.T) {
 		go MinpkGenkey(t)
 	}
 	wg.Wait()
+}
+
+// TestLowSCanonization verifies that ECDSA signatures are normalized to low-S form.
+// This is required for secp256k1 (tz2) compatibility with Tezos/libsecp256k1.
+// See issue #364: https://github.com/ecadlabs/signatory/issues/364
+func TestLowSCanonization(t *testing.T) {
+	curves := []struct {
+		name  string
+		curve elliptic.Curve
+	}{
+		{"secp256k1", secp256k1.S256()},
+		{"P256", elliptic.P256()},
+	}
+
+	for _, c := range curves {
+		t.Run(c.name, func(t *testing.T) {
+			order := c.curve.Params().N
+			halfOrder := new(big.Int).Quo(order, big.NewInt(2))
+
+			// Create a high-S value (S > N/2)
+			highS := new(big.Int).Add(halfOrder, big.NewInt(1000))
+			r := big.NewInt(12345)
+
+			t.Run("NewECDSASignature_canonizes_highS", func(t *testing.T) {
+				sig := NewECDSASignature(r, highS, c.curve)
+				// S should now be <= N/2
+				require.LessOrEqual(t, sig.S.Cmp(halfOrder), 0,
+					"NewECDSASignature should produce low-S signature")
+				// Verify S was actually changed
+				require.NotEqual(t, 0, highS.Cmp(sig.S),
+					"high-S should be different from canonized S")
+			})
+
+			t.Run("NewECDSASignature_preserves_lowS", func(t *testing.T) {
+				lowS := big.NewInt(1000) // definitely < N/2
+				sig := NewECDSASignature(r, lowS, c.curve)
+				require.Equal(t, 0, lowS.Cmp(sig.S),
+					"low-S should remain unchanged")
+			})
+
+			t.Run("canonizeSignature_math_correctness", func(t *testing.T) {
+				// When S > N/2, canonical S should be N - S
+				sig := &ECDSASignature{R: r, S: new(big.Int).Set(highS), Curve: c.curve}
+				canonical := canonizeSignature(sig)
+
+				expectedS := new(big.Int).Sub(order, highS)
+				require.Equal(t, 0, expectedS.Cmp(canonical.S),
+					"canonical S should equal N - S for high-S values")
+			})
+		})
+	}
+}
+
+// TestNewSignatureFromBytesCanonization verifies that signatures parsed from
+// ASN.1 (as received from cloud KMS providers) are canonized to low-S form.
+func TestNewSignatureFromBytesCanonization(t *testing.T) {
+	curves := []struct {
+		name  string
+		curve elliptic.Curve
+	}{
+		{"secp256k1", secp256k1.S256()},
+		{"P256", elliptic.P256()},
+	}
+
+	for _, c := range curves {
+		t.Run(c.name, func(t *testing.T) {
+			// Generate a real key and sign to get valid signature bytes
+			priv, err := ecdsa.GenerateKey(c.curve, rand.Reader)
+			require.NoError(t, err)
+
+			message := []byte("test message for signature canonization")
+			digest := DigestFunc(message)
+
+			// Sign multiple times - statistically ~50% should have high-S originally
+			// All should be low-S after canonization
+			halfOrder := new(big.Int).Quo(c.curve.Params().N, big.NewInt(2))
+
+			for i := 0; i < 20; i++ {
+				r, s, err := ecdsa.Sign(rand.Reader, priv, digest[:])
+				require.NoError(t, err)
+
+				// Create ASN.1 DER encoded signature (as cloud KMS would return)
+				asn1Sig := encodeASN1Signature(r, s)
+
+				pub := (*ECDSAPublicKey)(&priv.PublicKey)
+				sig, err := NewSignatureFromBytes(asn1Sig, pub)
+				require.NoError(t, err)
+
+				ecdsaSig, ok := sig.(*ECDSASignature)
+				require.True(t, ok)
+
+				// Verify S is in low-S form
+				require.LessOrEqual(t, ecdsaSig.S.Cmp(halfOrder), 0,
+					"NewSignatureFromBytes must produce low-S signature (iteration %d)", i)
+
+				// Verify signature still validates
+				require.True(t, sig.Verify(pub, message),
+					"canonized signature must still verify")
+			}
+		})
+	}
+}
+
+// encodeASN1Signature creates ASN.1 DER encoded signature from R, S values
+// (simulating what cloud KMS providers return)
+func encodeASN1Signature(r, s *big.Int) []byte {
+	rBytes := r.Bytes()
+	sBytes := s.Bytes()
+
+	// Add leading zero if high bit is set (ASN.1 integer is signed)
+	if len(rBytes) > 0 && rBytes[0]&0x80 != 0 {
+		rBytes = append([]byte{0}, rBytes...)
+	}
+	if len(sBytes) > 0 && sBytes[0]&0x80 != 0 {
+		sBytes = append([]byte{0}, sBytes...)
+	}
+
+	// Build ASN.1 SEQUENCE
+	innerLen := 2 + len(rBytes) + 2 + len(sBytes)
+	result := make([]byte, 0, 2+innerLen)
+
+	// SEQUENCE tag and length
+	result = append(result, 0x30)
+	result = append(result, byte(innerLen))
+
+	// INTEGER for R
+	result = append(result, 0x02, byte(len(rBytes)))
+	result = append(result, rBytes...)
+
+	// INTEGER for S
+	result = append(result, 0x02, byte(len(sBytes)))
+	result = append(result, sBytes...)
+
+	return result
 }
