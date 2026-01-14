@@ -200,6 +200,18 @@ func canonizeSignature(sig *ECDSASignature) *ECDSASignature {
 	}
 }
 
+// NewECDSASignature creates an ECDSA signature from R, S values and curve,
+// normalizing to low-S form for compatibility with Tezos/libsecp256k1.
+// Use this instead of directly constructing ECDSASignature when receiving
+// signatures from external sources (e.g., cloud KMS providers).
+func NewECDSASignature(r, s *big.Int, curve elliptic.Curve) *ECDSASignature {
+	return canonizeSignature(&ECDSASignature{
+		R:     r,
+		S:     s,
+		Curve: curve,
+	})
+}
+
 // See https://github.com/golang/go/blob/master/src/crypto/elliptic/elliptic.go
 func unmarshalCompressed(data []byte, curve elliptic.Curve) (x, y *big.Int, err error) {
 	byteLen := (curve.Params().BitSize + 7) / 8

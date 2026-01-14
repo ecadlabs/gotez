@@ -224,11 +224,12 @@ func NewSignatureFromBytes(sig []byte, pub PublicKey) (Signature, error) {
 			!inner.Empty() {
 			return nil, errors.New("crypt: invalid ASN.1")
 		}
-		return &ECDSASignature{
+		// Canonize to low-S form for secp256k1 compatibility with Tezos/libsecp256k1
+		return canonizeSignature(&ECDSASignature{
 			R:     &r,
 			S:     &s,
 			Curve: pub.Curve,
-		}, nil
+		}), nil
 
 	case Ed25519PublicKey:
 		return Ed25519Signature(sig), nil
