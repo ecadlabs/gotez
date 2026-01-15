@@ -36,11 +36,61 @@ type UpdateConsensusKey = proto_023_PtSeouLo.UpdateConsensusKey
 type UpdateCompanionKey = proto_023_PtSeouLo.UpdateCompanionKey
 type TransferTicket = proto_023_PtSeouLo.TransferTicket
 type DALPublishCommitment = proto_023_PtSeouLo.DALPublishCommitment
-type OperationContents = proto_023_PtSeouLo.OperationContents
 type BalanceUpdates = proto_023_PtSeouLo.BalanceUpdates
 type BalanceUpdate = proto_023_PtSeouLo.BalanceUpdate
 type ManagerOperation = proto_023_PtSeouLo.ManagerOperation
 type InlinedConsensusOperation = proto_023_PtSeouLo.InlinedConsensusOperation
+
+type OperationContents interface {
+	core.OperationContents
+}
+
+func init() {
+	encoding.RegisterEnum(&encoding.Enum[OperationContents]{
+		Variants: encoding.Variants[OperationContents]{
+			1:   (*SeedNonceRevelation)(nil),
+			2:   (*DoubleConsensusOperationEvidence)(nil),
+			3:   (*DoubleBakingEvidence)(nil),
+			4:   (*ActivateAccount)(nil),
+			5:   (*Proposals)(nil),
+			6:   (*Ballot)(nil),
+			8:   (*VDFRevelation)(nil),
+			9:   (*DrainDelegate)(nil),
+			17:  (*FailingNoop)(nil),
+			20:  (*Preattestation)(nil),
+			21:  (*Attestation)(nil),
+			23:  (*AttestationWithDAL)(nil),
+			24:  (*DALEntrapmentEvidence)(nil),
+			30:  (*PreattestationsAggregate)(nil),
+			31:  (*AttestationsAggregate)(nil),
+			40:  (*BLSModePreattestation)(nil),
+			41:  (*BLSModeAttestation)(nil),
+			107: (*Reveal)(nil),
+			108: (*Transaction)(nil),
+			109: (*Origination)(nil),
+			110: (*Delegation)(nil),
+			111: (*RegisterGlobalConstant)(nil),
+			112: (*SetDepositsLimit)(nil),
+			113: (*IncreasePaidStorage)(nil),
+			114: (*UpdateConsensusKey)(nil),
+			115: (*UpdateCompanionKey)(nil),
+			158: (*TransferTicket)(nil),
+			200: (*SmartRollupOriginate)(nil),
+			201: (*SmartRollupAddMessages)(nil),
+			202: (*SmartRollupCement)(nil),
+			203: (*SmartRollupPublish)(nil),
+			204: (*SmartRollupRefute)(nil),
+			205: (*SmartRollupTimeout)(nil),
+			206: (*SmartRollupExecuteOutboxMessage)(nil),
+			207: (*SmartRollupRecoverBond)(nil),
+			230: (*DALPublishCommitment)(nil),
+			250: (*ZkRollupOrigination)(nil),
+			251: (*ZkRollupPublish)(nil),
+			252: (*ZkRollupUpdate)(nil),
+			255: (*core.SignaturePrefix)(nil),
+		},
+	})
+}
 
 type AttestationMetadata struct {
 	BalanceUpdates

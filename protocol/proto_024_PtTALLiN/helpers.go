@@ -1,13 +1,41 @@
 package proto_024_PtTALLiN
 
 import (
-	"github.com/ecadlabs/gotez/v2/protocol/proto_023_PtSeouLo"
+	tz "github.com/ecadlabs/gotez/v2"
 )
 
-type UnsignedOperation = proto_023_PtSeouLo.UnsignedOperation
-type SignedOperation = proto_023_PtSeouLo.SignedOperation
-type RunOperationRequest = proto_023_PtSeouLo.RunOperationRequest
+type UnsignedOperation struct {
+	Branch   *tz.BlockHash       `json:"branch"`
+	Contents []OperationContents `json:"contents"`
+}
 
-var NewRunOperationRequest = proto_023_PtSeouLo.NewRunOperationRequest
-var NewUnsignedOperation = proto_023_PtSeouLo.NewUnsignedOperation
-var NewSignedOperation = proto_023_PtSeouLo.NewSignedOperation
+type SignedOperation struct {
+	UnsignedOperation
+	Signature *tz.GenericSignature `json:"signature"`
+}
+
+type RunOperationRequest struct {
+	Operation *SignedOperation `json:"operation"`
+	ChainID   *tz.ChainID      `json:"chain_id"`
+}
+
+func NewRunOperationRequest(op *SignedOperation, chain *tz.ChainID) *RunOperationRequest {
+	return &RunOperationRequest{
+		Operation: op,
+		ChainID:   chain,
+	}
+}
+
+func NewUnsignedOperation(branch *tz.BlockHash, contents []OperationContents) *UnsignedOperation {
+	return &UnsignedOperation{
+		Branch:   branch,
+		Contents: contents,
+	}
+}
+
+func NewSignedOperation(operation *UnsignedOperation, signature *tz.GenericSignature) *SignedOperation {
+	return &SignedOperation{
+		UnsignedOperation: *operation,
+		Signature:         signature,
+	}
+}

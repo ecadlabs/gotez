@@ -312,13 +312,18 @@ func collectMilligasAndStorage(op core.OperationContents, constants core.Constan
 }
 
 func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*latest.SignedOperation, error) {
-	// forge operation
-	operation := latest.NewSignedOperation(grp, &tz.GenericSignature{})
-
+	ops := make([]latest.GenericOperationSignRequestOperationContents, len(grp.Contents))
+	for i, op := range grp.Contents {
+		ops[i] = op
+	}
 	// hash the operation with magic byte added
-	var signReq latest.SignRequest = (*latest.GenericOperationSignRequest)(&operation.UnsignedOperation)
+	signReq := latest.GenericOperationSignRequest{
+		Branch:   grp.Branch,
+		Contents: ops,
+	}
+	var tmp latest.SignRequest = &signReq
 	var signBytes bytes.Buffer
-	if err := encoding.Encode(&signBytes, &signReq); err != nil {
+	if err := encoding.Encode(&signBytes, &tmp); err != nil {
 		return nil, err
 	}
 
@@ -327,6 +332,9 @@ func Sign(ctx context.Context, signer Signer, grp *latest.UnsignedOperation) (*l
 	if err != nil {
 		return nil, err
 	}
+
+	// forge operation
+	operation := latest.NewSignedOperation(grp, &tz.GenericSignature{})
 
 	switch sig := sig.(type) {
 	case tz.ConventionalSignature:

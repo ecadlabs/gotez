@@ -13,9 +13,11 @@ var (
 	ListOperations         = latest.ListOperations
 	ListPseudoOperations   = latest.ListPseudoOperations
 	ListSignRequests       = latest.ListSignRequests
+	ListGenericOperations  = latest.ListGenericOperations
 )
 
 type OperationContents = latest.OperationContents
+type GenericOperationSignRequestOperationContents = latest.GenericOperationSignRequestOperationContents
 type OperationContentsAndResult = latest.OperationContentsAndResult
 type InternalOperationResult = latest.InternalOperationResult
 type OperationWithOptionalMetadata = latest.OperationWithOptionalMetadata
