@@ -390,6 +390,7 @@ func (pk *Ed25519EncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (Pr
 	if err != nil {
 		return nil, err
 	}
+	defer memzero(decrypted)
 	var out Ed25519PrivateKey
 	if len(decrypted) != len(out) {
 		return nil, ErrInvalidDecryptedLen
@@ -403,6 +404,7 @@ func (pk *Secp256k1EncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (
 	if err != nil {
 		return nil, err
 	}
+	defer memzero(decrypted)
 	var out Secp256k1PrivateKey
 	if len(decrypted) != len(out) {
 		return nil, ErrInvalidDecryptedLen
@@ -416,6 +418,7 @@ func (pk *P256EncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (Priva
 	if err != nil {
 		return nil, err
 	}
+	defer memzero(decrypted)
 	var out P256PrivateKey
 	if len(decrypted) != len(out) {
 		return nil, ErrInvalidDecryptedLen
@@ -429,6 +432,7 @@ func (pk *BLSEncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (Privat
 	if err != nil {
 		return nil, err
 	}
+	defer memzero(decrypted)
 	var out BLSPrivateKey
 	if len(decrypted) != len(out) {
 		return nil, ErrInvalidDecryptedLen
