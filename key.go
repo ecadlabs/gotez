@@ -119,6 +119,9 @@ func (k *EncodedPublicKeyHash) UnmarshalText(text []byte) error {
 	if err != nil {
 		return err
 	}
+	if len(payload) != PKHBytesLen {
+		return errors.New("gotez: invalid public key hash payload length")
+	}
 	var result PublicKeyHash
 	switch pre {
 	case &prefix.Ed25519PublicKeyHash:
