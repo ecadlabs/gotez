@@ -10,15 +10,21 @@ import (
 
 type BigInt []byte
 
+const maxBigIntLen = 1024
+
 func getLen(data []byte) (int, error) {
 	if len(data) < 1 {
 		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer{1, len(data)})
 	}
+	limit := len(data)
+	if limit > maxBigIntLen {
+		limit = maxBigIntLen
+	}
 	i := 0
-	for i < len(data) && data[i]&0x80 != 0 {
+	for i < limit && data[i]&0x80 != 0 {
 		i += 1
 	}
-	if i == len(data) {
+	if i == limit {
 		return 0, fmt.Errorf("(bigint) %w", encoding.ErrBuffer{i, len(data)})
 	}
 	return i + 1, nil
