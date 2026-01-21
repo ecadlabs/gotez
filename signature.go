@@ -35,7 +35,7 @@ func (sig *BLSSignature) Signature() {}
 func NewEd25519Signature(sig []byte) *Ed25519Signature {
 	var out Ed25519Signature
 	if len(sig) != len(out) {
-		panic("gotez: invalid ed25519 signature length length")
+		panic("gotez: invalid Ed25519 signature length")
 	}
 	copy(out[:], sig)
 	return &out
@@ -76,7 +76,7 @@ func (sig *P256Signature) Point() (r, s *big.Int) {
 func NewBLSSignature(compressedPoint []byte) *BLSSignature {
 	var out BLSSignature
 	if len(compressedPoint) != len(out) {
-		panic("gotez: invalid ed25519 signature length length")
+		panic("gotez: invalid BLS signature length")
 	}
 	copy(out[:], compressedPoint)
 	return &out
