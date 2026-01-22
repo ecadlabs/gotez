@@ -4,6 +4,8 @@ import (
 	"crypto/sha512"
 	"errors"
 
+	"runtime"
+
 	"golang.org/x/crypto/nacl/secretbox"
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -17,6 +19,13 @@ const (
 	encKeyLen     = 32
 )
 
+func memzero(b []byte) {
+	for i := range b {
+		b[i] = 0
+	}
+	runtime.KeepAlive(b)
+}
+
 func decryptPrivateKey(data []byte, passCb func() ([]byte, error)) ([]byte, error) {
 	if passCb == nil {
 		return nil, ErrPrivateKeyDecrypt
@@ -25,14 +34,18 @@ func decryptPrivateKey(data []byte, passCb func() ([]byte, error)) ([]byte, erro
 	if err != nil {
 		return nil, err
 	}
+	defer memzero(passphrase)
 
 	salt, box := data[:8], data[8:]
 	secretboxKey := pbkdf2.Key(passphrase, salt, encIterations, encKeyLen, sha512.New)
+	defer memzero(secretboxKey)
 
 	var (
 		tmp   [32]byte
 		nonce [24]byte
 	)
+	defer memzero(tmp[:])
+
 	copy(tmp[:], secretboxKey)
 	opened, ok := secretbox.Open(nil, box, &nonce, &tmp)
 	if !ok {

@@ -9,9 +9,10 @@ import (
 )
 
 type base58Type struct {
-	Type   string
-	Length string
-	Prefix string
+	Type     string
+	Length   string
+	Prefix   string
+	IsSecret bool // If true, String() returns redacted output to prevent accidental logging
 }
 
 type hexType struct {
@@ -108,44 +109,52 @@ var base58Data = []base58Type{
 		Prefix: "BLS12_381PublicKey",
 	},
 	{
-		Type:   "Ed25519PrivateKey",
-		Length: "Ed25519SeedBytesLen",
-		Prefix: "Ed25519Seed",
+		Type:     "Ed25519PrivateKey",
+		Length:   "Ed25519SeedBytesLen",
+		Prefix:   "Ed25519Seed",
+		IsSecret: true,
 	},
 	{
-		Type:   "Secp256k1PrivateKey",
-		Length: "Secp256k1PrivateKeyBytesLen",
-		Prefix: "Secp256k1SecretKey",
+		Type:     "Secp256k1PrivateKey",
+		Length:   "Secp256k1PrivateKeyBytesLen",
+		Prefix:   "Secp256k1SecretKey",
+		IsSecret: true,
 	},
 	{
-		Type:   "P256PrivateKey",
-		Length: "P256PrivateKeyBytesLen",
-		Prefix: "P256SecretKey",
+		Type:     "P256PrivateKey",
+		Length:   "P256PrivateKeyBytesLen",
+		Prefix:   "P256SecretKey",
+		IsSecret: true,
 	},
 	{
-		Type:   "BLSPrivateKey",
-		Length: "BLSPrivateKeyBytesLen",
-		Prefix: "BLS12_381SecretKey",
+		Type:     "BLSPrivateKey",
+		Length:   "BLSPrivateKeyBytesLen",
+		Prefix:   "BLS12_381SecretKey",
+		IsSecret: true,
 	},
 	{
-		Type:   "Ed25519EncryptedPrivateKey",
-		Length: "Ed25519EncryptedSeedBytesLen",
-		Prefix: "Ed25519EncryptedSeed",
+		Type:     "Ed25519EncryptedPrivateKey",
+		Length:   "Ed25519EncryptedSeedBytesLen",
+		Prefix:   "Ed25519EncryptedSeed",
+		IsSecret: true,
 	},
 	{
-		Type:   "Secp256k1EncryptedPrivateKey",
-		Length: "Secp256k1EncryptedPrivateKeyBytesLen",
-		Prefix: "Secp256k1EncryptedSecretKey",
+		Type:     "Secp256k1EncryptedPrivateKey",
+		Length:   "Secp256k1EncryptedPrivateKeyBytesLen",
+		Prefix:   "Secp256k1EncryptedSecretKey",
+		IsSecret: true,
 	},
 	{
-		Type:   "P256EncryptedPrivateKey",
-		Length: "P256EncryptedPrivateKeyBytesLen",
-		Prefix: "P256EncryptedSecretKey",
+		Type:     "P256EncryptedPrivateKey",
+		Length:   "P256EncryptedPrivateKeyBytesLen",
+		Prefix:   "P256EncryptedSecretKey",
+		IsSecret: true,
 	},
 	{
-		Type:   "BLSEncryptedPrivateKey",
-		Length: "BLSEncryptedPrivateKeyBytesLen",
-		Prefix: "BLS12_381EncryptedSecretKey",
+		Type:     "BLSEncryptedPrivateKey",
+		Length:   "BLSEncryptedPrivateKeyBytesLen",
+		Prefix:   "BLS12_381EncryptedSecretKey",
+		IsSecret: true,
 	},
 	{
 		Type:   "GenericSignature",
@@ -282,7 +291,11 @@ func (self *{{.Type}}) ToBase58() []byte {
 }
 
 func (self {{.Type}}) String() string {
+{{- if .IsSecret}}
+	return "[REDACTED:{{.Type}}]"
+{{- else}}
 	return string(self.ToBase58())
+{{- end}}
 }
 
 func (self {{.Type}}) MarshalText() ([]byte, error) {

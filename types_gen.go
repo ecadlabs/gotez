@@ -530,7 +530,7 @@ func (self *Ed25519PrivateKey) ToBase58() []byte {
 }
 
 func (self Ed25519PrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:Ed25519PrivateKey]"
 }
 
 func (self Ed25519PrivateKey) MarshalText() ([]byte, error) {
@@ -560,7 +560,7 @@ func (self *Secp256k1PrivateKey) ToBase58() []byte {
 }
 
 func (self Secp256k1PrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:Secp256k1PrivateKey]"
 }
 
 func (self Secp256k1PrivateKey) MarshalText() ([]byte, error) {
@@ -590,7 +590,7 @@ func (self *P256PrivateKey) ToBase58() []byte {
 }
 
 func (self P256PrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:P256PrivateKey]"
 }
 
 func (self P256PrivateKey) MarshalText() ([]byte, error) {
@@ -620,7 +620,7 @@ func (self *BLSPrivateKey) ToBase58() []byte {
 }
 
 func (self BLSPrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:BLSPrivateKey]"
 }
 
 func (self BLSPrivateKey) MarshalText() ([]byte, error) {
@@ -650,7 +650,7 @@ func (self *Ed25519EncryptedPrivateKey) ToBase58() []byte {
 }
 
 func (self Ed25519EncryptedPrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:Ed25519EncryptedPrivateKey]"
 }
 
 func (self Ed25519EncryptedPrivateKey) MarshalText() ([]byte, error) {
@@ -680,7 +680,7 @@ func (self *Secp256k1EncryptedPrivateKey) ToBase58() []byte {
 }
 
 func (self Secp256k1EncryptedPrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:Secp256k1EncryptedPrivateKey]"
 }
 
 func (self Secp256k1EncryptedPrivateKey) MarshalText() ([]byte, error) {
@@ -710,7 +710,7 @@ func (self *P256EncryptedPrivateKey) ToBase58() []byte {
 }
 
 func (self P256EncryptedPrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:P256EncryptedPrivateKey]"
 }
 
 func (self P256EncryptedPrivateKey) MarshalText() ([]byte, error) {
@@ -740,7 +740,7 @@ func (self *BLSEncryptedPrivateKey) ToBase58() []byte {
 }
 
 func (self BLSEncryptedPrivateKey) String() string {
-	return string(self.ToBase58())
+	return "[REDACTED:BLSEncryptedPrivateKey]"
 }
 
 func (self BLSEncryptedPrivateKey) MarshalText() ([]byte, error) {
