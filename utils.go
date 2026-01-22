@@ -4,6 +4,8 @@ import (
 	"crypto/sha512"
 	"errors"
 
+	"runtime"
+
 	"golang.org/x/crypto/nacl/secretbox"
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -21,6 +23,7 @@ func memzero(b []byte) {
 	for i := range b {
 		b[i] = 0
 	}
+	runtime.KeepAlive(b)
 }
 
 func decryptPrivateKey(data []byte, passCb func() ([]byte, error)) ([]byte, error) {
