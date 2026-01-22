@@ -162,12 +162,9 @@ func (k *EncodedPublicKeyHash) UnmarshalText(text []byte) error {
 	return nil
 }
 
-func (pkh *Ed25519PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
-	var (
-		x   PublicKeyHash = pkh
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
+func publicKeyHashToComparable(pkh PublicKeyHash) (out EncodedPublicKeyHash) {
+	var buf bytes.Buffer
+	if err := encoding.Encode(&buf, &pkh); err != nil {
 		panic(err)
 	}
 	b := buf.Bytes()
@@ -176,6 +173,10 @@ func (pkh *Ed25519PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
 	}
 	copy(out[:], b)
 	return
+}
+
+func (pkh *Ed25519PublicKeyHash) ToComparable() EncodedPublicKeyHash {
+	return publicKeyHashToComparable(pkh)
 }
 
 func (pkh *Ed25519PublicKeyHash) Eq(other PublicKeyHash) bool {
@@ -185,20 +186,8 @@ func (pkh *Ed25519PublicKeyHash) Eq(other PublicKeyHash) bool {
 	return false
 }
 
-func (pkh *Secp256k1PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
-	var (
-		x   PublicKeyHash = pkh
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
-	}
-	b := buf.Bytes()
-	if len(b) != publicKeyHashComparableKeyLen {
-		panic("invalid public key hash length")
-	}
-	copy(out[:], b)
-	return
+func (pkh *Secp256k1PublicKeyHash) ToComparable() EncodedPublicKeyHash {
+	return publicKeyHashToComparable(pkh)
 }
 
 func (pkh *Secp256k1PublicKeyHash) Eq(other PublicKeyHash) bool {
@@ -208,20 +197,8 @@ func (pkh *Secp256k1PublicKeyHash) Eq(other PublicKeyHash) bool {
 	return false
 }
 
-func (pkh *P256PublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
-	var (
-		x   PublicKeyHash = pkh
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
-	}
-	b := buf.Bytes()
-	if len(b) != publicKeyHashComparableKeyLen {
-		panic("invalid public key hash length")
-	}
-	copy(out[:], b)
-	return
+func (pkh *P256PublicKeyHash) ToComparable() EncodedPublicKeyHash {
+	return publicKeyHashToComparable(pkh)
 }
 
 func (pkh *P256PublicKeyHash) Eq(other PublicKeyHash) bool {
@@ -231,20 +208,8 @@ func (pkh *P256PublicKeyHash) Eq(other PublicKeyHash) bool {
 	return false
 }
 
-func (pkh *BLSPublicKeyHash) ToComparable() (out EncodedPublicKeyHash) {
-	var (
-		x   PublicKeyHash = pkh
-		buf bytes.Buffer
-	)
-	if err := encoding.Encode(&buf, &x); err != nil {
-		panic(err)
-	}
-	b := buf.Bytes()
-	if len(b) != publicKeyHashComparableKeyLen {
-		panic("invalid public key hash length")
-	}
-	copy(out[:], b)
-	return
+func (pkh *BLSPublicKeyHash) ToComparable() EncodedPublicKeyHash {
+	return publicKeyHashToComparable(pkh)
 }
 
 func (pkh *BLSPublicKeyHash) Eq(other PublicKeyHash) bool {
