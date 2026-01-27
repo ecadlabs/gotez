@@ -169,14 +169,16 @@ func TestMinpkGenkey1kParallel(t *testing.T) {
 
 // TestLowSCanonization verifies that ECDSA signatures are normalized to low-S form.
 // This is required for secp256k1 (tz2) compatibility with Tezos/libsecp256k1.
+// P-256 (tz3) does not require canonization and is returned unchanged for performance.
 // See issue #364: https://github.com/ecadlabs/signatory/issues/364
 func TestLowSCanonization(t *testing.T) {
 	curves := []struct {
-		name  string
-		curve elliptic.Curve
+		name           string
+		curve          elliptic.Curve
+		shouldCanonize bool
 	}{
-		{"secp256k1", secp256k1.S256()},
-		{"P256", elliptic.P256()},
+		{"secp256k1", secp256k1.S256(), true},
+		{"P256", elliptic.P256(), false},
 	}
 
 	for _, c := range curves {
@@ -190,12 +192,18 @@ func TestLowSCanonization(t *testing.T) {
 
 			t.Run("NewECDSASignature_canonizes_highS", func(t *testing.T) {
 				sig := NewECDSASignature(r, highS, c.curve)
-				// S should now be <= N/2
-				require.LessOrEqual(t, sig.S.Cmp(halfOrder), 0,
-					"NewECDSASignature should produce low-S signature")
-				// Verify S was actually changed
-				require.NotEqual(t, 0, highS.Cmp(sig.S),
-					"high-S should be different from canonized S")
+				if c.shouldCanonize {
+					// secp256k1: S should now be <= N/2
+					require.LessOrEqual(t, sig.S.Cmp(halfOrder), 0,
+						"NewECDSASignature should produce low-S signature for secp256k1")
+					// Verify S was actually changed
+					require.NotEqual(t, 0, highS.Cmp(sig.S),
+						"high-S should be different from canonized S")
+				} else {
+					// P-256: S should remain unchanged (no canonization)
+					require.Equal(t, 0, highS.Cmp(sig.S),
+						"P-256 signatures should not be canonized, S should remain unchanged")
+				}
 			})
 
 			t.Run("NewECDSASignature_preserves_lowS", func(t *testing.T) {
@@ -206,27 +214,37 @@ func TestLowSCanonization(t *testing.T) {
 			})
 
 			t.Run("canonizeSignature_math_correctness", func(t *testing.T) {
-				// When S > N/2, canonical S should be N - S
 				sig := &ECDSASignature{R: r, S: new(big.Int).Set(highS), Curve: c.curve}
 				canonical := canonizeSignature(sig)
 
-				expectedS := new(big.Int).Sub(order, highS)
-				require.Equal(t, 0, expectedS.Cmp(canonical.S),
-					"canonical S should equal N - S for high-S values")
+				if c.shouldCanonize {
+					// secp256k1: When S > N/2, canonical S should be N - S
+					expectedS := new(big.Int).Sub(order, highS)
+					require.Equal(t, 0, expectedS.Cmp(canonical.S),
+						"canonical S should equal N - S for high-S values")
+				} else {
+					// P-256: Signature should be returned unchanged
+					require.Equal(t, 0, highS.Cmp(canonical.S),
+						"P-256 signatures should not be canonized, S should remain unchanged")
+					require.Equal(t, sig, canonical,
+						"P-256 signature should be returned unchanged (same pointer)")
+				}
 			})
 		})
 	}
 }
 
 // TestNewSignatureFromBytesCanonization verifies that signatures parsed from
-// ASN.1 (as received from cloud KMS providers) are canonized to low-S form.
+// ASN.1 (as received from cloud KMS providers) are canonized to low-S form for secp256k1.
+// P-256 signatures are returned unchanged (no canonization) for performance.
 func TestNewSignatureFromBytesCanonization(t *testing.T) {
 	curves := []struct {
-		name  string
-		curve elliptic.Curve
+		name           string
+		curve          elliptic.Curve
+		shouldCanonize bool
 	}{
-		{"secp256k1", secp256k1.S256()},
-		{"P256", elliptic.P256()},
+		{"secp256k1", secp256k1.S256(), true},
+		{"P256", elliptic.P256(), false},
 	}
 
 	for _, c := range curves {
@@ -239,7 +257,6 @@ func TestNewSignatureFromBytesCanonization(t *testing.T) {
 			digest := DigestFunc(message)
 
 			// Sign multiple times - statistically ~50% should have high-S originally
-			// All should be low-S after canonization
 			halfOrder := new(big.Int).Quo(c.curve.Params().N, big.NewInt(2))
 
 			for i := 0; i < 20; i++ {
@@ -256,13 +273,18 @@ func TestNewSignatureFromBytesCanonization(t *testing.T) {
 				ecdsaSig, ok := sig.(*ECDSASignature)
 				require.True(t, ok)
 
-				// Verify S is in low-S form
-				require.LessOrEqual(t, ecdsaSig.S.Cmp(halfOrder), 0,
-					"NewSignatureFromBytes must produce low-S signature (iteration %d)", i)
+				if c.shouldCanonize {
+					// secp256k1: Verify S is in low-S form
+					require.LessOrEqual(t, ecdsaSig.S.Cmp(halfOrder), 0,
+						"NewSignatureFromBytes must produce low-S signature for secp256k1 (iteration %d)", i)
+				} else {
+					// P-256: S can be high or low (no canonization required)
+					// Just verify the signature is valid
+				}
 
 				// Verify signature still validates
 				require.True(t, sig.Verify(pub, message),
-					"canonized signature must still verify")
+					"signature must still verify (iteration %d)", i)
 			}
 		})
 	}
