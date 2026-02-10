@@ -184,14 +184,27 @@ func (sig *ECDSASignature) MarshalText() (text []byte, err error) {
 }
 
 func canonizeSignature(sig *ECDSASignature) *ECDSASignature {
-	r := new(big.Int).Set(sig.R)
-	s := new(big.Int).Set(sig.S)
+	// Only canonize secp256k1 - P-256 and other curves don't require low-S normalization
+	if sig.Curve != secp256k1.S256() {
+		return sig // Zero overhead: no allocations, no computations
+	}
 
 	order := sig.Curve.Params().N
 	quo := new(big.Int).Quo(order, new(big.Int).SetInt64(2))
-	if s.Cmp(quo) > 0 {
-		s = s.Sub(order, s)
+
+	// Check if S is already low before creating copies
+	if sig.S.Cmp(quo) <= 0 {
+		// S is already low, just copy R and S without modification
+		return &ECDSASignature{
+			R:     new(big.Int).Set(sig.R),
+			S:     new(big.Int).Set(sig.S),
+			Curve: sig.Curve,
+		}
 	}
+
+	// S needs normalization: copy and subtract
+	r := new(big.Int).Set(sig.R)
+	s := new(big.Int).Sub(order, sig.S)
 
 	return &ECDSASignature{
 		R:     r,
@@ -200,8 +213,7 @@ func canonizeSignature(sig *ECDSASignature) *ECDSASignature {
 	}
 }
 
-// NewECDSASignature creates an ECDSA signature from R, S values and curve,
-// normalizing to low-S form for compatibility with Tezos/libsecp256k1.
+// NewECDSASignature creates an ECDSA signature from R, S values and curve.
 // Use this instead of directly constructing ECDSASignature when receiving
 // signatures from external sources (e.g., cloud KMS providers).
 func NewECDSASignature(r, s *big.Int, curve elliptic.Curve) *ECDSASignature {
