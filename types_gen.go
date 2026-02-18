@@ -339,6 +339,36 @@ func (self *BLSPublicKeyHash) UnmarshalText(src []byte) error {
 	return nil
 }
 
+type MLDSA44PublicKeyHash [AddressBytesLen]byte
+
+func (self *MLDSA44PublicKeyHash) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.MLDSA44PublicKeyHash, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self MLDSA44PublicKeyHash) String() string {
+	return string(self.ToBase58())
+}
+
+func (self MLDSA44PublicKeyHash) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.MLDSA44PublicKeyHash, self[:])
+}
+
+func (self *MLDSA44PublicKeyHash) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.MLDSA44PublicKeyHash {
+		return fmt.Errorf("gotez: invalid MLDSA44PublicKeyHash encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
 type ProtocolHash [HashBytesLen]byte
 
 func (self *ProtocolHash) ToBase58() []byte {
@@ -519,6 +549,36 @@ func (self *BLSPublicKey) UnmarshalText(src []byte) error {
 	return nil
 }
 
+type MLDSA44PublicKey [MLDSA44PublicKeyBytesLen]byte
+
+func (self *MLDSA44PublicKey) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.MLDSA44PublicKey, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self MLDSA44PublicKey) String() string {
+	return string(self.ToBase58())
+}
+
+func (self MLDSA44PublicKey) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.MLDSA44PublicKey, self[:])
+}
+
+func (self *MLDSA44PublicKey) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.MLDSA44PublicKey {
+		return fmt.Errorf("gotez: invalid MLDSA44PublicKey encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
 type Ed25519PrivateKey [Ed25519SeedBytesLen]byte
 
 func (self *Ed25519PrivateKey) ToBase58() []byte {
@@ -527,10 +587,6 @@ func (self *Ed25519PrivateKey) ToBase58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func (self Ed25519PrivateKey) String() string {
-	return "[REDACTED:Ed25519PrivateKey]"
 }
 
 func (self Ed25519PrivateKey) MarshalText() ([]byte, error) {
@@ -559,10 +615,6 @@ func (self *Secp256k1PrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self Secp256k1PrivateKey) String() string {
-	return "[REDACTED:Secp256k1PrivateKey]"
-}
-
 func (self Secp256k1PrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Secp256k1SecretKey, self[:])
 }
@@ -587,10 +639,6 @@ func (self *P256PrivateKey) ToBase58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func (self P256PrivateKey) String() string {
-	return "[REDACTED:P256PrivateKey]"
 }
 
 func (self P256PrivateKey) MarshalText() ([]byte, error) {
@@ -619,10 +667,6 @@ func (self *BLSPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self BLSPrivateKey) String() string {
-	return "[REDACTED:BLSPrivateKey]"
-}
-
 func (self BLSPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BLS12_381SecretKey, self[:])
 }
@@ -639,6 +683,32 @@ func (self *BLSPrivateKey) UnmarshalText(src []byte) error {
 	return nil
 }
 
+type MLDSA44PrivateKey [MLDSA44PrivateKeyBytesLen]byte
+
+func (self *MLDSA44PrivateKey) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.MLDSA44SecretKey, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self MLDSA44PrivateKey) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.MLDSA44SecretKey, self[:])
+}
+
+func (self *MLDSA44PrivateKey) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.MLDSA44SecretKey {
+		return fmt.Errorf("gotez: invalid MLDSA44PrivateKey encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
 type Ed25519EncryptedPrivateKey [Ed25519EncryptedSeedBytesLen]byte
 
 func (self *Ed25519EncryptedPrivateKey) ToBase58() []byte {
@@ -647,10 +717,6 @@ func (self *Ed25519EncryptedPrivateKey) ToBase58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func (self Ed25519EncryptedPrivateKey) String() string {
-	return "[REDACTED:Ed25519EncryptedPrivateKey]"
 }
 
 func (self Ed25519EncryptedPrivateKey) MarshalText() ([]byte, error) {
@@ -679,10 +745,6 @@ func (self *Secp256k1EncryptedPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self Secp256k1EncryptedPrivateKey) String() string {
-	return "[REDACTED:Secp256k1EncryptedPrivateKey]"
-}
-
 func (self Secp256k1EncryptedPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.Secp256k1EncryptedSecretKey, self[:])
 }
@@ -707,10 +769,6 @@ func (self *P256EncryptedPrivateKey) ToBase58() []byte {
 		panic(err)
 	}
 	return out
-}
-
-func (self P256EncryptedPrivateKey) String() string {
-	return "[REDACTED:P256EncryptedPrivateKey]"
 }
 
 func (self P256EncryptedPrivateKey) MarshalText() ([]byte, error) {
@@ -739,10 +797,6 @@ func (self *BLSEncryptedPrivateKey) ToBase58() []byte {
 	return out
 }
 
-func (self BLSEncryptedPrivateKey) String() string {
-	return "[REDACTED:BLSEncryptedPrivateKey]"
-}
-
 func (self BLSEncryptedPrivateKey) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.BLS12_381EncryptedSecretKey, self[:])
 }
@@ -754,6 +808,32 @@ func (self *BLSEncryptedPrivateKey) UnmarshalText(src []byte) error {
 	}
 	if pre != &prefix.BLS12_381EncryptedSecretKey {
 		return fmt.Errorf("gotez: invalid BLSEncryptedPrivateKey encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type MLDSA44EncryptedPrivateKey [MLDSA44EncryptedPrivateKeyBytesLen]byte
+
+func (self *MLDSA44EncryptedPrivateKey) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.MLDSA44EncryptedSecretKey, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self MLDSA44EncryptedPrivateKey) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.MLDSA44EncryptedSecretKey, self[:])
+}
+
+func (self *MLDSA44EncryptedPrivateKey) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.MLDSA44EncryptedSecretKey {
+		return fmt.Errorf("gotez: invalid MLDSA44EncryptedPrivateKey encoding")
 	}
 	copy(self[:], payload)
 	return nil
@@ -904,6 +984,36 @@ func (self *BLSSignature) UnmarshalText(src []byte) error {
 	}
 	if pre != &prefix.BLS12_381Signature {
 		return fmt.Errorf("gotez: invalid BLSSignature encoding")
+	}
+	copy(self[:], payload)
+	return nil
+}
+
+type MLDSA44Signature [MLDSA44SignatureBytesLen]byte
+
+func (self *MLDSA44Signature) ToBase58() []byte {
+	out, err := base58.EncodeTZ(&prefix.MLDSA44Signature, self[:])
+	if err != nil {
+		panic(err)
+	}
+	return out
+}
+
+func (self MLDSA44Signature) String() string {
+	return string(self.ToBase58())
+}
+
+func (self MLDSA44Signature) MarshalText() ([]byte, error) {
+	return base58.EncodeTZ(&prefix.MLDSA44Signature, self[:])
+}
+
+func (self *MLDSA44Signature) UnmarshalText(src []byte) error {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return err
+	}
+	if pre != &prefix.MLDSA44Signature {
+		return fmt.Errorf("gotez: invalid MLDSA44Signature encoding")
 	}
 	copy(self[:], payload)
 	return nil

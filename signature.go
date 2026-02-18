@@ -30,7 +30,8 @@ func (sig *Secp256k1Signature) Generic() *GenericSignature { return (*GenericSig
 func (sig *P256Signature) Signature()                 {}
 func (sig *P256Signature) Generic() *GenericSignature { return (*GenericSignature)(sig) }
 
-func (sig *BLSSignature) Signature() {}
+func (sig *BLSSignature) Signature()     {}
+func (sig *MLDSA44Signature) Signature() {}
 
 func NewEd25519Signature(sig []byte) *Ed25519Signature {
 	var out Ed25519Signature
@@ -84,6 +85,15 @@ func NewBLSSignature(compressedPoint []byte) *BLSSignature {
 
 func (sig *BLSSignature) Split() (prefix *[32]byte, suffix *GenericSignature) {
 	return (*[32]byte)(unsafe.Pointer(&sig[0])), (*GenericSignature)(unsafe.Pointer(&sig[32]))
+}
+
+func NewMLDSA44Signature(signature []byte) *MLDSA44Signature {
+	var out MLDSA44Signature
+	if len(signature) != len(out) {
+		panic("gotez: invalid MLDSA44 signature length")
+	}
+	copy(out[:], signature)
+	return &out
 }
 
 type AnySignature []byte

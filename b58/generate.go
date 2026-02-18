@@ -68,6 +68,11 @@ var data = []mapping{
 		Prefix: "BLS12_381PublicKeyHash",
 	},
 	{
+		Type:   "MLDSA44PublicKeyHash",
+		Length: "PKHBytesLen",
+		Prefix: "MLDSA44PublicKeyHash",
+	},
+	{
 		Type:   "ProtocolHash",
 		Length: "ProtocolHashBytesLen",
 		Prefix: "ProtocolHash",

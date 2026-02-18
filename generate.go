@@ -9,10 +9,10 @@ import (
 )
 
 type base58Type struct {
-	Type     string
-	Length   string
-	Prefix   string
-	IsSecret bool // If true, String() returns redacted output to prevent accidental logging
+	Type         string
+	Length       string
+	Prefix       string
+	OmitStringer bool // If true, omit String() method
 }
 
 type hexType struct {
@@ -79,6 +79,11 @@ var base58Data = []base58Type{
 		Prefix: "BLS12_381PublicKeyHash",
 	},
 	{
+		Type:   "MLDSA44PublicKeyHash",
+		Length: "AddressBytesLen",
+		Prefix: "MLDSA44PublicKeyHash",
+	},
+	{
 		Type:   "ProtocolHash",
 		Length: "HashBytesLen",
 		Prefix: "ProtocolHash",
@@ -109,52 +114,69 @@ var base58Data = []base58Type{
 		Prefix: "BLS12_381PublicKey",
 	},
 	{
-		Type:     "Ed25519PrivateKey",
-		Length:   "Ed25519SeedBytesLen",
-		Prefix:   "Ed25519Seed",
-		IsSecret: true,
+		Type:   "MLDSA44PublicKey",
+		Length: "MLDSA44PublicKeyBytesLen",
+		Prefix: "MLDSA44PublicKey",
 	},
 	{
-		Type:     "Secp256k1PrivateKey",
-		Length:   "Secp256k1PrivateKeyBytesLen",
-		Prefix:   "Secp256k1SecretKey",
-		IsSecret: true,
+		Type:         "Ed25519PrivateKey",
+		Length:       "Ed25519SeedBytesLen",
+		Prefix:       "Ed25519Seed",
+		OmitStringer: true,
 	},
 	{
-		Type:     "P256PrivateKey",
-		Length:   "P256PrivateKeyBytesLen",
-		Prefix:   "P256SecretKey",
-		IsSecret: true,
+		Type:         "Secp256k1PrivateKey",
+		Length:       "Secp256k1PrivateKeyBytesLen",
+		Prefix:       "Secp256k1SecretKey",
+		OmitStringer: true,
 	},
 	{
-		Type:     "BLSPrivateKey",
-		Length:   "BLSPrivateKeyBytesLen",
-		Prefix:   "BLS12_381SecretKey",
-		IsSecret: true,
+		Type:         "P256PrivateKey",
+		Length:       "P256PrivateKeyBytesLen",
+		Prefix:       "P256SecretKey",
+		OmitStringer: true,
 	},
 	{
-		Type:     "Ed25519EncryptedPrivateKey",
-		Length:   "Ed25519EncryptedSeedBytesLen",
-		Prefix:   "Ed25519EncryptedSeed",
-		IsSecret: true,
+		Type:         "BLSPrivateKey",
+		Length:       "BLSPrivateKeyBytesLen",
+		Prefix:       "BLS12_381SecretKey",
+		OmitStringer: true,
 	},
 	{
-		Type:     "Secp256k1EncryptedPrivateKey",
-		Length:   "Secp256k1EncryptedPrivateKeyBytesLen",
-		Prefix:   "Secp256k1EncryptedSecretKey",
-		IsSecret: true,
+		Type:         "MLDSA44PrivateKey",
+		Length:       "MLDSA44PrivateKeyBytesLen",
+		Prefix:       "MLDSA44SecretKey",
+		OmitStringer: true,
 	},
 	{
-		Type:     "P256EncryptedPrivateKey",
-		Length:   "P256EncryptedPrivateKeyBytesLen",
-		Prefix:   "P256EncryptedSecretKey",
-		IsSecret: true,
+		Type:         "Ed25519EncryptedPrivateKey",
+		Length:       "Ed25519EncryptedSeedBytesLen",
+		Prefix:       "Ed25519EncryptedSeed",
+		OmitStringer: true,
 	},
 	{
-		Type:     "BLSEncryptedPrivateKey",
-		Length:   "BLSEncryptedPrivateKeyBytesLen",
-		Prefix:   "BLS12_381EncryptedSecretKey",
-		IsSecret: true,
+		Type:         "Secp256k1EncryptedPrivateKey",
+		Length:       "Secp256k1EncryptedPrivateKeyBytesLen",
+		Prefix:       "Secp256k1EncryptedSecretKey",
+		OmitStringer: true,
+	},
+	{
+		Type:         "P256EncryptedPrivateKey",
+		Length:       "P256EncryptedPrivateKeyBytesLen",
+		Prefix:       "P256EncryptedSecretKey",
+		OmitStringer: true,
+	},
+	{
+		Type:         "BLSEncryptedPrivateKey",
+		Length:       "BLSEncryptedPrivateKeyBytesLen",
+		Prefix:       "BLS12_381EncryptedSecretKey",
+		OmitStringer: true,
+	},
+	{
+		Type:         "MLDSA44EncryptedPrivateKey",
+		Length:       "MLDSA44EncryptedPrivateKeyBytesLen",
+		Prefix:       "MLDSA44EncryptedSecretKey",
+		OmitStringer: true,
 	},
 	{
 		Type:   "GenericSignature",
@@ -180,6 +202,11 @@ var base58Data = []base58Type{
 		Type:   "BLSSignature",
 		Length: "BLSSignatureBytesLen",
 		Prefix: "BLS12_381Signature",
+	},
+	{
+		Type:   "MLDSA44Signature",
+		Length: "MLDSA44SignatureBytesLen",
+		Prefix: "MLDSA44Signature",
 	},
 	{
 		Type:   "BlindedPublicKeyHash",
@@ -290,13 +317,12 @@ func (self *{{.Type}}) ToBase58() []byte {
 	return out
 }
 
+{{- if not .OmitStringer}}
+
 func (self {{.Type}}) String() string {
-{{- if .IsSecret}}
-	return "[REDACTED:{{.Type}}]"
-{{- else}}
 	return string(self.ToBase58())
-{{- end}}
 }
+{{- end}}
 
 func (self {{.Type}}) MarshalText() ([]byte, error) {
 	return base58.EncodeTZ(&prefix.{{.Prefix}}, self[:])

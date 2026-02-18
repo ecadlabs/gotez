@@ -133,7 +133,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 			if op, ok := op.(core.ManagerOperation); ok {
 				src := op.GetSource()
 				if id, ok := src.(core.ContractID); ok {
-					counter, ok := counters[id.String()]
+					counter, ok := counters[string(id.ToBase58())]
 					if !ok {
 						var err error
 						counter, err = t.Client.ContractCounter(ctx, &client.ContractRequest{
@@ -147,7 +147,7 @@ func (t *Tool) Fill(ctx context.Context, group *latest.UnsignedOperation, attrib
 						t.debug("teztool: %v counter = %v", id, counter)
 					}
 					counter = incCounter(counter)
-					counters[id.String()] = counter
+					counters[string(id.ToBase58())] = counter
 					op.SetCounter(counter)
 				}
 			}

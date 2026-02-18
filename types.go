@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/cloudflare/circl/sign/mldsa/mldsa44"
 	"github.com/ecadlabs/gotez/v2/encoding"
 )
 
@@ -24,11 +25,11 @@ const (
 	SlotHeaderBytesLen       = 48
 	GenericSignatureBytesLen = 64
 	BLSSignatureBytesLen     = 96
+	MLDSA44SignatureBytesLen = mldsa44.SignatureSize
 )
 
 type Base58Encoder interface {
 	ToBase58() []byte
-	String() string
 }
 
 type Comparable[K any] interface {

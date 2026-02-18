@@ -20,10 +20,6 @@ func (priv *ECDSAPrivateKey) ToBase58() []byte {
 	return priv.ToProtocol().ToBase58()
 }
 
-func (priv *ECDSAPrivateKey) String() string {
-	return priv.ToProtocol().String()
-}
-
 func (priv *ECDSAPrivateKey) Public() PublicKey {
 	return (*ECDSAPublicKey)((*ecdsa.PrivateKey)(priv).Public().(*ecdsa.PublicKey))
 }
@@ -97,7 +93,7 @@ func (pub *ECDSAPublicKey) ToBase58() []byte {
 }
 
 func (pub *ECDSAPublicKey) String() string {
-	return pub.ToProtocol().String()
+	return string(pub.ToBase58())
 }
 
 func (pub *ECDSAPublicKey) VerifySignature(sig Signature, message []byte) bool {
@@ -159,7 +155,7 @@ func (sig *ECDSASignature) ToBase58() []byte {
 }
 
 func (sig *ECDSASignature) String() string {
-	return sig.ToProtocol().String()
+	return string(sig.ToBase58())
 }
 
 func (sig *ECDSASignature) Verify(pub PublicKey, message []byte) bool {

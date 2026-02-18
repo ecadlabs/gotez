@@ -5,6 +5,7 @@ go 1.24.0
 toolchain go1.24.4
 
 require (
+	github.com/cloudflare/circl v1.6.3
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0
 	github.com/ecadlabs/goblst v1.1.0
 	github.com/ecadlabs/pretty v0.0.0-20230412124801-f948fc689a04

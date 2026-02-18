@@ -24,9 +24,10 @@ var (
 	Ed25519PublicKeyHash   = Prefix{Len: 20, Prefix: []byte{6, 161, 159}}   // tz1(36)
 	Secp256k1PublicKeyHash = Prefix{Len: 20, Prefix: []byte{6, 161, 161}}   // tz2(36)
 	P256PublicKeyHash      = Prefix{Len: 20, Prefix: []byte{6, 161, 164}}   // tz3(36)
+	BLS12_381PublicKeyHash = Prefix{Len: 20, Prefix: []byte{6, 161, 166}}   // tz4(36)
+	MLDSA44PublicKeyHash   = Prefix{Len: 20, Prefix: []byte{6, 161, 169}}   // tz5(36)
 	ContractHash           = Prefix{Len: 20, Prefix: []byte{2, 90, 121}}    // KT1(36)
 	BlindedPublicKeyHash   = Prefix{Len: 20, Prefix: []byte{1, 2, 49, 223}} // btz1(37)
-	BLS12_381PublicKeyHash = Prefix{Len: 20, Prefix: []byte{6, 161, 166}}   // tz4(36)
 	//lint:ignore U1000 As defined in Tezos code
 	L2Address       = BLS12_381PublicKeyHash
 	TXRollupAddress = Prefix{Len: 20, Prefix: []byte{1, 128, 120, 31}} // txr1(37)
@@ -97,6 +98,17 @@ var (
 	BLS12_381PublicKey = Prefix{Len: 48, Prefix: []byte{6, 149, 135, 204}} // BLpk(76)
 	SlotHeader         = Prefix{Len: 48, Prefix: []byte{2, 116, 180}}      // sh(74)
 
+	// 1312
+	MLDSA44PublicKey = Prefix{Len: 1312, Prefix: []byte{13, 7, 237, 67}} // mdpk(1802)
+
+	// 3872
+	MLDSA44SecretKey = Prefix{Len: 3872, Prefix: []byte{9, 57, 116, 57}} // mdsk(5298)
+
+	// 3896
+	MLDSA44EncryptedSecretKey = Prefix{Len: 3896, Prefix: []byte{5, 49, 133, 39, 172}} // mdesk(5332)
+
+	// 2420
+	MLDSA44Signature = Prefix{Len: 2420, Prefix: []byte{1, 156, 45, 210, 3}} // mdsig(3316)
 )
 
 // Full list of prefixes with payload lengths
@@ -117,6 +129,7 @@ var List = []*Prefix{
 	&ContractHash,
 	&BlindedPublicKeyHash,
 	&BLS12_381PublicKeyHash,
+	&MLDSA44PublicKeyHash,
 	&TXRollupAddress,
 	&CryptoboxPublicKeyHash,
 	&Ed25519Seed,
@@ -161,4 +174,8 @@ var List = []*Prefix{
 	&SmartRollupHash,
 	&SmartRollupStateHash,
 	&SmartRollupCommitmentHash,
+	&MLDSA44PublicKey,
+	&MLDSA44SecretKey,
+	&MLDSA44EncryptedSecretKey,
+	&MLDSA44Signature,
 }

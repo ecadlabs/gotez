@@ -14,10 +14,6 @@ func (priv *BLSPrivateKey) ToBase58() []byte {
 	return priv.ToProtocol().ToBase58()
 }
 
-func (priv *BLSPrivateKey) String() string {
-	return priv.ToProtocol().String()
-}
-
 func (priv *BLSPrivateKey) Public() PublicKey {
 	return (*BLSPublicKey)((*minpk.PrivateKey)(priv).Public().(*minpk.PublicKey))
 }
@@ -69,7 +65,7 @@ func (pub *BLSPublicKey) ToBase58() []byte {
 }
 
 func (pub *BLSPublicKey) String() string {
-	return pub.ToProtocol().String()
+	return string(pub.ToBase58())
 }
 
 func (pub *BLSPublicKey) ToProtocol() tz.PublicKey {
@@ -118,7 +114,7 @@ func (sig *BLSSignature) ToBase58() []byte {
 }
 
 func (sig *BLSSignature) String() string {
-	return sig.ToProtocol().String()
+	return string(sig.ToBase58())
 }
 
 func (sig *BLSSignature) Verify(pub PublicKey, message []byte) bool {

@@ -13,10 +13,6 @@ func (priv Ed25519PrivateKey) ToBase58() []byte {
 	return priv.ToProtocol().ToBase58()
 }
 
-func (priv Ed25519PrivateKey) String() string {
-	return priv.ToProtocol().String()
-}
-
 func (priv Ed25519PrivateKey) Public() PublicKey {
 	return Ed25519PublicKey(ed25519.PrivateKey(priv).Public().(ed25519.PublicKey))
 }
@@ -62,7 +58,7 @@ func (pub Ed25519PublicKey) ToBase58() []byte {
 }
 
 func (pub Ed25519PublicKey) String() string {
-	return pub.ToProtocol().String()
+	return string(pub.ToBase58())
 }
 
 func (pub Ed25519PublicKey) ToProtocol() tz.PublicKey {
@@ -109,7 +105,7 @@ func (sig Ed25519Signature) ToBase58() []byte {
 }
 
 func (sig Ed25519Signature) String() string {
-	return sig.ToProtocol().String()
+	return string(sig.ToBase58())
 }
 
 func (sig Ed25519Signature) Verify(pub PublicKey, message []byte) bool {

@@ -17,14 +17,18 @@ const (
 	Secp256k1PublicKeyBytesLen           = 33
 	P256PublicKeyBytesLen                = 33
 	BLSPublicKeyBytesLen                 = 48
+	MLDSA44PublicKeyBytesLen             = 1312
 	Ed25519SeedBytesLen                  = 32
 	Secp256k1PrivateKeyBytesLen          = 32
 	P256PrivateKeyBytesLen               = 32
 	BLSPrivateKeyBytesLen                = 32
+	MLDSA44SigningKeyBytesLen            = 2560
+	MLDSA44PrivateKeyBytesLen            = MLDSA44SigningKeyBytesLen + MLDSA44PublicKeyBytesLen // Tezos appends public key to private
 	Ed25519EncryptedSeedBytesLen         = 56
 	Secp256k1EncryptedPrivateKeyBytesLen = 56
 	P256EncryptedPrivateKeyBytesLen      = 56
 	BLSEncryptedPrivateKeyBytesLen       = 56
+	MLDSA44EncryptedPrivateKeyBytesLen   = 3896
 )
 
 var (
@@ -47,6 +51,7 @@ func init() {
 			1: (*Secp256k1PublicKeyHash)(nil),
 			2: (*P256PublicKeyHash)(nil),
 			3: (*BLSPublicKeyHash)(nil),
+			4: (*MLDSA44PublicKeyHash)(nil),
 		},
 	})
 }
@@ -64,6 +69,7 @@ func init() {
 			1: (*Secp256k1PublicKey)(nil),
 			2: (*P256PublicKey)(nil),
 			3: (*BLSPublicKey)(nil),
+			4: (*MLDSA44PublicKey)(nil),
 		},
 	})
 }
@@ -82,16 +88,19 @@ func (pkh *Ed25519PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
 func (pkh *Secp256k1PublicKeyHash) PublicKeyHash() []byte { return pkh[:] }
 func (pkh *P256PublicKeyHash) PublicKeyHash() []byte      { return pkh[:] }
 func (pkh *BLSPublicKeyHash) PublicKeyHash() []byte       { return pkh[:] }
+func (pkh *MLDSA44PublicKeyHash) PublicKeyHash() []byte   { return pkh[:] }
 
 func (priv *Ed25519PrivateKey) PrivateKey()   {}
 func (priv *Secp256k1PrivateKey) PrivateKey() {}
 func (priv *P256PrivateKey) PrivateKey()      {}
 func (priv *BLSPrivateKey) PrivateKey()       {}
+func (priv *MLDSA44PrivateKey) PrivateKey()   {}
 
 func (pk *Ed25519PublicKey) PublicKey()   {}
 func (pk *Secp256k1PublicKey) PublicKey() {}
 func (pk *P256PublicKey) PublicKey()      {}
 func (pk *BLSPublicKey) PublicKey()       {}
+func (pk *MLDSA44PublicKey) PublicKey()   {}
 
 const PKHBytesLen = AddressBytesLen
 const publicKeyHashComparableKeyLen = PKHBytesLen + 1
@@ -141,6 +150,11 @@ func (k *EncodedPublicKeyHash) UnmarshalText(text []byte) error {
 
 	case &prefix.BLS12_381PublicKeyHash:
 		var out BLSPublicKeyHash
+		copy(out[:], payload)
+		result = &out
+
+	case &prefix.MLDSA44PublicKeyHash:
+		var out MLDSA44PublicKeyHash
 		copy(out[:], payload)
 		result = &out
 
@@ -219,6 +233,17 @@ func (pkh *BLSPublicKeyHash) Eq(other PublicKeyHash) bool {
 	return false
 }
 
+func (pkh *MLDSA44PublicKeyHash) ToComparable() EncodedPublicKeyHash {
+	return publicKeyHashToComparable(pkh)
+}
+
+func (pkh *MLDSA44PublicKeyHash) Eq(other PublicKeyHash) bool {
+	if b, ok := other.(*MLDSA44PublicKeyHash); ok {
+		return bytes.Equal(pkh[:], b[:])
+	}
+	return false
+}
+
 func NewEd25519PublicKey(key []byte) (*Ed25519PublicKey, error) {
 	var out Ed25519PublicKey
 	if len(key) != len(out) {
@@ -252,6 +277,15 @@ func NewBLSPublicKey(compressedPoint []byte) (*BLSPublicKey, error) {
 		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], compressedPoint)
+	return &out, nil
+}
+
+func NewMLDSA44PublicKey(packed []byte) (*MLDSA44PublicKey, error) {
+	var out MLDSA44PublicKey
+	if len(packed) != len(out) {
+		return nil, ErrInvalidKeyLen
+	}
+	copy(out[:], packed)
 	return &out, nil
 }
 
@@ -289,6 +323,17 @@ func (pk *P256PublicKey) Hash() PublicKeyHash {
 }
 
 func (pk *BLSPublicKey) Hash() PublicKeyHash {
+	digest, err := blake2b.New(20, nil)
+	if err != nil {
+		panic(err)
+	}
+	digest.Write(pk[:])
+	var out BLSPublicKeyHash
+	copy(out[:], digest.Sum(nil))
+	return &out
+}
+
+func (pk *MLDSA44PublicKey) Hash() PublicKeyHash {
 	digest, err := blake2b.New(20, nil)
 	if err != nil {
 		panic(err)
@@ -337,21 +382,22 @@ func NewBLSPrivateKey(scalar []byte) (*BLSPrivateKey, error) {
 	return &out, nil
 }
 
-// stub
-func (pk *Ed25519PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) {
-	return pk, nil
+func NewMLDSA44PrivateKey(priv, pub []byte) (*MLDSA44PrivateKey, error) {
+	var out MLDSA44PrivateKey
+	if len(priv)+len(pub) != len(out) {
+		return nil, ErrInvalidKeyLen
+	}
+	copy(out[:], priv)
+	copy(out[:MLDSA44SigningKeyBytesLen], pub)
+	return &out, nil
 }
 
-// stub
-func (pk *Secp256k1PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) {
-	return pk, nil
-}
-
-// stub
-func (pk *P256PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
-
-// stub
-func (pk *BLSPrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
+// stubs
+func (pk *Ed25519PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error)   { return pk, nil }
+func (pk *Secp256k1PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
+func (pk *P256PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error)      { return pk, nil }
+func (pk *BLSPrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error)       { return pk, nil }
+func (pk *MLDSA44PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error)   { return pk, nil }
 
 func (pk *Ed25519EncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (PrivateKey, error) {
 	decrypted, err := decryptPrivateKey(pk[:], passCb)
@@ -402,6 +448,20 @@ func (pk *BLSEncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (Privat
 	}
 	defer memzero(decrypted)
 	var out BLSPrivateKey
+	if len(decrypted) != len(out) {
+		return nil, ErrInvalidDecryptedLen
+	}
+	copy(out[:], decrypted)
+	return &out, nil
+}
+
+func (pk *MLDSA44EncryptedPrivateKey) Decrypt(passCb func() ([]byte, error)) (PrivateKey, error) {
+	decrypted, err := decryptPrivateKey(pk[:], passCb)
+	if err != nil {
+		return nil, err
+	}
+	defer memzero(decrypted)
+	var out MLDSA44PrivateKey
 	if len(decrypted) != len(out) {
 		return nil, ErrInvalidDecryptedLen
 	}

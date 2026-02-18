@@ -140,6 +140,19 @@ func ParseBLSPublicKeyHash(src []byte) (*gotez.BLSPublicKeyHash, error) {
 	return &out, nil
 }
 
+func ParseMLDSA44PublicKeyHash(src []byte) (*gotez.MLDSA44PublicKeyHash, error) {
+	pre, payload, err := base58.DecodeTZ(src)
+	if err != nil {
+		return nil, err
+	}
+	if pre != &prefix.MLDSA44PublicKeyHash {
+		return nil, fmt.Errorf("gotez: invalid MLDSA44PublicKeyHash encoding")
+	}
+	var out gotez.MLDSA44PublicKeyHash
+	copy(out[:], payload)
+	return &out, nil
+}
+
 func ParseProtocolHash(src []byte) (*gotez.ProtocolHash, error) {
 	pre, payload, err := base58.DecodeTZ(src)
 	if err != nil {
