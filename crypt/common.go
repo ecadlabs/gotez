@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/cloudflare/circl/sign/mldsa/mldsa44"
 	"github.com/ecadlabs/goblst/minpk"
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/b58"
@@ -85,6 +86,12 @@ func NewPrivateKey(priv tz.PrivateKey) (PrivateKey, error) {
 		}
 		return (*BLSPrivateKey)(p), nil
 
+	case *tz.MLDSA44PrivateKey:
+		sk, _ := key.Split()
+		var out mldsa44.PrivateKey
+		out.Unpack(sk)
+		return (*MLDSA44PrivateKey)(&out), nil
+
 	default:
 		return nil, fmt.Errorf("crypt: unknown private key type: %T", priv)
 	}
@@ -122,6 +129,11 @@ func NewPublicKey(pub tz.PublicKey) (PublicKey, error) {
 		}
 		return (*BLSPublicKey)(p), nil
 
+	case *tz.MLDSA44PublicKey:
+		var out mldsa44.PublicKey
+		out.Unpack((*[tz.MLDSA44PublicKeyBytesLen]byte)(pub))
+		return (*MLDSA44PublicKey)(&out), nil
+
 	default:
 		return nil, fmt.Errorf("crypt: unknown public key type: %T", pub)
 	}
@@ -142,6 +154,8 @@ func NewPrivateKeyFrom(priv crypto.PrivateKey) (PrivateKey, error) {
 		return Ed25519PrivateKey(priv), nil
 	case *minpk.PrivateKey:
 		return (*BLSPrivateKey)(priv), nil
+	case *mldsa44.PrivateKey:
+		return (*MLDSA44PrivateKey)(priv), nil
 	default:
 		return nil, ErrUnsupportedKeyType
 	}
@@ -162,6 +176,8 @@ func NewPublicKeyFrom(pub crypto.PublicKey) (PublicKey, error) {
 		return Ed25519PublicKey(pub), nil
 	case *minpk.PublicKey:
 		return (*BLSPublicKey)(pub), nil
+	case *mldsa44.PublicKey:
+		return (*MLDSA44PublicKey)(pub), nil
 	default:
 		return nil, ErrUnsupportedKeyType
 	}
@@ -201,6 +217,9 @@ func NewSignature(sig tz.Signature) (Signature, error) {
 		}
 		return (*BLSSignature)(s), nil
 
+	case *tz.MLDSA44Signature:
+		return MLDSA44Signature(sig[:]), nil
+
 	default:
 		return nil, fmt.Errorf("crypt: unknown signature type: %T", sig)
 	}
@@ -233,6 +252,9 @@ func NewSignatureFromBytes(sig []byte, pub PublicKey) (Signature, error) {
 		}), nil
 
 	case Ed25519PublicKey:
+		if len(sig) != ed25519.SignatureSize {
+			return nil, errors.New("crypt: invalid Ed25519 signature length")
+		}
 		return Ed25519Signature(sig), nil
 
 	case *BLSPublicKey:
@@ -241,6 +263,12 @@ func NewSignatureFromBytes(sig []byte, pub PublicKey) (Signature, error) {
 			return nil, err
 		}
 		return (*BLSSignature)(s), nil
+
+	case *MLDSA44PublicKey:
+		if len(sig) != mldsa44.SignatureSize {
+			return nil, errors.New("crypt: invalid MLDSA44 signature length")
+		}
+		return MLDSA44Signature(sig), nil
 
 	default:
 		return nil, fmt.Errorf("crypt: unknown public key type: %T", pub)

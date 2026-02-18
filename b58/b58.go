@@ -37,6 +37,11 @@ func ParsePublicKey(src []byte) (tz.PublicKey, error) {
 		copy(out[:], payload)
 		return &out, nil
 
+	case &prefix.MLDSA44PublicKey:
+		var out tz.MLDSA44PublicKey
+		copy(out[:], payload)
+		return &out, nil
+
 	default:
 		return nil, errors.New("gotez: unknown public key prefix")
 	}
@@ -65,6 +70,11 @@ func ParsePublicKeyHash(src []byte) (tz.PublicKeyHash, error) {
 
 	case &prefix.BLS12_381PublicKeyHash:
 		var out tz.BLSPublicKeyHash
+		copy(out[:], payload)
+		return &out, nil
+
+	case &prefix.MLDSA44PublicKeyHash:
+		var out tz.MLDSA44PublicKeyHash
 		copy(out[:], payload)
 		return &out, nil
 
@@ -104,6 +114,11 @@ func ParsePrivateKey(src []byte) (tz.PrivateKey, error) {
 		copy(out[:], payload)
 		return &out, nil
 
+	case &prefix.MLDSA44SecretKey:
+		var out tz.MLDSA44PrivateKey
+		copy(out[:], payload)
+		return &out, nil
+
 	default:
 		return nil, errors.New("gotez: unknown private key prefix")
 	}
@@ -140,6 +155,11 @@ func ParseEncryptedPrivateKey(src []byte) (tz.EncryptedPrivateKey, error) {
 		copy(out[:], payload)
 		return &out, nil
 
+	case &prefix.MLDSA44SecretKey:
+		var out tz.MLDSA44PrivateKey
+		copy(out[:], payload)
+		return &out, nil
+
 	case &prefix.Ed25519EncryptedSeed:
 		var out tz.Ed25519EncryptedPrivateKey
 		copy(out[:], payload)
@@ -157,6 +177,11 @@ func ParseEncryptedPrivateKey(src []byte) (tz.EncryptedPrivateKey, error) {
 
 	case &prefix.BLS12_381EncryptedSecretKey:
 		var out tz.BLSEncryptedPrivateKey
+		copy(out[:], payload)
+		return &out, nil
+
+	case &prefix.MLDSA44EncryptedSecretKey:
+		var out tz.MLDSA44EncryptedPrivateKey
 		copy(out[:], payload)
 		return &out, nil
 
@@ -193,6 +218,11 @@ func ParseSignature(src []byte) (tz.Signature, error) {
 
 	case &prefix.BLS12_381Signature:
 		var out tz.BLSSignature
+		copy(out[:], payload)
+		return &out, nil
+
+	case &prefix.MLDSA44Signature:
+		var out tz.MLDSA44Signature
 		copy(out[:], payload)
 		return &out, nil
 

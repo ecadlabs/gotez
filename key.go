@@ -392,6 +392,16 @@ func NewMLDSA44PrivateKey(priv, pub []byte) (*MLDSA44PrivateKey, error) {
 	return &out, nil
 }
 
+func (priv *MLDSA44PrivateKey) Split() (sk *[MLDSA44SigningKeyBytesLen]byte, pub *[MLDSA44PublicKeyBytesLen]byte) {
+	var (
+		skBuf  [MLDSA44SigningKeyBytesLen]byte
+		pubBuf [MLDSA44PublicKeyBytesLen]byte
+	)
+	copy(skBuf[:], priv[:MLDSA44SigningKeyBytesLen])
+	copy(pubBuf[:], priv[MLDSA44SigningKeyBytesLen:])
+	return &skBuf, &pubBuf
+}
+
 // stubs
 func (pk *Ed25519PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error)   { return pk, nil }
 func (pk *Secp256k1PrivateKey) Decrypt(func() ([]byte, error)) (PrivateKey, error) { return pk, nil }
