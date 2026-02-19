@@ -388,7 +388,7 @@ func NewMLDSA44PrivateKey(priv, pub []byte) (*MLDSA44PrivateKey, error) {
 		return nil, ErrInvalidKeyLen
 	}
 	copy(out[:], priv)
-	copy(out[:MLDSA44SigningKeyBytesLen], pub)
+	copy(out[MLDSA44SigningKeyBytesLen:], pub)
 	return &out, nil
 }
 

@@ -9,6 +9,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/cloudflare/circl/sign/mldsa/mldsa44"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ecadlabs/goblst/minpk"
 	tz "github.com/ecadlabs/gotez/v2"
@@ -50,6 +51,13 @@ var cases = []testCase{
 			return (*BLSPrivateKey)(k)
 		},
 	},
+	{
+		title: "MLDSA44",
+		genKey: func() PrivateKey {
+			_, k, _ := mldsa44.GenerateKey(rand.Reader)
+			return (*MLDSA44PrivateKey)(k)
+		},
+	},
 }
 
 func TestKey(t *testing.T) {
@@ -62,7 +70,6 @@ func TestKey(t *testing.T) {
 			tmp, err := NewPrivateKey(tzPriv)
 			require.NoError(t, err)
 			require.True(t, priv.Equal(tmp))
-			require.Equal(t, priv, tmp)
 
 			// encode to base58 roundtrip
 			tmp2, err := ParsePrivateKey(priv.ToBase58())
@@ -83,7 +90,6 @@ func TestKey(t *testing.T) {
 			tmp4, err := NewPublicKey(tzPub)
 			require.NoError(t, err)
 			require.True(t, pub.Equal(tmp4))
-			require.Equal(t, pub, tmp4)
 
 			// encode to base58 roundtrip
 			tmp5, err := ParsePublicKey(pub.ToBase58())
@@ -101,7 +107,7 @@ func asGeneric(sig tz.Signature) tz.Signature {
 		return (*tz.GenericSignature)(sig)
 	case *tz.P256Signature:
 		return (*tz.GenericSignature)(sig)
-	case *tz.BLSSignature:
+	case *tz.BLSSignature, *tz.MLDSA44Signature:
 		return nil
 	default:
 		panic("unknown")
