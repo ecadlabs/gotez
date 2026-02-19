@@ -39,6 +39,7 @@ var (
 type PublicKeyHash interface {
 	Base58Encoder
 	stdenc.TextMarshaler
+	String() string
 	ToComparable[EncodedPublicKeyHash, PublicKeyHash]
 	PublicKeyHash() []byte
 	Eq(other PublicKeyHash) bool
@@ -58,6 +59,7 @@ func init() {
 
 type PublicKey interface {
 	Base58Encoder
+	String() string
 	PublicKey()
 	Hash() PublicKeyHash
 }
