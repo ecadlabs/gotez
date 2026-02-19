@@ -104,6 +104,8 @@ func (sig AnySignature) Signature() (Signature, error) {
 		return (*GenericSignature)(unsafe.Pointer(&sig[0])), nil
 	case BLSSignatureBytesLen:
 		return (*BLSSignature)(unsafe.Pointer(&sig[0])), nil
+	case MLDSA44SignatureBytesLen:
+		return (*MLDSA44Signature)(unsafe.Pointer(&sig[0])), nil
 	default:
 		return nil, fmt.Errorf("gotez: invalid signature length: %d", len(sig))
 	}

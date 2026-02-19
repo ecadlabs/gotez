@@ -267,13 +267,18 @@ func init() {
 	encoding.RegisterEnum(&encoding.Enum[SignaturePrefixContent]{
 		Variants: encoding.Variants[SignaturePrefixContent]{
 			3: (*BLSSignaturePrefix)(nil),
+			4: (*MLDSA44SignaturePrefix)(nil),
 		},
 	})
 }
 
-type BLSSignaturePrefix [32]byte
+type BLSSignaturePrefix [tz.BLSSignatureBytesLen - 64]byte
 
 func (*BLSSignaturePrefix) SignaturePrefixContent() {}
+
+type MLDSA44SignaturePrefix [tz.MLDSA44SignatureBytesLen - 64]byte
+
+func (*MLDSA44SignaturePrefix) SignaturePrefixContent() {}
 
 type SignRequest interface {
 	SignRequestKind() string

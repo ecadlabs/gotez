@@ -4,8 +4,8 @@ package mempool
 
 import (
 	tz "github.com/ecadlabs/gotez/v2"
+	"github.com/ecadlabs/gotez/v2/protocol/core"
 	"github.com/ecadlabs/gotez/v2/protocol/latest"
-	"github.com/ecadlabs/gotez/v2/protocol/proto_016_PtMumbai"
 )
 
 type PendingOperationsResponse struct {
@@ -18,9 +18,9 @@ type PendingOperationsResponse struct {
 }
 
 type PendingOperationsList struct {
-	Hash     *tz.OperationHash                                                        `json:"hash"`
-	Branch   *tz.BlockHash                                                            `json:"branch"`
-	Contents []*proto_016_PtMumbai.OperationWithoutMetadata[latest.OperationContents] `tz:"dyn" json:"contents"`
+	Hash     *tz.OperationHash                                          `json:"hash"`
+	Branch   *tz.BlockHash                                              `json:"branch"`
+	Contents []*core.OperationWithoutMetadata[latest.OperationContents] `tz:"dyn" json:"contents"`
 }
 
 type PendingOperationsListWithError struct {
@@ -29,9 +29,9 @@ type PendingOperationsListWithError struct {
 }
 
 type UnprocessedPendingOperationsList struct {
-	Hash     *tz.OperationHash                                                        `json:"hash"`
-	Branch   *tz.BlockHash                                                            `tz:"dyn" json:"branch"`
-	Contents []*proto_016_PtMumbai.OperationWithoutMetadata[latest.OperationContents] `tz:"dyn" json:"contents"`
+	Hash     *tz.OperationHash                                          `json:"hash"`
+	Branch   *tz.BlockHash                                              `tz:"dyn" json:"branch"`
+	Contents []*core.OperationWithoutMetadata[latest.OperationContents] `tz:"dyn" json:"contents"`
 }
 
 type OperationsList struct {
