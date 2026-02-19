@@ -44,6 +44,7 @@ type PrivateKey interface {
 
 type PublicKey interface {
 	tz.Base58Encoder
+	String() string
 	ToProtocol() tz.PublicKey
 	VerifySignature(sig Signature, message []byte) bool
 	Hash() PublicKeyHash
@@ -53,6 +54,7 @@ type PublicKey interface {
 
 type Signature interface {
 	tz.Base58Encoder
+	String() string
 	ToProtocol() tz.Signature
 	Verify(pub PublicKey, message []byte) bool
 }
