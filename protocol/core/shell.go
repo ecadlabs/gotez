@@ -1,6 +1,8 @@
 package core
 
 import (
+	"encoding/binary"
+	"errors"
 	tz "github.com/ecadlabs/gotez/v2"
 	"github.com/ecadlabs/gotez/v2/encoding"
 )
@@ -14,6 +16,26 @@ type ShellHeader struct {
 	OperationsHash *tz.OperationsHash `json:"operations_hash"`
 	Fitness        tz.Bytes           `tz:"dyn" json:"fitness"`
 	Context        *tz.ContextHash    `json:"context"`
+}
+
+// GetRoundFromTenderbakeBlock extracts the round from a Tenderbake block fitness
+func GetRoundFromTenderbakeBlock(data tz.Bytes) (uint32, error) {
+	/* FITNESS=
+	   (<fitness_length(4)> not in gotez)
+	   <version_len(4)><version(1)>
+	   <level_len(4)><level(4)>
+	   <locked_round_len(4)><locked_round(0 OR 4)>
+	   <predecessor_round_len(4)><predecessor_round(4)>
+	   <round_len(4)><round(4)> */
+
+	if len(data) < 4 {
+		return 0, errors.New("data too short to extract round")
+	}
+	// The fitness data has been stripped from its prefixed length
+	// The round value is always the 4 last bytes
+	round := binary.BigEndian.Uint32(data[len(data)-4:])
+
+	return round, nil
 }
 
 type BlockMetadataHeader struct {
