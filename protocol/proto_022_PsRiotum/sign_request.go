@@ -56,7 +56,13 @@ type BlockSignRequest struct {
 
 func (r *BlockSignRequest) GetChainID() *tz.ChainID { return r.Chain }
 func (r *BlockSignRequest) GetLevel() int32         { return r.BlockHeader.Level }
-func (r *BlockSignRequest) GetRound() int32         { return r.BlockHeader.PayloadRound }
+func (r *BlockSignRequest) GetRound() int32 {
+	round, err := core.GetRoundFromTenderbakeBlock(r.BlockHeader.Fitness)
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
+	return int32(round)
+}
 func (*BlockSignRequest) SignRequestKind() string   { return "block" }
 
 type ConsensusSignRequest[T core.OperationContents] struct {
