@@ -355,6 +355,19 @@ type ManagerMetadata[T core.ManagerOperationResult] struct {
 	InternalOperationResults []InternalOperationResult `tz:"dyn" json:"internal_operation_results"`
 }
 
+var _ core.ManagerOperationMetadata = (*ManagerMetadata[ConsumedGasResult])(nil)
+
+func (m *ManagerMetadata[T]) GetResult() core.ManagerOperationResult {
+	return m.OperationResult
+}
+func (m *ManagerMetadata[T]) GetInternalOperationResults() []core.InternalOperationResult {
+	out := make([]core.InternalOperationResult, len(m.InternalOperationResults))
+	for i, r := range m.InternalOperationResults {
+		out[i] = r
+	}
+	return out
+}
+
 type InternalOperationResult interface {
 	core.InternalOperationResult
 }
