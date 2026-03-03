@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [v2]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -16,4 +20,6 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - run: go test ./...
+      - run: go vet ./...
+
+      - run: go test -race -count=1 ./...

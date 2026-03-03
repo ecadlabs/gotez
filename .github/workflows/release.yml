@@ -14,33 +14,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
 
+      - name: Vet
+        run: go vet ./...
+
       - name: Run tests
-        run: go test ./...
-
-      - name: Generate changelog
-        id: changelog
-        run: |
-          # Get the previous tag
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
-
-          if [ -z "$PREV_TAG" ]; then
-            echo "notes=Initial release" >> $GITHUB_OUTPUT
-          else
-            # Generate changelog from commits since last tag
-            NOTES=$(git log --pretty=format:"- %s (%h)" $PREV_TAG..HEAD^ | head -50)
-            # Use a delimiter for multiline output
-            echo "notes<<EOF" >> $GITHUB_OUTPUT
-            echo "$NOTES" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-          fi
+        run: go test -race -count=1 ./...
 
       - name: Determine if prerelease
         id: prerelease
@@ -56,16 +40,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          body: |
-            ## Changes
-
-            ${{ steps.changelog.outputs.notes }}
-
-            ## Installation
-
-            ```bash
-            go get github.com/ecadlabs/gotez/v2@${{ github.ref_name }}
-            ```
+          generate_release_notes: true
           draft: false
           prerelease: ${{ steps.prerelease.outputs.is_prerelease == 'true' }}
         env:
