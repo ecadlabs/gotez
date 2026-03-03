@@ -28,8 +28,8 @@ func GetRoundFromTenderbakeBlock(data tz.Bytes) (uint32, error) {
 	   <predecessor_round_len(4)><predecessor_round(4)>
 	   <round_len(4)><round(4)> */
 
-	if len(data) < 4 {
-		return 0, errors.New("data too short to extract round")
+	if len(data) < 33 {
+		return 0, errors.New("data too short to be valid tenderbake fitness")
 	}
 	// The fitness data has been stripped from its prefixed length
 	// The round value is always the 4 last bytes
