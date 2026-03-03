@@ -59,7 +59,7 @@ func (r *BlockSignRequest) GetLevel() int32         { return r.BlockHeader.Level
 func (r *BlockSignRequest) GetRound() int32 {
 	round, err := core.GetRoundFromTenderbakeBlock(r.BlockHeader.Fitness)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		panic(fmt.Sprintf("BlockSignRequest.GetRound: %v", err))
 	}
 	return int32(round)
 }
