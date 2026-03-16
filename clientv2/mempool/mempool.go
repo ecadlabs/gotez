@@ -24,8 +24,10 @@ type PendingOperationsList struct {
 }
 
 type PendingOperationsListWithError struct {
-	PendingOperationsList
-	Error []byte `tz:"dyn" json:"error"`
+	Hash     *tz.OperationHash                                          `json:"hash"`
+	Branch   *tz.BlockHash                                              `tz:"dyn" json:"branch"`
+	Contents []*core.OperationWithoutMetadata[latest.OperationContents] `tz:"dyn" json:"contents"`
+	Error    []byte                                                     `tz:"dyn" json:"error"`
 }
 
 type UnprocessedPendingOperationsList struct {
