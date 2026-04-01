@@ -341,7 +341,7 @@ func (pk *MLDSA44PublicKey) Hash() PublicKeyHash {
 		panic(err)
 	}
 	digest.Write(pk[:])
-	var out BLSPublicKeyHash
+	var out MLDSA44PublicKeyHash
 	copy(out[:], digest.Sum(nil))
 	return &out
 }
