@@ -71,6 +71,7 @@ type SetDepositsLimitContentsAndResult = latest.SetDepositsLimitContentsAndResul
 type IncreasePaidStorage = latest.IncreasePaidStorage
 type IncreasePaidStorageContentsAndResult = latest.IncreasePaidStorageContentsAndResult
 type UpdateConsensusKey = latest.UpdateConsensusKey
+type UpdateCompanionKey = latest.UpdateCompanionKey
 type UpdateConsensusKeyContentsAndResult = latest.UpdateConsensusKeyContentsAndResult
 type TransferTicket = latest.TransferTicket
 type TransferTicketContentsAndResult = latest.TransferTicketContentsAndResult
