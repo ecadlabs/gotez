@@ -3,6 +3,7 @@ package proto_023_PtSeouLo
 //go:generate go run ../../cmd/genmarshaller.go
 
 import (
+	"errors"
 	"strconv"
 
 	tz "github.com/ecadlabs/gotez/v2"
@@ -124,6 +125,15 @@ func (*UpdateConsensusKey) OperationKind() string { return "update_consensus_key
 type UpdateCompanionKey UpdateConsensusKey
 
 func (*UpdateCompanionKey) OperationKind() string { return "update_companion_key" }
+
+func (u *UpdateCompanionKey) Validate() error {
+	if _, ok := u.PublicKey.(*tz.BLSPublicKey); !ok {
+		return errors.New("companion key is not a BLS key")
+	}
+	return nil
+}
+
+var _ core.Validator = (*UpdateCompanionKey)(nil)
 
 //json:kind=OperationKind()
 type Attestation proto_022_PsRiotum.Attestation

@@ -314,3 +314,8 @@ type PackData struct {
 }
 
 func (PackData) SignRequestKind() string { return "pack" }
+
+// Validator interface may be implemented by some operations to allow pre-flight validation before signing/injection
+type Validator interface {
+	Validate() error
+}
